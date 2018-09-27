@@ -1,5 +1,11 @@
+jury.d/conf.d/conf.ini
+.vscode
+jury.d/conf.d/conf.ini
+logs/*.log
+
+
 # Prerequisites
-*.d
+# *.d
 
 # Compiled Object files
 *.slo
@@ -30,3 +36,4 @@
 *.exe
 *.out
 *.app
+

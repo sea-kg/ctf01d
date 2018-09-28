@@ -1,12 +1,14 @@
 # fhq-jury-ad
 
+[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad)
+
 Jury System for a attack-defence ctf game
 
 ## Download and basic configuration
 
 ```
 $ sudo apt install git-core
-$ cd ~ 
+$ cd ~
 $ git clone http://github.com/freehackquest/jury.git fhq-jury-ad.git
 $ cd fhq-jury-ad.git
 $ sudo mkdir /usr/share/fhq-jury-ad
@@ -15,13 +17,13 @@ $ cp ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini.sample ~/fhq-jury-ad.git/jury.d/co
 $ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
 ```
 
-**Look and edit /usr/share/fhq-jury-ad/jury.d/conf.d/conf.ini** - more information inside conf.inf in comments 
+**Look and edit /usr/share/fhq-jury-ad/jury.d/conf.d/conf.ini** - more information inside conf.inf in comments
 
 ## Build fhq-jury-ad system (Ubuntu)
 
 ```
 $ sudo apt install cmake make
-$ sudo apt install default-libmysqlclient-dev
+$ sudo apt install libmysqlclient-dev
 $ sudo apt install pkg-config
 $ sudo apt install libcurl4-openssl-dev
 $ sudo apt install zlibc zlib1g zlib1g-dev
@@ -59,12 +61,12 @@ $ ./jury-ad start
 * Scoreboard: http://{HOST}:{PORT}/
 * Acceptance of flag: http://{HOST}:{PORT}/flag?teamid={TEAMID}&flag={FLAG}
 
-Where 
+Where
 
 * {HOST} - host or ip, where jury system started
 * {PORT} - scoreboard/flag port, where jury system started
 * {TEAMID} - number, your unique teamid (see scoreboard)
-* {FLAG} - uuid, so... it's flag from enimy server
+* {FLAG} - uuid, so... it's flag from enemy server
 
 Example of send flag (curl):
 ```
@@ -72,13 +74,13 @@ $ curl http://192.168.1.10:8080/flag?teamid=1&flag=123e4567-e89b-12d3-a456-42665
 ```
 http-code responses:
 
- * 400 - wrong prameters
+ * 400 - wrong parameters
  * 200 - flag accept
  * 403 - flag not accept (reason: old, already accepted, not found)
 
 ## MySQL Database  (use_storage is mysql)
 
-### Install requriments
+### Install requirements
 
 ```
 $ sudo apt install mysql-server

@@ -245,11 +245,13 @@ void LightHttpRequest::responseFile(const std::string &sFilePath){
 	// std::vector<char> buffer(size);
 	if (nSize > 10*1024*1024){
 		this->response(LightHttpRequest::RESP_PAYLOAD_TOO_LARGE);
+		delete[] pData;
 		return;
 	}
 
 	if (!f.read(pData, nSize)) {
 		this->response(LightHttpRequest::RESP_NOT_FOUND);
+		delete[] pData;
 		return;
 		// std::cout << sFilePath << "\n filesize: " << nSize << " bytes\n";
 	}

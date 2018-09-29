@@ -1,10 +1,12 @@
-attack-defence ctf system
+# different soft by different developers:
 
-# different soft by different teams:
+Attack-Defence ctf system
 
 ## SibirCTF
 
 https://github.com/KevaTeam/ctf-attack-defense
+
+Basic Technology: python
 
 ## FAUST CTF
 

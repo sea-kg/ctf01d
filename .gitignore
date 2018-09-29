@@ -1,8 +1,7 @@
 jury.d/conf.d/conf.ini
 .vscode
 jury.d/conf.d/conf.ini
-logs/*.log
-
+jury.d/logs/*.log
 
 # Prerequisites
 # *.d

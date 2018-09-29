@@ -56,28 +56,6 @@ $ ./jury-ad start
 1. Start vulnerable images (with service lazy-conf) and configure team name
 2. Start ```./fhq-jury-ad lazy-start```
 
-## Scoreboard && Acceptance of flag
-
-* Scoreboard: http://{HOST}:{PORT}/
-* Acceptance of flag: http://{HOST}:{PORT}/flag?teamid={TEAMID}&flag={FLAG}
-
-Where
-
-* {HOST} - host or ip, where jury system started
-* {PORT} - scoreboard/flag port, where jury system started
-* {TEAMID} - number, your unique teamid (see scoreboard)
-* {FLAG} - uuid, so... it's flag from enemy server
-
-Example of send flag (curl):
-```
-$ curl http://192.168.1.10:8080/flag?teamid=1&flag=123e4567-e89b-12d3-a456-426655440000
-```
-http-code responses:
-
- * 400 - wrong parameters
- * 200 - flag accept
- * 403 - flag not accept (reason: old, already accepted, not found)
-
 ## MySQL Database  (use_storage is mysql)
 
 ### Install requirements
@@ -106,6 +84,28 @@ Create tables:
 ```
 $ mysql -p -u fhqjuryad fhqjuryad < sql/mysql_fhqjuryad.sql
 ```
+
+## Scoreboard && Acceptance of flag
+
+* Scoreboard: http://{HOST}:{PORT}/
+* Acceptance of flag: http://{HOST}:{PORT}/flag?teamid={TEAMID}&flag={FLAG}
+
+Where
+
+* {HOST} - host or ip, where jury system started
+* {PORT} - scoreboard/flag port, where jury system started
+* {TEAMID} - number, your unique teamid (see scoreboard)
+* {FLAG} - uuid, so... it's flag from enemy server
+
+Example of send flag (curl):
+```
+$ curl http://192.168.1.10:8080/flag?teamid=1&flag=123e4567-e89b-12d3-a456-426655440000
+```
+http-code responses:
+
+ * 400 - wrong parameters
+ * 200 - flag accept
+ * 403 - flag not accept (reason: old, already accepted, not found)
 
 ## Checker description
 

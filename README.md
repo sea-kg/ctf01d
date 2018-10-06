@@ -39,7 +39,7 @@ After configure database options here:
 $ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
 ```
 
-### Preapre to start
+### Prepare to start
 
 Previously data-flags will be clean
 

@@ -14,4 +14,15 @@ $ ./build_simple.sh
 
 ### Build jury system (Debian)
 
-`libmysqlclient-dev` -> `default-libmysqlclient-dev`
+after 
+```
+$ sudo apt install libmysqlclient-dev
+```
+
+Please apply fix:
+
+```
+$ sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
+```
+
+More info: (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340)[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340]

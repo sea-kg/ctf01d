@@ -1,0 +1,2 @@
+jury.d/logs/*.log
+docker_db/mysql

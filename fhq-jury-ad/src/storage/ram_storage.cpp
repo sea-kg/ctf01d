@@ -66,8 +66,12 @@ void RamStorage::clean() {
 // ----------------------------------------------------------------------
 
 void RamStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &flag){
+    std::lock_guard<std::mutex> lock(m_mutexFlags);
+
     ModelFlag *pModelFlag = new ModelFlag();
     pModelFlag->copyFrom(flag);
+    m_vFlagLives.push_back(pModelFlag);
+    // cache by flag value
     m_mapFlagLive[flag.value()] = pModelFlag;
 }
 
@@ -118,5 +122,7 @@ void RamStorage::removeFlag(ModelFlag &flag) {
 // ----------------------------------------------------------------------
 
 void RamStorage::moveToArchive(ModelFlag &flag) {
+    std::lock_guard<std::mutex> lock(m_mutexFlags);
+
     // TODO
 }

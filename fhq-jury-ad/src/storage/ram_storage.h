@@ -27,13 +27,16 @@ class RamStorage : public IStorage {
 
     private:
         std::string TAG;
+        std::mutex m_mutexFlags;
+
         ModelScoreboard *m_pScoreboard;
         int m_nGameStartUTCInSec;
         int m_nGameEndUTCInSec;
 
         std::string m_sDatabasePath;
+        std::vector<ModelFlag *> m_vFlagLives;
+        std::vector<ModelFlag *> m_vFlagArchive;
         std::map<std::string, ModelFlag *> m_mapFlagLive;
-        
 };
 
 #endif // RAM_STORAGE_H

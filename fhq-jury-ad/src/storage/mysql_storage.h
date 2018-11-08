@@ -38,6 +38,8 @@ class MySqlStorage : public IStorage {
         int m_nGameStartUTCInSec;
         int m_nGameEndUTCInSec;
 
+        bool checkAndInstall(MYSQL *pConn);
+
         // database
         std::map<std::string, MYSQL *> m_mapConnections;
         MYSQL *getDatabaseConnection();

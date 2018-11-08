@@ -115,6 +115,147 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sFilePath,
         return false;
     }
 
+    return checkAndInstall(pConn);
+}
+
+// ----------------------------------------------------------------------
+
+struct MySQLDBUpdate {
+    MySQLDBUpdate() : nVersion(0), sQuery("") {};
+    MySQLDBUpdate(int nVersion, std::string sQuery) : nVersion(nVersion), sQuery(sQuery) {};
+    int nVersion;
+    std::string sQuery;
+};
+
+bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
+    std::string sQuery = "SELECT id, version FROM db_updates ORDER BY id DESC LIMIT 0,1";
+    int nCurrVersion = 0;
+    if (mysql_query(pConn, sQuery.c_str())) {
+        std::string sError(mysql_error(pConn));
+        if (sError.find("db_updates' doesn't exist") != std::string::npos) {
+            Log::info(TAG, "Creating table db_updates .... ");
+            std::string sTableDbUpdates = 
+                "CREATE TABLE IF NOT EXISTS db_updates ("
+			    "  id int(11) NOT NULL AUTO_INCREMENT,"
+                "  version INT DEFAULT NULL,"
+                "  dt datetime DEFAULT NULL,"
+                "  PRIMARY KEY (id)"
+                ") ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+            if (mysql_query(pConn, sTableDbUpdates.c_str())) {
+                std::string sError2(mysql_error(pConn));
+                Log::err(TAG, "Problem on create table db_updates " + sError2);
+                return false;
+            } else {
+                Log::ok(TAG, "Table db_updates success created");
+                nCurrVersion = 1;
+            }
+        } else {
+            Log::err(TAG, "Problem with database " + sError);
+            return false;
+        }
+    } else {
+        MYSQL_RES *pRes = mysql_use_result(pConn);
+        MYSQL_ROW row;
+        if ((row = mysql_fetch_row(pRes)) != NULL) {
+            nCurrVersion = std::stol(std::string(row[1]));
+        } else {
+            nCurrVersion = 1;
+        }
+        mysql_free_result(pRes);
+    }
+
+    std::vector<MySQLDBUpdate> vUpdates;
+    vUpdates.push_back(MySQLDBUpdate(2, // don't change if after commit
+        "CREATE TABLE `flags` ("
+        "  `id` int UNSIGNED NOT NULL,"
+        "  `serviceid` int UNSIGNED DEFAULT NULL,"
+        "  `flag_id` varchar(50) DEFAULT NULL,"
+        "  `flag` varchar(36) DEFAULT NULL,"
+        "  `teamid` varchar(300) DEFAULT NULL,"
+        "  `date_start` bigint DEFAULT NULL,"
+        "  `date_end` bigint DEFAULT NULL,"
+        "  `team_stole` int UNSIGNED DEFAULT NULL"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(3,  // don't change if after commit
+        "ALTER TABLE `flags` ADD PRIMARY KEY (`id`);"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(4,  // don't change if after commit
+        "ALTER TABLE `flags` ADD INDEX( `teamid`, `team_stole`);"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(5, // don't change if after commit
+        "CREATE TABLE `flags_live` ("
+        "  `id` int UNSIGNED NOT NULL,"
+        "  `serviceid` int UNSIGNED DEFAULT NULL,"
+        "  `flag_id` varchar(50) DEFAULT NULL,"
+        "  `flag` varchar(36) DEFAULT NULL,"
+        "  `teamid` int UNSIGNED DEFAULT NULL,"
+        "  `date_start` bigint DEFAULT NULL,"
+        "  `date_end` bigint DEFAULT NULL,"
+        "  `team_stole` int UNSIGNED DEFAULT NULL"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(6,  // don't change if after commit
+        "ALTER TABLE `flags_live` ADD PRIMARY KEY (`id`);"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(7,  // don't change if after commit
+        "ALTER TABLE `flags` MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(8,  // don't change if after commit
+        "ALTER TABLE `flags_live` MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(9, // don't change if after commit
+        "CREATE TABLE `flags_attempts` ("
+        "  `id` int UNSIGNED NOT NULL,"
+        "  `flag` varchar(36) DEFAULT NULL,"
+        "  `teamid` int UNSIGNED DEFAULT NULL,"
+        "  `dt` bigint DEFAULT NULL"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(10,  // don't change if after commit
+        "ALTER TABLE `flags_attempts` ADD PRIMARY KEY (`id`);"
+    ));
+
+    Log::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
+
+    bool bFoundUpdate = true;
+    while (bFoundUpdate) {
+        bFoundUpdate = false;
+        MySQLDBUpdate nextUpdate;
+
+        for (unsigned int i = 0; i < vUpdates.size(); i++) {
+            if (vUpdates[i].nVersion == nCurrVersion + 1) {
+                bFoundUpdate = true;
+                nextUpdate = vUpdates[i];
+                break;
+            }
+        }
+        if (!bFoundUpdate) {
+            break;
+        }
+
+        std::string sVersion = std::to_string(nextUpdate.nVersion);
+        Log::info(TAG, "Install update  " + sVersion + "...");
+        if (mysql_query(pConn, nextUpdate.sQuery.c_str())) {
+            std::string sError2(mysql_error(pConn));
+            Log::err(TAG, "Failed install update " + sVersion + ": " + sError2);
+            return false;
+        } else {
+            Log::ok(TAG, "Update " + sVersion + " success installed");
+            std::string sInsertNewVersion = "INSERT INTO db_updates(version,dt) VALUES(" + sVersion + ",NOW());";
+            mysql_query(pConn, sInsertNewVersion.c_str());
+            nCurrVersion = nextUpdate.nVersion;
+        }
+    }
+
     return true;
 }
 

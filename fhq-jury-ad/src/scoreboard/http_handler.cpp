@@ -5,9 +5,11 @@
 #include <regex>
 #include <algorithm>
 #include <time.h>
+#include <utils_logger.h>
 
 HttpHandler::HttpHandler(JuryConfiguration *pConfig){
     m_pConfig = pConfig;
+    TAG = "HttpHandler";
     prepareIndexHtml();
 }
 
@@ -163,6 +165,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-8): Game not started yet");
+            Log::warn(TAG, "Error(-8): Game not started yet");
             return true;
         }
 
@@ -171,6 +174,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-9): Game already ended");
+            Log::warn(TAG, "Error(-9): Game already ended");
             return true;
         }
 
@@ -181,6 +185,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-10): Not found get-parameter 'teamid'");
+            Log::warn(TAG, "Error(-10): Not found get-parameter 'teamid'");
             return true;
         }
 
@@ -191,6 +196,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-11): Not found get-parameter 'flag'");
+            Log::warn(TAG, "Error(-11): Not found get-parameter 'flag'");
             return true;
         }
 
@@ -201,6 +207,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-12): 'teamid' must be number");
+            Log::warn(TAG, "Error(-12): 'teamid' must be number");
             return true;
         }
 
@@ -217,6 +224,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-130): this is team not found");
+            Log::warn(TAG, "Error(-130): this is team not found");
             return true;
         }
 
@@ -228,10 +236,10 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-140): flag has wrong format");
+            Log::warn(TAG, "Error(-140): flag has wrong format");
             return true;
         }
-
-        std::cout << " Recieve flag {" << sFlag << "} by team" << nTeamNum << "\n";
+        // TODO insert to flags_recieved
 
         ModelFlag flag;
         if (!m_pConfig->storage()->findFlagByValue(sFlag, flag)) {
@@ -239,6 +247,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-150): flag is too old or flag never existed or flag alredy stole");
+            Log::err(TAG, "Error(-150): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
         long nCurrentTimeMSec = (long)nCurrentTimeSec;
@@ -249,6 +258,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-151): flag is too old");
+            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
 
@@ -257,6 +267,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-160): flag already stole by your team");
+            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
 
@@ -265,6 +276,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-170): flag already stole");
+            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
 
@@ -273,18 +285,20 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-180): this is your flag");
+            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
         
         std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(nTeamNum, flag.serviceNum());
 
-        std::cout << "sServiceStatus: " << sServiceStatus << "\n";
+        // std::cout << "sServiceStatus: " << sServiceStatus << "\n";
 
         if (sServiceStatus != ModelServiceStatus::SERVICE_UP) {
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-190): Your same service is dead");
+            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
 
@@ -293,6 +307,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-300): You are late");
+            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
             return true;
         }
 
@@ -303,7 +318,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
             LightHttpRequest::RESP_OK, 
             "text/html", 
             "Accepted");
-
+        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
         return true;
     }
     return false;

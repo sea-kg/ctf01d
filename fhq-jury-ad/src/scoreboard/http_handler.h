@@ -11,6 +11,7 @@ class HttpHandler : ILightHttpHandler {
         virtual bool handle(ILightHttpRequest *pRequest);
 
     private:
+        std::string TAG;
         std::string formatTimeUTC(int nTime);
         void prepareIndexHtml();
 

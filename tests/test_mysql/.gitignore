@@ -1,0 +1,4 @@
+service1_flags
+logs/*.log
+jury_start.log
+jury_clean.log

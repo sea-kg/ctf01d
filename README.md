@@ -16,7 +16,7 @@ Or you can use for training.
 ```
 $ sudo apt install git-core
 $ cd ~
-$ git clone http://github.com/freehackquest/jury.git fhq-jury-ad.git
+$ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
 $ cd fhq-jury-ad.git
 $ sudo mkdir /usr/share/fhq-jury-ad
 $ sudo ln -s `pwd`/jury.d /usr/share/fhq-jury-ad/jury.d
@@ -28,6 +28,7 @@ $ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
 
 * [BUILD: Ubuntu/Debian](docs/BUILD_UBUNTU.md)
 * [BUILD: MacOS](docs/BUILD_MACOS.md)
+* [BUILD: In docker](docs/BUILD_IN_DOCKER.md)
 
 ### Configure database
 

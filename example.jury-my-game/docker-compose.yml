@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  fhqjuryad-db:
+    image: mysql:5.7
+    volumes:
+      - "/opt/my_game/docker_db/mysql:/var/lib/mysql"
+      - "/opt/my_game/docker_db/initdb:/docker-entrypoint-initdb.d"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqjuryad
+      MYSQL_USER: fhqjuryad
+      MYSQL_PASSWORD: uW2r0V5kpK
+    networks:
+      - mygamenet
+
+  fhqjuryad_jury:
+    depends_on:
+      - fhqjuryad-db
+    image: my-game/fhq-jury-ad:latest
+    volumes:
+      - "/opt/my_game/jury.d:/usr/share/fhq-jury-ad/jury.d"
+    ports:
+      - "8080:8080"
+    restart: always
+    links:
+      - "fhqjuryad-db"
+    environment:
+      JURY_DB_HOST: fhqjuryad-db
+      JURY_DB_PORT: 3306
+      JURY_DB_NAME: fhqjuryad
+      JURY_DB_USER: fhqjuryad
+      JURY_DB_PASSWORD: uW2r0V5kpK
+    networks:
+      - mygamenet
+
+volumes:
+  db_data:
+  jury.d:
+
+networks:
+  mygamenet:
+    driver: bridge

@@ -2,5 +2,6 @@
 
 rm -rf tmp
 rm -rf Makefile
-rm -f jury-ad
+rm -f fhq-jury-ad
+rm -rf debian
 

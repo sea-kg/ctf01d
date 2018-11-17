@@ -7,7 +7,8 @@ Or you can use for training.
 
 
 * [CHECKER_INFO: description](docs/CHECKER_INFO.md)
-* [API: here](docs/SIMILAR.md)
+* [API: here](docs/API.md)
+* [DOCKER_HUB: description](docs/DOCKER_HUB.md)
 * [TRAINING MODE: lazy-start](docs/LAZY_START.md)
 * [SIMILAR: systems](docs/SIMILAR.md)
 
@@ -28,7 +29,6 @@ $ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
 
 * [BUILD: Ubuntu/Debian](docs/BUILD_UBUNTU.md)
 * [BUILD: MacOS](docs/BUILD_MACOS.md)
-* [BUILD: In docker](docs/BUILD_IN_DOCKER.md)
 
 ### Configure database
 

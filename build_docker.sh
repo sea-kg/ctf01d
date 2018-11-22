@@ -6,5 +6,5 @@ if [ ! -d "./fhq-jury-ad/debian/9.5/fhq-jury-ad" ]; then
     cd ../../    
 fi
 
-sudo docker rmi "freehackquest/fhq-jury-ad:latest"
-sudo docker build --rm=true -t "freehackquest/fhq-jury-ad:latest" .
+sudo docker rmi "freehackquest/fhq-jury-ad:0.1.0"
+sudo docker build --rm=true -t "freehackquest/fhq-jury-ad:0.1.0" .

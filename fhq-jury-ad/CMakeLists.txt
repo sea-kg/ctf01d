@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-jury-ad)
 
-add_definitions(-DJURY_AD_VERSION="0.0.2")
+add_definitions(-DJURY_AD_VERSION="0.1.0")
 add_definitions(-DJURY_AD_APP_NAME="fhq-jury-ad")
 
 set(CMAKE_AUTOMOC ON)

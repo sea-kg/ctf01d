@@ -77,6 +77,8 @@ list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_make_folder_and_file.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_make_folder_and_file.cpp")
+list (APPEND JURY_AD_SOURCES "src/utils/utils_parse_config.h")
+list (APPEND JURY_AD_SOURCES "src/utils/utils_parse_config.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.cpp")
 

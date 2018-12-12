@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <utils_search_lazy_conf.h>
+#include <utils_parse_config.h>
 
 JuryConfiguration::JuryConfiguration(const std::string &sWorkspaceDir) {
     TAG = "JuryConfiguration";
@@ -262,6 +263,13 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
     if (m_nGameEndUTCInSec < m_nGameStartUTCInSec) {
         Log::err(TAG, "'game/end' must be gather then 'game/start'");
         return false;
+    }
+
+    // game.conf - will be override configs from conf.ini
+    UtilsParseConfig gameConf = UtilsParseConfig(m_sWorkspaceDir + "/game.conf");
+    if (gameConf.parseConfig()) {
+        m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
+        Log::info(TAG, "game.name: " + m_sGameName);
     }
     
     // scoreboard

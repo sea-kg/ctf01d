@@ -145,6 +145,8 @@ bool LightHttpRequest::handle(const std::string &sRequest){
 			// std::cout << "File exists! " << sFilePath << "\n";
 			this->responseFile(sFilePath);
 			return true;
+		} else {
+			Log::err(TAG, "File not exists! " + sFilePath);
 		}
 		
 		this->response(LightHttpRequest::RESP_NOT_FOUND);

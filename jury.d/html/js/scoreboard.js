@@ -9,33 +9,33 @@ function getAjax (url, callback) {
 	};
 	tmpXMLhttp.onreadystatechange=function() {
 		if (tmpXMLhttp.readyState==4) {
-			if (tmpXMLhttp.responseText == "") {
-                obj = { "result" : "fail" };
-                callback("fail", null);
+			if (tmpXMLhttp.responseText == '') {
+                obj = { 'result' : 'fail' };
+                callback('fail', null);
             } else {
 				try {
 					var obj = JSON.parse(tmpXMLhttp.responseText);
                     callback(null, obj);
                     delete obj;
 				} catch(e) {
-					console.error(e.name + ":" + e.message + "\n stack:" + e.stack + "\n" + tmpXMLhttp.responseText);
+					console.error(e.name + ':' + e.message + '\n stack:' + e.stack + '\n' + tmpXMLhttp.responseText);
 				}
 				delete tmpXMLhttp;
 			}
 		}
 	}
-	tmpXMLhttp.open("GET", url, true);
+	tmpXMLhttp.open('GET', url, true);
 	tmpXMLhttp.send();
 };
 var scoreboard_content = document.getElementById('scoreboard_content');
 var loader_content = document.getElementById('loader_content');
 
 function updateUIValue(t, teamID, paramName){
-    var newValue = "";
-    if (paramName == "score") {
+    var newValue = '';
+    if (paramName == 'score') {
         newValue = t[paramName].toFixed(2);
     } else {
-        newValue = "" + t[paramName];
+        newValue = '' + t[paramName];
     }
     var el = document.getElementById(teamID + '_' + paramName);
     if (el) {
@@ -51,7 +51,7 @@ function updateUIValue(t, teamID, paramName){
 var inSwitch = false;
 
 function switchUITeamRows(teamID1, teamID2){
-    console.log("switchUITeamRows: " + teamID1 + " <-> " + teamID2);
+    console.log('switchUITeamRows: ' + teamID1 + ' <-> ' + teamID2);
     if (inSwitch) {
     /*    setTimeout(function(teamID1, teamID2){
             switchUITeamRows(teamID1, teamID2);
@@ -62,18 +62,18 @@ function switchUITeamRows(teamID1, teamID2){
     var el1 = document.getElementById(teamID1);
     var el2 = document.getElementById(teamID2);
 
-    el1.style.transform = "translateY(100px)";
-    // el2.style.transform = "translateY(-100px)";
+    el1.style.transform = 'translateY(100px)';
+    // el2.style.transform = 'translateY(-100px)';
     setTimeout(function(){
         el2.parentNode.insertBefore(el2, el1);
-        el1.style.transform = "";
-        el2.style.transform = "";
+        el1.style.transform = '';
+        el2.style.transform = '';
         inSwitch = false;
     },400);
 }
 
 setInterval(function(){
-    getAjax("/api/v1/scoreboard", function(err, resp){
+    getAjax('/api/v1/scoreboard', function(err, resp){
         if (err) {
             scoreboard_content.style.display = 'none';
             loader_content.style.display = 'block';
@@ -87,22 +87,22 @@ setInterval(function(){
             updateUIValue(t, teamID, 'score');
 
             for(var sService in t){
-                if(sService.indexOf("service") == 0){
+                if(sService.indexOf('service') == 0){
                     var newState = t[sService]['status'];
                     var newAttack = t[sService]['attack'];
                     var newDefence = t[sService]['defence'];
                     var newSLA = t[sService]['sla'];
                     var el = document.getElementById(teamID + '_' + sService);
                     if (!el.classList.contains(newState)) {
-                        el.classList.remove("up");
-                        el.classList.remove("down");
-                        el.classList.remove("mumble");
-                        el.classList.remove("corrupt");
-                        el.classList.remove("shit");
+                        el.classList.remove('up');
+                        el.classList.remove('down');
+                        el.classList.remove('mumble');
+                        el.classList.remove('corrupt');
+                        el.classList.remove('shit');
                         el.classList.add(newState);
                     }
-                    document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + " / " + newAttack;
-                    document.getElementById(teamID + '_' + sService + '_sla').innerHTML = "SLA: " + newSLA + '%';
+                    document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;
+                    document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';
                 };
             }
         }
@@ -122,7 +122,7 @@ setInterval(function(){
             return a.p - b.p;
         });
         for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = ((i+1)*70) + "px";
+            elms2[i].e.style.top = ((i+1)*70) + 'px';
         }
         var bSorted = false;
 

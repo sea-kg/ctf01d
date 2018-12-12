@@ -126,6 +126,7 @@ static int handler_parse_jury_config(void* p, const char* section, const char* n
 
 bool JuryConfiguration::applyConfig(bool bLazyStart){
     bool bResult = true;
+
     std::string sConfigFile = m_sWorkspaceDir + "/conf.d/conf.ini";
 
     if (!Log::fileExists(sConfigFile)) {
@@ -452,7 +453,15 @@ int JuryConfiguration::scoreboardPort(){
 // ---------------------------------------------------------------------
 
 void JuryConfiguration::setScoreboardHtmlFolder(const std::string &sHtmlFolder) {
-    m_sScoreboardHtmlFolder = sHtmlFolder;
+    if (sHtmlFolder.length() > 0) {
+        if (sHtmlFolder[0] != '/') {
+            m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + sHtmlFolder;
+        } else {
+            m_sScoreboardHtmlFolder = sHtmlFolder;
+        }
+    } else {
+        m_sScoreboardHtmlFolder = m_sWorkspaceDir;
+    }
 }
 
 // ---------------------------------------------------------------------

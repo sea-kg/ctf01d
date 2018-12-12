@@ -21,6 +21,9 @@
 #include <utils_search_lazy_conf.h>
 #include <http_handler.h>
 #include <ram_storage.h>
+#include <utils_make_folder_and_file.h>
+#include <unistd.h>
+#include <limits.h>
 
 LightHttpServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -122,9 +125,27 @@ int main(int argc, char* argv[]) {
         sWorkspace = helpParseArgs.option("--workspace-dir");
         // TODO check directory existing and apply dir
     }
+    
+    /*if (sWorkspace.length() > 0) {
+        if (sWorkspace[0] != '/') { // linux
+            char cwd[PATH_MAX];
+            if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                printf("Current working dir: %s\n", cwd);
+                sWorkspace = std::string(cwd) + "/" + sWorkspace;
+            } else {
+                std::cout << "getcwd() error" << std::endl;
+            }
+        }
+    }*/
 
     if (!Log::dirExists(sWorkspace)) {
         std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
+        return -1;
+    }
+
+    // create default folders and files
+    if (!UtilsMakeFoldersAndFiles::make(sWorkspace)) {
+        std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
         return -1;
     }
 

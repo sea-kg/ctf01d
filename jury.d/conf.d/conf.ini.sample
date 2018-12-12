@@ -12,7 +12,7 @@ use_storage = mysql
 scoreboard_port = 8080
 
 ; web page for scoreboard see index-template.html
-scoreboard_html_folder = /usr/share/fhq-jury-ad/jury.d/html
+scoreboard_html_folder = ./html
 
 ; If yes - will be random values in scoreboard
 scoreboard_random = no
@@ -94,9 +94,9 @@ enabled = yes
 ; team name
 name = Hoho
 
-; relative logo path by file html/index.php
-; upload image of team to folder html/images/teams/some_team.png
-logo = images/teams/unknown.png
+; relative logo path by file html/index.html
+; upload image of team to folder ../html/images/teams/some_team.png
+logo = images/teams/unknown.svg
 
 ; ip address to vuln server of team
 ip_address = 172.17.0.2
@@ -107,25 +107,25 @@ active = yes
 ; Also you can skip  some numbers of team
 ; [team2]
 ; name = Atlas
-; logo = images/teams/unknown.png
+; logo = images/teams/unknown.svg
 ; ip_address = 172.17.0.3
 ; active = yes
 
 [team3]
 name = Moor
-logo = images/teams/unknown.png
+logo = images/teams/unknown.svg
 ip_address = 172.17.0.4
 active = no
 
 [team4]
 name = Some
-logo = images/teams/unknown.png
+logo = images/teams/unknown.svg
 ip_address = 172.17.0.5
 active = yes
 
 [team5]
 name = hackers
-logo = images/teams/unknown.png
+logo = images/teams/unknown.svg
 ip_address = 172.17.0.6
 active = yes
 

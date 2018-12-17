@@ -71,7 +71,6 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     std::vector<std::string> vCreateDirs;
     vCreateDirs.push_back(sWorkspace + "/logs");
     vCreateDirs.push_back(sWorkspace + "/conf.d");
-    vCreateDirs.push_back(sWorkspace + "/servicehub.d");
     vCreateDirs.push_back(sWorkspace + "/html");
     vCreateDirs.push_back(sWorkspace + "/html/css");
     vCreateDirs.push_back(sWorkspace + "/html/js");
@@ -103,10 +102,6 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     };
 
     std::vector<LocalFileContent> vCreateFiles;
-    vCreateFiles.push_back(LocalFileContent(
-        sWorkspace + "/servicehub.d/urls", 
-        UtilsMakeFoldersAndFiles::g_sContent_servicehub_d_urls
-    ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/conf.d/conf.ini.sample", 
@@ -183,11 +178,6 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     }
 	return true;
 }
-
-// ---------------------------------------------------------------------
-
-std::string UtilsMakeFoldersAndFiles::g_sContent_servicehub_d_urls 
-    = "http://servicehub.freehackquest.com/\n";
 
 // ---------------------------------------------------------------------
 

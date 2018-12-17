@@ -143,16 +143,6 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
         return false;
     }
 
-    if (m_nFlagTimeliveInMin <= 0) {
-         Log::err(TAG, "game/flag_timelive_in_min could not be less than 0");
-        return false;
-    }
-
-    if (m_nFlagTimeliveInMin > 25) {
-         Log::err(TAG, "game/flag_timelive_in_min could not be gather than 25");
-        return false;
-    }
-
     if (m_nScoreboardPort <= 10 || m_nScoreboardPort > 65536) {
         Log::err(TAG, "Wrong server/scoreboard_port (expected value od 11..65535)");
         return false;
@@ -250,28 +240,48 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
         m_nGameEndUTCInSec = m_nGameStartUTCInSec + 4*60*60; // 4 hours
     }
 
+    // game.conf - will be override configs from conf.ini
+    UtilsParseConfig gameConf = UtilsParseConfig(m_sWorkspaceDir + "/game.conf");
+    if (gameConf.parseConfig()) {
+        m_sGameID = gameConf.getStringValueFromConfig("game.id", m_sGameID);
+        Log::info(TAG, "game.id: " + m_sGameID);
+        m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
+        Log::info(TAG, "game.name: " + m_sGameName);
+        std::string game_start = gameConf.getStringValueFromConfig("game.start", "");
+        Log::info(TAG, "game.start: " + m_sGameStart);
+        std::string game_end = gameConf.getStringValueFromConfig("game.end", "");
+        Log::info(TAG, "game.end: " + m_sGameEnd);
+        m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
+        Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
+        this->setGameStart(game_start);
+        this->setGameEnd(game_end);
+    }
+
     if (m_nGameStartUTCInSec == 0) {
         Log::err(TAG, "'game/start' - not found");
         return false;
     }
 
     if (m_nGameEndUTCInSec == 0) {
-        Log::err(TAG, "'game/end' - not found");
+        Log::err(TAG, "'game.end' - not found");
         return false;
     }
 
     if (m_nGameEndUTCInSec < m_nGameStartUTCInSec) {
-        Log::err(TAG, "'game/end' must be gather then 'game/start'");
+        Log::err(TAG, "'game.end' must be gather then 'game.start'");
         return false;
     }
 
-    // game.conf - will be override configs from conf.ini
-    UtilsParseConfig gameConf = UtilsParseConfig(m_sWorkspaceDir + "/game.conf");
-    if (gameConf.parseConfig()) {
-        m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
-        Log::info(TAG, "game.name: " + m_sGameName);
+    if (m_nFlagTimeliveInMin <= 0) {
+         Log::err(TAG, "game.flag_timelive_in_min could not be less than 0");
+        return false;
     }
-    
+
+    if (m_nFlagTimeliveInMin > 25) {
+         Log::err(TAG, "game.flag_timelive_in_min could not be gather than 25");
+        return false;
+    }
+
     // scoreboard
     m_pScoreboard = new ModelScoreboard(m_bScoreboardRandom, m_nGameStartUTCInSec, m_nGameEndUTCInSec, m_vTeamsConf, m_vServicesConf);
 

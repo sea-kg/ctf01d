@@ -65,6 +65,7 @@ class JuryConfiguration {
 		std::string m_sWorkspaceDir;
 		std::string m_sUseStorage;
 		int m_nFlagTimeliveInMin;
+		std::string m_sGameID;
 		std::string m_sGameName;
 		std::string m_sGameStart;
 		std::string m_sGameEnd;

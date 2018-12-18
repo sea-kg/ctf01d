@@ -24,7 +24,7 @@ int ServiceCheckerThread::CHECKER_CODE_SHIT = 400;
 
 // ---------------------------------------------------------------------
 
-ServiceCheckerThread::ServiceCheckerThread(JuryConfiguration *pConfig,
+ServiceCheckerThread::ServiceCheckerThread(Config *pConfig,
             const ModelTeamConf &teamConf, const ModelServiceConf &service) {
     
     m_pConfig = pConfig;
@@ -70,7 +70,7 @@ int ServiceCheckerThread::runChecker(ModelFlag &flag, const std::string &sComman
 
     Log::info(TAG, "Start script " + sShellCommand);
 
-    DoRunChecker process(m_serviceConf.scriptPath(), m_teamConf.ipAddress(), sCommand, flag.id(), flag.value());
+    DoRunChecker process(m_serviceConf.scriptDir(), m_serviceConf.scriptPath(), m_teamConf.ipAddress(), sCommand, flag.id(), flag.value());
     process.start(m_serviceConf.scriptWaitInSec()*1000);
 
     if (process.isTimeout()) {
@@ -166,11 +166,13 @@ void ServiceCheckerThread::run() {
     }*/
 
     std::string sScriptPath = m_serviceConf.scriptPath();
+    /*
+    // already checked on start
     if (!Log::fileExists(sScriptPath)) {
         Log::err(TAG, "FAIL: Script Path to checker not found '" + sScriptPath + "'");
         // TODO shit status
         return;
-    }
+    }*/
 
     while(1) {
         auto now = std::chrono::system_clock::now().time_since_epoch();
@@ -182,7 +184,7 @@ void ServiceCheckerThread::run() {
 
         if (nCurrentTime < m_pConfig->gameStartUTCInSec()) {
             Log::warn(TAG, "Game started after: " + std::to_string(m_pConfig->gameStartUTCInSec() - nCurrentTime) + " seconds");
-            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_WAIT);
+            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_WAIT);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             continue;
         };
@@ -204,23 +206,23 @@ void ServiceCheckerThread::run() {
                 // >>>>>>>>>>> service is UP <<<<<<<<<<<<<<
                 Log::ok(TAG, " => service is up");
                 m_pConfig->storage()->addLiveFlag(m_teamConf, m_serviceConf, flag);
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_UP);
+                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_UP);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_CORRUPT) {
                 // >>>>>>>>>>> service is CORRUPT <<<<<<<<<<<<<<
                 Log::warn(TAG, " => service is corrupt ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_CORRUPT);
+                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_CORRUPT);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
                 Log::warn(TAG, " => service is mumble (1) ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_MUMBLE);
+                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_MUMBLE);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<
                 Log::warn(TAG, " => service is down ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_DOWN);
+                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_DOWN);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_SHIT) {
                 // >>>>>>>>>>> checker is SHIT <<<<<<<<<<<<<<
                 Log::err(TAG, " => checker is shit ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.num(), m_serviceConf.num(), ModelServiceStatus::SERVICE_SHIT);
+                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ModelServiceStatus::SERVICE_SHIT);
             } else {
                 Log::err(TAG, " => runChecker - wrong code return");
             }
@@ -234,7 +236,7 @@ void ServiceCheckerThread::run() {
         for (unsigned int i = 0; i < vEndedFlags.size(); i++) {
             ModelFlag oldFlag = vEndedFlags[i];
 
-            if (oldFlag.teamStole() != 0) {
+            if (oldFlag.teamStole() != "") {
                 // some team stoled oldFlag
                 m_pConfig->storage()->moveToArchive(oldFlag);
                 continue;
@@ -247,7 +249,7 @@ void ServiceCheckerThread::run() {
                 } else {
                     // service is up
                     m_pConfig->storage()->moveToArchive(oldFlag);
-                    m_pConfig->scoreboard()->incrementDefenceScore(oldFlag.teamNum(), oldFlag.serviceNum());
+                    m_pConfig->scoreboard()->incrementDefenceScore(oldFlag.teamId(), oldFlag.serviceId());
                 }
             }
         }

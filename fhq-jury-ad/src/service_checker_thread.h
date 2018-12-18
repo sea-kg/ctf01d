@@ -17,14 +17,14 @@ class ServiceCheckerThread {
 		static int CHECKER_CODE_DOWN;
 		static int CHECKER_CODE_SHIT;
 
-		ServiceCheckerThread(JuryConfiguration *pConfig, const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
+		ServiceCheckerThread(Config *pConfig, const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
 		void start();
 		void run();
 
 	private:
 		std::string TAG;
 		pthread_t m_checkerThread;
-		JuryConfiguration *m_pConfig;
+		Config *m_pConfig;
 		ModelTeamConf m_teamConf;
 		ModelServiceConf m_serviceConf;
 

@@ -10,8 +10,8 @@
 
 class ModelTeamStatus {
     public:
-        ModelTeamStatus(int nTeamNum, const std::vector<ModelServiceConf> &vServicesConf);
-        int teamNum();
+        ModelTeamStatus(const std::string &sTeamId, const std::vector<ModelServiceConf> &vServicesConf);
+        const std::string &teamId();
 
         void setPlace(int nPlace);
         int place();
@@ -19,19 +19,19 @@ class ModelTeamStatus {
         void setScore(double nScore);
         double score();
         
-        void setServiceStatus(int nServiceNum, std::string sStatus);
-        std::string serviceStatus(int nServiceNum);
+        void setServiceStatus(const std::string &sServiceId, std::string sStatus);
+        std::string serviceStatus(const std::string &sServiceId);
 
-        void setServiceScore(int nServiceNum, int nNewDefence, int nNewAttack, double nNewSLA);
+        void setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA);
 
         std::string servicesToString();
 
     private:
         std::mutex m_mutex;
-        int m_nTeamNum;
+        std::string m_sTeamId;
         int m_nPlace;
         double m_nScore;
-        std::map<int, ModelServiceStatus *> m_mapServicesStatus;
+        std::map<std::string, ModelServiceStatus *> m_mapServicesStatus;
 };
 
 #endif // MODEL_TEAM_STATUS_H

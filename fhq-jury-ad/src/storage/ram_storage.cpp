@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <utils_logger.h>
-#include <ini.h>
+#include <utils_parse_config.h>
 
 RamStorage::RamStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     m_pScoreboard = pScoreboard;
@@ -22,37 +22,26 @@ std::string RamStorage::type() {
 
 // ----------------------------------------------------------------------
 
-void RamStorage::setDatabasePath(const std::string &sDatabasePath) {
-    m_sDatabasePath = sDatabasePath;
-}
-
-// ----------------------------------------------------------------------
-
-static int handler_parse_ram_storage_config(void* p, const char* section, const char* name, const char* value) {
-    RamStorage* pStorage = (RamStorage*)p;
-    std::string sSection(section);
-    std::string sName(name);
-    std::string sValue(value);
-
-    if (sSection == "ram_storage") {
-        if (sName == "dbpath") {
-            pStorage->setDatabasePath(sValue);
-        } else {
-            Log::warn("RamStorage", "Unknown props ram_storage/" + sName);
-        }
-    }
-    return 1;
-}
-
-// ----------------------------------------------------------------------
-
-bool RamStorage::applyConfigFromFile(const std::string &sFilePath, 
+bool RamStorage::applyConfigFromFile(const std::string &sConfigFile, 
             std::vector<ModelTeamConf> &vTeamsConf,
             std::vector<ModelServiceConf> &vServicesConf) {
-    if (ini_parse(sFilePath.c_str(), handler_parse_ram_storage_config, this) < 0) {
-        Log::err(TAG, "Could not load config file");
+    
+    Log::info(TAG, "Reading config: " + sConfigFile);
+    
+    if (!Log::fileExists(sConfigFile)) {
+        Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
+
+    // game.conf - will be override configs from conf.ini
+    UtilsParseConfig mysqlStorageConf = UtilsParseConfig(sConfigFile);
+    if (!mysqlStorageConf.parseConfig()) {
+        Log::err(TAG, "Could not parse " + sConfigFile);
+        return false;
+    }
+
+    m_sDatabasePath = mysqlStorageConf.getStringValueFromConfig("ram_storage.dbpath", m_sDatabasePath);
+    Log::info(TAG, "ram_storage.dbpath: " + m_sDatabasePath);
 
     return true;
 }
@@ -108,7 +97,7 @@ bool RamStorage::findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag
 
 // ----------------------------------------------------------------------
 
-bool RamStorage::updateTeamStole(const std::string &sFlag, int nTeamNum) {
+bool RamStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
      // TODO
     return false;
 }

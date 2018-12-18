@@ -15,8 +15,8 @@ class ModelServiceStatus {
         static std::string SERVICE_SHIT;
         static std::string SERVICE_WAIT;
 
-        ModelServiceStatus(int nServiceNum);
-        int serviceNum();
+        ModelServiceStatus(const std::string &sServiceId);
+        const std::string &serviceId();
 
         void setDefence(int nDefence);
         int defence();
@@ -32,7 +32,7 @@ class ModelServiceStatus {
 
     private:
         std::mutex m_mutexServiceStatus;
-        int m_nServiceNum;
+        std::string m_sServiceId;
         std::string m_sStatus; // may be char[10] ?
         double m_nSLA;
         int m_nDefence;

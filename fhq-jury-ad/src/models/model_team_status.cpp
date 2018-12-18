@@ -1,14 +1,14 @@
 #include "model_team_status.h"
 
-ModelTeamStatus::ModelTeamStatus(int nTeamNum, const std::vector<ModelServiceConf> &vServicesConf) {
-    m_nTeamNum = nTeamNum;
+ModelTeamStatus::ModelTeamStatus(const std::string &sTeamId, const std::vector<ModelServiceConf> &vServicesConf) {
+    m_sTeamId = sTeamId;
     m_nScore = 0.0;
     m_nPlace = 0;
 
     for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
         ModelServiceConf serviceConf = vServicesConf[iservice];
-        int nServiceNum = serviceConf.num();
-        m_mapServicesStatus[nServiceNum] = new ModelServiceStatus(nServiceNum);
+        std::string sServiceId = serviceConf.id();
+        m_mapServicesStatus[sServiceId] = new ModelServiceStatus(sServiceId);
     }
 }
 
@@ -28,9 +28,9 @@ int ModelTeamStatus::place() {
 
 // ----------------------------------------------------------------------
 
-int ModelTeamStatus::teamNum() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    return m_nTeamNum;
+const std::string &ModelTeamStatus::teamId() {
+    // std::lock_guard<std::mutex> lock(m_mutex);
+    return m_sTeamId;
 }
 
 // ----------------------------------------------------------------------
@@ -49,22 +49,22 @@ double ModelTeamStatus::score(){
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setServiceStatus(int nServiceNum, std::string sStatus){
+void ModelTeamStatus::setServiceStatus(const std::string &sServiceId, std::string sStatus){
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_mapServicesStatus[nServiceNum]->setStatus(sStatus);
+    m_mapServicesStatus[sServiceId]->setStatus(sStatus);
 }
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setServiceScore(int nServiceNum, int nNewDefence, int nNewAttack, double nNewSLA) {
+void ModelTeamStatus::setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_mapServicesStatus[nServiceNum]->setDefence(nNewDefence);
-    m_mapServicesStatus[nServiceNum]->setAttack(nNewAttack);
-    m_mapServicesStatus[nServiceNum]->setSLA(nNewSLA);
+    m_mapServicesStatus[sServiceId]->setDefence(nNewDefence);
+    m_mapServicesStatus[sServiceId]->setAttack(nNewAttack);
+    m_mapServicesStatus[sServiceId]->setSLA(nNewSLA);
 
     // update score
     double nNewScore = 0.0;
-    std::map<int,ModelServiceStatus*>::iterator it;
+    std::map<std::string,ModelServiceStatus*>::iterator it;
     for (it = m_mapServicesStatus.begin(); it != m_mapServicesStatus.end(); ++it){
         ModelServiceStatus *pServiceStatus = it->second;
         double nSum = pServiceStatus->attack() + pServiceStatus->defence();
@@ -75,9 +75,9 @@ void ModelTeamStatus::setServiceScore(int nServiceNum, int nNewDefence, int nNew
 
 // ----------------------------------------------------------------------
 
-std::string ModelTeamStatus::serviceStatus(int nServiceNum){
+std::string ModelTeamStatus::serviceStatus(const std::string &sServiceId){
     std::lock_guard<std::mutex> lock(m_mutex);
-    return m_mapServicesStatus[nServiceNum]->status();
+    return m_mapServicesStatus[sServiceId]->status();
 }
 
 // ----------------------------------------------------------------------

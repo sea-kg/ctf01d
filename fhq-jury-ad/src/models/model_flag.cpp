@@ -19,6 +19,7 @@ void ModelFlag::generateRandomFlag(int nTimeFlagLifeInMin) {
     long nTimeEnd = nTimeStart + nTimeFlagLifeInMin*60*1000;
     setTimeStart(nTimeStart);
     setTimeEnd(nTimeEnd);
+    m_sTeamStole = "";
 }
 
 // ---------------------------------------------------------------------
@@ -81,26 +82,26 @@ std::string ModelFlag::value() const {
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTeamNum(int nTeamNum) {
-    m_nTeamNum = nTeamNum;
+void ModelFlag::setTeamId(const std::string &sTeamId) {
+    m_sTeamId = sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-int ModelFlag::teamNum() const {
-    return m_nTeamNum;
+const std::string &ModelFlag::teamId() const {
+    return m_sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setServiceNum(int nServiceNum) {
-    m_nServiceNum = nServiceNum;
+void ModelFlag::setServiceId(const std::string &sServiceId) {
+    m_sServiceId = sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-int ModelFlag::serviceNum() const {
-    return m_nServiceNum;
+const std::string &ModelFlag::serviceId() const {
+    return m_sServiceId;
 }
 
 // ---------------------------------------------------------------------
@@ -129,14 +130,14 @@ long ModelFlag::timeEnd() const {
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTeamStole(int nTeamStole) {
-    m_nTeamStole = nTeamStole;
+void ModelFlag::setTeamStole(const std::string &sTeamStole) {
+    m_sTeamStole = sTeamStole;
 }
 
 // ---------------------------------------------------------------------
 
-int ModelFlag::teamStole() const {
-    return m_nTeamStole;
+const std::string & ModelFlag::teamStole() const {
+    return m_sTeamStole;
 }
 
 // ---------------------------------------------------------------------
@@ -144,8 +145,9 @@ int ModelFlag::teamStole() const {
 void ModelFlag::copyFrom(const ModelFlag &flag) {
     this->setId(flag.id());
     this->setValue(flag.value());
-    this->setServiceNum(flag.serviceNum());
-    this->setTeamNum(flag.teamNum());
+    this->setServiceId(flag.serviceId());
+    this->setTeamId(flag.teamId());
+    this->setTeamStole(flag.teamStole());
     this->setTimeStart(flag.timeStart());
     this->setTimeEnd(flag.timeEnd());
 }

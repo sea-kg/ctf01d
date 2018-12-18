@@ -10,6 +10,7 @@
 class DoRunChecker {
     public:
         DoRunChecker(
+            const std::string &sDir,
             const std::string &sScript,
             const std::string &sIp,
             const std::string &sCommand,
@@ -25,6 +26,7 @@ class DoRunChecker {
 
     private:
         std::string TAG;
+        std::string m_sDir;
         std::string m_sScript;
         std::string m_sIp;
         std::string m_sCommand;

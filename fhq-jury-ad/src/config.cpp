@@ -5,15 +5,16 @@
 #include <ram_storage.h>
 #include <ctime>
 #include <locale>
-#include <ini.h>
 #include <date.h>
+#include <sys/stat.h>
 #include <iostream>
 #include <sstream>
 #include <utils_search_lazy_conf.h>
 #include <utils_parse_config.h>
+#include <dirent.h>
 
-JuryConfiguration::JuryConfiguration(const std::string &sWorkspaceDir) {
-    TAG = "JuryConfiguration";
+Config::Config(const std::string &sWorkspaceDir) {
+    TAG = "Config";
     m_nFlagTimeliveInMin = 10;
     m_nScoreboardPort = 8080;
     m_bScoreboardRandom = false;
@@ -28,171 +29,439 @@ JuryConfiguration::JuryConfiguration(const std::string &sWorkspaceDir) {
 
 // ---------------------------------------------------------------------
 
-static int handler_parse_jury_config(void* p, const char* section, const char* name, const char* value) {
-    JuryConfiguration* pJuryConfiguration = (JuryConfiguration*)p;
-    std::string sSection(section);
-    std::string sName(name);
-    std::string sValue(value);
-
-    if (sSection == "game") {
-        if (sName == "flag_timelive_in_min") {
-            int nValue = std::stoi(sValue); // TODO try catch
-            pJuryConfiguration->setFlagTimeliveInMin(nValue);
-        } else if (sName == "name") {
-            pJuryConfiguration->setGameName(sValue);
-        } else if (sName == "start") {
-            pJuryConfiguration->setGameStart(sValue);
-        } else if (sName == "end") {
-            pJuryConfiguration->setGameEnd(sValue);
-        } else {
-            Log::warn("JuryConfiguration", "Unknown property " + sSection + "/" + sName);
-        }
-    } else if (sSection == "server") {
-        if (sName == "scoreboard_port") {
-            int nValue = std::stoi(sValue); // TODO try catch
-            pJuryConfiguration->setScoreboardPort(nValue);
-        } else if (sName == "scoreboard_html_folder") {
-            pJuryConfiguration->setScoreboardHtmlFolder(sValue);
-        } else if (sName == "use_storage") {
-            pJuryConfiguration->setUseStorage(sValue);
-        } else if (sName == "scoreboard_random") {
-            if (sValue == "yes") {
-                pJuryConfiguration->setScoreboardRandom(true);
-            } else if (sValue == "no") {
-                pJuryConfiguration->setScoreboardRandom(false);
-            } else {
-                pJuryConfiguration->setScoreboardRandom(false);
-                Log::warn("JuryConfiguration", "Unknown value of server/scoreboard_random '" + sValue + "' (expected: 'yes' or 'no')");
-            }
-        } else {
-            Log::warn("JuryConfiguration", "Unknown property " + sSection + "/" + sName);
-        }
-    } else if (sSection.find("service") == 0) {
-        // parse num service
-        int nPos = std::string("service").length();
-        int nServiceNum = std::stoi(sSection.substr(nPos));
-        if (sName == "name") {
-            pJuryConfiguration->setServiceName(nServiceNum, sValue);
-        } else if (sName == "script_path") {
-            pJuryConfiguration->setServiceScriptPath(nServiceNum, sValue);
-        } else if (sName == "script_wait_in_sec") {
-            int nValue = std::stoi(sValue); // TODO try catch
-            pJuryConfiguration->setServiceScriptWait(nServiceNum, nValue);
-        } else if (sName == "time_sleep_between_run_scripts_in_sec") {
-            int nValue = std::stoi(sValue); // TODO try catch
-            pJuryConfiguration->setServiceTimeSleep(nServiceNum, nValue);
-        } else if (sName == "enabled") {
-            if (sValue == "yes") {
-                pJuryConfiguration->setServiceEnabled(nServiceNum, true);
-            } else if (sValue == "no") {
-                pJuryConfiguration->setServiceEnabled(nServiceNum, false);
-            } else {
-                pJuryConfiguration->setServiceEnabled(nServiceNum, false);
-                Log::warn("JuryConfiguration", "Unknown value of " + sSection+ "/enabled '" + sValue + "' (expected: 'yes' or 'no')");
-            }
-        } else {
-            Log::warn("JuryConfiguration", "Unknown property " + sSection + "/" + sName);
-        }
-    } else if (sSection.find("team") == 0) {
-        // parse num team
-        int nPos = std::string("team").length();
-        int nTeamNum = std::stoi(sSection.substr(nPos));
-        if (sName == "name") {
-            pJuryConfiguration->setTeamName(nTeamNum, sValue);
-        } else if (sName == "logo") {
-            pJuryConfiguration->setTeamLogo(nTeamNum, sValue);
-        } else if (sName == "ip_address") {
-            pJuryConfiguration->setTeamIpAddress(nTeamNum, sValue);
-        } else if (sName == "active") {
-            if (sValue == "yes") {
-                pJuryConfiguration->setTeamActive(nTeamNum, true);
-            } else if (sValue == "no") {
-                pJuryConfiguration->setTeamActive(nTeamNum, false);
-            } else {
-                pJuryConfiguration->setTeamActive(nTeamNum, false);
-                Log::warn("JuryConfiguration", "Unknown value of " + sSection+ "/active '" + sValue + "' (expected: 'yes' or 'no')");
-            }
-        } else {
-            Log::warn("JuryConfiguration", "Unknown property " + sSection + "/" + sName);
-        }
-    } else {
-        if (sSection == "mysql_storage" || sSection == "ram_storage") // will be parsing in another places
-            return 1;
-        Log::warn("JuryConfiguration", "Unknown section " + sSection + "/" + sName);
+bool Config::fileExists(const std::string &sFilename) {
+    struct stat st;
+    bool bExists = (stat(sFilename.c_str(), &st) == 0);
+    if (bExists) {
+        return (st.st_mode & S_IFDIR) == 0;
     }
-    return 1;
+	return false;
 }
 
 // ---------------------------------------------------------------------
 
-bool JuryConfiguration::applyConfig(bool bLazyStart){
-    bool bResult = true;
+bool Config::dirExists(const std::string &sDirname) {
+    struct stat st;
+    bool bExists = (stat(sDirname.c_str(), &st) == 0);
+    if (bExists) {
+        return (st.st_mode & S_IFDIR) != 0;
+    }
+	return false;
+}
 
-    std::string sConfigFile = m_sWorkspaceDir + "/conf.d/conf.ini";
+// ---------------------------------------------------------------------
 
-    if (!Log::fileExists(sConfigFile)) {
+std::vector<std::string> Config::listOfDirs(const std::string &sDirname) {
+    std::vector<std::string> vDirs;
+    if (!this->dirExists(sDirname)) {
+        Log::err(TAG, "Directory " + sDirname + " not exists");
+        return vDirs;
+    }
+    DIR *dir = opendir(sDirname.c_str());
+    struct dirent *entry = readdir(dir);
+    while (entry != NULL) {
+        if (entry->d_type == DT_DIR) {
+            std::string sDir(entry->d_name);
+            if (sDir != "." && sDir != "..") {
+                vDirs.push_back(sDir);
+            }
+        }
+        entry = readdir(dir);
+    }
+    closedir(dir);
+    return vDirs;
+}
+
+// ---------------------------------------------------------------------
+
+std::vector<std::string> Config::listOfFiles(const std::string &sDirname) {
+    std::vector<std::string> vFiles;
+    if (!this->dirExists(sDirname)) {
+        Log::err(TAG, "Directory " + sDirname + " not exists");
+        return vFiles;
+    }
+    DIR *dir = opendir(sDirname.c_str());
+    struct dirent *entry = readdir(dir);
+    while (entry != NULL) {
+        if (entry->d_type != DT_DIR) {
+            std::string sDir(entry->d_name);
+            if (sDir != "." && sDir != "..") {
+                vFiles.push_back(sDir);
+            }
+        }
+        entry = readdir(dir);
+    }
+    closedir(dir);
+    return vFiles;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::applyGameConf(bool bLazyStart) {
+    std::string sConfigFile = m_sWorkspaceDir + "/game.conf";
+    Log::info(TAG, "Reading config: " + sConfigFile);
+
+    if (!this->fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
 
-    Log::info(TAG, "Loading configuration... ");
-    Log::info(TAG, "Config File: " + sConfigFile);
-
-    if (ini_parse(sConfigFile.c_str(), handler_parse_jury_config, this) < 0) {
-        Log::err(TAG, "Could not load config file");
+    // game.conf - will be override configs from conf.ini
+    UtilsParseConfig gameConf = UtilsParseConfig(sConfigFile);
+    if (!gameConf.parseConfig()) {
+        Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
     }
 
+    m_sGameId = gameConf.getStringValueFromConfig("game.id", m_sGameId);
+    Log::info(TAG, "game.id: " + m_sGameId);
+    m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
+    Log::info(TAG, "game.name: " + m_sGameName);
+    if (bLazyStart) {
+        m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    } else {
+        m_sGameStart = gameConf.getStringValueFromConfig("game.start", m_sGameStart);
+        Log::info(TAG, "game.start: " + m_sGameStart);
+        {
+            std::istringstream in{m_sGameStart.c_str()};
+            date::sys_seconds tp;
+            in >> date::parse("%Y-%m-%d %T", tp);
+            m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
+        }
+    }
+    Log::info(TAG, "Game start (UNIX timestamp): " + std::to_string(m_nGameStartUTCInSec));
+    
+    if (bLazyStart) {
+        m_nGameEndUTCInSec = m_nGameStartUTCInSec + 4*60*60; // 4 hours
+    } else {
+        std::string m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
+        Log::info(TAG, "game.end: " + m_sGameEnd);
+        {
+            std::istringstream in{m_sGameEnd.c_str()};
+            date::sys_seconds tp;
+            in >> date::parse("%Y-%m-%d %T", tp);
+            m_nGameEndUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
+        }
+    }
+    Log::info(TAG, "Game end (UNIX timestamp): " + std::to_string(m_nGameEndUTCInSec));
+
+    m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
+    Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
+
+    if (m_nGameStartUTCInSec == 0) {
+        Log::err(TAG, sConfigFile + ":game.start - not found");
+        return false;
+    }
+
+    if (m_nGameEndUTCInSec == 0) {
+        Log::err(TAG, sConfigFile + ": game.end - not found");
+        return false;
+    }
+
+    if (m_nGameEndUTCInSec < m_nGameStartUTCInSec) {
+        Log::err(TAG, sConfigFile + ": game.end must be gather then game.start");
+        return false;
+    }
+
+    if (m_nFlagTimeliveInMin <= 0) {
+         Log::err(TAG, sConfigFile + ": game.flag_timelive_in_min could not be less than 0");
+        return false;
+    }
+
+    if (m_nFlagTimeliveInMin > 25) {
+         Log::err(TAG, sConfigFile + ": game.flag_timelive_in_min could not be gather than 25");
+        return false;
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::applyServerConf(bool bLazyStart) {
+    std::string sConfigFile = m_sWorkspaceDir + "/server.conf";
+    Log::info(TAG, "Reading config: " + sConfigFile);
+
+    if (!this->fileExists(sConfigFile)) {
+        Log::err(TAG, "File " + sConfigFile + " does not exists ");
+        return false;
+    }
+
+    UtilsParseConfig serverConf = UtilsParseConfig(sConfigFile);
+    if (!serverConf.parseConfig()) {
+        Log::err(TAG, "Could not parse " + sConfigFile);
+        return false;
+    }
+    
+    m_sUseStorage = serverConf.getStringValueFromConfig("server.use_storage", m_sUseStorage);
+
+    // TODO add support "postgres" and "ram/files" maybe mongo and etc
+    if (m_sUseStorage != "mysql" && m_sUseStorage != "ram") {
+        Log::err(TAG, sConfigFile + ": server.use_storage defined like " + m_sUseStorage + " but supported in current time only 'mysql'");
+        return false;
+    }
+    Log::info(TAG, "server.use_storage: " + m_sUseStorage);
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::applyScoreboardConf(bool bLazyStart) {
+    std::string sConfigFile = m_sWorkspaceDir + "/scoreboard.conf";
+    Log::info(TAG, "Reading config: " + sConfigFile);
+
+    if (!this->fileExists(sConfigFile)) {
+        Log::err(TAG, "File " + sConfigFile + " does not exists ");
+        return false;
+    }
+
+    UtilsParseConfig scoreboardConf = UtilsParseConfig(sConfigFile);
+    if (!scoreboardConf.parseConfig()) {
+        Log::err(TAG, "Could not parse " + sConfigFile);
+        return false;
+    }
+    
+    m_nScoreboardPort = scoreboardConf.getIntValueFromConfig("scoreboard.port", m_nScoreboardPort);
     if (m_nScoreboardPort <= 10 || m_nScoreboardPort > 65536) {
-        Log::err(TAG, "Wrong server/scoreboard_port (expected value od 11..65535)");
+        Log::err(TAG, sConfigFile + ": wrong scoreboard.port (expected value od 11..65535)");
         return false;
     }
+    Log::info(TAG, "scoreboard.port: " + std::to_string(m_nScoreboardPort));
 
-    if (!Log::dirExists(m_sScoreboardHtmlFolder)) {
+    m_bScoreboardRandom = scoreboardConf.getBoolValueFromConfig("scoreboard.random", m_bScoreboardRandom);
+    Log::info(TAG, "scoreboard.random: " + std::string(m_bScoreboardRandom == true ? "yes" : "no"));
+
+    m_sScoreboardHtmlFolder = scoreboardConf.getStringValueFromConfig("scoreboard.htmlfolder", m_sScoreboardHtmlFolder);
+    if (m_sScoreboardHtmlFolder.length() > 0) {
+        if (m_sScoreboardHtmlFolder[0] != '/') {
+            m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + m_sScoreboardHtmlFolder;
+        } else {
+            m_sScoreboardHtmlFolder = m_sScoreboardHtmlFolder;
+        }
+    } else {
+        m_sScoreboardHtmlFolder = m_sWorkspaceDir + "/html";
+    }
+    Log::info(TAG, "scoreboard.htmlfolder: " + m_sScoreboardHtmlFolder);
+
+    if (!this->dirExists(m_sScoreboardHtmlFolder)) {
         Log::err(TAG, "Directory '" + m_sScoreboardHtmlFolder + "' with scorebord does not exists");
         return false;
     }
 
-    // services
+    return true;
+}
 
-    std::vector<int> vServicesConfErase;
-    for (unsigned int i = 0; i < m_vServicesConf.size(); i++) {
-        ModelServiceConf *pServiceConf = &m_vServicesConf[i];
-         std::string sScriptPath = m_sWorkspaceDir + "/conf.d/" + pServiceConf->scriptPath();
-        if (!Log::fileExists(sScriptPath)) {
-            Log::err(TAG, "Script file not exists " + sScriptPath);
-            return false;
-        }
+// ---------------------------------------------------------------------
 
-        if (pServiceConf->scriptWaitInSec() > pServiceConf->timeSleepBetweenRunScriptsInSec()) {
-            Log::err(TAG, pServiceConf->id() + ": scriptWaitInSec must be less than timeSleepBetweenRunScriptsInSec");
-            return false;
-        }
-
-        pServiceConf->setScriptPath(sScriptPath);
-        if (pServiceConf->isEnabled()) {
-            Log::info(TAG, "Registred " + pServiceConf->id() + " : " + pServiceConf->name());
-        } else {
-            // TODO erase
-            Log::warn(TAG, "Disbaled " + pServiceConf->id() + " : " + pServiceConf->name());
-            vServicesConfErase.push_back(i);
-        }
+bool Config::applyTeamsConf(bool bLazyStart) {
+    std::string sRootTeamsDir = m_sWorkspaceDir + "/teams/";
+    if (!this->dirExists(sRootTeamsDir)) {
+        Log::err(TAG, "Directory " + sRootTeamsDir + " not exists");
+        return false;
     }
+    Log::info(TAG, "Search team.conf");
 
-    // remove disabled services
-    for (int i = vServicesConfErase.size()-1; i >= 0; i--) {
-        int nPos = vServicesConfErase[i];
-        m_vServicesConf.erase(m_vServicesConf.begin() + nPos);
-    }
+    std::vector<std::string> vListOfTeams = this->listOfFiles(sRootTeamsDir);
 
-    if(m_vServicesConf.size() == 0){
-        Log::err(TAG, "Services does not defined");
+    if (vListOfTeams.size() == 0) {
+        Log::err(TAG, "Teams does not defined");
         return false;
     }
 
+    for (int i = 0; i < vListOfTeams.size(); i++) {
+        std::string sFilename = vListOfTeams[i];
+        std::stringstream test(sFilename);
+        std::string sTeamId = "";
+        if (std::getline(test, sTeamId, '.')) {
+        }
+        std::string sTeamConfPath =  sRootTeamsDir + sTeamId + ".conf";
+        Log::info(TAG, "Reading " + sTeamConfPath);
+        if (!this->fileExists(sTeamConfPath)) {
+            Log::err(TAG, "File " + sTeamConfPath + " not exists");
+            return false;
+        }
+        UtilsParseConfig teamConf = UtilsParseConfig(sTeamConfPath);
+        if (!teamConf.parseConfig()) {
+            Log::err(TAG, "Could not parse " + sTeamConfPath);
+            return false;
+        }
+        std::string sPrefix = "teams." + sTeamId + ".";
 
+        Log::info(TAG, sPrefix + "id = " + sTeamId);
+
+        std::string sTeamName 
+            = teamConf.getStringValueFromConfig(sPrefix + "name", "");
+        Log::info(TAG, sPrefix + "name = " + sTeamName);
+
+         bool bTeamActive
+            = teamConf.getBoolValueFromConfig(sPrefix + "active", true);
+        Log::info(TAG, sPrefix + "active = " + std::string(bTeamActive ? "yes" : "no"));
+
+        std::string sTeamIpAddress 
+            = teamConf.getStringValueFromConfig(sPrefix + "ip_address", "");
+        Log::info(TAG, sPrefix + "ip_address = " + sTeamIpAddress);
+        // TODO check the ip format
+
+        std::string sTeamLogo
+            = teamConf.getStringValueFromConfig(sPrefix + "logo", "");
+        Log::info(TAG, sPrefix + "logo = " + sTeamLogo);
+        // TODO check logo exists
+        
+        if (!bTeamActive) {
+            Log::warn(TAG, "Team " + sTeamId + " - disactivated ");
+            continue;
+        }
+
+        for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
+            if (m_vTeamsConf[i].id() == sTeamId) {
+                Log::err(TAG, "Already registered team with id " + sTeamId);
+                return false;
+            }
+        }
+        // default values of service config
+        ModelTeamConf _teamConf;
+        _teamConf.setId(sTeamId);
+        _teamConf.setActive(true);
+        _teamConf.setIpAddress(sTeamIpAddress);
+        _teamConf.setLogo(sTeamLogo);
+
+        m_vTeamsConf.push_back(_teamConf);
+        Log::ok(TAG, "Registered team " + sTeamId);
+    }
+    
+    if (m_vTeamsConf.size() == 0) {
+        Log::err(TAG, "No one defined team " + sRootTeamsDir);
+        return false;
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::applyCheckersConf(bool bLazyStart) {
+    std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
+    if (!this->dirExists(sRootCheckersDir)) {
+        Log::err(TAG, "Directory " + sRootCheckersDir + " not exists");
+        return false;
+    }
+    Log::info(TAG, "Search service.conf");
+
+    std::vector<std::string> vListOfCheckers = this->listOfDirs(sRootCheckersDir);
+    if (vListOfCheckers.size() == 0) {
+        Log::err(TAG, "Folders with services does not found in " + sRootCheckersDir);
+        return false;
+    }
+
+    for (int i = 0; i < vListOfCheckers.size(); i++) {
+        std::string sServiceId = vListOfCheckers[i];
+        std::string sServiceConfPath =  sRootCheckersDir + sServiceId + "/service.conf";
+        Log::info(TAG, "Reading " + sServiceConfPath);
+        if (!this->fileExists(sServiceConfPath)) {
+            Log::err(TAG, "File " + sServiceConfPath + " not exists");
+            return false;
+        }
+        UtilsParseConfig serviceConf = UtilsParseConfig(sServiceConfPath);
+        if (!serviceConf.parseConfig()) {
+            Log::err(TAG, "Could not parse " + sServiceConfPath);
+            return false;
+        }
+
+        std::string sPrefix = "services." + sServiceId + ".";
+        std::string sServiceName 
+            = serviceConf.getStringValueFromConfig(sPrefix + "name", "");
+        Log::info(TAG, sPrefix + "name = " + sServiceName);
+
+        bool bServiceEnable 
+            = serviceConf.getBoolValueFromConfig(sPrefix + "enabled", true);
+        Log::info(TAG, sPrefix + "enabled = " + std::string(bServiceEnable ? "yes" : "no"));
+
+        std::string sServiceScriptPath 
+            = serviceConf.getStringValueFromConfig(sPrefix + "script_path", "");
+        Log::info(TAG, sPrefix + "script_path = " + sServiceScriptPath);
+        std::string sServiceScriptDir = m_sWorkspaceDir + "/checkers/" + sServiceId + "/";
+        Log::info(TAG, "sServiceScriptDir: " + sServiceScriptDir);
+        if (!this->fileExists(sServiceScriptDir + sServiceScriptPath)) {
+            Log::err(TAG, "File " + sServiceScriptPath + " did not exists");
+            return false;
+        }
+
+        int nServiceScritpWait
+            = serviceConf.getIntValueFromConfig(sPrefix + "script_wait_in_sec", 5);
+        Log::info(TAG, sPrefix + "script_wait_in_sec = " + std::to_string(nServiceScritpWait));
+
+        if (nServiceScritpWait < 5) {
+            Log::err(TAG, "Could not parse " + sPrefix + "script_wait_in_sec - must be more than 4 sec ");
+            return false;
+        }
+
+        int nServiceSleepBetweenRun
+            = serviceConf.getIntValueFromConfig(sPrefix + "time_sleep_between_run_scripts_in_sec", 15);
+        Log::info(TAG, sPrefix + "time_sleep_between_run_scripts_in_sec = " + std::to_string(nServiceSleepBetweenRun));
+
+        if (nServiceSleepBetweenRun < nServiceScritpWait*3) {
+            Log::err(TAG, "Could not parse " + sPrefix + "time_sleep_between_run_scripts_in_sec - must be more than " + std::to_string(nServiceScritpWait*3-1) + " sec ");
+            return false;
+        }
+
+        if (!bServiceEnable) {
+            Log::warn(TAG, "Checker for service " + sServiceId + " - disabled ");
+            continue;
+        }
+        
+        for (unsigned int i = 0; i < m_vServicesConf.size(); i++) {
+            if (m_vServicesConf[i].id() == sServiceId) {
+                Log::err(TAG, "Already registered checker for service " + sServiceId);
+                return false;
+            }
+        }
+
+        // default values of service config
+        ModelServiceConf _serviceConf;
+        _serviceConf.setId(sServiceId);
+        _serviceConf.setName(sServiceName);
+        _serviceConf.setScriptPath(sServiceScriptPath);
+        _serviceConf.setScriptDir(sServiceScriptDir);
+        _serviceConf.setEnabled(bServiceEnable);
+        _serviceConf.setScriptWaitInSec(nServiceScritpWait);
+        _serviceConf.setTimeSleepBetweenRunScriptsInSec(nServiceSleepBetweenRun);
+        m_vServicesConf.push_back(_serviceConf);
+
+        Log::ok(TAG, "Registered checker for service " + sServiceId);
+    }
+
+    if (m_vServicesConf.size() == 0) {
+        Log::err(TAG, "No one defined checker for service in " + sRootCheckersDir);
+        return false;
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::applyConfig(bool bLazyStart){
+    bool bResult = true;
+    Log::info(TAG, "Loading configuration... ");
+
+    // apply the game config
+    if (!this->applyGameConf(bLazyStart)) {
+        return false;
+    }
+
+    // apply the server config
+    if (!this->applyServerConf(bLazyStart)) {
+        return false;
+    }
+
+    if (!this->applyCheckersConf(bLazyStart)) {
+        return false;
+    }
+
+    // teams
     if (bLazyStart) {
-       
+
         // teams by scanning
         SearchLazyConf searchLazyConf(this->scoreboardPort());
         searchLazyConf.scan();
@@ -200,85 +469,13 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
         m_vTeamsConf = searchLazyConf.getFoundTeams();
 
     } else {
-        
-        // teams from config
-
-        std::vector<int> vTeamsConfErase;
-        for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
-            ModelTeamConf *pTeamConf = &m_vTeamsConf[i];
-
-            // TODO check logo
-
-            if(pTeamConf->isActive()){
-                Log::info(TAG, "Registred " + pTeamConf->id()
-                    + " : " + pTeamConf->name()
-                    + " (ip address: " + pTeamConf->ipAddress() + ")");
-            }else{
-                vTeamsConfErase.push_back(i);
-                Log::warn(TAG, "Inactive " + pTeamConf->id()
-                    + " : " + pTeamConf->name()
-                    + " (ip address: " + pTeamConf->ipAddress() + ")");
-            }
-        }
-
-        // remove inactive teams
-        for (int i = vTeamsConfErase.size()-1; i >= 0; i--) {
-            int nPos = vTeamsConfErase[i];
-            m_vTeamsConf.erase(m_vTeamsConf.begin() + nPos);
+        if (!this->applyTeamsConf(bLazyStart)) {
+            return false;
         }
     }
 
-    if (m_vTeamsConf.size() == 0) {
-        Log::err(TAG, "Teams does not defined");
-        return false;
-    }
-
-    // check the game config
-
-    if (bLazyStart) {
-        m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        m_nGameEndUTCInSec = m_nGameStartUTCInSec + 4*60*60; // 4 hours
-    }
-
-    // game.conf - will be override configs from conf.ini
-    UtilsParseConfig gameConf = UtilsParseConfig(m_sWorkspaceDir + "/game.conf");
-    if (gameConf.parseConfig()) {
-        m_sGameID = gameConf.getStringValueFromConfig("game.id", m_sGameID);
-        Log::info(TAG, "game.id: " + m_sGameID);
-        m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
-        Log::info(TAG, "game.name: " + m_sGameName);
-        std::string game_start = gameConf.getStringValueFromConfig("game.start", "");
-        Log::info(TAG, "game.start: " + m_sGameStart);
-        std::string game_end = gameConf.getStringValueFromConfig("game.end", "");
-        Log::info(TAG, "game.end: " + m_sGameEnd);
-        m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
-        Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
-        this->setGameStart(game_start);
-        this->setGameEnd(game_end);
-    }
-
-    if (m_nGameStartUTCInSec == 0) {
-        Log::err(TAG, "'game/start' - not found");
-        return false;
-    }
-
-    if (m_nGameEndUTCInSec == 0) {
-        Log::err(TAG, "'game.end' - not found");
-        return false;
-    }
-
-    if (m_nGameEndUTCInSec < m_nGameStartUTCInSec) {
-        Log::err(TAG, "'game.end' must be gather then 'game.start'");
-        return false;
-    }
-
-    if (m_nFlagTimeliveInMin <= 0) {
-         Log::err(TAG, "game.flag_timelive_in_min could not be less than 0");
-        return false;
-    }
-
-    if (m_nFlagTimeliveInMin > 25) {
-         Log::err(TAG, "game.flag_timelive_in_min could not be gather than 25");
+    // apply the scoreboard config
+    if (!this->applyScoreboardConf(bLazyStart)) {
         return false;
     }
 
@@ -301,7 +498,7 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
     }
 
     // configure storage
-    if (!m_pStorage->applyConfigFromFile(sConfigFile, m_vTeamsConf, m_vServicesConf)) {
+    if (!m_pStorage->applyConfigFromFile(m_sWorkspaceDir + "/" + m_sUseStorage + "_storage.conf", m_vTeamsConf, m_vServicesConf)) {
         Log::err(TAG, "Could not init configuration storage");
         return false;
     }
@@ -311,240 +508,79 @@ bool JuryConfiguration::applyConfig(bool bLazyStart){
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setUseStorage(const std::string &sUseStorage) {
-    m_sUseStorage = sUseStorage;
-}
-
-// ---------------------------------------------------------------------
-
-IStorage *JuryConfiguration::storage(){
+IStorage *Config::storage(){
     return m_pStorage;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setStorage(IStorage *pStorage){
+void Config::setStorage(IStorage *pStorage){
     m_pStorage = pStorage;
 }
 
 // ---------------------------------------------------------------------
 
-ModelScoreboard *JuryConfiguration::scoreboard(){
+ModelScoreboard *Config::scoreboard(){
     return m_pScoreboard;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setFlagTimeliveInMin(int nMinutes) {
-    m_nFlagTimeliveInMin = nMinutes;
-}
-
-// ---------------------------------------------------------------------
-
-int JuryConfiguration::flagTimeliveInMin(){
-    return m_nFlagTimeliveInMin;
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<ModelTeamConf> &JuryConfiguration::teamsConf() {
+std::vector<ModelTeamConf> &Config::teamsConf() {
     return m_vTeamsConf;
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<ModelServiceConf> &JuryConfiguration::servicesConf() {
+std::vector<ModelServiceConf> &Config::servicesConf() {
     return m_vServicesConf;
 }
 
 // ---------------------------------------------------------------------
 
-ModelServiceConf *JuryConfiguration::findOrCreateServiceConf(int nServiceNum) {
-    for (unsigned int i = 0; i < m_vServicesConf.size(); i++) {
-        if (m_vServicesConf[i].num() == nServiceNum) {
-            return &m_vServicesConf[i];
-        }
-    }
-    // default values of service config
-    ModelServiceConf serviceConf;
-    serviceConf.setId("service" + std::to_string(nServiceNum));
-    serviceConf.setNum(nServiceNum);
-    serviceConf.setEnabled(true);
-    serviceConf.setScriptWaitInSec(10);
-    serviceConf.setTimeSleepBetweenRunScriptsInSec(10);
-    m_vServicesConf.push_back(serviceConf);
-    return &m_vServicesConf[m_vServicesConf.size()-1];
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setServiceName(int nServiceNum, const std::string &sServiceName) {
-    ModelServiceConf *pServiceConf = findOrCreateServiceConf(nServiceNum);
-    pServiceConf->setName(sServiceName);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setServiceScriptPath(int nServiceNum, const std::string &sScriptPath) {
-    ModelServiceConf *pServiceConf = findOrCreateServiceConf(nServiceNum);
-    pServiceConf->setScriptPath(sScriptPath);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setServiceEnabled(int nServiceNum, bool bEnabled) {
-    ModelServiceConf *pServiceConf = findOrCreateServiceConf(nServiceNum);
-    pServiceConf->setEnabled(bEnabled);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setServiceScriptWait(int nServiceNum, int nScriptWait) {
-    ModelServiceConf *pServiceConf = findOrCreateServiceConf(nServiceNum);
-    pServiceConf->setScriptWaitInSec(nScriptWait);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setServiceTimeSleep(int nServiceNum, int nTimeSleep) {
-    ModelServiceConf *pServiceConf = findOrCreateServiceConf(nServiceNum);
-    pServiceConf->setTimeSleepBetweenRunScriptsInSec(nTimeSleep);
-}
-
-// ---------------------------------------------------------------------
-
-ModelTeamConf *JuryConfiguration::findOrCreateTeamConf(int nTeamNum) {
-    for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
-        if (m_vTeamsConf[i].num() == nTeamNum) {
-            return &m_vTeamsConf[i];
-        }
-    }
-    // default values of service config
-    ModelTeamConf teamConf;
-    teamConf.setId("team" + std::to_string(nTeamNum));
-    teamConf.setNum(nTeamNum);
-    teamConf.setActive(true);
-    m_vTeamsConf.push_back(teamConf);
-    return &m_vTeamsConf[m_vTeamsConf.size()-1];
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setTeamName(int nTeamNum, const std::string &sTeamName) {
-    ModelTeamConf *pTeamConf = findOrCreateTeamConf(nTeamNum);
-    pTeamConf->setName(sTeamName);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setTeamLogo(int nTeamNum, const std::string &sTeamLogo) {
-    ModelTeamConf *pTeamConf = findOrCreateTeamConf(nTeamNum);
-    pTeamConf->setLogo(sTeamLogo);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setTeamIpAddress(int nTeamNum, const std::string &sTeamIpAddress) {
-    ModelTeamConf *pTeamConf = findOrCreateTeamConf(nTeamNum);
-    pTeamConf->setIpAddress(sTeamIpAddress);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setTeamActive(int nTeamNum, bool bActive) {
-    ModelTeamConf *pTeamConf = findOrCreateTeamConf(nTeamNum);
-    pTeamConf->setActive(bActive);
-}
-
-// ---------------------------------------------------------------------
-
-void JuryConfiguration::setScoreboardPort(int nPort) {
-    m_nScoreboardPort = nPort;
-}
-
-// ---------------------------------------------------------------------
-
-int JuryConfiguration::scoreboardPort(){
+int Config::scoreboardPort(){
     return m_nScoreboardPort;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setScoreboardHtmlFolder(const std::string &sHtmlFolder) {
-    if (sHtmlFolder.length() > 0) {
-        if (sHtmlFolder[0] != '/') {
-            m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + sHtmlFolder;
-        } else {
-            m_sScoreboardHtmlFolder = sHtmlFolder;
-        }
-    } else {
-        m_sScoreboardHtmlFolder = m_sWorkspaceDir;
-    }
-}
-
-// ---------------------------------------------------------------------
-
-std::string JuryConfiguration::scoreboardHtmlFolder() {
+std::string Config::scoreboardHtmlFolder() {
     return m_sScoreboardHtmlFolder;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setScoreboardRandom(bool bRandom) {
-    m_bScoreboardRandom = bRandom;
-}
-
-// ---------------------------------------------------------------------
-
-bool JuryConfiguration::scoreboardRandom() {
+bool Config::scoreboardRandom() {
     return m_bScoreboardRandom;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setGameName(const std::string &sGameName) {
-    m_sGameName = sGameName;
+int Config::flagTimeliveInMin(){
+    return m_nFlagTimeliveInMin;
 }
 
 // ---------------------------------------------------------------------
 
-std::string JuryConfiguration::gameName(){
+std::string Config::gameId(){
+    return m_sGameId;
+}
+
+// ---------------------------------------------------------------------
+
+std::string Config::gameName(){
     return m_sGameName;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setGameStart(const std::string &sGameStart) {
-    m_sGameStart = sGameStart;
-
-    std::istringstream in{m_sGameStart.c_str()};
-    date::sys_seconds tp;
-    in >> date::parse("%Y-%m-%d %T", tp);
-    m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
-    Log::info(TAG, "Game start: " + std::to_string(m_nGameStartUTCInSec));
-}
-
-// ---------------------------------------------------------------------
-
-int JuryConfiguration::gameStartUTCInSec() {
+int Config::gameStartUTCInSec() {
     return m_nGameStartUTCInSec;
 }
 
 // ---------------------------------------------------------------------
 
-void JuryConfiguration::setGameEnd(const std::string &sGameEnd) {
-    m_sGameEnd = sGameEnd;
-
-    std::istringstream in{m_sGameEnd.c_str()};
-    date::sys_seconds tp;
-    in >> date::parse("%Y-%m-%d %T", tp);
-    m_nGameEndUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
-    Log::info(TAG, "Game end: " + std::to_string(m_nGameEndUTCInSec));
-}
-
-// ---------------------------------------------------------------------
-
-int JuryConfiguration::gameEndUTCInSec() {
+int Config::gameEndUTCInSec() {
     return m_nGameEndUTCInSec;
 }
 

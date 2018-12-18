@@ -70,7 +70,8 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     // prepare folders
     std::vector<std::string> vCreateDirs;
     vCreateDirs.push_back(sWorkspace + "/logs");
-    vCreateDirs.push_back(sWorkspace + "/conf.d");
+    vCreateDirs.push_back(sWorkspace + "/teams");
+    vCreateDirs.push_back(sWorkspace + "/checkers");
     vCreateDirs.push_back(sWorkspace + "/html");
     vCreateDirs.push_back(sWorkspace + "/html/css");
     vCreateDirs.push_back(sWorkspace + "/html/js");
@@ -104,15 +105,25 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     std::vector<LocalFileContent> vCreateFiles;
 
     vCreateFiles.push_back(LocalFileContent(
-        sWorkspace + "/conf.d/conf.ini.sample", 
-        UtilsMakeFoldersAndFiles::g_sContent_conf_d_conf_ini_sample 
+        sWorkspace + "/game.conf", 
+        UtilsMakeFoldersAndFiles::g_sContent_game_conf
     ));
 
     vCreateFiles.push_back(LocalFileContent(
-        sWorkspace + "/conf.d/conf.ini", 
-        UtilsMakeFoldersAndFiles::g_sContent_conf_d_conf_ini
+        sWorkspace + "/scoreboard.conf", 
+        UtilsMakeFoldersAndFiles::g_sContent_scoreboard_conf
     ));
-    
+
+    vCreateFiles.push_back(LocalFileContent(
+        sWorkspace + "/mysql_storage.conf", 
+        UtilsMakeFoldersAndFiles::g_sContent_mysql_storage_conf
+    ));
+
+    vCreateFiles.push_back(LocalFileContent(
+        sWorkspace + "/server.conf", 
+        UtilsMakeFoldersAndFiles::g_sContent_server_conf
+    ));
+
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/index.html", 
         UtilsMakeFoldersAndFiles::g_sContent_html_index_html
@@ -181,181 +192,60 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_conf_d_conf_ini_sample 
+std::string UtilsMakeFoldersAndFiles::g_sContent_game_conf
     = ""
-    "; SERVER\n"
+    "# uniq gameid must be regexp [a-z0-9]+\n"
+    "game.id = test\n"
     "\n"
-    "[server]\n"
-    "; use storage which storage will be used, now possible values:\n"
-    "; mysql - will be used mysql database\n"
-    "; ram - (not implemented yet) use just memory\n"
-    "; postgre - (not implemented yet) will be used postgre database\n"
+    "# visible game name in scoreboard\n"
+    "game.name = Test First Game\n"
     "\n"
-    "use_storage = mysql\n"
+    "# start time of game (UTC)\n"
+    "game.start = 2018-09-06 12:00:00\n"
     "\n"
-    "; http port for scoreboard\n"
-    "scoreboard_port = 8080\n"
+    "# end time of game (UTC)\n"
+    "game.end = 2018-09-06 13:00:00\n"
     "\n"
-    "; web page for scoreboard see html/index.html\n"
-    "scoreboard_html_folder = html\n"
-    "\n"
-    "; If yes - will be random values in scoreboard\n"
-    "scoreboard_random = no\n"
-    "\n"
-    "; if use_storage is mysql\n"
-    "; database struct will be generated automaticly\n"
-    "[mysql_storage]\n"
-    "dbhost = localhost\n"
-    "dbport = 3306\n"
-    "dbname = fhqjuryad\n"
-    "dbuser = fhqjuryad\n"
-    "dbpass = fhqjuryad\n"
-    "\n"
-    "; if use_storage is ram\n"
-    "[ram_storage]\n"
-    "dbpath = /usr/share/fhq-jury-ad/jury.d/dbram\n"
-    "\n"
-    "; GAME INFO\n"
-    "\n"
-    "[game]\n"
-    "\n"
-    "; visible game name in scoreboard\n"
-    "name = Test First Game\n"
-    "\n"
-    "; start time of game (UTC)\n"
-    "start = 2018-09-06 12:00:00\n"
-    "\n"
-    "; end time of game (UTC)\n"
-    "end = 2018-09-06 13:00:00\n"
-    "\n"
-    "; you can change flag time live (in minutes)\n"
-    "flag_timelive_in_min = 10\n"
-    "\n"
-    "\n"
-    "; SERVICES\n"
-    "\n"
-    "; example of service definition\n"
-    "\n"
-    "[service1]\n"
-    "\n"
-    "; you can enable or disable service\n"
-    "enabled = yes ; default yes\n"
-    "\n"
-    "; visible name of service\n"
-    "name = Hello1\n"
-    "\n"
-    "; full path to script, must be access to execute\n"
-    "script_path = ./service1/checker.py\n"
-    "\n"
-    "; how much time in secoinds will be wait script before kill them (default 10 sec)\n"
-    "script_wait_in_sec = 5 \n"
-    "\n"
-    "; how much time will be sleeped between calling scripts (default 10 sec)\n"
-    "time_sleep_between_run_scripts_in_sec = 25\n"
-    "\n"
-    "; also you can skip some numbers of services\n"
-    "; [service2]\n"
-    "; name = Hello2\n"
-    "; script_path = ./service2.sample/checker.py\n"
-    "; script_wait_in_sec = 10\n"
-    "; time_sleep_between_run_scripts_in_sec = 10\n"
-    "; enabled = no\n"
-    "\n"
-    "[service3]\n"
-    "name = Hello3\n"
-    "script_path = ./service3/checker.py\n"
-    "enabled = no\n"
-    " \n"
-    "[service4]\n"
-    "name = Hello4\n"
-    "script_path = ./service4/checker.py\n"
-    "enabled = yes\n"
-    "\n"
-    "; teams\n"
-    "; (number can be 1..200)\n"
-    "\n"
-    "[team1]\n"
-    "\n"
-    "; team name\n"
-    "name = Hoho\n"
-    "\n"
-    "; relative logo path by file html/index.php\n"
-    "; upload image of team to folder html/images/teams/some_team.png\n"
-    "logo = images/teams/unknown.svg\n"
-    "\n"
-    "; ip address to vuln server of team\n"
-    "ip_address = 172.17.0.2\n"
-    "\n"
-    "; if need you can disable user \n"
-    "active = yes\n"
-    "\n"
-    "; Also you can skip  some numbers of team\n"
-    "; [team2]\n"
-    "; name = Atlas\n"
-    "; logo = images/teams/unknown.svg\n"
-    "; ip_address = 172.17.0.3\n"
-    "; active = yes\n"
-    "\n"
-    "[team3]\n"
-    "name = Moor\n"
-    "logo = images/teams/unknown.svg\n"
-    "ip_address = 172.17.0.4\n"
-    "active = no\n"
-    "\n"
-    "[team4]\n"
-    "name = Some\n"
-    "logo = images/teams/unknown.svg\n"
-    "ip_address = 172.17.0.5\n"
-    "active = yes\n"
-    "\n"
-    "[team5]\n"
-    "name = hackers\n"
-    "logo = images/teams/unknown.svg\n"
-    "ip_address = 172.17.0.6\n"
-    "active = yes\n";
-
-
+    "# you can change flag time live (in minutes)\n"
+    "game.flag_timelive_in_min = 10\n"
+    "";
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_conf_d_conf_ini
+std::string UtilsMakeFoldersAndFiles::g_sContent_scoreboard_conf
     = ""
-    "[server]\n"
-    "use_storage = mysql\n"
-    "scoreboard_port = 8080\n"
-    "scoreboard_html_folder = html\n"
-    "scoreboard_random = no\n"
+    "# http port for scoreboard\n"
+    "scoreboard.port = 8080\n"
     "\n"
-    "[mysql_storage]\n"
-    "dbhost = localhost\n"
-    "dbport = 3306\n"
-    "dbname = fhqjuryad\n"
-    "dbuser = fhqjuryad\n"
-    "dbpass = fhqjuryad\n"
+    "# web page for scoreboard see index-template.html\n"
+    "scoreboard.htmlfolder = ./html\n"
     "\n"
-    "[game]\n"
-    "name = Easy Game\n"
-    "; start time of game (UTC)\n"
-    "start = 2018-09-06 12:00:00\n"
-    "\n"
-    "; end time of game (UTC)\n"
-    "end = 2030-09-06 13:00:00\n"
-    "flag_timelive_in_min = 10\n"
-    "\n"
-    "; also you can skip some numbers of services\n"
-    "; [service1]\n"
-    "; name = Service Some\n"
-    "; script_path = ./service1/checker.py\n"
-    "; script_wait_in_sec = 10\n"
-    "; time_sleep_between_run_scripts_in_sec = 10\n"
-    "; enabled = yes\n"
-    "\n"
-    "; [team1]\n"
-    "; name = Cool Hackers Team\n"
-    "; logo = images/teams/unknown.svg\n"
-    "; ip_address = 172.17.0.2\n"
-    "; active = yes\n";
+    "# If yes - will be random values in scoreboard\n"
+    "scoreboard.random = no\n"
+    ;
 
+// ---------------------------------------------------------------------
+
+std::string UtilsMakeFoldersAndFiles::g_sContent_mysql_storage_conf
+    = ""
+    "# if server.use_storage is mysql\n"
+    "mysql_storage.dbhost = localhost\n"
+    "mysql_storage.dbport = 3306\n"
+    "mysql_storage.dbname = fhqjuryad\n"
+    "mysql_storage.dbuser = fhqjuryad\n"
+    "mysql_storage.dbpass = fhqjuryad\n"
+    "";
+
+// ---------------------------------------------------------------------
+
+std::string UtilsMakeFoldersAndFiles::g_sContent_server_conf
+    = ""
+    "# use storage which storage will be used, now possible values:\n"
+    "# mysql - will be used mysql database\n"
+    "# ram - (not implemented yet) use just memory\n"
+    "# postgres - (not implemented yet) will be used postgre database\n"
+    "server.use_storage = mysql\n"
+    ;
 
 // ---------------------------------------------------------------------
 
@@ -519,6 +409,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_css_scoreboard_css
     "  padding-left: 65px;\n"
     "  background-repeat: no-repeat;\n"
     "  background-size: 50px 50px;\n"
+    "  transition: all 0.5s ease-out 0.5s;\n"
     "}\n"
     "\n"
     ".service-status.down {\n"
@@ -677,23 +568,24 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_js_scoreboard_js
     "            updateUIValue(t, teamID, 'score');\n"
     "\n"
     "            for(var sService in t){\n"
-    "                if(sService.indexOf('service') == 0){\n"
-    "                    var newState = t[sService]['status'];\n"
-    "                    var newAttack = t[sService]['attack'];\n"
-    "                    var newDefence = t[sService]['defence'];\n"
-    "                    var newSLA = t[sService]['sla'];\n"
-    "                    var el = document.getElementById(teamID + '_' + sService);\n"
-    "                    if (!el.classList.contains(newState)) {\n"
-    "                        el.classList.remove('up');\n"
-    "                        el.classList.remove('down');\n"
-    "                        el.classList.remove('mumble');\n"
-    "                        el.classList.remove('corrupt');\n"
-    "                        el.classList.remove('shit');\n"
-    "                        el.classList.add(newState);\n"
-    "                    }\n"
-    "                    document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;\n"
-    "                    document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';\n"
-    "                };\n"
+    "                if (sService == 'place' || sService == 'score') {\n"
+    "                    continue;\n"
+    "                }\n"
+    "                var newState = t[sService]['status'];\n"
+    "                var newAttack = t[sService]['attack'];\n"
+    "                var newDefence = t[sService]['defence'];\n"
+    "                var newSLA = t[sService]['sla'];\n"
+    "                var el = document.getElementById(teamID + '_' + sService);\n"
+    "                if (!el.classList.contains(newState)) {\n"
+    "                    el.classList.remove('up');\n"
+    "                    el.classList.remove('down');\n"
+    "                    el.classList.remove('mumble');\n"
+    "                    el.classList.remove('corrupt');\n"
+    "                    el.classList.remove('shit');\n"
+    "                    el.classList.add(newState);\n"
+    "                }\n"
+    "                document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;\n"
+    "                document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';\n"
     "            }\n"
     "        }\n"
     "\n"

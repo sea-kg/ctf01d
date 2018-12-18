@@ -8,8 +8,6 @@ class RamStorage : public IStorage {
     public:
         RamStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
 
-        void setDatabasePath(const std::string &sDatabasePath);
-
         // IStorage
         virtual std::string type();
         virtual bool applyConfigFromFile(const std::string &sFilePath, 
@@ -21,7 +19,7 @@ class RamStorage : public IStorage {
         virtual void updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &sFlag);
         virtual void updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
         virtual bool findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag);
-        virtual bool updateTeamStole(const std::string &sFlag, int nTeamNum);
+        virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void removeFlag(ModelFlag &flag);
         virtual void moveToArchive(ModelFlag &flag);
 

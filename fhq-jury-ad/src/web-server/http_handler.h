@@ -7,15 +7,16 @@
 
 class HttpHandler : ILightHttpHandler {
     public:
-        HttpHandler(JuryConfiguration *pConfig);
+        HttpHandler(Config *pConfig);
         virtual bool handle(ILightHttpRequest *pRequest);
 
     private:
         std::string TAG;
         std::string formatTimeUTC(int nTime);
         void prepareIndexHtml();
+        void string_trim(std::string &sLine);
 
-        JuryConfiguration *m_pConfig;
+        Config *m_pConfig;
         std::string m_sIndexHtml;
         nlohmann::json m_jsonTeams; // prepare data for list of teams
         nlohmann::json m_jsonServices; // prepare data for list of teams

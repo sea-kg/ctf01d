@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-jury-ad)
 
-add_definitions(-DJURY_AD_VERSION="0.1.0")
+add_definitions(-DJURY_AD_VERSION="0.2.0")
 add_definitions(-DJURY_AD_APP_NAME="fhq-jury-ad")
 
 set(CMAKE_AUTOMOC ON)
@@ -22,9 +22,8 @@ list (APPEND JURY_AD_INCLUDE_DIRS "src/models")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/utils")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/interfaces")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/storage")
-list (APPEND JURY_AD_INCLUDE_DIRS "src/scoreboard")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/web-server")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/3rd_party/nlohmann")
-list (APPEND JURY_AD_INCLUDE_DIRS "src/3rd_party/INIReader")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/3rd_party/HowardHinnant/date")
 
 # nlohmann::json
@@ -34,20 +33,14 @@ list (APPEND JURY_AD_SOURCES "src/3rd_party/nlohmann/json.hpp")
 # HowardHinnant/date
 list (APPEND JURY_AD_SOURCES "src/3rd_party/HowardHinnant/date/date.h")
 
-# INIReader
-list (APPEND JURY_AD_SOURCES "src/3rd_party/INIReader/ini.c")
-list (APPEND JURY_AD_SOURCES "src/3rd_party/INIReader/INIReader.cpp")
-list (APPEND JURY_AD_SOURCES "src/3rd_party/INIReader/ini.h")
-list (APPEND JURY_AD_SOURCES "src/3rd_party/INIReader/INIReader.h")
-
 # interfaces
 list (APPEND JURY_AD_SOURCES "src/interfaces/istorage.h")
 list (APPEND JURY_AD_SOURCES "src/interfaces/ilighthttprequest.h")
 list (APPEND JURY_AD_SOURCES "src/interfaces/ilighthttphandler.h")
 
-# scoreboard
-list (APPEND JURY_AD_SOURCES "src/scoreboard/http_handler.h")
-list (APPEND JURY_AD_SOURCES "src/scoreboard/http_handler.cpp")
+# web-server
+list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.cpp")
 
 # models
 list (APPEND JURY_AD_SOURCES "src/models/model_flag.h")

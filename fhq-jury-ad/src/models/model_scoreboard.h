@@ -15,12 +15,12 @@ class ModelScoreboard {
 
         ModelScoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::vector<ModelTeamConf> &vTeamsConf, const std::vector<ModelServiceConf> &vServicesConf);
 
-        void setServiceStatus(int nTeamNum, int nServiceNum, const std::string &sStatus);
-        void setServiceScore(int nTeamNum, int nServiceNum, int nDefence, int nAttack, double nSLA);
+        void setServiceStatus(const std::string &sTeamId, const std::string &sServiceId, const std::string &sStatus);
+        void setServiceScore(const std::string &sTeamId, const std::string &sServiceId, int nDefence, int nAttack, double nSLA);
 
-        void incrementAttackScore(int nTeamNum, int nServiceNum);
-        void incrementDefenceScore(int nTeamNum, int nServiceNum);
-        std::string serviceStatus(int nTeamNum, int nServiceNum);
+        void incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId);
+        void incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId);
+        std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
         double calculateSLA(int flags_success, const ModelServiceConf &serviceConf);
 
@@ -35,7 +35,7 @@ class ModelScoreboard {
 
         std::string randomServiceStatus();
         bool m_bRandom;
-        std::map<int, ModelTeamStatus *> m_mapTeamsStatuses;
+        std::map<std::string, ModelTeamStatus *> m_mapTeamsStatuses;
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
 };
 

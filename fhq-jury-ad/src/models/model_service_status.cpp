@@ -9,8 +9,8 @@ std::string ModelServiceStatus::SERVICE_WAIT = "wait";
 
 // ----------------------------------------------------------------------
 
-ModelServiceStatus::ModelServiceStatus(int nServiceNum) {
-    m_nServiceNum = nServiceNum;
+ModelServiceStatus::ModelServiceStatus(const std::string &sServiceId) {
+    m_sServiceId = sServiceId;
     m_sStatus = ModelServiceStatus::SERVICE_DOWN;
     m_nSLA = 100.0;
     m_nDefence = 0;
@@ -19,9 +19,9 @@ ModelServiceStatus::ModelServiceStatus(int nServiceNum) {
 
 // ----------------------------------------------------------------------
 
-int ModelServiceStatus::serviceNum() {
+const std::string &ModelServiceStatus::serviceId() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    return m_nServiceNum;
+    return m_sServiceId;
 }
 
 // ----------------------------------------------------------------------

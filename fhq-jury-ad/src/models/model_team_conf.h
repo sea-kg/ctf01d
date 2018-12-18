@@ -10,9 +10,6 @@ class ModelTeamConf {
         void setId(const std::string &sId);
         std::string id() const;
 
-        void setNum(int nNum);
-        int num() const;
-
         void setName(const std::string &sName);
         std::string name() const;
 

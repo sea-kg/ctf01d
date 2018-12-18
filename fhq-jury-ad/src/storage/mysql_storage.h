@@ -11,12 +11,6 @@ class MySqlStorage : public IStorage {
     public:
         MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
 
-        void setDatabaseHost(const std::string &sDatabaseHost);
-        void setDatabaseName(const std::string &sDatabaseName);
-        void setDatabaseUser(const std::string &sDatabaseUser);
-        void setDatabasePass(const std::string &sDatabasePass);
-        void setDatabasePort(int nDatabasePort);
-
         // IStorage
         virtual std::string type();
         virtual bool applyConfigFromFile(const std::string &sFilePath, 
@@ -28,7 +22,7 @@ class MySqlStorage : public IStorage {
         virtual void updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &sFlag);
         virtual void updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &service);
         virtual bool findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag);
-        virtual bool updateTeamStole(const std::string &sFlag, int nTeamNum);
+        virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void removeFlag(ModelFlag &flag);
         virtual void moveToArchive(ModelFlag &flag);
 

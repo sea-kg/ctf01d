@@ -12,14 +12,6 @@ std::string ModelTeamConf::id() const {
     return m_sTeamID;
 }
 
-void ModelTeamConf::setNum(int nNum){
-    m_nNum = nNum;
-}
-
-int ModelTeamConf::num() const {
-    return m_nNum;
-}
-
 void ModelTeamConf::setName(const std::string &sName){
     m_sName = sName;
 }

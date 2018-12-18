@@ -35,7 +35,7 @@ class IStorage {
         virtual bool findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag) = 0;
 
         // update team stole with check
-        virtual bool updateTeamStole(const std::string &sFlag, int nTeamNum) = 0;
+        virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId) = 0;
 
         // remove flag
         virtual void removeFlag(ModelFlag &flag) = 0;

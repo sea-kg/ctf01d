@@ -113,11 +113,17 @@ int UtilsParseConfig::getIntValueFromConfig(const std::string &sParamName, int d
 bool UtilsParseConfig::getBoolValueFromConfig(const std::string &sParamName, bool defaultValue){
     bool bResult = defaultValue;
 
-    if(m_mapConfigValues.count(sParamName)){
+    if( m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
+		this->string_trim(sParamValue);
         std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
-        bResult = (sParamValue == "yes" || sParamValue == "no");
-    }else{
+        if (sParamValue != "yes" && sParamValue != "no") {
+			Log::err(TAG, sParamName + " - wrong value (expected 'yes' or 'no') in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
+		} else {
+			bResult = sParamValue == "yes";
+		}
+
+    } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
     }
     return bResult;

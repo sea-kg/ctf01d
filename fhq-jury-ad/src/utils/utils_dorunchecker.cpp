@@ -19,6 +19,7 @@
 #include <sysexits.h>
 
 DoRunChecker::DoRunChecker(
+    const std::string &sDir,
     const std::string &sScript,
     const std::string &sIp,
     const std::string &sCommand,
@@ -26,6 +27,7 @@ DoRunChecker::DoRunChecker(
     const std::string &sFlag
 ) {
     TAG = "DoRunChecker";
+    m_sDir = sDir;
     m_sScript = sScript;
     m_sIp = sIp;
     m_sCommand = sCommand;
@@ -136,6 +138,7 @@ void DoRunChecker::run() {
         dup2(1, 2); // redirects stderr to stdout below this line.
         close(fd[0]);
         close(fd[1]);
+        chdir(m_sDir.c_str());
         // setpgid(nChildPid, nChildPid); //Needed so negative PIDs can kill children of /bin/sh
         execlp(
             m_sScript.c_str(), // 

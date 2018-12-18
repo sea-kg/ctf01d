@@ -168,7 +168,7 @@ int main(int argc, char* argv[]) {
 
     bool bLazyStart = helpParseArgs.has("lazy-start");
 
-    JuryConfiguration *pConfig = new JuryConfiguration(sWorkspace);
+    Config *pConfig = new Config(sWorkspace);
     if(!pConfig->applyConfig(bLazyStart)){
         Log::err(TAG, "Configuration file has some problems");
         return -1;
@@ -210,7 +210,7 @@ int main(int argc, char* argv[]) {
                 ModelServiceConf serviceConf = pConfig->servicesConf()[iservice];
                 
                 pConfig->storage()->updateScoreboard(teamConf, serviceConf);
-                pConfig->scoreboard()->setServiceStatus(teamConf.num(), serviceConf.num(), ModelServiceStatus::SERVICE_DOWN);
+                pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ModelServiceStatus::SERVICE_DOWN);
 
                 ServiceCheckerThread *thr = new ServiceCheckerThread(pConfig, teamConf, serviceConf);
                 thr->start();

@@ -20,18 +20,6 @@ std::string ModelServiceConf::id() const {
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setNum(int nNum){
-    m_nNum = nNum;
-}
-
-// ----------------------------------------------------------------------
-
-int ModelServiceConf::num() const {
-    return m_nNum;
-}
-
-// ----------------------------------------------------------------------
-
 void ModelServiceConf::setName(const std::string &sName){
     m_sName = sName;
 }
@@ -52,6 +40,18 @@ void ModelServiceConf::setScriptPath(const std::string &sScriptPath){
 
 std::string ModelServiceConf::scriptPath() const {
     return m_sScriptPath;
+}
+
+// ----------------------------------------------------------------------
+
+void ModelServiceConf::setScriptDir(const std::string &sScriptDir) {
+    m_sScriptDir = sScriptDir;
+}
+
+// ----------------------------------------------------------------------
+
+std::string ModelServiceConf::scriptDir() const {
+    return m_sScriptDir;
 }
 
 // ----------------------------------------------------------------------

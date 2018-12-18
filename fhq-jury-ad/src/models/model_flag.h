@@ -16,11 +16,11 @@ class ModelFlag {
         void generateValue();
         std::string value() const;
 
-        void setTeamNum(int nTeamNum);
-        int teamNum() const;
+        void setTeamId(const std::string &sTeamId);
+        const std::string &teamId() const;
 
-        void setServiceNum(int nServiceNum);
-        int serviceNum() const;
+        void setServiceId(const std::string &sServiceId);
+        const std::string &serviceId() const;
 
         void setTimeStart(long nTimeStart);
         long timeStart() const;
@@ -28,19 +28,19 @@ class ModelFlag {
         void setTimeEnd(long nTimeEnd);
         long timeEnd() const;
 
-        void setTeamStole(int nTeamStole);
-        int teamStole() const;
+        void setTeamStole(const std::string &sTeamStole);
+        const std::string &teamStole() const;
 
         void copyFrom(const ModelFlag &flag);
 
     private:
         std::string m_sId;
         std::string m_sValue;
-        int m_nTeamNum;
-        int m_nServiceNum;
+        std::string m_sTeamId;
+        std::string m_sServiceId;
         long m_nTimeStart;
         long m_nTimeEnd;
-        int m_nTeamStole;
+        std::string m_sTeamStole;
 };
 
 #endif // MODEL_FLAG_H

@@ -7,7 +7,7 @@
 #include <time.h>
 #include <utils_logger.h>
 
-HttpHandler::HttpHandler(JuryConfiguration *pConfig){
+HttpHandler::HttpHandler(Config *pConfig){
     m_pConfig = pConfig;
     TAG = "HttpHandler";
     prepareIndexHtml();
@@ -36,7 +36,7 @@ void HttpHandler::prepareIndexHtml(){
         sContent += "<div class='service'>" + serviceConf.name() + "<br><small>(service)</small></div>\n";
         
         nlohmann::json serviceInfo;
-        serviceInfo["num"] = serviceConf.num();
+        serviceInfo["id"] = serviceConf.id();
         serviceInfo["name"] = serviceConf.name();
         m_jsonServices[serviceConf.id()] = serviceInfo;
     }
@@ -48,7 +48,7 @@ void HttpHandler::prepareIndexHtml(){
         std::string sTeamId = teamConf.id();
             
         nlohmann::json teamInfo;
-        teamInfo["num"] = teamConf.num();
+        teamInfo["id"] = teamConf.id();
         teamInfo["name"] = teamConf.name();
         teamInfo["ip_address"] = teamConf.ipAddress();
         m_jsonTeams[sTeamId] = teamInfo;
@@ -59,7 +59,7 @@ void HttpHandler::prepareIndexHtml(){
             "        <div class='team-logo' id='" + sTeamId + "_logo' ><img class='team-logo' src='" + teamConf.logo() + "'/></div>\n"
             "        <div class='team' id='" + sTeamId + "_name'>\n"
             "           <div class='team-name'>" + teamConf.name() + "</div>\n"
-            "           <div class='team-ip'> id: " + std::to_string(teamConf.num()) + ", ip: " + teamConf.ipAddress() + "</div>\n"
+            "           <div class='team-ip'> id: " +sTeamId + ", ip: " + teamConf.ipAddress() + "</div>\n"
             "        </div>\n"
             "        <div class='score' id='" + sTeamId + "_score'>0</div>\n";
 
@@ -127,6 +127,26 @@ std::string HttpHandler::formatTimeUTC(int nTimeInSec) {
     char buf[80];
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tstruct);
     return std::string(buf);
+}
+
+// ----------------------------------------------------------------------
+
+void HttpHandler::string_trim(std::string &sLine) {
+	// trim trailing spaces
+	std::size_t endpos = sLine.find_last_not_of(" \t");
+	std::size_t startpos = sLine.find_first_not_of(" \t");
+	if( std::string::npos != endpos ) {
+		sLine = sLine.substr( 0, endpos+1 );
+		sLine = sLine.substr( startpos );
+	} else {
+		sLine.erase(std::remove(std::begin(sLine), std::end(sLine), ' '), std::end(sLine));
+	}
+
+	// trim leading spaces
+	std::size_t nStartPos = sLine.find_first_not_of(" \t");
+	if( std::string::npos != nStartPos ) {
+		sLine = sLine.substr( nStartPos );
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -200,8 +220,10 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
             return true;
         }
 
-        std::string sTeamID = itTeamID->second;
-        int nTeamNum = atoi(sTeamID.c_str());
+        std::string sTeamId = itTeamID->second;
+        this->string_trim(sTeamId);
+        std::transform(sTeamId.begin(), sTeamId.end(), sTeamId.begin(), ::tolower);
+        /*int nTeamNum = atoi(sTeamID.c_str());
         if (nTeamNum == 0) {
             pRequest->response(
                 LightHttpRequest::RESP_BAD_REQUEST, 
@@ -209,12 +231,12 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 "Error(-12): 'teamid' must be number");
             Log::warn(TAG, "Error(-12): 'teamid' must be number");
             return true;
-        }
+        }*/
 
         bool bTeamFound = false;
         for (unsigned int iteam = 0; iteam < m_pConfig->teamsConf().size(); iteam++) {
             ModelTeamConf teamConf = m_pConfig->teamsConf()[iteam];
-            if (teamConf.num() == nTeamNum) {
+            if (teamConf.id() == sTeamId) {
                 bTeamFound = true;
             }
         }
@@ -247,7 +269,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-150): flag is too old or flag never existed or flag alredy stole");
-            Log::err(TAG, "Error(-150): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-150): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
         long nCurrentTimeMSec = (long)nCurrentTimeSec;
@@ -258,38 +280,38 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-151): flag is too old");
-            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
 
-        if (flag.teamStole() == nTeamNum) {
+        if (flag.teamStole() == sTeamId) {
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-160): flag already stole by your team");
-            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
 
-        if (flag.teamStole() != 0) {
+        if (flag.teamStole() != "") {
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
-                "Error(-170): flag already stole");
-            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+                "Error(-170): flag already stoled by '" + flag.teamStole() + "'");
+            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
 
-        if (flag.teamNum() == nTeamNum) {
+        if (flag.teamId() == sTeamId) {
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-180): this is your flag");
-            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
         
-        std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(nTeamNum, flag.serviceNum());
+        std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(sTeamId, flag.serviceId());
 
         // std::cout << "sServiceStatus: " << sServiceStatus << "\n";
 
@@ -298,27 +320,27 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-190): Your same service is dead");
-            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
 
-        if (!m_pConfig->storage()->updateTeamStole(flag.value(), nTeamNum)){
+        if (!m_pConfig->storage()->updateTeamStole(flag.value(), sTeamId)){
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-300): You are late");
-            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
 
         // TODO light update scoreboard
-        m_pConfig->scoreboard()->incrementAttackScore(nTeamNum, flag.serviceNum());
+        m_pConfig->scoreboard()->incrementAttackScore(sTeamId, flag.serviceId());
 
         pRequest->response(
             LightHttpRequest::RESP_OK, 
             "text/html", 
             "Accepted");
-        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {team" + std::to_string(nTeamNum) + "}");
+        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
         return true;
     }
     return false;

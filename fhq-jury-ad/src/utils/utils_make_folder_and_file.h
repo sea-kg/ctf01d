@@ -18,8 +18,12 @@ class UtilsMakeFoldersAndFiles {
 
         static bool fileExists(const std::string &sFilename);
         static bool writeFile(const std::string &sFilename, const std::string &sContent);
-        static std::string g_sContent_conf_d_conf_ini;
-        static std::string g_sContent_conf_d_conf_ini_sample;
+        
+        static std::string g_sContent_game_conf;
+        static std::string g_sContent_scoreboard_conf;
+        static std::string g_sContent_mysql_storage_conf;
+        static std::string g_sContent_server_conf;
+
         static std::string g_sContent_html_index_html;
         static std::string g_sContent_html_css_scoreboard_css;
         static std::string g_sContent_html_js_scoreboard_js;

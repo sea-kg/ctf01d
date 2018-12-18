@@ -149,7 +149,6 @@ void SearchLazyConf::check(const std::string &sJuryIpAddress, const std::string 
             int nTeamNum = m_vTeams.size() + 1;
             ModelTeamConf teamConf;
             teamConf.setId("team" + std::to_string(nTeamNum));
-            teamConf.setNum(nTeamNum);
             teamConf.setName(sTeamName);
             teamConf.setActive(true);
             teamConf.setIpAddress(sIpAddress);

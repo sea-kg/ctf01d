@@ -15,7 +15,7 @@
 #include <pthread.h>
 #include <map>
 #include <queue>
-#include <utils_light_http_request.h>
+#include "light_http_request.h"
 
 class LightHttpServer {
 	public:
@@ -33,6 +33,7 @@ class LightHttpServer {
 		pthread_t m_serverThread1;
 		pthread_t m_serverThread2;
 		pthread_t m_serverThread3;
+		pthread_t m_serverThread4;
 
 		int m_nSockFd;
 		ILightHttpHandler *m_pHandler;

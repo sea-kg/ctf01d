@@ -28,8 +28,8 @@ class ServiceCheckerThread {
 		ModelTeamConf m_teamConf;
 		ModelServiceConf m_serviceConf;
 
-		int runChecker(ModelFlag &flag, const std::string &sCommand);
-		// int runChecker(ModelFlag &flag, const std::string &sCommand);
+		int runChecker(Flag &flag, const std::string &sCommand);
+		// int runChecker(Flag &flag, const std::string &sCommand);
 		
 		// void run();
 };

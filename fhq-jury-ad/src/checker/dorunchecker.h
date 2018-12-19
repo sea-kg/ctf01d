@@ -1,5 +1,5 @@
-#ifndef UTILS_DORUNCHECKER_H
-#define UTILS_DORUNCHECKER_H
+#ifndef DORUNCHECKER_H
+#define DORUNCHECKER_H
 
 #include <string>
 #include <stdio.h>
@@ -43,4 +43,4 @@ class DoRunChecker {
 };
 
 
-#endif // UTILS_DORUNCHECKER_H
+#endif // DORUNCHECKER_H

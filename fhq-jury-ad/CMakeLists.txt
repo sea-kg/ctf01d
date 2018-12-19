@@ -18,11 +18,15 @@ set (JURY_AD_SOURCES "")
 
 # include header dirs
 list (APPEND JURY_AD_INCLUDE_DIRS "src")
-list (APPEND JURY_AD_INCLUDE_DIRS "src/models")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/checker")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/models") # deprecated
+list (APPEND JURY_AD_INCLUDE_DIRS "src/objects")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/utils")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/interfaces")
-list (APPEND JURY_AD_INCLUDE_DIRS "src/storage")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/storages")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/storages/file")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/web-server")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/web-server/core")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/3rd_party/nlohmann")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/3rd_party/HowardHinnant/date")
 
@@ -33,18 +37,27 @@ list (APPEND JURY_AD_SOURCES "src/3rd_party/nlohmann/json.hpp")
 # HowardHinnant/date
 list (APPEND JURY_AD_SOURCES "src/3rd_party/HowardHinnant/date/date.h")
 
-# interfaces
-list (APPEND JURY_AD_SOURCES "src/interfaces/istorage.h")
-list (APPEND JURY_AD_SOURCES "src/interfaces/ilighthttprequest.h")
-list (APPEND JURY_AD_SOURCES "src/interfaces/ilighthttphandler.h")
+# checker
+list (APPEND JURY_AD_SOURCES "src/checker/dorunchecker.h")
+list (APPEND JURY_AD_SOURCES "src/checker/dorunchecker.cpp")
+list (APPEND JURY_AD_SOURCES "src/checker/service_checker_thread.h")
+list (APPEND JURY_AD_SOURCES "src/checker/service_checker_thread.cpp")
 
 # web-server
+list (APPEND JURY_AD_SOURCES "src/web-server/core/ilighthttprequest.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/ilighthttphandler.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.cpp")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.cpp")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.cpp")
 
-# models
-list (APPEND JURY_AD_SOURCES "src/models/model_flag.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_flag.cpp")
+# objects
+list (APPEND JURY_AD_SOURCES "src/objects/flag.h")
+list (APPEND JURY_AD_SOURCES "src/objects/flag.cpp")
+
+# models - deprecated
 list (APPEND JURY_AD_SOURCES "src/models/model_scoreboard.h")
 list (APPEND JURY_AD_SOURCES "src/models/model_scoreboard.cpp")
 list (APPEND JURY_AD_SOURCES "src/models/model_service_conf.h")
@@ -58,14 +71,8 @@ list (APPEND JURY_AD_SOURCES "src/models/model_team_status.cpp")
 
 # utils
 list (APPEND JURY_AD_SOURCES "src/utils/colormod.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_dorunchecker.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_dorunchecker.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.cpp")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_light_http_request.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_light_http_request.cpp")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_light_http_server.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_light_http_server.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_make_folder_and_file.h")
@@ -75,22 +82,25 @@ list (APPEND JURY_AD_SOURCES "src/utils/utils_parse_config.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.cpp")
 
-# ram storage
-list (APPEND JURY_AD_SOURCES "src/storage/ram_storage.h")
-list (APPEND JURY_AD_SOURCES "src/storage/ram_storage.cpp")
+# storages
+list (APPEND JURY_AD_SOURCES "src/storages/storages.h")
+list (APPEND JURY_AD_SOURCES "src/storages/storages.cpp")
+
+# file storage
+list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.h")
+list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.cpp")
 
 # main
-list (APPEND JURY_AD_SOURCES "src/main.cpp")
 list (APPEND JURY_AD_SOURCES "src/config.h")
 list (APPEND JURY_AD_SOURCES "src/config.cpp")
-list (APPEND JURY_AD_SOURCES "src/service_checker_thread.h")
-list (APPEND JURY_AD_SOURCES "src/service_checker_thread.cpp")
+list (APPEND JURY_AD_SOURCES "src/main.cpp")
 
 
 ############################
 ##### mysql storage
-list (APPEND JURY_AD_SOURCES "src/storage/mysql_storage.h")
-list (APPEND JURY_AD_SOURCES "src/storage/mysql_storage.cpp")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/storages/mysql")
+list (APPEND JURY_AD_SOURCES "src/storages/mysql/mysql_storage.h")
+list (APPEND JURY_AD_SOURCES "src/storages/mysql/mysql_storage.cpp")
 
 # Find and make sure the system have the header file
 find_path(MYSQL_HEADER mysql/mysql.h)

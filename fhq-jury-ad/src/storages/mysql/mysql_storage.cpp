@@ -3,6 +3,8 @@
 #include <mysql/mysql.h>
 #include <utils_parse_config.h>
 
+REGISTRY_STORAGE(MySqlStorage)
+
 MySqlStorage::MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     m_pScoreboard = pScoreboard;
     TAG = "MySqlStorage";
@@ -13,12 +15,6 @@ MySqlStorage::MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec,
     m_sDatabaseUser = "";
     m_sDatabasePass = "";
     m_nDatabasePort = 3306;
-}
-
-// ----------------------------------------------------------------------
-
-std::string MySqlStorage::type() {
-    return "mysql";
 }
 
 // ----------------------------------------------------------------------
@@ -309,7 +305,7 @@ MYSQL *MySqlStorage::getDatabaseConnection() {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &flag){
+void MySqlStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &flag){
     MYSQL *pConn = getDatabaseConnection();
     // TODO check connection with NULL
 
@@ -335,7 +331,7 @@ void MySqlStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelService
 
 // ----------------------------------------------------------------------
 
-std::vector<ModelFlag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
+std::vector<Flag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -350,7 +346,7 @@ std::vector<ModelFlag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, c
         "   AND date_end < " + std::to_string(long(m_nGameEndUTCInSec)*1000) + " "
         ";";
 
-    std::vector<ModelFlag> vResult;
+    std::vector<Flag> vResult;
     if (mysql_query(pConn, sQuery.c_str())) {
         Log::err(TAG, "Error select (endedFlags): " + std::string(mysql_error(pConn)));
     } else {
@@ -358,7 +354,7 @@ std::vector<ModelFlag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, c
         MYSQL_ROW row;
         // output table name
         while ((row = mysql_fetch_row(pRes)) != NULL) {
-            ModelFlag flag;
+            Flag flag;
             flag.setServiceId(serviceConf.id());
             flag.setTeamId(teamConf.id());
             flag.setId(std::string(row[0]));
@@ -375,7 +371,7 @@ std::vector<ModelFlag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, c
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateFlag(const ModelTeamConf &team, const ModelServiceConf &serviceConf, const ModelFlag &sFlag){
+void MySqlStorage::updateFlag(const ModelTeamConf &team, const ModelServiceConf &serviceConf, const Flag &sFlag){
     // TODO
 }
 
@@ -486,7 +482,7 @@ void MySqlStorage::updateScoreboard(const ModelTeamConf &teamConf, const ModelSe
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag) {
+bool MySqlStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
 
@@ -499,7 +495,7 @@ bool MySqlStorage::findFlagByValue(const std::string &sFlag, ModelFlag &resultFl
         "   AND date_end < " + std::to_string(long(m_nGameEndUTCInSec)*1000) + " "
         ";";
 
-    ModelFlag flag;
+    Flag flag;
 
     if (mysql_query(pConn, sQuery.c_str())) {
         Log::err(TAG, "Error select (findFlagByValue): " + std::string(mysql_error(pConn)));
@@ -544,7 +540,7 @@ bool MySqlStorage::updateTeamStole(const std::string &sFlag, const std::string &
         return false;
     }
 
-    ModelFlag resultFlag;
+    Flag resultFlag;
 
     if (!this->findFlagByValue(sFlag, resultFlag)) {
         return false;
@@ -554,7 +550,7 @@ bool MySqlStorage::updateTeamStole(const std::string &sFlag, const std::string &
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::removeFlag(ModelFlag &flag) {
+void MySqlStorage::removeFlag(Flag &flag) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
 
@@ -570,7 +566,7 @@ void MySqlStorage::removeFlag(ModelFlag &flag) {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::moveToArchive(ModelFlag &flag) {
+void MySqlStorage::moveToArchive(Flag &flag) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
 

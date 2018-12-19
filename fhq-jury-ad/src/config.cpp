@@ -1,8 +1,7 @@
 #include "config.h"
 #include <utils_logger.h>
 #include <sstream>
-#include <mysql_storage.h>
-#include <ram_storage.h>
+#include <storages.h>
 #include <ctime>
 #include <locale>
 #include <date.h>
@@ -195,9 +194,16 @@ bool Config::applyServerConf(bool bLazyStart) {
     
     m_sUseStorage = serverConf.getStringValueFromConfig("server.use_storage", m_sUseStorage);
 
-    // TODO add support "postgres" and "ram/files" maybe mongo and etc
-    if (m_sUseStorage != "mysql" && m_sUseStorage != "ram") {
-        Log::err(TAG, sConfigFile + ": server.use_storage defined like " + m_sUseStorage + " but supported in current time only 'mysql'");
+    if (!Storages::support(m_sUseStorage)) {
+        std::vector<std::string> vStoragesListType = Storages::list();
+        std::string sSupportedStorgaes = "";
+        for (int i = 0; i < vStoragesListType.size(); i++) {
+            if (sSupportedStorgaes.length() > 0) {
+                sSupportedStorgaes += ",";
+            }
+            sSupportedStorgaes += " '" + vStoragesListType[i] + "'";
+        }
+        Log::err(TAG, sConfigFile + ": server.use_storage defined like " + m_sUseStorage + " but supported: " + sSupportedStorgaes);
         return false;
     }
     Log::info(TAG, "server.use_storage: " + m_sUseStorage);
@@ -484,14 +490,9 @@ bool Config::applyConfig(bool bLazyStart){
 
     // storage
     Log::info(TAG, "Storage: " + m_sUseStorage);
-    m_pStorage = NULL;
-    if (m_sUseStorage == "mysql") {
-        this->setStorage(new MySqlStorage(m_pScoreboard, m_nGameStartUTCInSec, m_nGameEndUTCInSec));
-        Log::info(TAG, "Init storage: " + m_sUseStorage);
-    }else if(m_sUseStorage == "ram") {
-        this->setStorage(new RamStorage(m_pScoreboard, m_nGameStartUTCInSec, m_nGameEndUTCInSec));
-        Log::info(TAG, "Init storage: " + m_sUseStorage);
-    }
+    m_pStorage = Storages::create(m_sUseStorage, m_pScoreboard, m_nGameStartUTCInSec, m_nGameEndUTCInSec);
+    Log::info(TAG, "Init storage: " + m_sUseStorage);
+    
     if (m_pStorage == NULL) {
         Log::err(TAG, "server/use_storage: '" + m_sUseStorage + "' is unknown type of storage");
 		return false;
@@ -508,13 +509,13 @@ bool Config::applyConfig(bool bLazyStart){
 
 // ---------------------------------------------------------------------
 
-IStorage *Config::storage(){
+Storage *Config::storage(){
     return m_pStorage;
 }
 
 // ---------------------------------------------------------------------
 
-void Config::setStorage(IStorage *pStorage){
+void Config::setStorage(Storage *pStorage){
     m_pStorage = pStorage;
 }
 

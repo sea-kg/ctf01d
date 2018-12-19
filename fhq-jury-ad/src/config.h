@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <istorage.h>
+#include <storages.h>
 #include <model_scoreboard.h>
 #include <model_team_conf.h>
 #include <model_service_conf.h>
@@ -30,8 +30,8 @@ class Config {
 		int gameEndUTCInSec();
 
 		// storage configuration
-		IStorage *storage();
-		void setStorage(IStorage *pStorage);
+		Storage *storage();
+		void setStorage(Storage *pStorage);
 		ModelScoreboard *scoreboard();
 
 	private:
@@ -47,7 +47,7 @@ class Config {
 		std::vector<std::string> listOfFiles(const std::string &sDirname);
 
 		std::string TAG;
-		IStorage *m_pStorage;
+		Storage *m_pStorage;
 		ModelScoreboard *m_pScoreboard;
 		int m_nScoreboardPort;
 		std::string m_sScoreboardHtmlFolder;

@@ -1,12 +1,14 @@
-#include <ram_storage.h>
+#include "file_storage.h"
 #include <cstdlib>
 #include <ctime>
 #include <utils_logger.h>
 #include <utils_parse_config.h>
 
-RamStorage::RamStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
+REGISTRY_STORAGE(FileStorage)
+
+FileStorage::FileStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     m_pScoreboard = pScoreboard;
-    TAG = "RamStorage";
+    TAG = "FileStorage";
     m_nGameStartUTCInSec = nGameStartUTCInSec;
     m_nGameEndUTCInSec = nGameEndUTCInSec;
 
@@ -16,13 +18,7 @@ RamStorage::RamStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int
 
 // ----------------------------------------------------------------------
 
-std::string RamStorage::type() {
-    return "ram";
-}
-
-// ----------------------------------------------------------------------
-
-bool RamStorage::applyConfigFromFile(const std::string &sConfigFile, 
+bool FileStorage::applyConfigFromFile(const std::string &sConfigFile, 
             std::vector<ModelTeamConf> &vTeamsConf,
             std::vector<ModelServiceConf> &vServicesConf) {
     
@@ -48,45 +44,45 @@ bool RamStorage::applyConfigFromFile(const std::string &sConfigFile,
 
 // ----------------------------------------------------------------------
 
-void RamStorage::clean() {
+void FileStorage::clean() {
     
 }
 
 // ----------------------------------------------------------------------
 
-void RamStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &flag){
+void FileStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &flag){
     std::lock_guard<std::mutex> lock(m_mutexFlags);
 
-    ModelFlag *pModelFlag = new ModelFlag();
-    pModelFlag->copyFrom(flag);
-    m_vFlagLives.push_back(pModelFlag);
+    Flag *pFlag = new Flag();
+    pFlag->copyFrom(flag);
+    m_vFlagLives.push_back(pFlag);
     // cache by flag value
-    m_mapFlagLive[flag.value()] = pModelFlag;
+    m_mapFlagLive[flag.value()] = pFlag;
 }
 
 // ----------------------------------------------------------------------
 
-std::vector<ModelFlag> RamStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
+std::vector<Flag> FileStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
     // TODO
-    return std::vector<ModelFlag>();
+    return std::vector<Flag>();
 }
 
 // ----------------------------------------------------------------------
 
-void RamStorage::updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const ModelFlag &sFlag){
-    // TODO
-}
-
-// ----------------------------------------------------------------------
-
-void RamStorage::updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf) {
+void FileStorage::updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag){
     // TODO
 }
 
 // ----------------------------------------------------------------------
 
-bool RamStorage::findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag) {
-    std::map<std::string, ModelFlag *>::iterator it;
+void FileStorage::updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf) {
+    // TODO
+}
+
+// ----------------------------------------------------------------------
+
+bool FileStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
+    std::map<std::string, Flag *>::iterator it;
     it = m_mapFlagLive.find(sFlag);
     if (it != m_mapFlagLive.end()) {
         resultFlag.copyFrom(*(it->second));
@@ -97,20 +93,20 @@ bool RamStorage::findFlagByValue(const std::string &sFlag, ModelFlag &resultFlag
 
 // ----------------------------------------------------------------------
 
-bool RamStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
+bool FileStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
      // TODO
     return false;
 }
 
 // ----------------------------------------------------------------------
 
-void RamStorage::removeFlag(ModelFlag &flag) {
+void FileStorage::removeFlag(Flag &flag) {
     // TODO
 }
 
 // ----------------------------------------------------------------------
 
-void RamStorage::moveToArchive(ModelFlag &flag) {
+void FileStorage::moveToArchive(Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
 
     // TODO

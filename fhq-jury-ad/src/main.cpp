@@ -16,11 +16,11 @@
 #include <service_checker_thread.h>
 #include <model_team_conf.h>
 #include <utils_logger.h>
-#include <utils_light_http_server.h>
+#include <light_http_server.h>
 #include <utils_help_parse_args.h>
 #include <utils_search_lazy_conf.h>
 #include <http_handler.h>
-#include <ram_storage.h>
+#include <storages.h>
 #include <utils_make_folder_and_file.h>
 #include <unistd.h>
 #include <limits.h>
@@ -40,7 +40,7 @@ void quitApp(int signum) {
 
 int main(int argc, char* argv[]) {
     std::string TAG = "MAIN";
-    
+
     HelpParseArgs helpParseArgs(argc, argv);
 
     helpParseArgs.addHelp("help", "-h", false,
@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
 
     Log::setDir(sLogDir);
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-
+    Log::info(TAG, "Version: " + std::string(JURY_AD_VERSION));
     if (helpParseArgs.has("search-lazy-conf")){
         SearchLazyConf searchLazyConf(8080);
         searchLazyConf.scan();
@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
     signal( SIGTERM, quitApp );
 
     if (helpParseArgs.has("check-http")) {
-        pConfig->setStorage(new RamStorage(pConfig->scoreboard(), pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
+        pConfig->setStorage(Storages::create("file", pConfig->scoreboard(), pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
         HttpHandler *pScoreboard = new HttpHandler(pConfig);
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
         g_httpServer.start(

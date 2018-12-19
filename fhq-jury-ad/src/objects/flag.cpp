@@ -1,15 +1,15 @@
-#include "model_flag.h"
+#include "flag.h"
 #include <iostream>
 #include <chrono>
 #include <cstring>
 
-ModelFlag::ModelFlag() {
+Flag::Flag() {
     
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::generateRandomFlag(int nTimeFlagLifeInMin) {
+void Flag::generateRandomFlag(int nTimeFlagLifeInMin) {
     generateId();
     generateValue();
 
@@ -24,13 +24,13 @@ void ModelFlag::generateRandomFlag(int nTimeFlagLifeInMin) {
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setId(const std::string &sId) {
+void Flag::setId(const std::string &sId) {
     m_sId = sId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::generateId() {
+void Flag::generateId() {
     static const std::string sAlphabet =
             "0123456789"
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -45,7 +45,7 @@ void ModelFlag::generateId() {
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::generateValue() {
+void Flag::generateValue() {
     static const std::string sAlphabet = "0123456789abcdef";
     char sUuid[37];
     memset(&sUuid, '\0', 37);
@@ -64,85 +64,85 @@ void ModelFlag::generateValue() {
 
 // ---------------------------------------------------------------------
 
-std::string ModelFlag::id() const {
+std::string Flag::id() const {
     return m_sId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setValue(const std::string &sValue) {
+void Flag::setValue(const std::string &sValue) {
     m_sValue = sValue;
 }
 
 // ---------------------------------------------------------------------
 
-std::string ModelFlag::value() const {
+std::string Flag::value() const {
     return m_sValue;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTeamId(const std::string &sTeamId) {
+void Flag::setTeamId(const std::string &sTeamId) {
     m_sTeamId = sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelFlag::teamId() const {
+const std::string &Flag::teamId() const {
     return m_sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setServiceId(const std::string &sServiceId) {
+void Flag::setServiceId(const std::string &sServiceId) {
     m_sServiceId = sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &ModelFlag::serviceId() const {
+const std::string &Flag::serviceId() const {
     return m_sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTimeStart(long nTimeStart) {
+void Flag::setTimeStart(long nTimeStart) {
     m_nTimeStart = nTimeStart;
 }
 
 // ---------------------------------------------------------------------
 
-long ModelFlag::timeStart() const {
+long Flag::timeStart() const {
     return m_nTimeStart;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTimeEnd(long nTimeEnd) {
+void Flag::setTimeEnd(long nTimeEnd) {
     m_nTimeEnd = nTimeEnd;
 }
 
 // ---------------------------------------------------------------------
 
-long ModelFlag::timeEnd() const {
+long Flag::timeEnd() const {
     return m_nTimeEnd;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::setTeamStole(const std::string &sTeamStole) {
+void Flag::setTeamStole(const std::string &sTeamStole) {
     m_sTeamStole = sTeamStole;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string & ModelFlag::teamStole() const {
+const std::string & Flag::teamStole() const {
     return m_sTeamStole;
 }
 
 // ---------------------------------------------------------------------
 
-void ModelFlag::copyFrom(const ModelFlag &flag) {
+void Flag::copyFrom(const Flag &flag) {
     this->setId(flag.id());
     this->setValue(flag.value());
     this->setServiceId(flag.serviceId());

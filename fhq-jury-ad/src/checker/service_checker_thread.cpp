@@ -1,7 +1,7 @@
 #include "service_checker_thread.h"
 #include <unistd.h>
 
-#include <utils_dorunchecker.h>
+#include <dorunchecker.h>
 
 #include <iostream>
 #include <sstream>
@@ -53,7 +53,7 @@ void ServiceCheckerThread::start() {
 
 // ---------------------------------------------------------------------
 
-int ServiceCheckerThread::runChecker(ModelFlag &flag, const std::string &sCommand) {
+int ServiceCheckerThread::runChecker(Flag &flag, const std::string &sCommand) {
     if (sCommand != "put" &&  sCommand != "check") {
         Log::err(TAG, "runChecker - sCommand must be 'put' or 'check' ");
         return ServiceCheckerThread::CHECKER_CODE_SHIT;
@@ -95,61 +95,6 @@ int ServiceCheckerThread::runChecker(ModelFlag &flag, const std::string &sComman
 
     return nExitCode;
 }
-
-// ---------------------------------------------------------------------
-/*
-int ServiceCheckerThread::runChecker(ModelFlag &flag, const std::string &sCommand) {
-
-    if (sCommand != "put" &&  sCommand != "check") {
-        Log::err(TAG, "runChecker - sCommand must be 'put' or 'check' ");
-        return ServiceCheckerThread::CHECKER_CODE_SHIT;
-    }
-
-    QStringList args;
-    args
-        << QString::fromStdString(m_teamConf.ipAddress())
-        << QString::fromStdString(sCommand) 
-        << QString::fromStdString(flag.id())
-        << QString::fromStdString(flag.value());
-
-    Log::info(TAG, "Start script " + m_serviceConf.scriptPath() + " "
-        + args.join(" ").toStdString());
-
-    QProcess p;
-    p.setProcessChannelMode(QProcess::MergedChannels);
-    p.start(QString::fromStdString(m_serviceConf.scriptPath()), args);
-    if(p.waitForStarted(100)){
-        // Log::info(TAG, "Script started");
-    }else{
-        Log::err(TAG, "Script not started. Error: " + p.error());
-        return ServiceCheckerThread::CHECKER_CODE_SHIT;
-    }
-
-    if(p.waitForFinished(m_serviceConf.scriptWaitInSec()*1000)){
-        // Log::info(TAG, "Script finished");
-        int nExitCode = p.exitCode();
-        if (nExitCode != ServiceCheckerThread::CHECKER_CODE_UP 
-            && nExitCode != ServiceCheckerThread::CHECKER_CODE_MUMBLE
-            && nExitCode != ServiceCheckerThread::CHECKER_CODE_CORRUPT
-            && nExitCode != ServiceCheckerThread::CHECKER_CODE_DOWN) {
-             QString p_stdout = p.readAllStandardOutput();
-
-            Log::err(TAG, 
-                " => wrong checker exit code...\n"
-                "p_stdout = \n" + p_stdout.toStdString()  + "; ");
-            return ServiceCheckerThread::CHECKER_CODE_SHIT;
-        }
-        return nExitCode;
-    }
-
-    Log::info(TAG, "Not finished. Error: " + p.error());
-    Log::info(TAG, "p.error():");
-    p.kill();
-    Log::info(TAG, "Killed process");
-    Log::warn(TAG, " => service is mumble (2) ");
-    return ServiceCheckerThread::CHECKER_CODE_MUMBLE;
-}
-*/
 
 // ---------------------------------------------------------------------
 
@@ -195,7 +140,7 @@ void ServiceCheckerThread::run() {
         // If there is more time left before the end of the game than the life of the flag,
         // then we establish a flag
         if (nCurrentTime < (m_pConfig->gameEndUTCInSec() - m_pConfig->flagTimeliveInMin()*60)) {
-            ModelFlag flag;
+            Flag flag;
             flag.generateRandomFlag(m_pConfig->flagTimeliveInMin());
 
             // int nExitCode2 = 
@@ -231,10 +176,10 @@ void ServiceCheckerThread::run() {
             // check some service status or just update to UP (Ha-Ha I'm the real evil!)
         }
 
-        std::vector<ModelFlag> vEndedFlags = m_pConfig->storage()->endedFlags(m_teamConf, m_serviceConf);
+        std::vector<Flag> vEndedFlags = m_pConfig->storage()->endedFlags(m_teamConf, m_serviceConf);
 
         for (unsigned int i = 0; i < vEndedFlags.size(); i++) {
-            ModelFlag oldFlag = vEndedFlags[i];
+            Flag oldFlag = vEndedFlags[i];
 
             if (oldFlag.teamStole() != "") {
                 // some team stoled oldFlag

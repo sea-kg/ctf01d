@@ -1,11 +1,11 @@
-#ifndef MODEL_FLAG_H
-#define MODEL_FLAG_H
+#ifndef FLAG_H
+#define FLAG_H
 
 #include <string>
 
-class ModelFlag {
+class Flag {
     public:
-        ModelFlag();
+        Flag();
         void generateRandomFlag(int nTimeFlagLifeInMin);
 
         void setId(const std::string &sId);
@@ -31,7 +31,7 @@ class ModelFlag {
         void setTeamStole(const std::string &sTeamStole);
         const std::string &teamStole() const;
 
-        void copyFrom(const ModelFlag &flag);
+        void copyFrom(const Flag &flag);
 
     private:
         std::string m_sId;
@@ -43,4 +43,4 @@ class ModelFlag {
         std::string m_sTeamStole;
 };
 
-#endif // MODEL_FLAG_H
+#endif // FLAG_H

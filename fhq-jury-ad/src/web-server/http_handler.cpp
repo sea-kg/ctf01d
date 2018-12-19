@@ -1,7 +1,6 @@
 #include "http_handler.h"
 #include <fstream>
 #include <string>
-#include <istorage.h>
 #include <regex>
 #include <algorithm>
 #include <time.h>
@@ -263,7 +262,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
         }
         // TODO insert to flags_recieved
 
-        ModelFlag flag;
+        Flag flag;
         if (!m_pConfig->storage()->findFlagByValue(sFlag, flag)) {
             pRequest->response(
                 LightHttpRequest::RESP_FORBIDDEN,

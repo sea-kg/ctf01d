@@ -1,4 +1,4 @@
-## MySQL Database  (use_storage is mysql)
+## MySQL Database  (server.use_storage = mysql)
 
 ### Install requirements
 
@@ -21,8 +21,5 @@ Create database and user:
 > GRANT ALL PRIVILEGES ON fhqjuryad.* TO 'fhqjuryad'@'localhost' WITH GRANT OPTION;
 > FLUSH PRIVILEGES;
 ```
-Create tables:
 
-```
-$ mysql -p -u fhqjuryad fhqjuryad < sql/mysql_fhqjuryad.sql
-```
+Tables will be create on first start app

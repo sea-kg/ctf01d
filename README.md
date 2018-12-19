@@ -18,14 +18,16 @@ Or you can use for training.
 $ sudo apt install git-core
 $ cd ~
 $ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
-$ cd fhq-jury-ad.git
-$ sudo mkdir /usr/share/fhq-jury-ad
-$ sudo ln -s `pwd`/jury.d /usr/share/fhq-jury-ad/jury.d
-$ cp ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini.sample ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
-$ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
+$ nano 
+$ nano ~/fhq-jury-ad.git/jury.d/server.conf
+$ nano ~/fhq-jury-ad.git/jury.d/scoreboard.conf
+$ nano ~/fhq-jury-ad.git/jury.d/mysql_storage.conf
 ```
-
-**Look and edit /usr/share/fhq-jury-ad/jury.d/conf.d/conf.ini** - more information inside conf.inf in comments
+Config files (look comments in file):
+* `~/fhq-jury-ad.git/jury.d/game.conf` - basic game configurations, start/end/name/flag live time
+* `~/fhq-jury-ad.git/jury.d/mysql_storage.conf` - basic db connection configurations
+* `~/fhq-jury-ad.git/jury.d/scoreboard.conf` - basic scoreboard configurations html folder, port for web
+* `~/fhq-jury-ad.git/jury.d/server.conf` - basic server just a which type of storage will be used (in current time worl only mysql)
 
 * [BUILD: Ubuntu/Debian](docs/BUILD_UBUNTU.md)
 * [BUILD: MacOS](docs/BUILD_MACOS.md)
@@ -37,10 +39,10 @@ $ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
 After configure database options here:
 
 ```
-$ nano ~/fhq-jury-ad.git/jury.d/conf.d/conf.ini
+$ nano ~/fhq-jury-ad.git/jury.d/mysql_storage.conf
 ```
 
-### Prepare to start
+### Prepare to start with clean all previous data
 
 Previously data-flags will be clean
 
@@ -87,7 +89,7 @@ Where
 Example of send flag (curl):
 
 ```
-$ curl http://192.168.1.10:8080/flag?teamid=1&flag=123e4567-e89b-12d3-a456-426655440000
+$ curl http://192.168.1.10:8080/flag?teamid=keva&flag=123e4567-e89b-12d3-a456-426655440000
 ```
 
 http-code responses:

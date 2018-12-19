@@ -21,11 +21,10 @@ Call-examples:
  * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
  * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
 
-
 ### Possible return codes
 
  * 101 - service is up  (worked fine)
  * 102 - service is corrupt
- * 103 - service is mumble
+ * 103 - service is mumble (or checker infinity work)
  * 104 - service is down
- * any - checker is shit
+ * other - checker is shit

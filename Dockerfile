@@ -1,15 +1,30 @@
+# stage 0: build binary
 FROM debian:9.5
 
-EXPOSE 8080
-COPY ./fhq-jury-ad/debian/9.5/fhq-jury-ad /usr/bin/fhq-jury-ad
-RUN mkdir /usr/share/fhq-jury-ad
-COPY ./jury.d /usr/share/fhq-jury-ad/jury.d
-
-RUN apt-get update && apt-get install -y libcurl3 zlibc zlib1g libpng16-16 libmariadbclient18
+RUN apt-get -y update && apt-get install -y \
+    make cmake \
+    g++ \
+    pkg-config \
+    libcurl4-openssl-dev \
+    zlibc zlib1g zlib1g-dev \
+    libpng-dev \
+    default-libmysqlclient-dev
 
 # Fix for building on debian system (mysqlclient library)
-# RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
+RUN ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc
 
-CMD fhq-jury-ad start
+COPY ./fhq-jury-ad /root/sources
+WORKDIR /root/sources
+RUN ./clean.sh && ./build_simple.sh
 
-
+# stage 1: finish
+FROM debian:9.5
+RUN apt-get -y update \
+    && apt-get install -y libcurl3 zlibc zlib1g libpng16-16 libmariadbclient18
+# predefined for checkers
+RUN apt-get install -y python python-pip libssl-dev \
+    && pip install requests
+COPY --from=0 /root/sources/fhq-jury-ad /usr/bin/fhq-jury-ad
+COPY ./jury.d /usr/share/fhq-jury-ad/jury.d
+EXPOSE 8080
+CMD ["fhq-jury-ad","start"]

@@ -31,6 +31,7 @@ Config files (look comments in file):
 
 * [BUILD: Ubuntu/Debian](docs/BUILD_UBUNTU.md)
 * [BUILD: MacOS](docs/BUILD_MACOS.md)
+* [BUILD: Docker](docs/BUILD_DOCKER.md)
 
 ### Configure database
 

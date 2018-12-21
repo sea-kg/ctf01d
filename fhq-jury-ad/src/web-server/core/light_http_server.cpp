@@ -10,62 +10,12 @@
 #include <stdio.h>
 #include <math.h>
 
-
-// ----------------------------------------------------------------------
-// newRequest
-
-void* newRequest(void *arg) {
-	// Log::info("newRequest", "");
-	LightHttpRequest *info = (LightHttpRequest *)arg;
-	int nSockFd = info->sockFd();
-	int n;
-	// int newsockfd = (long)arg;
-	char msg[MAXPACKETSIZE];
-	memset(msg, 0, MAXPACKETSIZE);
-
-	pthread_detach(pthread_self());
-	std::string sRequest;
-	
-	// std::cout << nSockFd  << ": address = " << info->address() << "\n";
-
-	// read data from socket
-	while(1) { // problem can be here
-		// std::cout << nSockFd  << ": wait recv...\n";
-		n = recv(nSockFd, msg, MAXPACKETSIZE, 0);
-		// std::cout << "N: " << n << std::endl;
-		if (n == -1) {
-			std::cout << nSockFd  << ": error read... \n";
-			break;
-		}
-		if (n == 0) {
-		   //close(nSockFd);
-		   break;
-		}
-		msg[n]=0;
-		//send(newsockfd,msg,n,0);
-		sRequest = std::string(msg);
-		// stop reading
-		int len = sRequest.length();
-		// TODO 
-		if(len > 4 && ((sRequest[len-1] == '\n' && sRequest[len-2] == '\r' && sRequest[len-3] == '\n' && sRequest[len-4] == '\r')
-				|| (sRequest[len-1] == '\n' && sRequest[len-2] == '\n'))
-		){
-			// std::cout << nSockFd  << ": end of request\n";
-			break;
-		}
-		// usleep(100);
-    }
-	// std::cout << nSockFd  << ": request >>>> \n" << sRequest << "\n <<<<< request\n";
-	info->handle(sRequest);
-	delete info;
-	return 0;
-}
-
 // ----------------------------------------------------------------------
 // LightHttpServer
 
 LightHttpServer::LightHttpServer() {
 	TAG = "LightHttpServer";
+	m_nMaxWorkers = 4;
 }
 
 // ----------------------------------------------------------------------
@@ -95,7 +45,13 @@ void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttp
  	listen(m_nSockFd, 5);
 	Log::info("LightHttpServer", "Light Http Server started on " + std::to_string(nPort) + " port.");
 
-	// pthread_create(&m_serverThread, NULL, &newRequest, (void *)&m_queueRequests);
+	for (int i = 0; i < m_nMaxWorkers; i++) {
+		m_vWorkers.push_back(new LightHttpThreadWorker("worker" + std::to_string(i), this));
+	}
+
+	for (int i = 0; i < m_vWorkers.size(); i++) {
+		m_vWorkers[i]->start();
+	}
 
 	std::string str;
 	while(1) { // or problem can be here
@@ -103,17 +59,40 @@ void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttp
 		socklen_t sosize  = sizeof(clientAddress);
 		int nSockFd = accept(m_nSockFd,(struct sockaddr*)&clientAddress,&sosize);
 		std::string sAddress = inet_ntoa(clientAddress.sin_addr);
-		LightHttpRequest *info = new LightHttpRequest(nSockFd, sAddress, m_sWebFolder, m_pHandler);
+		LightHttpRequest *pInfo = new LightHttpRequest(nSockFd, sAddress, m_sWebFolder, m_pHandler);
 		// info will be removed inside a thread
-		// m_queueRequests.push(info);
+		m_dequeRequests.push_front(pInfo);
 
-		pthread_create(&m_serverThread, NULL, &newRequest, (void *)info);
+		// pthread_create(&m_serverThread, NULL, &newRequest, (void *)pInfo);
 		// std::cout << "wait \n";
 		usleep(100);
 	}
 }
 
+// ----------------------------------------------------------------------
+
+LightHttpRequest *LightHttpServer::popRequest() {
+	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+	LightHttpRequest *pRequest = nullptr;
+	int nSize = m_dequeRequests.size();
+	if (nSize > 0) {
+		pRequest = m_dequeRequests.back();
+		m_dequeRequests.pop_back();
+	}
+	return pRequest;
+}
+
+// ----------------------------------------------------------------------
+
 void LightHttpServer::stop() {
+	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
+	while (m_dequeRequests.size() > 0) {
+		delete m_dequeRequests.back();
+		m_dequeRequests.pop_back();
+	}
+	for (int i = 0; i < m_vWorkers.size(); i++) {
+		m_vWorkers[i]->stop();
+	}
 	close(m_nSockFd);
 	// close(newsockfd);
 } 

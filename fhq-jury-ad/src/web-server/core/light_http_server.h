@@ -14,26 +14,28 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <map>
-#include <queue>
-#include "light_http_request.h"
+#include <deque>
+#include <mutex>
+#include <light_http_request.h>
+#include <ilighthttpdequerequests.h>
+#include <light_http_thread_worker.h>
 
-class LightHttpServer {
+class LightHttpServer : public ILightHttpDequeRequests {
 	public:
 
 		LightHttpServer();
 		void start(int nPort, const std::string &sWebFolder, ILightHttpHandler *pHandler);
 		void stop();
-		int n, pid;
+		
+		// ILightHttpDequeRequests
+		virtual LightHttpRequest *popRequest();
 
 	private:
 		std::string TAG;
-		std::queue<LightHttpRequest *> m_queueRequests;
-
-		pthread_t m_serverThread;
-		pthread_t m_serverThread1;
-		pthread_t m_serverThread2;
-		pthread_t m_serverThread3;
-		pthread_t m_serverThread4;
+		std::mutex m_mtxDequeRequests;
+		std::deque<LightHttpRequest *> m_dequeRequests;
+		int m_nMaxWorkers;
+		std::vector<LightHttpThreadWorker *> m_vWorkers;
 
 		int m_nSockFd;
 		ILightHttpHandler *m_pHandler;

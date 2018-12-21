@@ -65,6 +65,9 @@ list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.cpp")
 list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.cpp")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_thread_worker.h")
+list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_thread_worker.cpp")
+
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.cpp")
 

@@ -15,7 +15,7 @@ void Flag::generateRandomFlag(int nTimeFlagLifeInMin) {
 
     // __int64
     long nTimeStart = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    std::cout << "nTimeStart: " << nTimeStart << "\n";
+    // std::cout << "nTimeStart: " << nTimeStart << "\n";
     long nTimeEnd = nTimeStart + nTimeFlagLifeInMin*60*1000;
     setTimeStart(nTimeStart);
     setTimeEnd(nTimeEnd);

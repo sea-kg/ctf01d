@@ -129,7 +129,8 @@ void LightHttpRequest::parseRequest(const std::string &sRequest){
 
 // ----------------------------------------------------------------------
 
-bool LightHttpRequest::handle(const std::string &sRequest){
+bool LightHttpRequest::handle(const std::string &sWorkerId, const std::string &sRequest){
+	TAG = "LightHttpRequest-" + sWorkerId;
 	this->parseRequest(sRequest);
 	if(this->requestType() != "GET"){
 		this->response(LightHttpRequest::RESP_NOT_IMPLEMENTED);

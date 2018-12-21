@@ -13,7 +13,7 @@ i = 0
 while i < 1000:
     i = i + 1
     flag = str(uuid.uuid4())
-    r = requests.get('http://' + host + ':' + str(port) + '/flag?teamid=' + str(teamnum) + '&flag=' + flag)
+    r = requests.get('http://' + host + ':' + str(port) + '/flag?teamid=some&flag=' + flag)
     if r.status_code == 200:
         print("OK")
     elif r.status_code == 403:

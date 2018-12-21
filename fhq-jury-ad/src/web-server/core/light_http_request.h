@@ -41,7 +41,7 @@ class LightHttpRequest : ILightHttpRequest {
 			ILightHttpHandler *pHandler
 		);
 		~LightHttpRequest(){};
-		bool handle(const std::string &sRequest);
+		bool handle(const std::string &sWorkerId, const std::string &sRequest);
 		int sockFd();
 
 		// ILightHttpRequest

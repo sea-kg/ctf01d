@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  fhqjuryad_db:
+    image: mysql:5.7
+    volumes:
+      - "./dckr_mysql:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqjuryad
+      MYSQL_USER: fhqjuryad
+      MYSQL_PASSWORD: fhqjuryad
+    networks:
+      - fhqjuryad_net
+
+  fhqjuryad_jury:
+    build: .
+    depends_on:
+      - fhqjuryad_db
+    image: freehackquest/fhq-jury-ad:test
+    volumes:
+      - "./jury.d:/usr/share/fhq-jury-ad/jury.d"
+    ports:
+      - "8080:8080"
+    restart: always
+    links:
+      - "fhqjuryad_db"
+    networks:
+      - fhqjuryad_net
+
+networks:
+  fhqjuryad_net:
+    driver: bridge
+        

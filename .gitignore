@@ -1,7 +1,6 @@
-jury.d/conf.d/conf.ini
 .vscode
-jury.d/conf.d/conf.ini
 jury.d/logs/*.log
+dckr_mysql/*
 
 # Prerequisites
 # *.d

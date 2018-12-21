@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  example_service1:
+    build: .
+    image: example_service1:0.2.0
+    volumes:
+      - "./flags:/root/flags"
+    ports:
+      - "4441:4441"
+    restart: always
+    networks:
+      - example_service1
+
+networks:
+  example_service1:
+    driver: bridge
+        

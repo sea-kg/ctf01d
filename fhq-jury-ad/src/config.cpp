@@ -133,7 +133,7 @@ bool Config::applyGameConf(bool bLazyStart) {
     if (bLazyStart) {
         m_nGameEndUTCInSec = m_nGameStartUTCInSec + 4*60*60; // 4 hours
     } else {
-        std::string m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
+        m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
         Log::info(TAG, "game.end: " + m_sGameEnd);
         {
             std::istringstream in{m_sGameEnd.c_str()};

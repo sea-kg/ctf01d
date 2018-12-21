@@ -19,8 +19,10 @@ set (JURY_AD_SOURCES "")
 # include header dirs
 list (APPEND JURY_AD_INCLUDE_DIRS "src")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/checker")
-list (APPEND JURY_AD_INCLUDE_DIRS "src/models") # deprecated
+list (APPEND JURY_AD_INCLUDE_DIRS "src/config")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/objects")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/resources")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/scoreboard")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/utils")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/interfaces")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/storages")
@@ -43,6 +45,19 @@ list (APPEND JURY_AD_SOURCES "src/checker/dorunchecker.cpp")
 list (APPEND JURY_AD_SOURCES "src/checker/service_checker_thread.h")
 list (APPEND JURY_AD_SOURCES "src/checker/service_checker_thread.cpp")
 
+# config
+list (APPEND JURY_AD_SOURCES "src/config/conf_file_parser.h")
+list (APPEND JURY_AD_SOURCES "src/config/conf_file_parser.cpp")
+list (APPEND JURY_AD_SOURCES "src/config/config.h")
+list (APPEND JURY_AD_SOURCES "src/config/config.cpp")
+list (APPEND JURY_AD_SOURCES "src/config/read_teams_conf.h")
+list (APPEND JURY_AD_SOURCES "src/config/read_teams_conf.cpp")
+list (APPEND JURY_AD_SOURCES "src/config/service.h")
+list (APPEND JURY_AD_SOURCES "src/config/service.cpp")
+list (APPEND JURY_AD_SOURCES "src/config/team.h")
+list (APPEND JURY_AD_SOURCES "src/config/team.cpp")
+
+
 # web-server
 list (APPEND JURY_AD_SOURCES "src/web-server/core/ilighthttprequest.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/core/ilighthttphandler.h")
@@ -57,28 +72,26 @@ list (APPEND JURY_AD_SOURCES "src/web-server/http_handler.cpp")
 list (APPEND JURY_AD_SOURCES "src/objects/flag.h")
 list (APPEND JURY_AD_SOURCES "src/objects/flag.cpp")
 
-# models - deprecated
-list (APPEND JURY_AD_SOURCES "src/models/model_scoreboard.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_scoreboard.cpp")
-list (APPEND JURY_AD_SOURCES "src/models/model_service_conf.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_service_conf.cpp")
-list (APPEND JURY_AD_SOURCES "src/models/model_service_status.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_service_status.cpp")
-list (APPEND JURY_AD_SOURCES "src/models/model_team_conf.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_team_conf.cpp")
-list (APPEND JURY_AD_SOURCES "src/models/model_team_status.h")
-list (APPEND JURY_AD_SOURCES "src/models/model_team_status.cpp")
+# resources
+list (APPEND JURY_AD_SOURCES "src/resources/create_defaults.h")
+list (APPEND JURY_AD_SOURCES "src/resources/create_defaults.cpp")
+
+# scoreboard
+list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.cpp")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/model_service_status.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/model_service_status.cpp")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/model_team_status.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/model_team_status.cpp")
 
 # utils
 list (APPEND JURY_AD_SOURCES "src/utils/colormod.h")
+list (APPEND JURY_AD_SOURCES "src/utils/fs.h")
+list (APPEND JURY_AD_SOURCES "src/utils/fs.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.cpp")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_make_folder_and_file.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_make_folder_and_file.cpp")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_parse_config.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_parse_config.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.cpp")
 
@@ -91,8 +104,6 @@ list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.h")
 list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.cpp")
 
 # main
-list (APPEND JURY_AD_SOURCES "src/config.h")
-list (APPEND JURY_AD_SOURCES "src/config.cpp")
 list (APPEND JURY_AD_SOURCES "src/main.cpp")
 
 

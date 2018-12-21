@@ -2,9 +2,9 @@
 #define SERVICE_CHECKER_THREAD_H
 
 #include "config.h"
-#include <model_scoreboard.h>
-#include <model_team_conf.h>
-#include <model_service_conf.h>
+#include <scoreboard.h>
+#include <team.h>
+#include <service.h>
 
 // struct 
 
@@ -17,7 +17,7 @@ class ServiceCheckerThread {
 		static int CHECKER_CODE_DOWN;
 		static int CHECKER_CODE_SHIT;
 
-		ServiceCheckerThread(Config *pConfig, const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
+		ServiceCheckerThread(Config *pConfig, const Team &teamConf, const Service &serviceConf);
 		void start();
 		void run();
 
@@ -25,8 +25,8 @@ class ServiceCheckerThread {
 		std::string TAG;
 		pthread_t m_checkerThread;
 		Config *m_pConfig;
-		ModelTeamConf m_teamConf;
-		ModelServiceConf m_serviceConf;
+		Team m_teamConf;
+		Service m_serviceConf;
 
 		int runChecker(Flag &flag, const std::string &sCommand);
 		// int runChecker(Flag &flag, const std::string &sCommand);

@@ -1,11 +1,11 @@
 #include <mysql_storage.h>
 #include <utils_logger.h>
 #include <mysql/mysql.h>
-#include <utils_parse_config.h>
+#include <conf_file_parser.h>
 
 REGISTRY_STORAGE(MySqlStorage)
 
-MySqlStorage::MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
+MySqlStorage::MySqlStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     m_pScoreboard = pScoreboard;
     TAG = "MySqlStorage";
     m_nGameStartUTCInSec = nGameStartUTCInSec;
@@ -20,8 +20,8 @@ MySqlStorage::MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec,
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile, 
-            std::vector<ModelTeamConf> &vTeams, 
-            std::vector<ModelServiceConf> &vServicesConf) {
+            std::vector<Team> &vTeams, 
+            std::vector<Service> &vServicesConf) {
     Log::info(TAG, "Reading config: " + sConfigFile);
     
     if (!Log::fileExists(sConfigFile)) {
@@ -30,7 +30,7 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile,
     }
 
     // game.conf - will be override configs from conf.ini
-    UtilsParseConfig mysqlStorageConf = UtilsParseConfig(sConfigFile);
+    ConfFileParser mysqlStorageConf = ConfFileParser(sConfigFile);
     if (!mysqlStorageConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
@@ -305,7 +305,7 @@ MYSQL *MySqlStorage::getDatabaseConnection() {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &flag){
+void MySqlStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &flag){
     MYSQL *pConn = getDatabaseConnection();
     // TODO check connection with NULL
 
@@ -331,7 +331,7 @@ void MySqlStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelService
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
+std::vector<Flag> MySqlStorage::endedFlags(const Team &teamConf, const Service &serviceConf){
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -371,13 +371,13 @@ std::vector<Flag> MySqlStorage::endedFlags(const ModelTeamConf &teamConf, const 
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateFlag(const ModelTeamConf &team, const ModelServiceConf &serviceConf, const Flag &sFlag){
+void MySqlStorage::updateFlag(const Team &team, const Service &serviceConf, const Flag &sFlag){
     // TODO
 }
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf) {
+void MySqlStorage::updateScoreboard(const Team &teamConf, const Service &serviceConf) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check connection with NULL
 

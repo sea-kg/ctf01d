@@ -1,16 +1,18 @@
-#include "utils_parse_config.h"
+// parser for *.conf on c++
+
+#include "conf_file_parser.h"
 #include <sys/stat.h>
 #include <fstream>
 #include <utils_logger.h>
 #include <regex>        // regex, sregex_token_iterator
 
-UtilsParseConfig::UtilsParseConfig(const std::string &sConfigFile) {
+ConfFileParser::ConfFileParser(const std::string &sConfigFile) {
     m_sConfigFile = sConfigFile;
 }
 
 // ---------------------------------------------------------------------
 
-void UtilsParseConfig::string_trim(std::string &sLine){
+void ConfFileParser::string_trim(std::string &sLine){
 	// trim trailing spaces
 	std::size_t endpos = sLine.find_last_not_of(" \t");
 	std::size_t startpos = sLine.find_first_not_of(" \t");
@@ -30,14 +32,14 @@ void UtilsParseConfig::string_trim(std::string &sLine){
 
 // ---------------------------------------------------------------------
 
-bool UtilsParseConfig::fileExists(const std::string &sFilename){
+bool ConfFileParser::fileExists(const std::string &sFilename){
 	struct stat buffer;   
 	return (stat (sFilename.c_str(), &buffer) == 0); 
 }
 
 // ---------------------------------------------------------------------
 
-bool UtilsParseConfig::parseConfig(){
+bool ConfFileParser::parseConfig(){
 	std::ifstream isConfigFile( m_sConfigFile );
 	int nLineNumber = 0;
 	for( std::string sLine; getline( isConfigFile, sLine ); ){
@@ -83,7 +85,7 @@ bool UtilsParseConfig::parseConfig(){
 
 // ---------------------------------------------------------------------
 
-std::string UtilsParseConfig::getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue){
+std::string ConfFileParser::getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue){
 	std::string sResult = defaultValue;
 
     if(m_mapConfigValues.count(sParamName)){
@@ -96,7 +98,7 @@ std::string UtilsParseConfig::getStringValueFromConfig(const std::string &sParam
 
 // ---------------------------------------------------------------------
 
-int UtilsParseConfig::getIntValueFromConfig(const std::string &sParamName, int defaultValue){
+int ConfFileParser::getIntValueFromConfig(const std::string &sParamName, int defaultValue){
     int nResult = defaultValue;
     if(m_mapConfigValues.count(sParamName)){
         std::string sParamValue = m_mapConfigValues.at(sParamName);
@@ -110,7 +112,7 @@ int UtilsParseConfig::getIntValueFromConfig(const std::string &sParamName, int d
 
 // ---------------------------------------------------------------------
 
-bool UtilsParseConfig::getBoolValueFromConfig(const std::string &sParamName, bool defaultValue){
+bool ConfFileParser::getBoolValueFromConfig(const std::string &sParamName, bool defaultValue){
     bool bResult = defaultValue;
 
     if( m_mapConfigValues.count(sParamName)) {

@@ -1,4 +1,4 @@
-#include "utils_make_folder_and_file.h"
+#include "create_defaults.h"
 #include <unistd.h>
 #include <fstream>
 #include <iostream>
@@ -11,8 +11,9 @@
 #include <time.h>
 #include <math.h>
 #include <sstream>
+#include <vector>
 
-bool UtilsMakeFoldersAndFiles::dirExists(const std::string &sDirname) {
+bool CreateDefaults::dirExists(const std::string &sDirname) {
     struct stat st;
     bool bExists = (stat(sDirname.c_str(), &st) == 0);
     if (bExists) {
@@ -23,7 +24,7 @@ bool UtilsMakeFoldersAndFiles::dirExists(const std::string &sDirname) {
 
 // ---------------------------------------------------------------------
 
-bool UtilsMakeFoldersAndFiles::makeDir(const std::string &sDirname) {
+bool CreateDefaults::makeDir(const std::string &sDirname) {
     struct stat st;
     int nStatus = mkdir(sDirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     if (nStatus == 0) {
@@ -39,7 +40,7 @@ bool UtilsMakeFoldersAndFiles::makeDir(const std::string &sDirname) {
 
 // ---------------------------------------------------------------------
 
-bool UtilsMakeFoldersAndFiles::fileExists(const std::string &sFilename) {
+bool CreateDefaults::fileExists(const std::string &sFilename) {
     struct stat st;
     bool bExists = (stat(sFilename.c_str(), &st) == 0);
     if (bExists) {
@@ -50,7 +51,7 @@ bool UtilsMakeFoldersAndFiles::fileExists(const std::string &sFilename) {
 
 // ---------------------------------------------------------------------
 
-bool UtilsMakeFoldersAndFiles::writeFile(const std::string &sFilename, const std::string &sContent) {
+bool CreateDefaults::writeFile(const std::string &sFilename, const std::string &sContent) {
     
     std::ofstream f(sFilename, std::ios::out);
     if (!f) {
@@ -65,7 +66,16 @@ bool UtilsMakeFoldersAndFiles::writeFile(const std::string &sFilename, const std
 
 // ---------------------------------------------------------------------
 
-bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
+bool CreateDefaults::make(const std::string &sWorkspace) {
+    if (!CreateDefaults::createFolders(sWorkspace)) {
+        return false;
+    }
+    return CreateDefaults::createFiles(sWorkspace);
+}
+
+// ---------------------------------------------------------------------
+
+bool CreateDefaults::createFolders(const std::string &sWorkspace){
     
     // prepare folders
     std::vector<std::string> vCreateDirs;
@@ -82,15 +92,21 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
     for(int i = 0; i < vCreateDirs.size(); i++) {
         std::string sPath = vCreateDirs[i];
         // check dir existing
-        if (!UtilsMakeFoldersAndFiles::dirExists(sPath)) {
+        if (!CreateDefaults::dirExists(sPath)) {
             // try make dir
-            if (!UtilsMakeFoldersAndFiles::makeDir(sPath)) {
+            if (!CreateDefaults::makeDir(sPath)) {
                 return false;
             } else {
                 std::cout << "Created folder " << sPath << std::endl;
             }
         }
     }
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool CreateDefaults::createFiles(const std::string &sWorkspace) {
 
     // prepare default files
     struct LocalFileContent {
@@ -106,81 +122,81 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/game.conf", 
-        UtilsMakeFoldersAndFiles::g_sContent_game_conf
+        CreateDefaults::g_sContent_game_conf
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/scoreboard.conf", 
-        UtilsMakeFoldersAndFiles::g_sContent_scoreboard_conf
+        CreateDefaults::g_sContent_scoreboard_conf
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/mysql_storage.conf", 
-        UtilsMakeFoldersAndFiles::g_sContent_mysql_storage_conf
+        CreateDefaults::g_sContent_mysql_storage_conf
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/server.conf", 
-        UtilsMakeFoldersAndFiles::g_sContent_server_conf
+        CreateDefaults::g_sContent_server_conf
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/index.html", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_index_html
+        CreateDefaults::g_sContent_html_index_html
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/css/scoreboard.css", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_css_scoreboard_css
+        CreateDefaults::g_sContent_html_css_scoreboard_css
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/js/scoreboard.js", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_js_scoreboard_js
+        CreateDefaults::g_sContent_html_js_scoreboard_js
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/mumble.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_mumble_svg
+        CreateDefaults::g_sContent_html_images_states_mumble_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/down.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_down_svg
+        CreateDefaults::g_sContent_html_images_states_down_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/up.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_up_svg
+        CreateDefaults::g_sContent_html_images_states_up_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/shit.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_shit_svg
+        CreateDefaults::g_sContent_html_images_states_shit_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/wait.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_wait_svg
+        CreateDefaults::g_sContent_html_images_states_wait_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/states/corrupt.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_states_corrupt_svg
+        CreateDefaults::g_sContent_html_images_states_corrupt_svg
     ));
 
     vCreateFiles.push_back(LocalFileContent(
         sWorkspace + "/html/images/teams/unknown.svg", 
-        UtilsMakeFoldersAndFiles::g_sContent_html_images_teams_unknown_svg
+        CreateDefaults::g_sContent_html_images_teams_unknown_svg
     ));
 
     // write content of files
     for(int i = 0; i < vCreateFiles.size(); i++) {
         LocalFileContent lfc = vCreateFiles[i];
         // check dir existing
-        if (!UtilsMakeFoldersAndFiles::fileExists(lfc.path)) {
+        if (!CreateDefaults::fileExists(lfc.path)) {
             // try make dir
-            if (!UtilsMakeFoldersAndFiles::writeFile(lfc.path, *lfc.content)) {
+            if (!CreateDefaults::writeFile(lfc.path, *lfc.content)) {
                 return false;
             } else {
                 std::cout << "Created file " << lfc.path << std::endl;
@@ -192,7 +208,7 @@ bool UtilsMakeFoldersAndFiles::make(const std::string &sWorkspace){
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_game_conf
+std::string CreateDefaults::g_sContent_game_conf
     = ""
     "# uniq gameid must be regexp [a-z0-9]+\n"
     "game.id = test\n"
@@ -212,7 +228,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_game_conf
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_scoreboard_conf
+std::string CreateDefaults::g_sContent_scoreboard_conf
     = ""
     "# http port for scoreboard\n"
     "scoreboard.port = 8080\n"
@@ -226,7 +242,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_scoreboard_conf
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_mysql_storage_conf
+std::string CreateDefaults::g_sContent_mysql_storage_conf
     = ""
     "# if server.use_storage is mysql\n"
     "mysql_storage.dbhost = localhost\n"
@@ -238,7 +254,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_mysql_storage_conf
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_server_conf
+std::string CreateDefaults::g_sContent_server_conf
     = ""
     "# use storage which storage will be used, now possible values:\n"
     "# mysql - will be used mysql database\n"
@@ -249,7 +265,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_server_conf
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_index_html
+std::string CreateDefaults::g_sContent_html_index_html
     = ""
     "<html>\n"
     "<head>\n"
@@ -277,7 +293,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_index_html
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_css_scoreboard_css
+std::string CreateDefaults::g_sContent_html_css_scoreboard_css
     = ""
     "body{\n"
     "    background-color: #000;\n"
@@ -477,7 +493,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_css_scoreboard_css
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_js_scoreboard_js
+std::string CreateDefaults::g_sContent_html_js_scoreboard_js
     = ""
     "\n"
     "// post request to server Async\n"
@@ -625,7 +641,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_js_scoreboard_js
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_mumble_svg
+std::string CreateDefaults::g_sContent_html_images_states_mumble_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) by Toomai Glittershine for SmashWiki -->\n"
@@ -689,7 +705,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_mumble_svg
 
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_down_svg
+std::string CreateDefaults::g_sContent_html_images_states_down_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
@@ -758,7 +774,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_down_svg
     
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_up_svg
+std::string CreateDefaults::g_sContent_html_images_states_up_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->\n"
@@ -825,7 +841,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_up_svg
     
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_shit_svg
+std::string CreateDefaults::g_sContent_html_images_states_shit_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) by Toomai Glittershine for SmashWiki -->\n"
@@ -896,7 +912,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_shit_svg
     
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_wait_svg
+std::string CreateDefaults::g_sContent_html_images_states_wait_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) by Toomai Glittershine for SmashWiki -->\n"
@@ -966,7 +982,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_wait_svg
     
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_corrupt_svg
+std::string CreateDefaults::g_sContent_html_images_states_corrupt_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) by Toomai Glittershine for SmashWiki -->\n"
@@ -1029,7 +1045,7 @@ std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_states_corrupt_svg
     
 // ---------------------------------------------------------------------
 
-std::string UtilsMakeFoldersAndFiles::g_sContent_html_images_teams_unknown_svg
+std::string CreateDefaults::g_sContent_html_images_teams_unknown_svg
     = ""
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
     "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"

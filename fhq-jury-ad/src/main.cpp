@@ -14,14 +14,14 @@
 #include <thread>
 #include <algorithm>
 #include <service_checker_thread.h>
-#include <model_team_conf.h>
+#include <team.h>
 #include <utils_logger.h>
 #include <light_http_server.h>
 #include <utils_help_parse_args.h>
 #include <utils_search_lazy_conf.h>
 #include <http_handler.h>
 #include <storages.h>
-#include <utils_make_folder_and_file.h>
+#include <create_defaults.h>
 #include <unistd.h>
 #include <limits.h>
 
@@ -144,7 +144,7 @@ int main(int argc, char* argv[]) {
     }
 
     // create default folders and files
-    if (!UtilsMakeFoldersAndFiles::make(sWorkspace)) {
+    if (!CreateDefaults::make(sWorkspace)) {
         std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
         return -1;
     }
@@ -206,8 +206,8 @@ int main(int argc, char* argv[]) {
             
         for (unsigned int iservice = 0; iservice < pConfig->servicesConf().size(); iservice++) {
             for (unsigned int iteam = 0; iteam < pConfig->teamsConf().size(); iteam++) {
-                ModelTeamConf teamConf = pConfig->teamsConf()[iteam];
-                ModelServiceConf serviceConf = pConfig->servicesConf()[iservice];
+                Team teamConf = pConfig->teamsConf()[iteam];
+                Service serviceConf = pConfig->servicesConf()[iservice];
                 
                 pConfig->storage()->updateScoreboard(teamConf, serviceConf);
                 pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ModelServiceStatus::SERVICE_DOWN);

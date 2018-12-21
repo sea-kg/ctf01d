@@ -72,7 +72,7 @@ bool SearchLazyConf::scan() {
 
 // ----------------------------------------------------------------------
 
-std::vector<ModelTeamConf> SearchLazyConf::getFoundTeams() {
+std::vector<Team> SearchLazyConf::getFoundTeams() {
     return m_vTeams;
 }
 
@@ -147,7 +147,7 @@ void SearchLazyConf::check(const std::string &sJuryIpAddress, const std::string 
             }
             std::string sTeamName = req["team_name"];
             int nTeamNum = m_vTeams.size() + 1;
-            ModelTeamConf teamConf;
+            Team teamConf;
             teamConf.setId("team" + std::to_string(nTeamNum));
             teamConf.setName(sTeamName);
             teamConf.setActive(true);

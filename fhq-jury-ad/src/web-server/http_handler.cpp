@@ -31,7 +31,7 @@ void HttpHandler::prepareIndexHtml(){
         "        <div class='score'>Score</div>\n";
 
     for (unsigned int iservice = 0; iservice < m_pConfig->servicesConf().size(); iservice++) {
-        ModelServiceConf serviceConf = m_pConfig->servicesConf()[iservice];
+        Service serviceConf = m_pConfig->servicesConf()[iservice];
         sContent += "<div class='service'>" + serviceConf.name() + "<br><small>(service)</small></div>\n";
         
         nlohmann::json serviceInfo;
@@ -43,7 +43,7 @@ void HttpHandler::prepareIndexHtml(){
     sContent += "  </div>\n";
 
     for (unsigned int iteam = 0; iteam < m_pConfig->teamsConf().size(); iteam++) {
-        ModelTeamConf teamConf = m_pConfig->teamsConf()[iteam];
+        Team teamConf = m_pConfig->teamsConf()[iteam];
         std::string sTeamId = teamConf.id();
             
         nlohmann::json teamInfo;
@@ -63,7 +63,7 @@ void HttpHandler::prepareIndexHtml(){
             "        <div class='score' id='" + sTeamId + "_score'>0</div>\n";
 
         for (unsigned int iservice = 0; iservice < m_pConfig->servicesConf().size(); iservice++) {
-            ModelServiceConf serviceConf = m_pConfig->servicesConf()[iservice];
+            Service serviceConf = m_pConfig->servicesConf()[iservice];
              sContent += "<div class='service'>"
                     "<div class='service-status down' id='" + sTeamId +  "_" + serviceConf.id() + "'> "
                     "   <div class='service-att-def' id='" + sTeamId +  "_" + serviceConf.id() + "_ad'>0 / 0</div>"
@@ -234,7 +234,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
 
         bool bTeamFound = false;
         for (unsigned int iteam = 0; iteam < m_pConfig->teamsConf().size(); iteam++) {
-            ModelTeamConf teamConf = m_pConfig->teamsConf()[iteam];
+            Team teamConf = m_pConfig->teamsConf()[iteam];
             if (teamConf.id() == sTeamId) {
                 bTeamFound = true;
             }

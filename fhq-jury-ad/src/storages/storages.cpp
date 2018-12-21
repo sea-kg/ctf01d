@@ -20,9 +20,9 @@ void Storages::initGlobalVariables(){
 void Storages::add(const std::string &sType, IFabricStorage* pStorage){
     Storages::initGlobalVariables();
     const std::string TAG = "addStorage";
-    if(g_pFabricStorages->count(sType) > 0){
+    if (g_pFabricStorages->count(sType) > 0) {
         Log::err(TAG, sType + " - storage already registered");
-    }else{
+    } else {
         g_pFabricStorages->insert(std::pair<std::string, IFabricStorage*>(sType,pStorage));
         // Log::info(sType, "Registered");
     }
@@ -49,7 +49,7 @@ bool Storages::support(const std::string &sType) {
 
 // ---------------------------------------------------------------------
 
-Storage* Storages::create(const std::string &sType, ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
+Storage* Storages::create(const std::string &sType, Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     Storages::initGlobalVariables();
     std::string TAG = "findStorage";
     IFabricStorage *pFabricStorage = nullptr;

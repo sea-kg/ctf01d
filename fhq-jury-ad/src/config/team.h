@@ -1,11 +1,11 @@
-#ifndef MODEL_TEAM_CONF_H
-#define MODEL_TEAM_CONF_H
+#ifndef TEAM_H
+#define TEAM_H
 
 #include <string>
 
-class ModelTeamConf {
+class Team {
     public:
-        ModelTeamConf();
+        Team();
         
         void setId(const std::string &sId);
         std::string id() const;
@@ -31,4 +31,4 @@ class ModelTeamConf {
         std::string m_sLogo;
 };
 
-#endif // MODEL_TEAM_CONF_H
+#endif // TEAM_H

@@ -2,22 +2,22 @@
 #define FILE_STORAGE_H
 
 #include <storages.h>
-#include <model_scoreboard.h>
+#include <scoreboard.h>
 
 class FileStorage : public Storage {
     public:
-        FileStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
+        FileStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
         static std::string type() { return "file"; };
 
         // Storage
         virtual bool applyConfigFromFile(const std::string &sFilePath, 
-            std::vector<ModelTeamConf> &vTeamsConf, 
-            std::vector<ModelServiceConf> &vServicesConf);
+            std::vector<Team> &vTeamsConf, 
+            std::vector<Service> &vServicesConf);
         virtual void clean();
-        virtual void addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag);
-        virtual std::vector<Flag> endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
-        virtual void updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag);
-        virtual void updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
+        virtual void addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+        virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &serviceConf);
+        virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+        virtual void updateScoreboard(const Team &teamConf, const Service &serviceConf);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void removeFlag(Flag &flag);
@@ -27,7 +27,7 @@ class FileStorage : public Storage {
         std::string TAG;
         std::mutex m_mutexFlags;
 
-        ModelScoreboard *m_pScoreboard;
+        Scoreboard *m_pScoreboard;
         int m_nGameStartUTCInSec;
         int m_nGameEndUTCInSec;
 

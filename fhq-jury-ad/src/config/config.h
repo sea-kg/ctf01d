@@ -2,9 +2,9 @@
 #define CONFIG_H
 
 #include <storages.h>
-#include <model_scoreboard.h>
-#include <model_team_conf.h>
-#include <model_service_conf.h>
+#include <scoreboard.h>
+#include <team.h>
+#include <service.h>
 
 class Config {
 	public:
@@ -12,10 +12,10 @@ class Config {
 		bool applyConfig(bool bLazyStart);
 
 		// services configuration
-		std::vector<ModelServiceConf> &servicesConf();
+		std::vector<Service> &servicesConf();
 
 		// teams configuration
-		std::vector<ModelTeamConf> &teamsConf();
+		std::vector<Team> &teamsConf();
 
 		// scoreboard configuration
 		int scoreboardPort();
@@ -32,23 +32,17 @@ class Config {
 		// storage configuration
 		Storage *storage();
 		void setStorage(Storage *pStorage);
-		ModelScoreboard *scoreboard();
+		Scoreboard *scoreboard();
 
 	private:
 		bool applyGameConf(bool bLazyStart);
 		bool applyServerConf(bool bLazyStart);
 		bool applyScoreboardConf(bool bLazyStart);
-		bool applyTeamsConf(bool bLazyStart);
 		bool applyCheckersConf(bool bLazyStart);
-
-		bool fileExists(const std::string &sFilename);
-        bool dirExists(const std::string &sDirname);
-		std::vector<std::string> listOfDirs(const std::string &sDirname);
-		std::vector<std::string> listOfFiles(const std::string &sDirname);
 
 		std::string TAG;
 		Storage *m_pStorage;
-		ModelScoreboard *m_pScoreboard;
+		Scoreboard *m_pScoreboard;
 		int m_nScoreboardPort;
 		std::string m_sScoreboardHtmlFolder;
 		bool m_bScoreboardRandom;
@@ -64,8 +58,8 @@ class Config {
 		int m_nGameStartUTCInSec; // UTC in seconds
 		int m_nGameEndUTCInSec; // UTC in seconds
 		
-		std::vector<ModelTeamConf> m_vTeamsConf;
-		std::vector<ModelServiceConf> m_vServicesConf;
+		std::vector<Team> m_vTeamsConf;
+		std::vector<Service> m_vServicesConf;
 
 };
 

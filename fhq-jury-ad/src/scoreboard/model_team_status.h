@@ -5,12 +5,12 @@
 #include <map>
 #include <mutex>
 #include <vector>
-#include <model_service_conf.h>
+#include <service.h>
 #include <model_service_status.h>
 
 class ModelTeamStatus {
     public:
-        ModelTeamStatus(const std::string &sTeamId, const std::vector<ModelServiceConf> &vServicesConf);
+        ModelTeamStatus(const std::string &sTeamId, const std::vector<Service> &vServicesConf);
         const std::string &teamId();
 
         void setPlace(int nPlace);

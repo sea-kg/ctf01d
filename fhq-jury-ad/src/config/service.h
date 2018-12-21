@@ -1,11 +1,11 @@
-#ifndef MODEL_SERVICE_CONF_H
-#define MODEL_SERVICE_CONF_H
+#ifndef SERVICE_H
+#define SERVICE_H
 
 #include <string>
 
-class ModelServiceConf {
+class Service {
     public:
-        ModelServiceConf();
+        Service();
         
         void setId(const std::string &sServiceId);
         std::string id() const;
@@ -39,4 +39,4 @@ class ModelServiceConf {
         std::string m_sScriptDir;
 };
 
-#endif // MODEL_SERVICE_CONF_H
+#endif // SERVICE_H

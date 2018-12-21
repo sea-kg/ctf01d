@@ -14,7 +14,7 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <map>
-#include <model_team_conf.h>
+#include <team.h>
 
 #define MAXPACKETSIZE 4096
 
@@ -22,7 +22,7 @@ class SearchLazyConf {
 	public:
 		SearchLazyConf(int nJuryPort);
         bool scan();
-        std::vector<ModelTeamConf> getFoundTeams();
+        std::vector<Team> getFoundTeams();
 
 	private:
         void listCurrentIpAddresses(std::vector<std::string>& vIpAddrs);
@@ -33,7 +33,7 @@ class SearchLazyConf {
         int m_nJuryPort;
         int m_nSockFd;
 		struct sockaddr_in m_serverAddress;	
-        std::vector<ModelTeamConf> m_vTeams;
+        std::vector<Team> m_vTeams;
 };
 
 #endif // SEARCH_LAZY_CONF_H

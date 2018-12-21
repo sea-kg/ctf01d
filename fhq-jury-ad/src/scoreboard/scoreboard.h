@@ -1,19 +1,19 @@
-#ifndef MODEL_SCOREBOARD_H
-#define MODEL_SCOREBOARD_H
+#ifndef SCOREBOARD_H
+#define SCOREBOARD_H
 
 #include <model_team_status.h>
-#include <model_team_conf.h>
-#include <model_service_conf.h>
+#include <team.h>
+#include <service.h>
 #include <string>
 #include <map>
 #include <vector>
 #include <mutex>
 #include <json.hpp>
 
-class ModelScoreboard {
+class Scoreboard {
     public:
 
-        ModelScoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::vector<ModelTeamConf> &vTeamsConf, const std::vector<ModelServiceConf> &vServicesConf);
+        Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::vector<Team> &vTeamsConf, const std::vector<Service> &vServicesConf);
 
         void setServiceStatus(const std::string &sTeamId, const std::string &sServiceId, const std::string &sStatus);
         void setServiceScore(const std::string &sTeamId, const std::string &sServiceId, int nDefence, int nAttack, double nSLA);
@@ -22,7 +22,7 @@ class ModelScoreboard {
         void incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId);
         std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
-        double calculateSLA(int flags_success, const ModelServiceConf &serviceConf);
+        double calculateSLA(int flags_success, const Service &serviceConf);
 
         std::string toString();
         const nlohmann::json &toJson();
@@ -39,4 +39,4 @@ class ModelScoreboard {
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
 };
 
-#endif // MODEL_SCOREBOARD_H
+#endif // SCOREBOARD_H

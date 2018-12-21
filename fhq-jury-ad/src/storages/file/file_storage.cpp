@@ -2,11 +2,11 @@
 #include <cstdlib>
 #include <ctime>
 #include <utils_logger.h>
-#include <utils_parse_config.h>
+#include <conf_file_parser.h>
 
 REGISTRY_STORAGE(FileStorage)
 
-FileStorage::FileStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
+FileStorage::FileStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     m_pScoreboard = pScoreboard;
     TAG = "FileStorage";
     m_nGameStartUTCInSec = nGameStartUTCInSec;
@@ -19,8 +19,8 @@ FileStorage::FileStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, i
 // ----------------------------------------------------------------------
 
 bool FileStorage::applyConfigFromFile(const std::string &sConfigFile, 
-            std::vector<ModelTeamConf> &vTeamsConf,
-            std::vector<ModelServiceConf> &vServicesConf) {
+            std::vector<Team> &vTeamsConf,
+            std::vector<Service> &vServicesConf) {
     
     Log::info(TAG, "Reading config: " + sConfigFile);
     
@@ -30,7 +30,7 @@ bool FileStorage::applyConfigFromFile(const std::string &sConfigFile,
     }
 
     // game.conf - will be override configs from conf.ini
-    UtilsParseConfig mysqlStorageConf = UtilsParseConfig(sConfigFile);
+    ConfFileParser mysqlStorageConf = ConfFileParser(sConfigFile);
     if (!mysqlStorageConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
@@ -50,7 +50,7 @@ void FileStorage::clean() {
 
 // ----------------------------------------------------------------------
 
-void FileStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &flag){
+void FileStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &flag){
     std::lock_guard<std::mutex> lock(m_mutexFlags);
 
     Flag *pFlag = new Flag();
@@ -62,20 +62,20 @@ void FileStorage::addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceC
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> FileStorage::endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf){
+std::vector<Flag> FileStorage::endedFlags(const Team &teamConf, const Service &serviceConf){
     // TODO
     return std::vector<Flag>();
 }
 
 // ----------------------------------------------------------------------
 
-void FileStorage::updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag){
+void FileStorage::updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag){
     // TODO
 }
 
 // ----------------------------------------------------------------------
 
-void FileStorage::updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf) {
+void FileStorage::updateScoreboard(const Team &teamConf, const Service &serviceConf) {
     // TODO
 }
 

@@ -25,7 +25,7 @@ int ServiceCheckerThread::CHECKER_CODE_SHIT = 400;
 // ---------------------------------------------------------------------
 
 ServiceCheckerThread::ServiceCheckerThread(Config *pConfig,
-            const ModelTeamConf &teamConf, const ModelServiceConf &service) {
+            const Team &teamConf, const Service &service) {
     
     m_pConfig = pConfig;
     m_teamConf = teamConf;

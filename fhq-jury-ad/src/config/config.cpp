@@ -5,12 +5,12 @@
 #include <ctime>
 #include <locale>
 #include <date.h>
-#include <sys/stat.h>
 #include <iostream>
 #include <sstream>
 #include <utils_search_lazy_conf.h>
-#include <utils_parse_config.h>
-#include <dirent.h>
+#include <conf_file_parser.h>
+#include <read_teams_conf.h>
+#include <fs.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
     TAG = "Config";
@@ -28,85 +28,17 @@ Config::Config(const std::string &sWorkspaceDir) {
 
 // ---------------------------------------------------------------------
 
-bool Config::fileExists(const std::string &sFilename) {
-    struct stat st;
-    bool bExists = (stat(sFilename.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) == 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool Config::dirExists(const std::string &sDirname) {
-    struct stat st;
-    bool bExists = (stat(sDirname.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) != 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<std::string> Config::listOfDirs(const std::string &sDirname) {
-    std::vector<std::string> vDirs;
-    if (!this->dirExists(sDirname)) {
-        Log::err(TAG, "Directory " + sDirname + " not exists");
-        return vDirs;
-    }
-    DIR *dir = opendir(sDirname.c_str());
-    struct dirent *entry = readdir(dir);
-    while (entry != NULL) {
-        if (entry->d_type == DT_DIR) {
-            std::string sDir(entry->d_name);
-            if (sDir != "." && sDir != "..") {
-                vDirs.push_back(sDir);
-            }
-        }
-        entry = readdir(dir);
-    }
-    closedir(dir);
-    return vDirs;
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<std::string> Config::listOfFiles(const std::string &sDirname) {
-    std::vector<std::string> vFiles;
-    if (!this->dirExists(sDirname)) {
-        Log::err(TAG, "Directory " + sDirname + " not exists");
-        return vFiles;
-    }
-    DIR *dir = opendir(sDirname.c_str());
-    struct dirent *entry = readdir(dir);
-    while (entry != NULL) {
-        if (entry->d_type != DT_DIR) {
-            std::string sDir(entry->d_name);
-            if (sDir != "." && sDir != "..") {
-                vFiles.push_back(sDir);
-            }
-        }
-        entry = readdir(dir);
-    }
-    closedir(dir);
-    return vFiles;
-}
-
-// ---------------------------------------------------------------------
-
 bool Config::applyGameConf(bool bLazyStart) {
     std::string sConfigFile = m_sWorkspaceDir + "/game.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!this->fileExists(sConfigFile)) {
+    if (!FS::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
 
     // game.conf - will be override configs from conf.ini
-    UtilsParseConfig gameConf = UtilsParseConfig(sConfigFile);
+    ConfFileParser gameConf = ConfFileParser(sConfigFile);
     if (!gameConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
@@ -181,12 +113,12 @@ bool Config::applyServerConf(bool bLazyStart) {
     std::string sConfigFile = m_sWorkspaceDir + "/server.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!this->fileExists(sConfigFile)) {
+    if (!FS::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
 
-    UtilsParseConfig serverConf = UtilsParseConfig(sConfigFile);
+    ConfFileParser serverConf = ConfFileParser(sConfigFile);
     if (!serverConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
@@ -217,12 +149,12 @@ bool Config::applyScoreboardConf(bool bLazyStart) {
     std::string sConfigFile = m_sWorkspaceDir + "/scoreboard.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!this->fileExists(sConfigFile)) {
+    if (!FS::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
 
-    UtilsParseConfig scoreboardConf = UtilsParseConfig(sConfigFile);
+    ConfFileParser scoreboardConf = ConfFileParser(sConfigFile);
     if (!scoreboardConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
@@ -250,94 +182,8 @@ bool Config::applyScoreboardConf(bool bLazyStart) {
     }
     Log::info(TAG, "scoreboard.htmlfolder: " + m_sScoreboardHtmlFolder);
 
-    if (!this->dirExists(m_sScoreboardHtmlFolder)) {
+    if (!FS::dirExists(m_sScoreboardHtmlFolder)) {
         Log::err(TAG, "Directory '" + m_sScoreboardHtmlFolder + "' with scorebord does not exists");
-        return false;
-    }
-
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool Config::applyTeamsConf(bool bLazyStart) {
-    std::string sRootTeamsDir = m_sWorkspaceDir + "/teams/";
-    if (!this->dirExists(sRootTeamsDir)) {
-        Log::err(TAG, "Directory " + sRootTeamsDir + " not exists");
-        return false;
-    }
-    Log::info(TAG, "Search team.conf");
-
-    std::vector<std::string> vListOfTeams = this->listOfFiles(sRootTeamsDir);
-
-    if (vListOfTeams.size() == 0) {
-        Log::err(TAG, "Teams does not defined");
-        return false;
-    }
-
-    for (int i = 0; i < vListOfTeams.size(); i++) {
-        std::string sFilename = vListOfTeams[i];
-        std::stringstream test(sFilename);
-        std::string sTeamId = "";
-        if (std::getline(test, sTeamId, '.')) {
-        }
-        std::string sTeamConfPath =  sRootTeamsDir + sTeamId + ".conf";
-        Log::info(TAG, "Reading " + sTeamConfPath);
-        if (!this->fileExists(sTeamConfPath)) {
-            Log::err(TAG, "File " + sTeamConfPath + " not exists");
-            return false;
-        }
-        UtilsParseConfig teamConf = UtilsParseConfig(sTeamConfPath);
-        if (!teamConf.parseConfig()) {
-            Log::err(TAG, "Could not parse " + sTeamConfPath);
-            return false;
-        }
-        std::string sPrefix = "teams." + sTeamId + ".";
-
-        Log::info(TAG, sPrefix + "id = " + sTeamId);
-
-        std::string sTeamName 
-            = teamConf.getStringValueFromConfig(sPrefix + "name", "");
-        Log::info(TAG, sPrefix + "name = " + sTeamName);
-
-         bool bTeamActive
-            = teamConf.getBoolValueFromConfig(sPrefix + "active", true);
-        Log::info(TAG, sPrefix + "active = " + std::string(bTeamActive ? "yes" : "no"));
-
-        std::string sTeamIpAddress 
-            = teamConf.getStringValueFromConfig(sPrefix + "ip_address", "");
-        Log::info(TAG, sPrefix + "ip_address = " + sTeamIpAddress);
-        // TODO check the ip format
-
-        std::string sTeamLogo
-            = teamConf.getStringValueFromConfig(sPrefix + "logo", "");
-        Log::info(TAG, sPrefix + "logo = " + sTeamLogo);
-        // TODO check logo exists
-        
-        if (!bTeamActive) {
-            Log::warn(TAG, "Team " + sTeamId + " - disactivated ");
-            continue;
-        }
-
-        for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
-            if (m_vTeamsConf[i].id() == sTeamId) {
-                Log::err(TAG, "Already registered team with id " + sTeamId);
-                return false;
-            }
-        }
-        // default values of service config
-        ModelTeamConf _teamConf;
-        _teamConf.setId(sTeamId);
-        _teamConf.setActive(true);
-        _teamConf.setIpAddress(sTeamIpAddress);
-        _teamConf.setLogo(sTeamLogo);
-
-        m_vTeamsConf.push_back(_teamConf);
-        Log::ok(TAG, "Registered team " + sTeamId);
-    }
-    
-    if (m_vTeamsConf.size() == 0) {
-        Log::err(TAG, "No one defined team " + sRootTeamsDir);
         return false;
     }
 
@@ -348,13 +194,13 @@ bool Config::applyTeamsConf(bool bLazyStart) {
 
 bool Config::applyCheckersConf(bool bLazyStart) {
     std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
-    if (!this->dirExists(sRootCheckersDir)) {
+    if (!FS::dirExists(sRootCheckersDir)) {
         Log::err(TAG, "Directory " + sRootCheckersDir + " not exists");
         return false;
     }
     Log::info(TAG, "Search service.conf");
 
-    std::vector<std::string> vListOfCheckers = this->listOfDirs(sRootCheckersDir);
+    std::vector<std::string> vListOfCheckers = FS::listOfDirs(sRootCheckersDir);
     if (vListOfCheckers.size() == 0) {
         Log::err(TAG, "Folders with services does not found in " + sRootCheckersDir);
         return false;
@@ -364,11 +210,11 @@ bool Config::applyCheckersConf(bool bLazyStart) {
         std::string sServiceId = vListOfCheckers[i];
         std::string sServiceConfPath =  sRootCheckersDir + sServiceId + "/service.conf";
         Log::info(TAG, "Reading " + sServiceConfPath);
-        if (!this->fileExists(sServiceConfPath)) {
+        if (!FS::fileExists(sServiceConfPath)) {
             Log::err(TAG, "File " + sServiceConfPath + " not exists");
             return false;
         }
-        UtilsParseConfig serviceConf = UtilsParseConfig(sServiceConfPath);
+        ConfFileParser serviceConf = ConfFileParser(sServiceConfPath);
         if (!serviceConf.parseConfig()) {
             Log::err(TAG, "Could not parse " + sServiceConfPath);
             return false;
@@ -388,7 +234,7 @@ bool Config::applyCheckersConf(bool bLazyStart) {
         Log::info(TAG, sPrefix + "script_path = " + sServiceScriptPath);
         std::string sServiceScriptDir = m_sWorkspaceDir + "/checkers/" + sServiceId + "/";
         Log::info(TAG, "sServiceScriptDir: " + sServiceScriptDir);
-        if (!this->fileExists(sServiceScriptDir + sServiceScriptPath)) {
+        if (!FS::fileExists(sServiceScriptDir + sServiceScriptPath)) {
             Log::err(TAG, "File " + sServiceScriptPath + " did not exists");
             return false;
         }
@@ -424,7 +270,7 @@ bool Config::applyCheckersConf(bool bLazyStart) {
         }
 
         // default values of service config
-        ModelServiceConf _serviceConf;
+        Service _serviceConf;
         _serviceConf.setId(sServiceId);
         _serviceConf.setName(sServiceName);
         _serviceConf.setScriptPath(sServiceScriptPath);
@@ -475,7 +321,9 @@ bool Config::applyConfig(bool bLazyStart){
         m_vTeamsConf = searchLazyConf.getFoundTeams();
 
     } else {
-        if (!this->applyTeamsConf(bLazyStart)) {
+
+        ReadTeamsConf teamsConf(m_sWorkspaceDir);
+        if (!teamsConf.read(bLazyStart, m_vTeamsConf)) {
             return false;
         }
     }
@@ -486,7 +334,7 @@ bool Config::applyConfig(bool bLazyStart){
     }
 
     // scoreboard
-    m_pScoreboard = new ModelScoreboard(m_bScoreboardRandom, m_nGameStartUTCInSec, m_nGameEndUTCInSec, m_vTeamsConf, m_vServicesConf);
+    m_pScoreboard = new Scoreboard(m_bScoreboardRandom, m_nGameStartUTCInSec, m_nGameEndUTCInSec, m_vTeamsConf, m_vServicesConf);
 
     // storage
     Log::info(TAG, "Storage: " + m_sUseStorage);
@@ -521,19 +369,19 @@ void Config::setStorage(Storage *pStorage){
 
 // ---------------------------------------------------------------------
 
-ModelScoreboard *Config::scoreboard(){
+Scoreboard *Config::scoreboard(){
     return m_pScoreboard;
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<ModelTeamConf> &Config::teamsConf() {
+std::vector<Team> &Config::teamsConf() {
     return m_vTeamsConf;
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<ModelServiceConf> &Config::servicesConf() {
+std::vector<Service> &Config::servicesConf() {
     return m_vServicesConf;
 }
 

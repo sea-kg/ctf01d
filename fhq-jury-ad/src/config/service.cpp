@@ -1,6 +1,6 @@
-#include "model_service_conf.h"
+#include "service.h"
 
-ModelServiceConf::ModelServiceConf(){
+Service::Service(){
     m_nScriptWaitInSec = 10;
     m_bEnabled = true;
     m_nTimeSleepBetweenRunScriptsInSec = 10;
@@ -8,67 +8,67 @@ ModelServiceConf::ModelServiceConf(){
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setId(const std::string &sServiceID){
+void Service::setId(const std::string &sServiceID){
     m_sID = sServiceID;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelServiceConf::id() const {
+std::string Service::id() const {
     return m_sID;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setName(const std::string &sName){
+void Service::setName(const std::string &sName){
     m_sName = sName;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelServiceConf::name() const {
+std::string Service::name() const {
     return m_sName;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setScriptPath(const std::string &sScriptPath){
+void Service::setScriptPath(const std::string &sScriptPath){
     m_sScriptPath = sScriptPath;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelServiceConf::scriptPath() const {
+std::string Service::scriptPath() const {
     return m_sScriptPath;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setScriptDir(const std::string &sScriptDir) {
+void Service::setScriptDir(const std::string &sScriptDir) {
     m_sScriptDir = sScriptDir;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelServiceConf::scriptDir() const {
+std::string Service::scriptDir() const {
     return m_sScriptDir;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setEnabled(bool bEnabled){
+void Service::setEnabled(bool bEnabled){
     m_bEnabled = bEnabled;
 }
 
 // ----------------------------------------------------------------------
 
-bool ModelServiceConf::isEnabled() const {
+bool Service::isEnabled() const {
     return m_bEnabled;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setScriptWaitInSec(int nSec){
+void Service::setScriptWaitInSec(int nSec){
     m_nScriptWaitInSec = nSec;
     if(m_nScriptWaitInSec < 1){
         m_nScriptWaitInSec = 10;
@@ -77,13 +77,13 @@ void ModelServiceConf::setScriptWaitInSec(int nSec){
 
 // ----------------------------------------------------------------------
 
-int ModelServiceConf::scriptWaitInSec() const {
+int Service::scriptWaitInSec() const {
     return m_nScriptWaitInSec;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceConf::setTimeSleepBetweenRunScriptsInSec(int nSec){
+void Service::setTimeSleepBetweenRunScriptsInSec(int nSec){
     m_nTimeSleepBetweenRunScriptsInSec = nSec;
     if(m_nTimeSleepBetweenRunScriptsInSec < 1){
         m_nTimeSleepBetweenRunScriptsInSec = 10;
@@ -92,7 +92,7 @@ void ModelServiceConf::setTimeSleepBetweenRunScriptsInSec(int nSec){
 
 // ----------------------------------------------------------------------
 
-int ModelServiceConf::timeSleepBetweenRunScriptsInSec() const {
+int Service::timeSleepBetweenRunScriptsInSec() const {
     return m_nTimeSleepBetweenRunScriptsInSec;
 }
 

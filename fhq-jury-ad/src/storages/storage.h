@@ -2,8 +2,10 @@
 #define STORAGE_H
 
 #include <string>
+#include <vector>
 #include <flag.h>
-#include <model_scoreboard.h>
+#include <service.h>
+#include <team.h>
 
 class Storage {
 public:
@@ -12,23 +14,23 @@ public:
 
     virtual bool applyConfigFromFile(
         const std::string &sFilePath, 
-        std::vector<ModelTeamConf> &vTeamsConf,
-        std::vector<ModelServiceConf> &vServicesConf
+        std::vector<Team> &vTeamsConf,
+        std::vector<Service> &vServicesConf
     ) = 0;
 
     virtual void clean() = 0;
 
     // add new live flag
-    virtual void addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag) = 0;
+    virtual void addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag) = 0;
 
     // list of flags with ended if server up and check another flag lost on down
-    virtual std::vector<Flag> endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &service) = 0;
+    virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &service) = 0;
 
     // update flag status and update scoreboard table for team 
-    virtual void updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag) = 0;
+    virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag) = 0;
 
     // force update scoreboard
-    virtual void updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf) = 0; 
+    virtual void updateScoreboard(const Team &teamConf, const Service &serviceConf) = 0; 
 
     // find flag
     virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag) = 0;

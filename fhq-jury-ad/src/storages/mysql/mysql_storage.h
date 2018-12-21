@@ -2,25 +2,25 @@
 #define MYSQL_STORAGE_H
 
 #include <storages.h>
-#include <model_scoreboard.h>
+#include <scoreboard.h>
 #include <config.h>
 #include <map>
 #include <mysql/mysql.h>
 
 class MySqlStorage : public Storage {
     public:
-        MySqlStorage(ModelScoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
+        MySqlStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
         static std::string type() { return "mysql"; };
 
         // Storage
         virtual bool applyConfigFromFile(const std::string &sFilePath, 
-            std::vector<ModelTeamConf> &vTeamsConf, 
-            std::vector<ModelServiceConf> &vServicesConf);
+            std::vector<Team> &vTeamsConf, 
+            std::vector<Service> &vServicesConf);
         virtual void clean();
-        virtual void addLiveFlag(const ModelTeamConf &teamConf, const ModelServiceConf &service, const Flag &sFlag);
-        virtual std::vector<Flag> endedFlags(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf);
-        virtual void updateFlag(const ModelTeamConf &teamConf, const ModelServiceConf &serviceConf, const Flag &sFlag);
-        virtual void updateScoreboard(const ModelTeamConf &teamConf, const ModelServiceConf &service);
+        virtual void addLiveFlag(const Team &teamConf, const Service &service, const Flag &sFlag);
+        virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &serviceConf);
+        virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+        virtual void updateScoreboard(const Team &teamConf, const Service &service);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void removeFlag(Flag &flag);
@@ -28,7 +28,7 @@ class MySqlStorage : public Storage {
 
     private:
         std::string TAG;
-        ModelScoreboard *m_pScoreboard;
+        Scoreboard *m_pScoreboard;
         int m_nGameStartUTCInSec;
         int m_nGameEndUTCInSec;
 

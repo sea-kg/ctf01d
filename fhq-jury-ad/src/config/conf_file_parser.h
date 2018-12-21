@@ -1,12 +1,12 @@
-#ifndef UTILS_PARSE_CONF_H
-#define UTILS_PARSE_CONF_H
+#ifndef CONF_FILE_PARSER_H
+#define CONF_FILE_PARSER_H
 
 #include <string>
 #include <map>
 
-class UtilsParseConfig {
+class ConfFileParser {
 	public:
-		UtilsParseConfig(const std::string &sConfigFile);
+		ConfFileParser(const std::string &sConfigFile);
 
         bool parseConfig();
         std::string getStringValueFromConfig(const std::string &sParamName, const std::string &defaultValue);
@@ -25,4 +25,4 @@ class UtilsParseConfig {
 
 };
 
-#endif // UTILS_PARSE_CONF_H
+#endif // CONF_FILE_PARSER_H

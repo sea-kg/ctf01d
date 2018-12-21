@@ -1,12 +1,12 @@
 #include "model_team_status.h"
 
-ModelTeamStatus::ModelTeamStatus(const std::string &sTeamId, const std::vector<ModelServiceConf> &vServicesConf) {
+ModelTeamStatus::ModelTeamStatus(const std::string &sTeamId, const std::vector<Service> &vServicesConf) {
     m_sTeamId = sTeamId;
     m_nScore = 0.0;
     m_nPlace = 0;
 
     for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
-        ModelServiceConf serviceConf = vServicesConf[iservice];
+        Service serviceConf = vServicesConf[iservice];
         std::string sServiceId = serviceConf.id();
         m_mapServicesStatus[sServiceId] = new ModelServiceStatus(sServiceId);
     }

@@ -14,8 +14,6 @@ class Log {
     public:
         static std::string g_LOG_DIR;
         static std::string g_LOG_FILE;
-        static bool fileExists(const std::string &sFilename);
-        static bool dirExists(const std::string &sFilename);
 
         static void info(const std::string &sTag, const std::string &sMessage);
         static void err(const std::string &sTag, const std::string &msg);
@@ -23,8 +21,6 @@ class Log {
         static void ok(const std::string &sTag, const std::string &sMessage);
         static void initGlobalVariables();
         static void setDir(const std::string &sDir);
-        static std::string currentTime_filename();
-        static std::string currentTime();
         static std::string threadId();
 
     private:

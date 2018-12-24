@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <time.h>
 #include <utils_logger.h>
+#include <ts.h>
 
 HttpHandler::HttpHandler(Config *pConfig){
     m_pConfig = pConfig;
@@ -95,9 +96,9 @@ void HttpHandler::prepareIndexHtml(){
         size_t index = m_sIndexHtml.find(sGameTimeRangeDefine, 0);
         if (index != std::string::npos) {
             std::string sGameTimeRange = ""
-                + formatTimeUTC(m_pConfig->gameStartUTCInSec())
+                + TS::formatTimeUTC(m_pConfig->gameStartUTCInSec())
                 + " (UTC) - "
-                + formatTimeUTC(m_pConfig->gameEndUTCInSec())
+                + TS::formatTimeUTC(m_pConfig->gameEndUTCInSec())
                 + " (UTC) ";
             m_sIndexHtml = m_sIndexHtml.replace(index, sGameTimeRangeDefine.length(), sGameTimeRange);
         }
@@ -111,21 +112,6 @@ void HttpHandler::prepareIndexHtml(){
             m_sIndexHtml.replace(index, sContentDefine.length(), sContent);
         }
     }
-}
-
-// ----------------------------------------------------------------------
-
-std::string HttpHandler::formatTimeUTC(int nTimeInSec) {
-    // datetime
-    std::time_t tm_ = long(nTimeInSec);
-    // struct tm tstruct = *localtime(&tm_);
-    struct tm tstruct = *gmtime ( &tm_ );
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    char buf[80];
-    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tstruct);
-    return std::string(buf);
 }
 
 // ----------------------------------------------------------------------

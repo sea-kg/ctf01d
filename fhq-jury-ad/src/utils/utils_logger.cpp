@@ -4,44 +4,19 @@
 #include <iostream>
 #include <iostream>
 #include <thread>
-#include <time.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <time.h>
-#include <math.h>
 #include <sstream>
+#include <fs.h>
+#include <ts.h>
 
 // Last log messages
 std::mutex *g_LOG_MUTEX = NULL;
 
 // ---------------------------------------------------------------------
 
-bool Log::fileExists(const std::string &sFilename) {
-    struct stat st;
-    bool bExists = (stat(sFilename.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) == 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool Log::dirExists(const std::string &sFilename) {
-    struct stat st;
-    bool bExists = (stat(sFilename.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) != 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
 void Log::info(const std::string &sTag, const std::string &sMessage){
-	Color::Modifier def(Color::FG_DEFAULT);
-    Log::add(def, "INFO",sTag, sMessage);
+    Color::Modifier def(Color::FG_DEFAULT);
+    Log::add(def, "INFO", sTag, sMessage);
 }
 
 // ---------------------------------------------------------------------
@@ -84,50 +59,7 @@ std::string Log::g_LOG_FILE = "";
 
 void Log::setDir(const std::string &sDir) {
     g_LOG_DIR = sDir;
-    g_LOG_FILE = g_LOG_DIR + "/jury-ad_" + Log::currentTime_filename() + ".log";
-}
-
-// ---------------------------------------------------------------------
-
-std::string Log::currentTime(){
-    // milleseconds
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    int millisec = lrint(tv.tv_usec/1000.0); // Round to nearest millisec
-    if (millisec>=1000) { // Allow for rounding up to nearest second
-        millisec -=1000;
-        tv.tv_sec++;
-    }
-
-    // datetime
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X.", &tstruct);
-    return std::string(buf) + std::to_string(millisec);
-}
-
-// ---------------------------------------------------------------------
-
-std::string Log::currentTime_filename() {
-    // milleseconds
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-
-    // datetime
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y%m%d_%H%M%S", &tstruct);
-    return std::string(buf);
+    g_LOG_FILE = g_LOG_DIR + "/jury-ad_" + TS::currentTime_filename() + ".log";
 }
 
 // ---------------------------------------------------------------------
@@ -146,7 +78,7 @@ void Log::add(Color::Modifier clr, const std::string &sType, const std::string &
 
     g_LOG_MUTEX->lock();
     Color::Modifier def(Color::FG_DEFAULT);
-    std::string sLogMessage = Log::currentTime() + ", " + Log::threadId() + " [" + sType + "] " + sTag + ": " + sMessage;
+    std::string sLogMessage = TS::currentTime_logformat() + ", " + Log::threadId() + " [" + sType + "] " + sTag + ": " + sMessage;
     std::cout << clr << sLogMessage << def << std::endl;
 
     std::ofstream logFile(g_LOG_FILE, std::ios::app);

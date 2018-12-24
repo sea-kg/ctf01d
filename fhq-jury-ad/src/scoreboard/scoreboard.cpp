@@ -219,6 +219,33 @@ double Scoreboard::calculateSLA(int nFlagsSuccess, const Service &serviceConf) {
 
 // ----------------------------------------------------------------------
 
+void Scoreboard::addFlagLive(const Flag &flag) {
+    std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
+    std::map<std::string,Flag>::iterator it;
+    it = m_mapFlagsLive.find(flag.value());
+    if (it != m_mapFlagsLive.end()) {
+        Log::warn(TAG, flag.value() + " - flag already exists");
+    } else {
+        m_mapFlagsLive[flag.value()] = flag;
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void Scoreboard::removeFlagLive(const Flag &flag) {
+    std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
+
+    std::map<std::string,Flag>::iterator it;
+    it = m_mapFlagsLive.find(flag.value());
+    if (it != m_mapFlagsLive.end()) {
+        m_mapFlagsLive.erase(flag.value());
+    } else {
+        Log::warn(TAG, flag.value() + " - flag did not exists");
+    }
+}
+
+// ----------------------------------------------------------------------
+
 std::string Scoreboard::toString(){
     // TODO mutex
     std::string sResult = ""; 

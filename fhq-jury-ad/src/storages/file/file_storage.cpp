@@ -3,6 +3,7 @@
 #include <ctime>
 #include <utils_logger.h>
 #include <conf_file_parser.h>
+#include <fs.h>
 
 REGISTRY_STORAGE(FileStorage)
 
@@ -24,7 +25,7 @@ bool FileStorage::applyConfigFromFile(const std::string &sConfigFile,
     
     Log::info(TAG, "Reading config: " + sConfigFile);
     
-    if (!Log::fileExists(sConfigFile)) {
+    if (!FS::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }

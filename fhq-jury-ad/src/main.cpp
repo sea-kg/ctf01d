@@ -24,6 +24,7 @@
 #include <create_defaults.h>
 #include <unistd.h>
 #include <limits.h>
+#include <fs.h>
 
 LightHttpServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -138,7 +139,7 @@ int main(int argc, char* argv[]) {
         }
     }*/
 
-    if (!Log::dirExists(sWorkspace)) {
+    if (!FS::dirExists(sWorkspace)) {
         std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
         return -1;
     }
@@ -150,7 +151,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::string sLogDir = sWorkspace + "/logs";
-    if (!Log::dirExists(sLogDir)) {
+    if (!FS::dirExists(sLogDir)) {
         std::cout << "Error: Folder " << sLogDir << " does not exists \n";
         return -1;
     }

@@ -9,6 +9,7 @@
 #include <regex>        // regex, sregex_token_iterator
 #include <stdio.h>
 #include <math.h>
+#include <fs.h>
 
 bool HandlerRequestHelloWorld::handle(ILightHttpRequest *pRequest){
 	if(pRequest->requestPath() == "/"){
@@ -142,7 +143,7 @@ bool LightHttpRequest::handle(const std::string &sWorkerId, const std::string &s
 			return true;
 		}
 		std::string sFilePath = m_sWebFolder + this->requestPath(); // TODO check /../ in path
-		if (Log::fileExists(sFilePath)){ // TODO check the file exists not dir
+		if (FS::fileExists(sFilePath)){ // TODO check the file exists not dir
 			// std::cout << "File exists! " << sFilePath << "\n";
 			this->responseFile(sFilePath);
 			return true;

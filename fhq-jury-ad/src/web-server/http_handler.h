@@ -12,7 +12,6 @@ class HttpHandler : ILightHttpHandler {
 
     private:
         std::string TAG;
-        std::string formatTimeUTC(int nTime);
         void prepareIndexHtml();
         void string_trim(std::string &sLine);
 

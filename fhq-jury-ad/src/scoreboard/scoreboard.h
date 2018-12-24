@@ -4,6 +4,7 @@
 #include <model_team_status.h>
 #include <team.h>
 #include <service.h>
+#include <flag.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -23,6 +24,8 @@ class Scoreboard {
         std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
         double calculateSLA(int flags_success, const Service &serviceConf);
+        void addFlagLive(const Flag &flag);
+        void removeFlagLive(const Flag &flag);
 
         std::string toString();
         const nlohmann::json &toJson();
@@ -37,6 +40,9 @@ class Scoreboard {
         bool m_bRandom;
         std::map<std::string, ModelTeamStatus *> m_mapTeamsStatuses;
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
+        // flags live for fast check
+        std::mutex m_mutexFlagsLive;
+        std::map<std::string, Flag> m_mapFlagsLive;
 };
 
 #endif // SCOREBOARD_H

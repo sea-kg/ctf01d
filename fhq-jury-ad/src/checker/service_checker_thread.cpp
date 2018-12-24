@@ -30,7 +30,9 @@ ServiceCheckerThread::ServiceCheckerThread(Config *pConfig,
     m_pConfig = pConfig;
     m_teamConf = teamConf;
     m_serviceConf = service;
-    TAG = "Thread_" + m_teamConf.id() + "_" + m_serviceConf.id();
+
+    TAG = "Checker: " + m_teamConf.id() + std::string( 15 - m_teamConf.id().length(), ' ')
+         + m_serviceConf.id() + " ";
     Log::info(TAG, "Created thread");
 }
 

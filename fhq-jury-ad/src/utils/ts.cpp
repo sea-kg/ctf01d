@@ -15,6 +15,13 @@ long TS::currentTime_milliseconds() {
 
 // ---------------------------------------------------------------------
 
+long TS::currentTime_seconds() {
+    long nTimeStart = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    return nTimeStart;
+}
+
+// ---------------------------------------------------------------------
+
 std::string TS::currentTime_logformat(){
     long nTimeStart = TS::currentTime_milliseconds();
     std::string sMilliseconds = std::to_string(int(nTimeStart % 1000));
@@ -33,19 +40,21 @@ std::string TS::currentTime_logformat(){
 
 // ---------------------------------------------------------------------
 
-std::string TS::currentTime_filename() {
-    // milleseconds
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+std::string TS::currentTime_forFilename() {
+    long nTimeStart = TS::currentTime_seconds();
+    return TS::formatTimeForFilename(nTimeStart);
+}
 
-    // datetime
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
+// ---------------------------------------------------------------------
+
+std::string TS::formatTimeForFilename(long nTimeInSec) {
+    std::time_t tm_ = long(nTimeInSec);
+    // struct tm tstruct = *localtime(&tm_);
+    struct tm tstruct = *gmtime ( &tm_ );
 
     // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
     // for more information about date/time format
+    char buf[80];
     strftime(buf, sizeof(buf), "%Y%m%d_%H%M%S", &tstruct);
     return std::string(buf);
 }

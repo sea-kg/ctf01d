@@ -7,8 +7,10 @@ class TS {
 
     public:
         static long currentTime_milliseconds();
-        static std::string currentTime_filename();
+        static long currentTime_seconds();
+        static std::string currentTime_forFilename();
         static std::string currentTime_logformat();
+        static std::string formatTimeForFilename(long nTimeInSec);
         static std::string formatTimeUTC(int nTimeInSec);
 };
 

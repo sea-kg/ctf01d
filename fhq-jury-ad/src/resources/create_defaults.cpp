@@ -1,68 +1,10 @@
 #include "create_defaults.h"
 #include <unistd.h>
-#include <fstream>
 #include <iostream>
-#include <iostream>
-#include <thread>
-#include <time.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <time.h>
-#include <math.h>
-#include <sstream>
 #include <vector>
+#include <fs.h>
 
-bool CreateDefaults::dirExists(const std::string &sDirname) {
-    struct stat st;
-    bool bExists = (stat(sDirname.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) != 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool CreateDefaults::makeDir(const std::string &sDirname) {
-    struct stat st;
-    int nStatus = mkdir(sDirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    if (nStatus == 0) {
-        return true;
-    }
-    if (nStatus == EACCES) {
-        std::cout << "FAILED create folder " << sDirname << std::endl;
-        return false;
-    }
-    std::cout << "nStatus: " << nStatus << std::endl;
-	return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool CreateDefaults::fileExists(const std::string &sFilename) {
-    struct stat st;
-    bool bExists = (stat(sFilename.c_str(), &st) == 0);
-    if (bExists) {
-        return (st.st_mode & S_IFDIR) == 0;
-    }
-	return false;
-}
-
-// ---------------------------------------------------------------------
-
-bool CreateDefaults::writeFile(const std::string &sFilename, const std::string &sContent) {
-    
-    std::ofstream f(sFilename, std::ios::out);
-    if (!f) {
-        std::cout << "FAILED could not create file to wtite " << sFilename << std::endl;
-        return false;
-    }
-
-    f << sContent << std::endl;
-    f.close();
-	return true;
-}
 
 // ---------------------------------------------------------------------
 
@@ -92,9 +34,9 @@ bool CreateDefaults::createFolders(const std::string &sWorkspace){
     for(int i = 0; i < vCreateDirs.size(); i++) {
         std::string sPath = vCreateDirs[i];
         // check dir existing
-        if (!CreateDefaults::dirExists(sPath)) {
+        if (!FS::dirExists(sPath)) {
             // try make dir
-            if (!CreateDefaults::makeDir(sPath)) {
+            if (!FS::makeDir(sPath)) {
                 return false;
             } else {
                 std::cout << "Created folder " << sPath << std::endl;
@@ -193,10 +135,9 @@ bool CreateDefaults::createFiles(const std::string &sWorkspace) {
     // write content of files
     for(int i = 0; i < vCreateFiles.size(); i++) {
         LocalFileContent lfc = vCreateFiles[i];
-        // check dir existing
-        if (!CreateDefaults::fileExists(lfc.path)) {
-            // try make dir
-            if (!CreateDefaults::writeFile(lfc.path, *lfc.content)) {
+        // check file existing
+        if (!FS::fileExists(lfc.path)) {
+            if (!FS::writeFile(lfc.path, *lfc.content)) {
                 return false;
             } else {
                 std::cout << "Created file " << lfc.path << std::endl;

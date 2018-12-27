@@ -13,11 +13,6 @@ class CreateDefaults {
         static bool createFiles(const std::string &sWorkspace);
 
     private:
-        static bool dirExists(const std::string &sDirname);
-        static bool makeDir(const std::string &sDirname);
-
-        static bool fileExists(const std::string &sFilename);
-        static bool writeFile(const std::string &sFilename, const std::string &sContent);
 
         static std::string g_sContent_game_conf;
         static std::string g_sContent_scoreboard_conf;

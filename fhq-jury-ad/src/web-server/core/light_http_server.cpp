@@ -9,20 +9,20 @@
 #include <regex>        // regex, sregex_token_iterator
 #include <stdio.h>
 #include <math.h>
-
+#include <light_http_handlers.h>
 // ----------------------------------------------------------------------
 // LightHttpServer
 
 LightHttpServer::LightHttpServer() {
 	TAG = "LightHttpServer";
 	m_nMaxWorkers = 4;
+	m_pDeque = new LightHttpDequeRequests();
+	m_pHandlers = new LightHttpHandlers();
 }
 
 // ----------------------------------------------------------------------
 
-void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttpHandler *pHandler) {
-	m_pHandler = pHandler;
-	m_sWebFolder = sWebFolder;
+void LightHttpServer::start(int nPort) {
 	m_nSockFd = socket(AF_INET, SOCK_STREAM, 0);
 	if(m_nSockFd <= 0){
 		Log::err(TAG, "Failed to establish socket connection");
@@ -46,7 +46,7 @@ void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttp
 	Log::info("LightHttpServer", "Light Http Server started on " + std::to_string(nPort) + " port.");
 
 	for (int i = 0; i < m_nMaxWorkers; i++) {
-		m_vWorkers.push_back(new LightHttpThreadWorker("worker" + std::to_string(i), this));
+		m_vWorkers.push_back(new LightHttpThreadWorker("worker" + std::to_string(i), m_pDeque, m_pHandlers));
 	}
 
 	for (int i = 0; i < m_vWorkers.size(); i++) {
@@ -59,9 +59,9 @@ void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttp
 		socklen_t sosize  = sizeof(clientAddress);
 		int nSockFd = accept(m_nSockFd,(struct sockaddr*)&clientAddress,&sosize);
 		std::string sAddress = inet_ntoa(clientAddress.sin_addr);
-		LightHttpRequest *pInfo = new LightHttpRequest(nSockFd, sAddress, m_sWebFolder, m_pHandler);
+		LightHttpRequest *pInfo = new LightHttpRequest(nSockFd, sAddress);
 		// info will be removed inside a thread
-		m_dequeRequests.push_front(pInfo);
+		m_pDeque->pushRequest(pInfo);
 
 		// pthread_create(&m_serverThread, NULL, &newRequest, (void *)pInfo);
 		// std::cout << "wait \n";
@@ -71,25 +71,14 @@ void LightHttpServer::start(int nPort, const std::string &sWebFolder, ILightHttp
 
 // ----------------------------------------------------------------------
 
-LightHttpRequest *LightHttpServer::popRequest() {
-	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
-	LightHttpRequest *pRequest = nullptr;
-	int nSize = m_dequeRequests.size();
-	if (nSize > 0) {
-		pRequest = m_dequeRequests.back();
-		m_dequeRequests.pop_back();
-	}
-	return pRequest;
+LightHttpHandlers *LightHttpServer::handlers() {
+	return m_pHandlers;
 }
 
 // ----------------------------------------------------------------------
 
 void LightHttpServer::stop() {
-	std::lock_guard<std::mutex> guard(this->m_mtxDequeRequests);
-	while (m_dequeRequests.size() > 0) {
-		delete m_dequeRequests.back();
-		m_dequeRequests.pop_back();
-	}
+	m_pDeque->cleanup();
 	for (int i = 0; i < m_vWorkers.size(); i++) {
 		m_vWorkers[i]->stop();
 	}

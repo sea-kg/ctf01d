@@ -17,9 +17,10 @@
 #include <team.h>
 #include <utils_logger.h>
 #include <light_http_server.h>
+#include <http_handler_web_folder.h>
+#include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
 #include <utils_search_lazy_conf.h>
-#include <http_handler.h>
 #include <storages.h>
 #include <create_defaults.h>
 #include <unistd.h>
@@ -186,25 +187,23 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    // configure http handlers
+    g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
+
     signal( SIGINT, quitApp );
     signal( SIGTERM, quitApp );
 
     if (helpParseArgs.has("check-http")) {
         pConfig->setStorage(Storages::create("file", pConfig->scoreboard(), pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
-        HttpHandler *pScoreboard = new HttpHandler(pConfig);
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
-        g_httpServer.start(
-            pConfig->scoreboardPort(),
-            pConfig->scoreboardHtmlFolder(),
-            (ILightHttpHandler *)pScoreboard
-        ); // will be block thread
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
+        g_httpServer.start(pConfig->scoreboardPort()); // will be block thread
         return 0;
     }
 
     if (helpParseArgs.has("start") || helpParseArgs.has("lazy-start") ) {
         Log::info(TAG, "Starting...");
-        HttpHandler *pScoreboard = new HttpHandler(pConfig);
-            
+
         for (unsigned int iservice = 0; iservice < pConfig->servicesConf().size(); iservice++) {
             for (unsigned int iteam = 0; iteam < pConfig->teamsConf().size(); iteam++) {
                 Team teamConf = pConfig->teamsConf()[iteam];
@@ -220,12 +219,9 @@ int main(int argc, char* argv[]) {
         }
 
         Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
+        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
-        g_httpServer.start(
-            pConfig->scoreboardPort(),
-            pConfig->scoreboardHtmlFolder(),
-            (ILightHttpHandler *)pScoreboard
-        ); // will be block thread
+        g_httpServer.start(pConfig->scoreboardPort()); // will be block thread
 
         // TODO: stop all threads
 

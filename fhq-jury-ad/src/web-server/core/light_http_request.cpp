@@ -10,22 +10,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <fs.h>
-
-bool HandlerRequestHelloWorld::handle(ILightHttpRequest *pRequest){
-	if(pRequest->requestPath() == "/"){
-		pRequest->response(
-            LightHttpRequest::RESP_OK, 
-            "text/html", 
-            ""
-			"<html><body>"
-			"<h1>Hello, World! So...</h1>"
-			"</body>"
-			"</html>");
-		return true;
-	}
-	return false;
-}
-
+#include <ts.h>
 
 // ----------------------------------------------------------------------
 // LightHttpRequest
@@ -39,13 +24,16 @@ std::string LightHttpRequest::RESP_PAYLOAD_TOO_LARGE = "HTTP/1.1 413 Payload Too
 std::string LightHttpRequest::RESP_INTERNAL_SERVER_ERROR = "HTTP/1.1 500 Internal Server Error";
 std::string LightHttpRequest::RESP_NOT_IMPLEMENTED = "HTTP/1.1 501 Not Implemented";
 
-LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress, const std::string &sWebFolder, ILightHttpHandler *pHandler) {
+// ----------------------------------------------------------------------
+
+LightHttpRequest::LightHttpRequest(int nSockFd, const std::string &sAddress) {
 	m_nSockFd = nSockFd;
 	m_sAddress = sAddress;
-	m_pHandler = pHandler;
-	m_sWebFolder = sWebFolder;
 	m_bClosed = false;
 	TAG = "LightHttpRequest";
+	setResponseNoCache();
+	long nSec = TS::currentTime_seconds();
+	m_sLastModified = TS::formatTimeForWeb(nSec);
 }
 
 // ----------------------------------------------------------------------
@@ -130,32 +118,14 @@ void LightHttpRequest::parseRequest(const std::string &sRequest){
 
 // ----------------------------------------------------------------------
 
-bool LightHttpRequest::handle(const std::string &sWorkerId, const std::string &sRequest){
-	TAG = "LightHttpRequest-" + sWorkerId;
-	this->parseRequest(sRequest);
-	if(this->requestType() != "GET"){
-		this->response(LightHttpRequest::RESP_NOT_IMPLEMENTED);
-		return false;
-	}
+void LightHttpRequest::setResponseNoCache() {
+	m_sResponseCacheControl = "no-cache, no-store, must-revalidate";
+}
 
-	if(m_pHandler != NULL){
-		if(m_pHandler->handle(this)){
-			return true;
-		}
-		std::string sFilePath = m_sWebFolder + this->requestPath(); // TODO check /../ in path
-		if (FS::fileExists(sFilePath)){ // TODO check the file exists not dir
-			// std::cout << "File exists! " << sFilePath << "\n";
-			this->responseFile(sFilePath);
-			return true;
-		} else {
-			Log::err(TAG, "File not exists! " + sFilePath);
-		}
-		
-		this->response(LightHttpRequest::RESP_NOT_FOUND);
-		return false;
-	}
-	this->response(LightHttpRequest::RESP_INTERNAL_SERVER_ERROR);
-	return false;
+// ----------------------------------------------------------------------
+
+void LightHttpRequest::setResponseCacheSec(int nCacheSec) {
+	m_sResponseCacheControl = "max-age=" + std::to_string(nCacheSec);
 }
 
 // ----------------------------------------------------------------------
@@ -166,37 +136,13 @@ void LightHttpRequest::response(const std::string &sFirst){
 
 // ----------------------------------------------------------------------
 
-std::string LightHttpRequest::currentTime(){
-    // milleseconds
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    int millisec = lrint(tv.tv_usec/1000.0); // Round to nearest millisec
-    if (millisec>=1000) { // Allow for rounding up to nearest second
-        millisec -=1000;
-        tv.tv_sec++;
-    }
-
-    // datetime
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-
-    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
-    // for more information about date/time format
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X.", &tstruct);
-    return std::string(buf) + std::to_string(millisec);
-}
-
-// ----------------------------------------------------------------------
-
 void LightHttpRequest::response(const std::string &sFirst, const std::string &sDataType, const std::string &sBody){
 	std::string sResponse = sFirst + "\r\n"
-		"Date: Tue, 14 Aug 2018 08:10:42 GMT\r\n" // TODO generate data
-		"Server: fhq-jury-ad\r\n" // TODO generate data
-		"Cache-Control: no-cache, no-store, must-revalidate\r\n"
-		"Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\n" // TODO generate data
-		"Content-Length: " + std::to_string(sBody.length()) + "\r\n" // TODO generate data
+		"Date: " + m_sLastModified + "\r\n"
+		"Server: fhq-jury-ad\r\n"
+		"Cache-Control: " + m_sResponseCacheControl + "\r\n"
+		"Last-Modified: " + m_sLastModified + "\r\n" // TODO generate data
+		"Content-Length: " + std::to_string(sBody.length()) + "\r\n"
 		"Content-Type: " + sDataType + "\r\n"
 		"Connection: Closed\r\n"
 		"\r\n" + sBody;
@@ -260,14 +206,16 @@ void LightHttpRequest::responseFile(const std::string &sFilePath){
 		// std::cout << sFilePath << "\n filesize: " << nSize << " bytes\n";
 	}
 
+	this->setResponseCacheSec(60);
+	
 	std::string sResponse = LightHttpRequest::RESP_OK + "\r\n"
-		"Date: Tue, 14 Aug 2018 08:10:42 GMT\r\n" // TODO generate data
-		"Server: fhq-jury-ad\r\n" // TODO generate data
-		"Cache-Control: no-cache, no-store, must-revalidate\r\n"
-		"Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\n" // TODO generate data
-		"Content-Length: " + std::to_string(nSize) + "\r\n" // TODO generate data
-		"Content-Type: " + sType + "\r\n" // TODO generate data
-		"Connection: Closed\r\n" // TODO generate data
+		"Date: " + m_sLastModified + "\r\n"
+		"Last-Modified: " + m_sLastModified + "\r\n"
+		"Server: fhq-jury-ad\r\n"
+		"Cache-Control: " + m_sResponseCacheControl + "\r\n"
+		"Content-Length: " + std::to_string(nSize) + "\r\n"
+		"Content-Type: " + sType + "\r\n"
+		"Connection: Closed\r\n"
 		"\r\n";
 
 	if(m_bClosed) {

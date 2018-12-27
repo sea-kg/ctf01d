@@ -72,71 +72,86 @@ function switchUITeamRows(teamID1, teamID2){
     },400);
 }
 
-setInterval(function(){
-    getAjax('/api/v1/scoreboard', function(err, resp){
-        if (err) {
-            scoreboard_content.style.display = 'none';
-            loader_content.style.display = 'block';
-            return;
-        }
-        var teamIDs = [];
-        for(var teamID in resp){
-            var t = resp[teamID];
-            teamIDs.push(teamID);
-            updateUIValue(t, teamID, 'place');
-            updateUIValue(t, teamID, 'score');
-
-            for(var sService in t){
-                if(sService.indexOf('service') == 0){
-                    var newState = t[sService]['status'];
-                    var newAttack = t[sService]['attack'];
-                    var newDefence = t[sService]['defence'];
-                    var newSLA = t[sService]['sla'];
-                    var el = document.getElementById(teamID + '_' + sService);
-                    if (!el.classList.contains(newState)) {
-                        el.classList.remove('up');
-                        el.classList.remove('down');
-                        el.classList.remove('mumble');
-                        el.classList.remove('corrupt');
-                        el.classList.remove('shit');
-                        el.classList.add(newState);
-                    }
-                    document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;
-                    document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';
-                };
+// start poling
+function startPoling() {
+    setInterval(function(){
+        getAjax('/api/v1/scoreboard', function(err, resp){
+            if (err) {
+                scoreboard_content.style.display = 'none';
+                loader_content.style.display = 'block';
+                return;
             }
-        }
+            var teamIDs = [];
+            for(var teamID in resp){
+                var t = resp[teamID];
+                teamIDs.push(teamID);
+                updateUIValue(t, teamID, 'place');
+                updateUIValue(t, teamID, 'score');
 
-        // sort by places
-        var elms2 = [];
-        var elms = document.getElementsByClassName('tm');
-        for(var i = 0; i < elms.length; i++){
-            var el1 = elms[i];
-            var place1 = parseInt(resp[el1.id]['place'], 10);
-            elms2.push({
-                e: elms[i],
-                p: place1
+                for(var sService in t){
+                    if(sService.indexOf('service') == 0){
+                        var newState = t[sService]['status'];
+                        var newAttack = t[sService]['attack'];
+                        var newDefence = t[sService]['defence'];
+                        var newSLA = t[sService]['sla'];
+                        var el = document.getElementById(teamID + '_' + sService);
+                        if (!el.classList.contains(newState)) {
+                            el.classList.remove('up');
+                            el.classList.remove('down');
+                            el.classList.remove('mumble');
+                            el.classList.remove('corrupt');
+                            el.classList.remove('shit');
+                            el.classList.add(newState);
+                        }
+                        document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;
+                        document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';
+                    };
+                }
+            }
+
+            // sort by places
+            var elms2 = [];
+            var elms = document.getElementsByClassName('tm');
+            for(var i = 0; i < elms.length; i++){
+                var el1 = elms[i];
+                var place1 = parseInt(resp[el1.id]['place'], 10);
+                elms2.push({
+                    e: elms[i],
+                    p: place1
+                });
+            }
+            elms2.sort(function(a, b) {
+                return a.p - b.p;
             });
-        }
-        elms2.sort(function(a, b) {
-            return a.p - b.p;
+            for(var i = 0; i < elms2.length; i++){
+                elms2[i].e.style.top = ((i+1)*70) + 'px';
+            }
+            var bSorted = false;
+
+            while (!bSorted){
+                bSorted = true;
+                
+            }
+
+            // open controls
+            if (scoreboard_content.style.display != 'block') {
+                scoreboard_content.style.display = 'block'
+            }
+            if (loader_content.style.display != 'none') {
+                loader_content.style.display = 'none';
+            }
         });
-        for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = ((i+1)*70) + 'px';
-        }
-        var bSorted = false;
+    }, 3000);
+}
 
-        while (!bSorted){
-            bSorted = true;
-            
-        }
-
-        // open controls
-        if (scoreboard_content.style.display != 'block') {
-            scoreboard_content.style.display = 'block'
-        }
-        if (loader_content.style.display != 'none') {
-            loader_content.style.display = 'none';
-        }
-    });
-}, 3000);
+// init scoreboard
+getAjax('/api/v1/game', function(err, resp){
+    if (err) {
+        console.error("Problem with game info ", err);
+        return;
+    }
+    document.getElementById('game_name').innerHTML = resp.game_name;
+    document.getElementById('game_time_range').innerHTML = resp.game_start + ' - ' + resp.game_end;
+    console.log(resp);
+    startPoling();
+});

@@ -1,21 +1,54 @@
-#include "http_handler.h"
+#include "http_handler_api_v1.h"
 #include <fstream>
 #include <string>
 #include <regex>
 #include <algorithm>
 #include <time.h>
-#include <utils_logger.h>
-#include <ts.h>
 
-HttpHandler::HttpHandler(Config *pConfig){
-    m_pConfig = pConfig;
-    TAG = "HttpHandler";
+#include <utils_logger.h>
+#include <light_http_request.h>
+#include <ts.h>
+#include <fs.h>
+#include <str.h>
+
+// ----------------------------------------------------------------------
+
+HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig) 
+    : LightHttpHandlerBase("api-v1") {
+
+    m_pConfig = pConfig;    
+
+    TAG = "HttpHandlerApiV1";
+    m_jsonGame["game_name"] = m_pConfig->gameName();
+    m_jsonGame["game_start"] = TS::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_end"] = TS::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
+    m_jsonGame["teams"] = nlohmann::json::array();
+    m_jsonGame["services"] = nlohmann::json::array();
+
+    for (unsigned int i = 0; i < m_pConfig->servicesConf().size(); i++) {
+        Service serviceConf = m_pConfig->servicesConf()[i];
+        nlohmann::json serviceInfo;
+        serviceInfo["id"] = serviceConf.id();
+        serviceInfo["name"] = serviceConf.name();
+        m_jsonGame["services"].push_back(serviceInfo);
+    }
+
+    for (unsigned int i = 0; i < m_pConfig->teamsConf().size(); i++) {
+        Team teamConf = m_pConfig->teamsConf()[i];
+        std::string sTeamId = teamConf.id();
+        nlohmann::json teamInfo;
+        teamInfo["id"] = teamConf.id();
+        teamInfo["name"] = teamConf.name();
+        teamInfo["ip_address"] = teamConf.ipAddress();
+        m_jsonGame["teams"].push_back(teamInfo);
+    }
+
     prepareIndexHtml();
 }
 
 // ----------------------------------------------------------------------
 
-void HttpHandler::prepareIndexHtml(){
+void HttpHandlerApiV1::prepareIndexHtml() {
     // Loading index-template.html
     m_sIndexHtml = "";
     std::string fullPath = m_pConfig->scoreboardHtmlFolder() + "/index.html";
@@ -77,33 +110,6 @@ void HttpHandler::prepareIndexHtml(){
     }
     sContent += "</div>";
 
-    // replace meta game name
-    {
-        std::string sGameNameDefine = "{{game_name}}";
-        size_t index = m_sIndexHtml.find(sGameNameDefine, 0);
-        if (index != std::string::npos) {
-            std::string sGameName = m_pConfig->gameName();
-            if (m_pConfig->scoreboardRandom()) {
-                sGameName += " (RANDOM)";
-            }
-            m_sIndexHtml = m_sIndexHtml.replace(index, sGameNameDefine.length(), sGameName);
-        }
-    }
-
-    // replace meta game time range
-    {
-        std::string sGameTimeRangeDefine = "{{game_time_range}}";
-        size_t index = m_sIndexHtml.find(sGameTimeRangeDefine, 0);
-        if (index != std::string::npos) {
-            std::string sGameTimeRange = ""
-                + TS::formatTimeUTC(m_pConfig->gameStartUTCInSec())
-                + " (UTC) - "
-                + TS::formatTimeUTC(m_pConfig->gameEndUTCInSec())
-                + " (UTC) ";
-            m_sIndexHtml = m_sIndexHtml.replace(index, sGameTimeRangeDefine.length(), sGameTimeRange);
-        }
-    }
-
     // replace meta content table
     {
         std::string sContentDefine = "{{content}}";
@@ -116,28 +122,28 @@ void HttpHandler::prepareIndexHtml(){
 
 // ----------------------------------------------------------------------
 
-void HttpHandler::string_trim(std::string &sLine) {
-	// trim trailing spaces
-	std::size_t endpos = sLine.find_last_not_of(" \t");
-	std::size_t startpos = sLine.find_first_not_of(" \t");
-	if( std::string::npos != endpos ) {
-		sLine = sLine.substr( 0, endpos+1 );
-		sLine = sLine.substr( startpos );
-	} else {
-		sLine.erase(std::remove(std::begin(sLine), std::end(sLine), ' '), std::end(sLine));
-	}
-
-	// trim leading spaces
-	std::size_t nStartPos = sLine.find_first_not_of(" \t");
-	if( std::string::npos != nStartPos ) {
-		sLine = sLine.substr( nStartPos );
-	}
+bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+    std::string _tag = TAG + "-" + sWorkerId;
+    std::string path = pRequest->requestPath();
+    return path == "/api/v1/game"
+        || path == "/api/v1/scoreboard"
+        || path == "/api/v1/teams"
+        || path == "/api/v1/services"
+        || path == "/flag"
+        || path == "/";
 }
 
 // ----------------------------------------------------------------------
 
-bool HttpHandler::handle(ILightHttpRequest *pRequest){
-    if (pRequest->requestPath() == "/") {
+bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
+    std::string _tag = TAG + "-" + sWorkerId;
+    if(pRequest->requestPath() == "/api/v1/game") {
+        pRequest->response(
+            LightHttpRequest::RESP_OK, 
+            "application/json", 
+            m_jsonGame.dump());
+        return true;
+    } else if (pRequest->requestPath() == "/") {
         pRequest->response(LightHttpRequest::RESP_OK, "text/html", m_sIndexHtml);
         return true;
     } else if(pRequest->requestPath() == "/api/v1/scoreboard") {
@@ -206,7 +212,7 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
         }
 
         std::string sTeamId = itTeamID->second;
-        this->string_trim(sTeamId);
+        Str::trim(sTeamId);
         std::transform(sTeamId.begin(), sTeamId.end(), sTeamId.begin(), ::tolower);
         /*int nTeamNum = atoi(sTeamID.c_str());
         if (nTeamNum == 0) {
@@ -330,3 +336,5 @@ bool HttpHandler::handle(ILightHttpRequest *pRequest){
     }
     return false;
 }
+
+// ----------------------------------------------------------------------

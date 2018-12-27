@@ -17,29 +17,29 @@
 #include <deque>
 #include <mutex>
 #include <light_http_request.h>
-#include <ilighthttpdequerequests.h>
+#include <light_http_handlers.h>
+#include <light_http_deque_requests.h>
 #include <light_http_thread_worker.h>
 
-class LightHttpServer : public ILightHttpDequeRequests {
+class LightHttpServer {
 	public:
 
 		LightHttpServer();
-		void start(int nPort, const std::string &sWebFolder, ILightHttpHandler *pHandler);
+		void start(int nPort);
+		// void start(int nPort);
 		void stop();
-		
-		// ILightHttpDequeRequests
-		virtual LightHttpRequest *popRequest();
+
+		LightHttpHandlers *handlers();
 
 	private:
 		std::string TAG;
-		std::mutex m_mtxDequeRequests;
-		std::deque<LightHttpRequest *> m_dequeRequests;
+		LightHttpDequeRequests *m_pDeque;
+		LightHttpHandlers *m_pHandlers;
+
 		int m_nMaxWorkers;
 		std::vector<LightHttpThreadWorker *> m_vWorkers;
 
 		int m_nSockFd;
-		ILightHttpHandler *m_pHandler;
-		std::string m_sWebFolder;
 		struct sockaddr_in m_serverAddress;	
 };
 

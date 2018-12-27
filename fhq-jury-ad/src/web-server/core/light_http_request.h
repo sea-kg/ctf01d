@@ -14,16 +14,8 @@
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <map>
-#include <ilighthttprequest.h>
-#include <ilighthttphandler.h>
 
-// example of request
-class HandlerRequestHelloWorld : ILightHttpHandler {
-	public:
-		virtual bool handle(ILightHttpRequest *pRequest);
-};
-
-class LightHttpRequest : ILightHttpRequest {
+class LightHttpRequest {
 	public:
         // enum for http responses
         static std::string RESP_OK;
@@ -36,42 +28,39 @@ class LightHttpRequest : ILightHttpRequest {
 
 		LightHttpRequest(
 			int nSockFd,
-			const std::string &sAddress,
-			const std::string &sWebFolder,
-			ILightHttpHandler *pHandler
+			const std::string &sAddress
 		);
 		~LightHttpRequest(){};
-		bool handle(const std::string &sWorkerId, const std::string &sRequest);
-		int sockFd();
 
-		// ILightHttpRequest
-		virtual std::string address();
-		virtual std::string requestType();
-		virtual std::string requestPath();
-		virtual std::string requestHttpVersion();
-		virtual void response(const std::string &sFirst);
-		virtual void response(const std::string &sFirst, const std::string &sDataType, const std::string &sBody);
-		virtual std::map<std::string,std::string> &requestQueryParams();
+		int sockFd();
+		void parseRequest(const std::string &sRequest);
+
+		
+		std::string address();
+		std::string requestType();
+		std::string requestPath();
+		std::string requestHttpVersion();
+		void setResponseNoCache();
+		void setResponseCacheSec(int nCacheSec);
+		void response(const std::string &sFirst);
+		void response(const std::string &sFirst, const std::string &sDataType, const std::string &sBody);
+		void responseFile(const std::string &sFilePath);
+		std::map<std::string,std::string> &requestQueryParams();
 
 	private:
 		std::string TAG;
 
-		// virtual ~LightHttpRequest();
-		void parseRequest(const std::string &sRequest);
-		std::string currentTime();
-
-		void responseFile(const std::string &sFilePath);
-
 		int m_nSockFd;
 		bool m_bClosed; 
-		ILightHttpHandler *m_pHandler;
 		std::string m_sAddress;
 		std::string m_sRequestType;
 		std::string m_sRequestPath;
 		std::map<std::string,std::string> m_sRequestQueryParams;
 		std::string m_sRequestHttpVersion;
-		std::string m_sWebFolder;
-		
+
+		std::string m_sResponseCacheControl;
+		std::string m_sLastModified;
+		TS::formatTimeForWeb(nSec)
 };
 
 #endif // LIGHT_HTTP_REQUEST_H

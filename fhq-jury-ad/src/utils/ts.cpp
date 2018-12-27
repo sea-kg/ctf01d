@@ -40,6 +40,22 @@ std::string TS::currentTime_logformat(){
 
 // ---------------------------------------------------------------------
 
+std::string TS::formatTimeForWeb(long nTimeInSec) {
+    std::time_t tm_ = long(nTimeInSec);
+    // struct tm tstruct = *localtime(&tm_);
+    struct tm tstruct = *gmtime ( &tm_ );
+
+    
+    // Visit http://en.cppreference.com/w/cpp/chrono/c/strftime
+    // for more information about date/time format
+    char buf[80];
+    // Like: Wed, 22 Jul 2009 19:15:56 GMT
+    strftime(buf, sizeof(buf), "%a, %d %b %Y %H:%M:%S GMT", &tstruct);
+    return std::string(buf);
+}
+
+// ---------------------------------------------------------------------
+
 std::string TS::currentTime_forFilename() {
     long nTimeStart = TS::currentTime_seconds();
     return TS::formatTimeForFilename(nTimeStart);

@@ -60,7 +60,6 @@ class LightHttpRequest {
 
 		std::string m_sResponseCacheControl;
 		std::string m_sLastModified;
-		TS::formatTimeForWeb(nSec)
 };
 
 #endif // LIGHT_HTTP_REQUEST_H

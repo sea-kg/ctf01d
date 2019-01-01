@@ -3,6 +3,7 @@
 #include <mysql/mysql.h>
 #include <conf_file_parser.h>
 #include <fs.h>
+#include <ts.h>
 
 REGISTRY_STORAGE(MySqlStorage)
 
@@ -91,6 +92,8 @@ struct MySQLDBUpdate {
     int nVersion;
     std::string sQuery;
 };
+
+// ----------------------------------------------------------------------
 
 bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
     std::string sQuery = "SELECT id, version FROM db_updates ORDER BY id DESC LIMIT 0,1";
@@ -217,6 +220,10 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "ALTER TABLE `flags_attempts` MODIFY `teamid` VARCHAR(50) NOT NULL DEFAULT '';"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(18,  // don't change if after commit
+        "ALTER TABLE `flags_attempts` MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
+    ));
+
     Log::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -277,6 +284,16 @@ void MySqlStorage::clean() {
         MYSQL_RES *pRes = mysql_use_result(pConn);
         mysql_free_result(pRes);
     }
+
+    {
+        std::string sQuery = "DELETE FROM flags_attempts;";
+        if (mysql_query(pConn, sQuery.c_str())) {
+            Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+            return;
+        }
+        MYSQL_RES *pRes = mysql_use_result(pConn);
+        mysql_free_result(pRes);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -328,6 +345,44 @@ void MySqlStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf,
 
     MYSQL_RES *pRes = mysql_use_result(pConn);
     mysql_free_result(pRes);
+}
+
+// ----------------------------------------------------------------------
+
+void MySqlStorage::addFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
+    MYSQL *pConn = getDatabaseConnection();
+    // TODO check connection with NULL
+
+    std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
+        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(TS::currentTime_milliseconds()) + ");";
+
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        return;
+    }
+
+    MYSQL_RES *pRes = mysql_use_result(pConn);
+    mysql_free_result(pRes);
+}
+
+// ----------------------------------------------------------------------
+
+int MySqlStorage::flagAttempts(const std::string &sTeamId) {
+    std::string sQuery = "SELECT COUNT(*) FROM flags_attempts WHERE teamid = '" + sTeamId + "';";
+    MYSQL *pConn = getDatabaseConnection();
+    int nResult = 0;
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error select (flagAttempts): " + std::string(mysql_error(pConn)));
+    } else {
+        MYSQL_RES *pRes = mysql_use_result(pConn);
+        MYSQL_ROW row;
+        // output table name
+        if ((row = mysql_fetch_row(pRes)) != NULL) {
+            nResult = std::stol(std::string(row[0]));
+        }
+        mysql_free_result(pRes);
+    }
+    return nResult;
 }
 
 // ----------------------------------------------------------------------

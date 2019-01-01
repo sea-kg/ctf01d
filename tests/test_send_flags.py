@@ -17,7 +17,7 @@ while i < 1000:
     if r.status_code == 200:
         print("OK")
     elif r.status_code == 403:
-        print("FAIL")
+        print("FAIL " + flag)
     else:
         print("Wrong params")
     # time.sleep(0.05)

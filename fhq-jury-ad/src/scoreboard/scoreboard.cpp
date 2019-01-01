@@ -35,6 +35,7 @@ Scoreboard::Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::ve
             // random states of service for testing 
             if (m_bRandom) {
                 m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), randomServiceStatus()); 
+                m_mapTeamsStatuses[sTeamId]->setTries(std::rand() % 1000);
             }
         }
     }
@@ -49,16 +50,17 @@ Scoreboard::Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::ve
             nlohmann::json teamData;
             teamData["place"] = m_mapTeamsStatuses[sTeamId]->place();
             teamData["score"] = m_mapTeamsStatuses[sTeamId]->score();
-
+            nlohmann::json jsonServices;
             for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
                 Service serviceConf = vServicesConf[iservice];
                 nlohmann::json serviceData;
                 serviceData["defence"] = 0;
                 serviceData["attack"] = 0;
-                serviceData["sla"] = 100.0;
+                serviceData["uptime"] = 100.0;
                 serviceData["status"] = m_mapTeamsStatuses[sTeamId]->serviceStatus(serviceConf.id());
-                teamData[serviceConf.id()] = serviceData;
+                jsonServices[serviceConf.id()] = serviceData;
             }
+            teamData["services"] = jsonServices;
             m_jsonScoreboard[teamConf.id()] = teamData;
         }
     }
@@ -98,9 +100,33 @@ void Scoreboard::setServiceStatus(const std::string &sTeamId, const std::string 
 
 // ----------------------------------------------------------------------
 
+void Scoreboard::incrementTries(const std::string &sTeamId) {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+    std::map<std::string,ModelTeamStatus *>::iterator it;
+    it = m_mapTeamsStatuses.find(sTeamId);
+    if (it != m_mapTeamsStatuses.end()) {
+        it->second->setTries(it->second->tries() + 1);
+        m_jsonScoreboard[sTeamId]["tries"] = it->second->tries();
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void Scoreboard::setTries(const std::string &sTeamId, int nTries) {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+    std::map<std::string,ModelTeamStatus *>::iterator it;
+    it = m_mapTeamsStatuses.find(sTeamId);
+    if (it != m_mapTeamsStatuses.end()) {
+        it->second->setTries(nTries);
+        m_jsonScoreboard[sTeamId]["tries"] = nTries;
+    }
+}
+
+// ----------------------------------------------------------------------
+
 void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId) {
     // TODO
-    Log::warn(TAG, "TODO: incrementAttackScore");
+    Log::warn(TAG, "TODO: incrementDefenceScore");
 }
 
 // ----------------------------------------------------------------------
@@ -168,9 +194,9 @@ void Scoreboard::setServiceScore(const std::string &sTeamId, const std::string &
 
     // update json
     {
-        m_jsonScoreboard[sTeamId][sServiceId]["attack"] = nNewAttack;
-        m_jsonScoreboard[sTeamId][sServiceId]["defence"] = nNewDefence;
-        m_jsonScoreboard[sTeamId][sServiceId]["sla"] = nNewSLA;
+        m_jsonScoreboard[sTeamId]["services"][sServiceId]["attack"] = nNewAttack;
+        m_jsonScoreboard[sTeamId]["services"][sServiceId]["defence"] = nNewDefence;
+        m_jsonScoreboard[sTeamId]["services"][sServiceId]["uptime"] = nNewSLA;
 
         std::map<std::string,ModelTeamStatus *>::iterator it1;
         for (it1 = m_mapTeamsStatuses.begin(); it1 != m_mapTeamsStatuses.end(); it1++) {
@@ -180,6 +206,7 @@ void Scoreboard::setServiceScore(const std::string &sTeamId, const std::string &
             // std::cout << sTeamNum << ": result: score: " << pTeamStatus->score() << ", place: " << pTeamStatus->place() << "\n";
             m_jsonScoreboard[sTeamId_]["score"] = pTeamStatus->score();
             m_jsonScoreboard[sTeamId_]["place"] = pTeamStatus->place();
+            m_jsonScoreboard[sTeamId_]["tries"] = pTeamStatus->tries();
         }
     }
 }

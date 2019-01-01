@@ -30,6 +30,14 @@ function getAjax (url, callback) {
 var scoreboard_content = document.getElementById('scoreboard_content');
 var loader_content = document.getElementById('loader_content');
 
+function _animateElement(el, enable) {
+    if (el == null) {
+        console.error("_animateElement el is null");
+        return;
+    }
+    el.style.animation = enable ? "blinking 0.8s reverse infinite" : '';
+}
+
 function updateUIValue(t, teamID, paramName){
     var newValue = '';
     if (paramName == 'score') {
@@ -37,11 +45,18 @@ function updateUIValue(t, teamID, paramName){
     } else {
         newValue = '' + t[paramName];
     }
-    var el = document.getElementById(teamID + '_' + paramName);
+    var el = document.getElementById(paramName + '-' + teamID);
     if (el) {
         var prevVal = el.innerHTML;
         if (prevVal != newValue) {
-            document.getElementById(teamID + '_' + paramName).innerHTML = newValue;
+            document.getElementById(paramName + '-' + teamID).innerHTML = newValue;
+            if (paramName == "tries") {
+                _animateElement(document.getElementById('tries-icon-' + teamID), true);
+            }
+        } else {
+            if (paramName == "tries") {
+                _animateElement(document.getElementById('tries-icon-' + teamID), false);
+            }
         }
     } else {
         console.error('Not found element: ' + teamID + '_' + paramName);
@@ -85,14 +100,16 @@ function updateScoreboard() {
             teamIDs.push(teamID);
             updateUIValue(t, teamID, 'place');
             updateUIValue(t, teamID, 'score');
+            updateUIValue(t, teamID, 'tries');
+            
 
-            for(var sService in t){
-                if(sService.indexOf('service') == 0){
-                    var newState = t[sService]['status'];
-                    var newAttack = t[sService]['attack'];
-                    var newDefence = t[sService]['defence'];
-                    var newSLA = t[sService]['sla'];
-                    var el = document.getElementById(teamID + '_' + sService);
+            for(var sService in t.services){
+                var newState = t.services[sService]['status'];
+                var newAttack = t.services[sService]['attack'];
+                var newDefence = t.services[sService]['defence'];
+                var newSLA = t.services[sService]['uptime'];
+                var el = document.getElementById('status-' + teamID + '-' + sService);
+                if (el != null) {
                     if (!el.classList.contains(newState)) {
                         el.classList.remove('up');
                         el.classList.remove('down');
@@ -101,9 +118,17 @@ function updateScoreboard() {
                         el.classList.remove('shit');
                         el.classList.add(newState);
                     }
-                    document.getElementById(teamID + '_' + sService + '_ad').innerHTML = newDefence + ' / ' + newAttack;
-                    document.getElementById(teamID + '_' + sService + '_sla').innerHTML = 'SLA: ' + newSLA + '%';
-                };
+                } else {
+                    console.error('status-' + teamID + '-' + sService + '- not found');
+                }
+                var sCell = teamID + '-' + sService;
+                console.log(sCell);
+                var elAtt = document.getElementById('att-' + sCell);
+                if (elAtt != null) elAtt.innerHTML = newAttack; else console.error('att-' + sCell + ' - not found');
+                var elDef = document.getElementById('def-' + sCell);
+                if (elDef != null) elDef.innerHTML = newDefence; else console.error('def-' + sCell + ' - not found');
+                var elUptime = document.getElementById('uptime-' + sCell);
+                if (elUptime != null) elUptime.innerHTML = newSLA + '%'; else console.error('uptime-' + sCell + ' - not found');
             }
         }
 
@@ -163,7 +188,10 @@ getAjax('/api/v1/game', function(err, resp){
     for (var i = 0; i < resp.services.length; i++) {
         sContent += "<div class='service'>" + resp.services[i].name + "<br><small>(service)</small></div>";
     }
-    sContent += "  </div>";
+    sContent += ''
+        + '        <div class="activity">Activity</div>'
+        + '  </div>';
+
     var sTeamListSelect = '';
 
     for (var iteam = 0; iteam < resp.teams.length; iteam++) {
@@ -171,28 +199,34 @@ getAjax('/api/v1/game', function(err, resp){
         sTeamListSelect += '<option value=' + sTeamId + '>' + sTeamId + '</option>';
         sContent += ""
             + "<div class='tm' id='" + sTeamId + "'>"
-            + "  <div class='place' id='" + sTeamId + "_place' >" + (iteam + 1) + "</div>"
-            + "  <div class='team-logo' id='" + sTeamId + "_logo' ><img class='team-logo' src='" + resp.teams[iteam].logo + "'/></div>"
-            + "  <div class='team' id='" + sTeamId + "_name'>"
+            + '  <div class="place" id="place-' + sTeamId + '" >' + (iteam + 1) + '</div>'
+            + "  <div class='team-logo'><img class='team-logo' src='" + resp.teams[iteam].logo + "'/></div>"
+            + "  <div class='team'>"
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"
             + "  </div>"
-            + "  <div class='score' id='" + sTeamId + "_score'>0</div>";
+            + "  <div class='score' id='score-" + sTeamId + "'>0</div>";
 
         for (var i = 0; i < resp.services.length; i++) {
+            var sServiceID = resp.services[i].id;
             sContent += ""
             + "<div class='service'>"
-            + "  <div class='service-status down' id='" + sTeamId +  "_" + resp.services[i].id + "'> "
+            + "  <div class='service-status down' id='status-" + sTeamId +  "-" + sServiceID + "'> "
             + '   <div class="service-att-def">'
-            + '       <div class="d-icn def" id="' + sTeamId +  '_' + resp.services[i].id + '_def">0</div>'
+            + '       <div class="d-icn def" id="def-' + sTeamId +  '-' + sServiceID + '">0</div>'
             + ' | '
-            + '       <div class="d-icn att" id="' + sTeamId +  '_' + resp.services[i].id + '_att">0</div>'
+            + '       <div class="d-icn att" id="att-' + sTeamId +  '-' + sServiceID + '">0</div>'
             + '   </div>'
-            + '   <div class="service-sla d-icn upt" id="' + sTeamId +  '_' + resp.services[i].id + '_sla">0.0%</div>'
+            + '   <div class="service-sla d-icn upt" id="uptime-' + sTeamId +  '-' + sServiceID + '">0.0%</div>'
             + "  </div>"
             + "</div>\n";
         }
-        sContent += "</div>";
+        sContent += ""
+            + '   <div class="activity">'
+            + '      <div class="activity-value" id="tries-' + sTeamId +  '">0</div>'
+            + '      <div class="activity-icon" id="tries-icon-' + sTeamId +  '"></div>'
+            + '   </div>'
+            + "</div>";
     }
     sContent += "</div>";
 

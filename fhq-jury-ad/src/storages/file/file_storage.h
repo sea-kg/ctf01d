@@ -15,6 +15,8 @@ class FileStorage : public Storage {
             std::vector<Service> &vServicesConf);
         virtual void clean();
         virtual void addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+        virtual void addFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
+        virtual int flagAttempts(const std::string &sTeamId);
         virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &serviceConf);
         virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
         virtual void updateScoreboard(const Team &teamConf, const Service &serviceConf);

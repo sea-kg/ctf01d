@@ -63,6 +63,18 @@ void FileStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf, 
 
 // ----------------------------------------------------------------------
 
+void FileStorage::addFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
+    // TODO
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::flagAttempts(const std::string &sTeamId) {
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
 std::vector<Flag> FileStorage::endedFlags(const Team &teamConf, const Service &serviceConf){
     // TODO
     return std::vector<Flag>();

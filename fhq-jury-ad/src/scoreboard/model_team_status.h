@@ -24,6 +24,9 @@ class ModelTeamStatus {
 
         void setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA);
 
+        void setTries(int nScore);
+        int tries();
+
         std::string servicesToString();
 
     private:
@@ -31,6 +34,7 @@ class ModelTeamStatus {
         std::string m_sTeamId;
         int m_nPlace;
         double m_nScore;
+        int m_nTries;
         std::map<std::string, ModelServiceStatus *> m_mapServicesStatus;
 };
 

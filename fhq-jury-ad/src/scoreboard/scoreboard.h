@@ -18,6 +18,8 @@ class Scoreboard {
 
         void setServiceStatus(const std::string &sTeamId, const std::string &sServiceId, const std::string &sStatus);
         void setServiceScore(const std::string &sTeamId, const std::string &sServiceId, int nDefence, int nAttack, double nSLA);
+        void incrementTries(const std::string &sTeamId);
+        void setTries(const std::string &sTeamId, int nTries);
 
         void incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId);
         void incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId);

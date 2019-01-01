@@ -75,6 +75,18 @@ void ModelTeamStatus::setServiceScore(const std::string &sServiceId, int nNewDef
 
 // ----------------------------------------------------------------------
 
+void ModelTeamStatus::setTries(int nTries) {
+    m_nTries = nTries;
+}
+
+// ----------------------------------------------------------------------
+
+int ModelTeamStatus::tries() {
+    return m_nTries;
+}
+
+// ----------------------------------------------------------------------
+
 std::string ModelTeamStatus::serviceStatus(const std::string &sServiceId){
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_mapServicesStatus[sServiceId]->status();

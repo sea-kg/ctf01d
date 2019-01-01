@@ -196,6 +196,42 @@ img.team-logo {
   border-left: 1px solid #111;
   padding-left: 15px;
   padding-right: 15px;
+  text-align: left;
+}
+
+.activity {
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+  width: 150px;
+  line-height: 25px;
+  border-left: 1px solid #111;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.activity .activity-value {
+  display: inline-block;
+}
+
+@keyframes blinking {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.4);
+  }
+}
+
+.activity .activity-icon {
+  display: inline-block;
+  background-image: url(../images/activity.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
 }
 
 .service-status {

@@ -177,7 +177,8 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             Log::warn(TAG, "Error(-140): flag has wrong format");
             return true;
         }
-        // TODO insert to flags_recieved
+        m_pConfig->scoreboard()->incrementTries(sTeamId);
+        m_pConfig->storage()->addFlagAttempt(sTeamId, sFlag);
 
         Flag flag;
         if (!m_pConfig->storage()->findFlagByValue(sFlag, flag)) {
@@ -226,7 +227,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
-        
+
         std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(sTeamId, flag.serviceId());
 
         // std::cout << "sServiceStatus: " << sServiceStatus << "\n";

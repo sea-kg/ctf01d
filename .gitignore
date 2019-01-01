@@ -1,7 +1,7 @@
 .vscode
 jury.d/logs/*.log
 dckr_mysql/*
-
+vulnbox/example_service1/flags/*
 # Prerequisites
 # *.d
 

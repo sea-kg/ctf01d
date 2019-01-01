@@ -23,6 +23,12 @@ public:
     // add new live flag
     virtual void addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag) = 0;
 
+    // add flag attempt
+    virtual void addFlagAttempt(const std::string &sTeamId, const std::string &sFlag) = 0;
+
+    // count of flag attempts for init scoreboard
+    virtual int flagAttempts(const std::string &sTeamId) = 0;
+
     // list of flags with ended if server up and check another flag lost on down
     virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &service) = 0;
 

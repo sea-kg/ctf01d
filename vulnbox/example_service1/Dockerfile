@@ -1,5 +1,6 @@
 FROM python:latest
-MAINTAINER Evgenii Sopov <mrseakg@gmail.com>
+LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
 
 RUN mkdir /root/flags && chmod 777 /root/flags
 COPY service.py /root/service.py

@@ -10,7 +10,37 @@
 <center>
 	<div class="game-name" id="game_name"></div>
 	<div class="game-time-range" id="game_time_range"></div>
-	<div class="game-description">Scoreboard</div>
+	<div class="game-description">Scoreboard <button id="game_rules_btn">Show/Hide Rules</button></div>
+	<div class="game-rules" id="game_rules" style="display: none">
+		<h1>Rules</h1>
+		<div>1. The flag point is counted only once to the first team that delivered it.</div>
+		<div>2. Formula of calculate main score. 
+			Sum by all service, for one service: (<div class="d-icn att"></div> + <div class="d-icn def"></div>) * <div class="d-icn upt"></div>.</div>
+		<div>3. Legend
+			<table>
+				<tr>
+					<td><div class="service-status down"></div><br> service is down</td>
+					<td><div class="service-status up"></div><br> service is down</td>
+					<td><div class="service-status mumble"></div><br> service is down</td>
+					<td><div class="service-status corrupt"></div><br> service is down</td>
+					<td><div class="service-status shit"></div><br> checker is shit</td>
+				</tr>
+			</table>
+			<table>
+				<tr>
+					<td><div class="d-icn att"></div> - number of flags captured</td>
+					<td><div class="d-icn def"></div> - the number of protected flags</td>
+					<td><div class="d-icn upt"></div> - uptime since the start of the game</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script>
+		document.getElementById('game_rules_btn').onclick = function() {
+			var el = document.getElementById('game_rules');
+			el.style.display = el.style.display == 'none' ? '' : 'none';
+		}
+	</script>
 	<div id="scoreboard_content" style="display: none">
 		{{content}}
 	</div>

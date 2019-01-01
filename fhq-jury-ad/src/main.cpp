@@ -22,10 +22,10 @@
 #include <utils_help_parse_args.h>
 #include <utils_search_lazy_conf.h>
 #include <storages.h>
-#include <create_defaults.h>
 #include <unistd.h>
 #include <limits.h>
 #include <fs.h>
+#include <resources_manager.h>
 
 LightHttpServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -69,41 +69,11 @@ int main(int argc, char* argv[]) {
     helpParseArgs.addHelp("--workspace-dir", "-wd", true, 
         "Custom workspace folder with configs, logging, services and etc.");
 
+    helpParseArgs.addHelp("--extract-files", "-ef", false, 
+        "Will be created all default files");
+
     helpParseArgs.addHelp("lazy-start", "-lzs", false, 
         "Start jury with scanning network for make list of teams use running machines with lazy-conf service");
-    
-    // helpParseArgs.addHelp("hub-search", "-hs", true
-    //    "Show all list of services available from service-hub");
-
-    // helpParseArgs.addHelp("hub-install", "-hi", true, 
-    //    "Download service from service-hub");
-
-    // helpParseArgs.addHelp("--servicehub-add", "-sh-add", true, 
-    //     "Added new link to servicehub");
-
-    // helpParseArgs.addHelp("--servicehub-remove", "-sh-rm", true, 
-    //     "Remove link to servicehub");
-
-    // helpParseArgs.addHelp("--servicehub-update", "-sh-upd", false, 
-    //     "Show links to servicehub");
-
-    // helpParseArgs.addHelp("--servicehub-list", "-sh-ls", true, 
-    //     "Show list of services");
-
-    // helpParseArgs.addHelp("--servicehub-download", "-sh-download", true, 
-    //     "Download service sources (+checker) to cache");
-
-    // helpParseArgs.addHelp("--servicehub-enable", "-sh-en", true, 
-    //     "Enable service to current game");
-
-    // helpParseArgs.addHelp("--servicehub-disable", "-sh-dis", true, 
-    //     "Disable service from current game");
-
-    // helpParseArgs.addHelp("--servicehub-export", "-sh-exp", true, 
-    //     "Export services from current game to custom folder");
-
-    // helpParseArgs.addHelp("--servicehub-cache-clear", "-sh-cacl", true, 
-    //     "Clean cache folder");
 
     std::string sArgsErrors;
     if (!helpParseArgs.checkArgs(sArgsErrors)){
@@ -146,9 +116,11 @@ int main(int argc, char* argv[]) {
     }
 
     // create default folders and files
-    if (!CreateDefaults::make(sWorkspace)) {
-        std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
-        return -1;
+    if (helpParseArgs.has("--extract-files")) {
+        if (!ResourcesManager::make(sWorkspace)) {
+            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
+            return -1;
+        }
     }
 
     std::string sLogDir = sWorkspace + "/logs";

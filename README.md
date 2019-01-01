@@ -18,7 +18,7 @@ Or you can use for training.
 $ sudo apt install git-core
 $ cd ~
 $ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
-$ nano 
+$ nano ~/fhq-jury-ad.git/jury.d/game.conf
 $ nano ~/fhq-jury-ad.git/jury.d/server.conf
 $ nano ~/fhq-jury-ad.git/jury.d/scoreboard.conf
 $ nano ~/fhq-jury-ad.git/jury.d/mysql_storage.conf

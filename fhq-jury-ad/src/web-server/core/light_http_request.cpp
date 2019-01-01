@@ -238,3 +238,65 @@ void LightHttpRequest::responseFile(const std::string &sFilePath){
 	close(m_nSockFd);
 	delete[] pData;
 }
+
+// ----------------------------------------------------------------------
+
+void LightHttpRequest::responseBuffer(const std::string &sFilePath, const char *pData, const int nDataSize) {
+	
+	// TODO cache: check file in cache 
+	std::string sFileExt = sFilePath.substr(sFilePath.find_last_of(".") + 1);
+
+	std::string sType = "application/octet-stream";
+	if (sFileExt == "json"){
+		sType = "application/json";
+	} else if (sFileExt == "css") {
+		sType = "text/css"; 
+	} else if (sFileExt == "js") {
+		sType = "text/javascript";
+	} else if (sFileExt == "html") {
+		sType = "text/html";
+	} else if (sFileExt == "gif") {
+		sType = "image/gif";
+	} else if (sFileExt == "ico") {
+		sType = "image/x-icon";
+	} else if (sFileExt == "xml") {
+		sType = "application/xml";
+	} else if (sFileExt == "png") {
+		sType = "application/xml";
+	} else if (sFileExt == "jpg" || sFileExt == "jpeg") {
+		sType = "image/jpeg";
+	} else if (sFileExt == "svg") {
+		sType = "image/svg+xml";
+	}
+
+	this->setResponseCacheSec(60);
+	
+	std::string sResponse = LightHttpRequest::RESP_OK + "\r\n"
+		"Date: " + m_sLastModified + "\r\n"
+		"Last-Modified: " + m_sLastModified + "\r\n"
+		"Server: fhq-jury-ad\r\n"
+		"Cache-Control: " + m_sResponseCacheControl + "\r\n"
+		"Content-Length: " + std::to_string(nDataSize) + "\r\n"
+		"Content-Type: " + sType + "\r\n"
+		"Connection: Closed\r\n"
+		"\r\n";
+
+	if(m_bClosed) {
+		Log::warn(TAG, "Already sended response");
+		delete[] pData;
+		return;
+	}
+	m_bClosed = true;
+	#if __APPLE__
+		send(m_nSockFd, sResponse.c_str(), sResponse.length(),SO_NOSIGPIPE);
+		send(m_nSockFd, pData, nSize, SO_NOSIGPIPE);
+	// #if
+	// TARGET_OS_MAC 
+
+	#else
+		send(m_nSockFd, sResponse.c_str(), sResponse.length(),MSG_CONFIRM);
+		send(m_nSockFd, pData, nDataSize, MSG_CONFIRM);
+	#endif
+	
+	close(m_nSockFd);
+}

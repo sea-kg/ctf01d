@@ -45,6 +45,7 @@ class LightHttpRequest {
 		void response(const std::string &sFirst);
 		void response(const std::string &sFirst, const std::string &sDataType, const std::string &sBody);
 		void responseFile(const std::string &sFilePath);
+		void responseBuffer(const std::string &sFilePath, const char *pBuffer, const int nBufferSize);
 		std::map<std::string,std::string> &requestQueryParams();
 
 	private:

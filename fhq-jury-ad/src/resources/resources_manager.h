@@ -14,13 +14,18 @@ class ResourceFile {
         virtual const char *buffer() = 0;
 };
 
-extern std::vector<ResourceFile*> *g_pFabricResourceFile;
+extern std::vector<ResourceFile*> *g_pListResourceFiles;
 
-class ResourceManager {
+class ResourcesManager {
     public:
         static void initGlobalVariables();
         static void add(ResourceFile*);
         static const std::vector<ResourceFile*> &list();
+        static bool has(const std::string &sFilename);
+        static ResourceFile* get(const std::string &sFilename);
+        static bool make(const std::string &sWorkspace);
+        static bool createFolders(const std::string &sWorkspace);
+        static bool extractFiles(const std::string &sWorkspace);
 };
 
 // ---------------------------------------------------------------------

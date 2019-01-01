@@ -12,10 +12,49 @@ body,html{
 	  height: 100%;
 }
 
+td {
+  vertical-align: middle;
+  border: 1px solid #aaa;
+  text-align: center;
+  padding: 10px;
+}
+
 .game-name{
     font-size: 40px;
     padding-top: 40px;
     height: 40px;
+}
+
+.game-rules {
+    border: 1px solid #aaa;
+    padding: 20px;
+    margin: 20px;
+}
+
+button {
+    background-color: #202020;
+    color: #aaa;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+
+.d-icn {
+    width: 20px;
+    height: 20px;
+    background-size: 100% 100%;
+    display: inline-block;
+}
+
+.d-icn.att {
+  background-image: url("../images/attack.svg");
+}
+
+.d-icn.def {
+  background-image: url("../images/defence.svg");
+}
+
+.d-icn.upt {
+  background-image: url("../images/uptime.svg");
 }
 
 .game-description{
@@ -128,6 +167,7 @@ img.team-logo {
   padding-left: 65px;
   background-repeat: no-repeat;
   background-size: 50px 50px;
+  vertical-align: middle;
 }
 
 .service-status.down {

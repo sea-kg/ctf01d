@@ -1,6 +1,7 @@
 #include "http_handler_web_folder.h"
 #include <utils_logger.h>
 #include <fs.h>
+#include <resources_manager.h>
 
 // ----------------------------------------------------------------------
 
@@ -37,8 +38,12 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
     }*/
 
     std::string sFilePath = m_sWebFolder + pRequest->requestPath(); // TODO check /../ in path
+    Log::warn(_tag, "Response Resources " + sFilePath);
     if (!FS::fileExists(sFilePath)) { // TODO check the file exists not dir
-        return false;
+        // check in resources
+        std::string sResPath = "html" + pRequest->requestPath();
+        Log::warn(_tag, "Response Resources " + sResPath);
+        return ResourcesManager::has(sResPath);
     }
 
     return true;
@@ -48,19 +53,31 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
 
 bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
-    // Log::warn(_tag, pRequest->requestPath());
+    Log::warn(_tag, pRequest->requestPath());
 
     /*std::string sIndexHtml = m_sWebFolder + "/index.html";
     if (pRequest->requestPath() == "/" && FS::fileExists(sIndexHtml)) {
         pRequest->responseFile(sIndexHtml);
         return true;
     }*/
-
+    
     std::string sFilePath = m_sWebFolder + pRequest->requestPath(); // TODO check /../ in path
-    if (!FS::fileExists(sFilePath)) { // TODO check the file exists not dir
+    if (!FS::fileExists(sFilePath)) {
+        std::string sResPath = "html" + pRequest->requestPath();
+
+        if (ResourcesManager::has(sResPath)) {
+            Log::warn(_tag, "Response Resources " + sResPath);
+            ResourceFile *pFile = ResourcesManager::get(sResPath);
+            pRequest->responseBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
+            return true;
+        }
         return false;
     }
-    // Log::warn(TAG, "Rersponse File " + sFilePath);
+
+    // TODO 1. if file exists and last date change more that in cache so need update
+    // TODO 2. if file not exists but in in resources - response them
+    
+    Log::warn(_tag, "Response File " + sFilePath);
     pRequest->responseFile(sFilePath);
     return true;
 }

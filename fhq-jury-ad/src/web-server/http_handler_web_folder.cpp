@@ -2,6 +2,7 @@
 #include <utils_logger.h>
 #include <fs.h>
 #include <resources_manager.h>
+#include <light_http_response.h>
 
 // ----------------------------------------------------------------------
 

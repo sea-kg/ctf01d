@@ -7,6 +7,7 @@
 
 #include <utils_logger.h>
 #include <light_http_request.h>
+#include <light_http_response.h>
 #include <ts.h>
 #include <fs.h>
 #include <str.h>
@@ -139,29 +140,29 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
     std::string _tag = TAG + "-" + sWorkerId;
     if(pRequest->requestPath() == "/api/v1/game") {
         pRequest->response(
-            LightHttpRequest::RESP_OK, 
+            LightHttpResponse::RESP_OK, 
             "application/json", 
             m_jsonGame.dump());
         return true;
     } else if (pRequest->requestPath() == "/") {
-        pRequest->response(LightHttpRequest::RESP_OK, "text/html", m_sIndexHtml);
+        pRequest->response(LightHttpResponse::RESP_OK, "text/html", m_sIndexHtml);
         return true;
     } else if(pRequest->requestPath() == "/api/v1/scoreboard") {
 
         pRequest->response(
-            LightHttpRequest::RESP_OK, 
+            LightHttpResponse::RESP_OK, 
             "application/json", 
             m_pConfig->scoreboard()->toJson().dump());
         return true;
     } else if(pRequest->requestPath() == "/api/v1/teams") {
         pRequest->response(
-            LightHttpRequest::RESP_OK, 
+            LightHttpResponse::RESP_OK, 
             "application/json", 
             m_jsonTeams.dump());
         return true;
     } else if(pRequest->requestPath() == "/api/v1/services") {
         pRequest->response(
-            LightHttpRequest::RESP_OK, 
+            LightHttpResponse::RESP_OK, 
             "application/json", 
             m_jsonServices.dump());
         return true;
@@ -173,7 +174,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (nCurrentTimeSec < m_pConfig->gameStartUTCInSec()) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-8): Game not started yet");
             Log::warn(TAG, "Error(-8): Game not started yet");
@@ -182,7 +183,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (nCurrentTimeSec > m_pConfig->gameEndUTCInSec()) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-9): Game already ended");
             Log::warn(TAG, "Error(-9): Game already ended");
@@ -193,7 +194,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         itTeamID = pRequest->requestQueryParams().find("teamid");
         if (itTeamID == pRequest->requestQueryParams().end()) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-10): Not found get-parameter 'teamid'");
             Log::warn(TAG, "Error(-10): Not found get-parameter 'teamid'");
@@ -204,7 +205,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         itFlag = pRequest->requestQueryParams().find("flag");
         if (itFlag == pRequest->requestQueryParams().end()) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-11): Not found get-parameter 'flag'");
             Log::warn(TAG, "Error(-11): Not found get-parameter 'flag'");
@@ -234,7 +235,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (!bTeamFound) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-130): this is team not found");
             Log::warn(TAG, "Error(-130): this is team not found");
@@ -246,7 +247,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         std::transform(sFlag.begin(), sFlag.end(), sFlag.begin(), ::tolower);
         if (!std::regex_match(sFlag, reFlagFormat)) {
             pRequest->response(
-                LightHttpRequest::RESP_BAD_REQUEST, 
+                LightHttpResponse::RESP_BAD_REQUEST, 
                 "text/html", 
                 "Error(-140): flag has wrong format");
             Log::warn(TAG, "Error(-140): flag has wrong format");
@@ -257,7 +258,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         Flag flag;
         if (!m_pConfig->storage()->findFlagByValue(sFlag, flag)) {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-150): flag is too old or flag never existed or flag alredy stole");
             Log::err(TAG, "Error(-150): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -268,7 +269,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (flag.timeEnd() < nCurrentTimeMSec) {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-151): flag is too old");
             Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -277,7 +278,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (flag.teamStole() == sTeamId) {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-160): flag already stole by your team");
             Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -286,7 +287,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (flag.teamStole() != "") {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-170): flag already stoled by '" + flag.teamStole() + "'");
             Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -295,7 +296,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (flag.teamId() == sTeamId) {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-180): this is your flag");
             Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -308,7 +309,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (sServiceStatus != ModelServiceStatus::SERVICE_UP) {
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-190): Your same service is dead");
             Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -317,7 +318,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (!m_pConfig->storage()->updateTeamStole(flag.value(), sTeamId)){
             pRequest->response(
-                LightHttpRequest::RESP_FORBIDDEN,
+                LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 
                 "Error(-300): You are late");
             Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
@@ -328,7 +329,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         m_pConfig->scoreboard()->incrementAttackScore(sTeamId, flag.serviceId());
 
         pRequest->response(
-            LightHttpRequest::RESP_OK, 
+            LightHttpResponse::RESP_OK, 
             "text/html", 
             "Accepted");
         Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "}");

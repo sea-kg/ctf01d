@@ -17,15 +17,6 @@
 
 class LightHttpRequest {
 	public:
-        // enum for http responses
-        static std::string RESP_OK;
-        static std::string RESP_BAD_REQUEST;
-		static std::string RESP_FORBIDDEN;
-        static std::string RESP_NOT_FOUND;
-        static std::string RESP_PAYLOAD_TOO_LARGE;
-		static std::string RESP_INTERNAL_SERVER_ERROR;
-		static std::string RESP_NOT_IMPLEMENTED;
-
 		LightHttpRequest(
 			int nSockFd,
 			const std::string &sAddress

@@ -1,6 +1,7 @@
 #include "light_http_thread_worker.h"
 #include <utils_logger.h>
 #include <light_http_handlers.h>
+#include <light_http_response.h>
 
 // ----------------------------------------------------------------------
 
@@ -84,13 +85,13 @@ void LightHttpThreadWorker::run() {
             // std::cout << nSockFd  << ": request >>>> \n" << sRequest << "\n <<<<< request\n";
             
             if (pInfo->requestType() != "GET") {
-                pInfo->response(LightHttpRequest::RESP_NOT_IMPLEMENTED);
+                pInfo->response(LightHttpResponse::RESP_NOT_IMPLEMENTED);
             } else {
                 if (!m_pHandlers->handle(m_sName, pInfo)) {
-                    pInfo->response(LightHttpRequest::RESP_NOT_FOUND);
+                    pInfo->response(LightHttpResponse::RESP_NOT_FOUND);
                 } else {
                     // TODO resp internal error
-                    // this->response(LightHttpRequest::RESP_INTERNAL_SERVER_ERROR);     
+                    // this->response(LightHttpResponse::RESP_INTERNAL_SERVER_ERROR);     
                 }
             }
 			delete pInfo;

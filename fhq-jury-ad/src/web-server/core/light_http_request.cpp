@@ -11,18 +11,7 @@
 #include <math.h>
 #include <fs.h>
 #include <ts.h>
-
-// ----------------------------------------------------------------------
-// LightHttpRequest
-
-// enum for http responses
-std::string LightHttpRequest::RESP_OK = "HTTP/1.1 200 OK";
-std::string LightHttpRequest::RESP_BAD_REQUEST = "HTTP/1.1 400 Bad Request";
-std::string LightHttpRequest::RESP_FORBIDDEN = "HTTP/1.1 403 Forbidden";
-std::string LightHttpRequest::RESP_NOT_FOUND = "HTTP/1.1 404 Not Found";
-std::string LightHttpRequest::RESP_PAYLOAD_TOO_LARGE = "HTTP/1.1 413 Payload Too Large";
-std::string LightHttpRequest::RESP_INTERNAL_SERVER_ERROR = "HTTP/1.1 500 Internal Server Error";
-std::string LightHttpRequest::RESP_NOT_IMPLEMENTED = "HTTP/1.1 501 Not Implemented";
+#include <light_http_response.h>
 
 // ----------------------------------------------------------------------
 
@@ -194,13 +183,13 @@ void LightHttpRequest::responseFile(const std::string &sFilePath){
 	char *pData = new char[nSize];
 	// std::vector<char> buffer(size);
 	if (nSize > 10*1024*1024){
-		this->response(LightHttpRequest::RESP_PAYLOAD_TOO_LARGE);
+		this->response(LightHttpResponse::RESP_PAYLOAD_TOO_LARGE);
 		delete[] pData;
 		return;
 	}
 
 	if (!f.read(pData, nSize)) {
-		this->response(LightHttpRequest::RESP_NOT_FOUND);
+		this->response(LightHttpResponse::RESP_NOT_FOUND);
 		delete[] pData;
 		return;
 		// std::cout << sFilePath << "\n filesize: " << nSize << " bytes\n";
@@ -208,7 +197,7 @@ void LightHttpRequest::responseFile(const std::string &sFilePath){
 
 	this->setResponseCacheSec(60);
 	
-	std::string sResponse = LightHttpRequest::RESP_OK + "\r\n"
+	std::string sResponse = LightHttpResponse::RESP_OK + "\r\n"
 		"Date: " + m_sLastModified + "\r\n"
 		"Last-Modified: " + m_sLastModified + "\r\n"
 		"Server: fhq-jury-ad\r\n"
@@ -271,7 +260,7 @@ void LightHttpRequest::responseBuffer(const std::string &sFilePath, const char *
 
 	this->setResponseCacheSec(60);
 	
-	std::string sResponse = LightHttpRequest::RESP_OK + "\r\n"
+	std::string sResponse = LightHttpResponse::RESP_OK + "\r\n"
 		"Date: " + m_sLastModified + "\r\n"
 		"Last-Modified: " + m_sLastModified + "\r\n"
 		"Server: fhq-jury-ad\r\n"

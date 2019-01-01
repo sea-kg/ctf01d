@@ -7,47 +7,86 @@
 	<link rel="stylesheet" href="css/scoreboard.css">
 </head>
 <body>
-<center>
 	<div class="game-name" id="game_name"></div>
 	<div class="game-time-range" id="game_time_range"></div>
-	<div class="game-description">Scoreboard <button id="game_rules_btn">Show/Hide Rules</button></div>
+	<div class="game-description">Scoreboard <button id="game_rules_btn">Show/Hide Info</button></div>
 	<div class="game-rules" id="game_rules" style="display: none">
-		<h1>Rules</h1>
-		<div>1. The flag point is counted only once to the first team that delivered it.</div>
-		<div>2. Formula of calculate main score. 
-			Sum by all service, for one service: (<div class="d-icn att"></div> + <div class="d-icn def"></div>) * <div class="d-icn upt"></div>.</div>
-		<div>3. Legend
-			<table>
-				<tr>
-					<td><div class="service-status down"></div><br> service is down</td>
-					<td><div class="service-status up"></div><br> service is down</td>
-					<td><div class="service-status mumble"></div><br> service is down</td>
-					<td><div class="service-status corrupt"></div><br> service is down</td>
-					<td><div class="service-status shit"></div><br> checker is shit</td>
-				</tr>
-			</table>
-			<table>
-				<tr>
-					<td><div class="d-icn att"></div> - number of flags captured</td>
-					<td><div class="d-icn def"></div> - the number of protected flags</td>
-					<td><div class="d-icn upt"></div> - uptime since the start of the game</td>
-				</tr>
-			</table>
+		<h1>Info</h1>
+		<div class="game-rule-header">1. The flag points</div>
+		<div class="game-rule">The flag point is counted only once to the first team that delivered it, of course your same service must be in work state</div>
+		<div class="game-rule-header">2. How to calculate of team score</div>
+		<div class="game-rule">
+				Sum by score services, for each:
+				(<div class="d-icn att"></div> + <div class="d-icn def"></div>) * <div class="d-icn upt"></div>, <br>
+				where:
+		</div>
+		<ul style="display: inline-block; text-align: left">
+			<li>
+				<div class="d-icn def"></div> - the number of protected flags
+			</li>
+			<li>
+				<div class="d-icn att"></div> - number of flags captured in time attack
+			</li>
+			<li>
+				<div class="d-icn upt"></div> - uptime since the start of the game
+			</li>
+		</ul>
+		<div class="game-rule-header">3. Legend</div>
+		<div class="game-legend">
+			<div class="game-legend-cell">
+				<div class="service-status down"></div> - service is down (dead)
+			</div>
+			<div class="game-legend-cell">
+				<div class="service-status up"></div> - service is work (up)
+			</div>
+			<div class="game-legend-cell">
+				<div class="service-status mumble"></div> - service is mumble (so slow)
+			</div>
+			<div class="game-legend-cell">
+				<div class="service-status corrupt"></div> - service is corrupt
+			</div>
+			<div class="game-legend-cell">
+				<div class="service-status shit"></div> - checker is shit
+			</div>
+		</div>
+
+		<div class="game-rule-header">4. Flag send</div>
+		<div class="game-rule">
+			The flag format must match the regular expression:
+			<p>"^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$"</p>
+		</div>
+		<div class="game-rule">
+			Form for send flag:<br>
+			<form target="_blank" method="GET" action="/flag">
+				By Team<select name="teamid" id="team_list"></select>
+				<input type="text" size="36" placeholder="Flag value" name="flag"> 
+				<button>Send</button><br>
+			</form>
+		</div>
+		<div class="game-rule-header">4. Issues for a jury system</div>
+		<div class="game-rule">
+			<a target="_blank" href="https://github.com/freehackquest/fhq-jury-ad/issues">https://github.com/freehackquest/fhq-jury-ad/issues</a>
 		</div>
 	</div>
 	<script>
+		var game_info = document.getElementById('game_rules');
+		try {
+			var t = localStorage.getItem('show_info');
+			game_info.style.display = t == 'yes' ? '' : 'none';
+		} catch(e) {
+			console.error(e);
+		}
 		document.getElementById('game_rules_btn').onclick = function() {
-			var el = document.getElementById('game_rules');
-			el.style.display = el.style.display == 'none' ? '' : 'none';
+			var show_info = game_info.style.display === 'none';
+			game_info.style.display = show_info ? '' : 'none';
+			try { localStorage.setItem('show_info', show_info ? 'yes' : 'no') } catch(e) { console.error(e) };
 		}
 	</script>
 	<div id="scoreboard_content" style="display: none">
-		{{content}}
 	</div>
 	<div id="loader_content" style="display: block">
 		<div class="lds-facebook"><div></div><div></div><div></div></div>
 	</div>
-</center>
 <script src="js/scoreboard.js" defer="defer"></script>
 </body>
 </html>

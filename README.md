@@ -6,11 +6,11 @@ Jury System for a attack-defence ctf game.
 Or you can use for training.
 
 
-* [CHECKER_INFO: description](docs/CHECKER_INFO.md)
-* [API: here](docs/API.md)
-* [DOCKER_HUB: description](docs/DOCKER_HUB.md)
-* [TRAINING MODE: lazy-start](docs/LAZY_START.md)
-* [SIMILAR: systems](docs/SIMILAR.md)
+* [CHECKER_INFO: description](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/CHECKER_INFO.md)
+* [API: here](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/API.md)
+* [DOCKER_HUB: description](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/DOCKER_HUB.md)
+* [TRAINING MODE: lazy-start](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/LAZY_START.md)
+* [SIMILAR: systems](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/SIMILAR.md)
 
 ### Download and basic configuration
 
@@ -29,13 +29,13 @@ Config files (look comments in file):
 * `~/fhq-jury-ad.git/jury.d/scoreboard.conf` - basic scoreboard configurations html folder, port for web
 * `~/fhq-jury-ad.git/jury.d/server.conf` - basic server just a which type of storage will be used (in current time worl only mysql)
 
-* [BUILD: Ubuntu/Debian](docs/BUILD_UBUNTU.md)
-* [BUILD: MacOS](docs/BUILD_MACOS.md)
-* [BUILD: Docker](docs/BUILD_DOCKER.md)
+* [BUILD: Ubuntu/Debian](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/BUILD_UBUNTU.md)
+* [BUILD: MacOS](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/BUILD_MACOS.md)
+* [BUILD: Docker](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/BUILD_DOCKER.md)
 
 ### Configure database
 
-* [MYSQL DATABASE: create](docs/STORAGE_MYSQL.md)
+* [MYSQL DATABASE: create](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/STORAGE_MYSQL.md)
 
 After configure database options here:
 

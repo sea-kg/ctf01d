@@ -13,7 +13,6 @@ class HttpHandlerApiV1 : LightHttpHandlerBase {
 
     private:
         std::string TAG;
-        void prepareIndexHtml();
 
         Config *m_pConfig;
         std::string m_sIndexHtml;

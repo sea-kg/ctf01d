@@ -87,6 +87,7 @@ bool ReadTeamsConf::read(bool bLazyStart, std::vector<Team> &vTeams) {
         // default values of service config
         Team _teamConf;
         _teamConf.setId(sTeamId);
+        _teamConf.setName(sTeamName);
         _teamConf.setActive(true);
         _teamConf.setIpAddress(sTeamIpAddress);
         _teamConf.setLogo(sTeamLogo);

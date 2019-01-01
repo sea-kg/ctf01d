@@ -86,6 +86,7 @@ bool ResourcesManager::createFolders(const std::string &sWorkspace) {
         if (!FS::dirExists(sPath)) {
             // try make dir
             if (!FS::makeDir(sPath)) {
+                std::cout << "Could not create folder " << sPath << std::endl;
                 return false;
             } else {
                 std::cout << "Created folder " << sPath << std::endl;
@@ -104,10 +105,12 @@ bool ResourcesManager::extractFiles(const std::string &sWorkspace) {
         std::string sFilename = sWorkspace + "/" + list[i]->filename();
         if (!FS::fileExists(sFilename)) {
             if (!FS::writeFile(sFilename, list[i]->buffer(), list[i]->bufferSize())) {
+                std::cout << "Could not write file " << sFilename << std::endl;
                 return false;
             } else {
                 std::cout << "Created file " << sFilename << std::endl;
             }
         }
     }
+    return true;
 }

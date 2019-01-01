@@ -29,4 +29,4 @@ COPY ./jury.d /usr/share/fhq-jury-ad/jury.d
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
 LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
 EXPOSE 8080
-CMD ["fhq-jury-ad","start"]
+CMD ["fhq-jury-ad","-ef","start"]

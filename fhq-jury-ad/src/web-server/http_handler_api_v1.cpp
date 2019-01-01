@@ -41,83 +41,8 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
         teamInfo["id"] = teamConf.id();
         teamInfo["name"] = teamConf.name();
         teamInfo["ip_address"] = teamConf.ipAddress();
+        teamInfo["logo"] = teamConf.logo();
         m_jsonGame["teams"].push_back(teamInfo);
-    }
-
-    prepareIndexHtml();
-}
-
-// ----------------------------------------------------------------------
-
-void HttpHandlerApiV1::prepareIndexHtml() {
-    // Loading index-template.html
-    m_sIndexHtml = "";
-    std::string fullPath = m_pConfig->scoreboardHtmlFolder() + "/index.html";
-    std::ifstream ifs(fullPath.c_str());
-    m_sIndexHtml.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-
-    // generate teams-services table
-    std::string sContent = 
-        "<div class='scoreboard' id='table_scoreboard'>\n" // TODO must be none
-        "    <div class='hdrs'>\n"
-        "        <div class='place'>#</div>\n"
-        "        <div class='team-logo'></div>\n"
-        "        <div class='team'>Team</div>\n"
-        "        <div class='score'>Score</div>\n";
-
-    for (unsigned int iservice = 0; iservice < m_pConfig->servicesConf().size(); iservice++) {
-        Service serviceConf = m_pConfig->servicesConf()[iservice];
-        sContent += "<div class='service'>" + serviceConf.name() + "<br><small>(service)</small></div>\n";
-        
-        nlohmann::json serviceInfo;
-        serviceInfo["id"] = serviceConf.id();
-        serviceInfo["name"] = serviceConf.name();
-        m_jsonServices[serviceConf.id()] = serviceInfo;
-    }
-
-    sContent += "  </div>\n";
-
-    for (unsigned int iteam = 0; iteam < m_pConfig->teamsConf().size(); iteam++) {
-        Team teamConf = m_pConfig->teamsConf()[iteam];
-        std::string sTeamId = teamConf.id();
-            
-        nlohmann::json teamInfo;
-        teamInfo["id"] = teamConf.id();
-        teamInfo["name"] = teamConf.name();
-        teamInfo["ip_address"] = teamConf.ipAddress();
-        m_jsonTeams[sTeamId] = teamInfo;
-
-        sContent += 
-            "    <div class='tm' id='" + sTeamId + "'>\n"
-            "        <div class='place' id='" + sTeamId + "_place' >" + std::to_string(iteam + 1) + "</div>\n"
-            "        <div class='team-logo' id='" + sTeamId + "_logo' ><img class='team-logo' src='" + teamConf.logo() + "'/></div>\n"
-            "        <div class='team' id='" + sTeamId + "_name'>\n"
-            "           <div class='team-name'>" + teamConf.name() + "</div>\n"
-            "           <div class='team-ip'> id: " +sTeamId + ", ip: " + teamConf.ipAddress() + "</div>\n"
-            "        </div>\n"
-            "        <div class='score' id='" + sTeamId + "_score'>0</div>\n";
-
-        for (unsigned int iservice = 0; iservice < m_pConfig->servicesConf().size(); iservice++) {
-            Service serviceConf = m_pConfig->servicesConf()[iservice];
-             sContent += "<div class='service'>"
-                    "<div class='service-status down' id='" + sTeamId +  "_" + serviceConf.id() + "'> "
-                    "   <div class='service-att-def' id='" + sTeamId +  "_" + serviceConf.id() + "_ad'>0 / 0</div>"
-                    "   <div class='service-sla' id='" + sTeamId +  "_" + serviceConf.id() + "_sla'>100.0%</div>"
-                    "</div>"
-                "</div>\n";
-        }
-
-        sContent += "    </div>\n";
-    }
-    sContent += "</div>";
-
-    // replace meta content table
-    {
-        std::string sContentDefine = "{{content}}";
-        std::size_t index = m_sIndexHtml.find(sContentDefine, 0);
-        if (index != std::string::npos) {
-            m_sIndexHtml.replace(index, sContentDefine.length(), sContent);
-        }
     }
 }
 
@@ -130,8 +55,7 @@ bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest 
         || path == "/api/v1/scoreboard"
         || path == "/api/v1/teams"
         || path == "/api/v1/services"
-        || path == "/flag"
-        || path == "/";
+        || path == "/flag";
 }
 
 // ----------------------------------------------------------------------

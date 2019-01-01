@@ -9,7 +9,7 @@ Where:
   * ip_address - address of machine with this service
   * command - command, can be "put" or "check"
   * flag_id - string (10), id of flag [a-zA-Z0-9]{10}
-  * flag - uuid, value of flag [A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}
+  * flag - uuid, value of flag [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}
 
 Commands:
 

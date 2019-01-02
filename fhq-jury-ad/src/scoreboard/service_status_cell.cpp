@@ -1,81 +1,81 @@
-#include "model_service_status.h"
+#include "service_status_cell.h"
 
-std::string ModelServiceStatus::SERVICE_UP = "up";
-std::string ModelServiceStatus::SERVICE_DOWN = "down";
-std::string ModelServiceStatus::SERVICE_MUMBLE = "mumble";
-std::string ModelServiceStatus::SERVICE_CORRUPT = "corrupt";
-std::string ModelServiceStatus::SERVICE_SHIT = "shit";
-std::string ModelServiceStatus::SERVICE_WAIT = "wait";
+std::string ServiceStatusCell::SERVICE_UP = "up";
+std::string ServiceStatusCell::SERVICE_DOWN = "down";
+std::string ServiceStatusCell::SERVICE_MUMBLE = "mumble";
+std::string ServiceStatusCell::SERVICE_CORRUPT = "corrupt";
+std::string ServiceStatusCell::SERVICE_SHIT = "shit";
+std::string ServiceStatusCell::SERVICE_WAIT = "wait";
 
 // ----------------------------------------------------------------------
 
-ModelServiceStatus::ModelServiceStatus(const std::string &sServiceId) {
+ServiceStatusCell::ServiceStatusCell(const std::string &sServiceId) {
     m_sServiceId = sServiceId;
-    m_sStatus = ModelServiceStatus::SERVICE_DOWN;
-    m_nSLA = 100.0;
+    m_sStatus = ServiceStatusCell::SERVICE_DOWN;
+    m_nUptime = 100.0;
     m_nDefence = 0;
     m_nAttack = 0;
 }
 
 // ----------------------------------------------------------------------
 
-const std::string &ModelServiceStatus::serviceId() {
+const std::string &ServiceStatusCell::serviceId() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     return m_sServiceId;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceStatus::setDefence(int nDefence) {
+void ServiceStatusCell::setDefence(int nDefence) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_nDefence = nDefence;
 }
 
 // ----------------------------------------------------------------------
 
-int ModelServiceStatus::defence() {
+int ServiceStatusCell::defence() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     return m_nDefence;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceStatus::setAttack(int nAttack) {
+void ServiceStatusCell::setAttack(int nAttack) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_nAttack = nAttack;
 }
 
 // ----------------------------------------------------------------------
 
-int ModelServiceStatus::attack() {
+int ServiceStatusCell::attack() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     return m_nAttack;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceStatus::setSLA(double nSLA) {
+void ServiceStatusCell::setSLA(double nUptime) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    m_nSLA = nSLA;
+    m_nUptime = nUptime;
 }
 
 // ----------------------------------------------------------------------
 
-double ModelServiceStatus::sla() {
+double ServiceStatusCell::sla() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    return m_nSLA;
+    return m_nUptime;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelServiceStatus::setStatus(const std::string &sStatus) {
+void ServiceStatusCell::setStatus(const std::string &sStatus) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_sStatus = sStatus;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelServiceStatus::status() {
+std::string ServiceStatusCell::status() {
     return m_sStatus;
 }
 

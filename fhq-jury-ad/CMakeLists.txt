@@ -133,16 +133,17 @@ list (APPEND JURY_AD_SOURCES "./src/resources/files/server_conf.h")
 list (APPEND JURY_AD_SOURCES "./src/resources/files/server_conf.cpp")
 
 #[end-list-of-resources]
+
 list (APPEND JURY_AD_SOURCES "src/resources/resources_manager.h")
 list (APPEND JURY_AD_SOURCES "src/resources/resources_manager.cpp")
 
 # scoreboard
 list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.cpp")
 list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.h")
-list (APPEND JURY_AD_SOURCES "src/scoreboard/model_service_status.h")
-list (APPEND JURY_AD_SOURCES "src/scoreboard/model_service_status.cpp")
-list (APPEND JURY_AD_SOURCES "src/scoreboard/model_team_status.h")
-list (APPEND JURY_AD_SOURCES "src/scoreboard/model_team_status.cpp")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/service_status_cell.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/service_status_cell.cpp")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/team_status_row.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/team_status_row.cpp")
 
 # utils
 list (APPEND JURY_AD_SOURCES "src/utils/colormod.h")

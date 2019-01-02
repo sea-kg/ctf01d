@@ -1,6 +1,6 @@
-#include "model_team_status.h"
+#include "team_status_row.h"
 
-ModelTeamStatus::ModelTeamStatus(const std::string &sTeamId, const std::vector<Service> &vServicesConf) {
+TeamStatusRow::TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf) {
     m_sTeamId = sTeamId;
     m_nScore = 0.0;
     m_nPlace = 0;
@@ -8,55 +8,55 @@ ModelTeamStatus::ModelTeamStatus(const std::string &sTeamId, const std::vector<S
     for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
         Service serviceConf = vServicesConf[iservice];
         std::string sServiceId = serviceConf.id();
-        m_mapServicesStatus[sServiceId] = new ModelServiceStatus(sServiceId);
+        m_mapServicesStatus[sServiceId] = new ServiceStatusCell(sServiceId);
     }
 }
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setPlace(int nPlace) {
+void TeamStatusRow::setPlace(int nPlace) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_nPlace = nPlace;
 }
 
 // ----------------------------------------------------------------------
 
-int ModelTeamStatus::place() {
+int TeamStatusRow::place() {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_nPlace;
 }
 
 // ----------------------------------------------------------------------
 
-const std::string &ModelTeamStatus::teamId() {
+const std::string &TeamStatusRow::teamId() {
     // std::lock_guard<std::mutex> lock(m_mutex);
     return m_sTeamId;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setScore(double nScore) {
+void TeamStatusRow::setScore(double nScore) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_nScore = nScore;
 }
 
 // ----------------------------------------------------------------------
 
-double ModelTeamStatus::score(){
+double TeamStatusRow::score(){
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_nScore;
 }
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setServiceStatus(const std::string &sServiceId, std::string sStatus){
+void TeamStatusRow::setServiceStatus(const std::string &sServiceId, std::string sStatus){
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setStatus(sStatus);
 }
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA) {
+void TeamStatusRow::setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setDefence(nNewDefence);
     m_mapServicesStatus[sServiceId]->setAttack(nNewAttack);
@@ -64,9 +64,9 @@ void ModelTeamStatus::setServiceScore(const std::string &sServiceId, int nNewDef
 
     // update score
     double nNewScore = 0.0;
-    std::map<std::string,ModelServiceStatus*>::iterator it;
+    std::map<std::string,ServiceStatusCell*>::iterator it;
     for (it = m_mapServicesStatus.begin(); it != m_mapServicesStatus.end(); ++it){
-        ModelServiceStatus *pServiceStatus = it->second;
+        ServiceStatusCell *pServiceStatus = it->second;
         double nSum = pServiceStatus->attack() + pServiceStatus->defence();
         nNewScore += nSum * (pServiceStatus->sla() / 100);
     }
@@ -75,26 +75,26 @@ void ModelTeamStatus::setServiceScore(const std::string &sServiceId, int nNewDef
 
 // ----------------------------------------------------------------------
 
-void ModelTeamStatus::setTries(int nTries) {
+void TeamStatusRow::setTries(int nTries) {
     m_nTries = nTries;
 }
 
 // ----------------------------------------------------------------------
 
-int ModelTeamStatus::tries() {
+int TeamStatusRow::tries() {
     return m_nTries;
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelTeamStatus::serviceStatus(const std::string &sServiceId){
+std::string TeamStatusRow::serviceStatus(const std::string &sServiceId){
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_mapServicesStatus[sServiceId]->status();
 }
 
 // ----------------------------------------------------------------------
 
-std::string ModelTeamStatus::servicesToString() {
+std::string TeamStatusRow::servicesToString() {
     std::lock_guard<std::mutex> lock(m_mutex);
     std::string sResult = "";
     /*std::map<int,std::string>::iterator it;

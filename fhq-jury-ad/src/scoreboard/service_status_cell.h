@@ -1,11 +1,11 @@
-#ifndef MODEL_SERVICE_STATUS_H
-#define MODEL_SERVICE_STATUS_H
+#ifndef SERVICE_STATUS_CELL_H
+#define SERVICE_STATUS_CELL_H
 
 #include <string>
 #include <map>
 #include <mutex>
 
-class ModelServiceStatus {
+class ServiceStatusCell {
     public:
         // enum for service status
         static std::string SERVICE_UP;
@@ -15,7 +15,7 @@ class ModelServiceStatus {
         static std::string SERVICE_SHIT;
         static std::string SERVICE_WAIT;
 
-        ModelServiceStatus(const std::string &sServiceId);
+        ServiceStatusCell(const std::string &sServiceId);
         const std::string &serviceId();
 
         void setDefence(int nDefence);
@@ -34,9 +34,9 @@ class ModelServiceStatus {
         std::mutex m_mutexServiceStatus;
         std::string m_sServiceId;
         std::string m_sStatus; // may be char[10] ?
-        double m_nSLA;
+        double m_nUptime;
         int m_nDefence;
         int m_nAttack;
 };
 
-#endif // MODEL_SERVICE_STATUS_H
+#endif // SERVICE_STATUS_CELL_H

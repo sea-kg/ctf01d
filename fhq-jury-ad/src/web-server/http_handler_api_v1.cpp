@@ -232,7 +232,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         // std::cout << "sServiceStatus: " << sServiceStatus << "\n";
 
-        if (sServiceStatus != ModelServiceStatus::SERVICE_UP) {
+        if (sServiceStatus != ServiceStatusCell::SERVICE_UP) {
             pRequest->response(
                 LightHttpResponse::RESP_FORBIDDEN,
                 "text/html", 

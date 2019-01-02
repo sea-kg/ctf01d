@@ -1,16 +1,16 @@
-#ifndef MODEL_TEAM_STATUS_H
-#define MODEL_TEAM_STATUS_H
+#ifndef TEAM_STATUS_ROW_H
+#define TEAM_STATUS_ROW_H
 
 #include <string>
 #include <map>
 #include <mutex>
 #include <vector>
 #include <service.h>
-#include <model_service_status.h>
+#include <service_status_cell.h>
 
-class ModelTeamStatus {
+class TeamStatusRow {
     public:
-        ModelTeamStatus(const std::string &sTeamId, const std::vector<Service> &vServicesConf);
+        TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf);
         const std::string &teamId();
 
         void setPlace(int nPlace);
@@ -35,7 +35,7 @@ class ModelTeamStatus {
         int m_nPlace;
         double m_nScore;
         int m_nTries;
-        std::map<std::string, ModelServiceStatus *> m_mapServicesStatus;
+        std::map<std::string, ServiceStatusCell *> m_mapServicesStatus;
 };
 
-#endif // MODEL_TEAM_STATUS_H
+#endif // TEAM_STATUS_ROW_H

@@ -183,7 +183,7 @@ int main(int argc, char* argv[]) {
                 
                 pConfig->storage()->updateScoreboard(teamConf, serviceConf);
                 pConfig->scoreboard()->setTries(teamConf.id(), pConfig->storage()->flagAttempts(teamConf.id()));
-                pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ModelServiceStatus::SERVICE_DOWN);
+                pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
                 // pConfig->scoreboard()->setTeamTries();
 
                 ServiceCheckerThread *thr = new ServiceCheckerThread(pConfig, teamConf, serviceConf);

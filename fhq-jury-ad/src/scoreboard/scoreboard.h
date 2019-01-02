@@ -1,7 +1,7 @@
 #ifndef SCOREBOARD_H
 #define SCOREBOARD_H
 
-#include <model_team_status.h>
+#include <team_status_row.h>
 #include <team.h>
 #include <service.h>
 #include <flag.h>
@@ -40,7 +40,7 @@ class Scoreboard {
 
         std::string randomServiceStatus();
         bool m_bRandom;
-        std::map<std::string, ModelTeamStatus *> m_mapTeamsStatuses;
+        std::map<std::string, TeamStatusRow *> m_mapTeamsStatuses;
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
         // flags live for fast check
         std::mutex m_mutexFlagsLive;

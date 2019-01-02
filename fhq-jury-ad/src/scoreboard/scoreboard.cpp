@@ -19,7 +19,7 @@ Scoreboard::Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::ve
         Team teamConf = vTeamsConf[iteam];
         std::string sTeamId = teamConf.id();
 
-        m_mapTeamsStatuses[sTeamId] = new ModelTeamStatus(sTeamId, vServicesConf);
+        m_mapTeamsStatuses[sTeamId] = new TeamStatusRow(sTeamId, vServicesConf);
         m_mapTeamsStatuses[sTeamId]->setPlace(iteam+1);
 
         // random values of service for testing
@@ -30,7 +30,7 @@ Scoreboard::Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::ve
 
         for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
             Service service = vServicesConf[iservice];
-            m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), ModelServiceStatus::SERVICE_DOWN);
+            m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), ServiceStatusCell::SERVICE_DOWN);
 
             // random states of service for testing 
             if (m_bRandom) {
@@ -70,14 +70,14 @@ Scoreboard::Scoreboard(bool bRandom, int nGameStart, int nGameEnd, const std::ve
 // ----------------------------------------------------------------------
 
 std::string Scoreboard::randomServiceStatus() {
-    std::string sResult = ModelServiceStatus::SERVICE_DOWN;
+    std::string sResult = ServiceStatusCell::SERVICE_DOWN;
     int nState = std::rand() % 5;
     switch (nState) {
-        case 0: sResult = ModelServiceStatus::SERVICE_UP; break;
-        case 1: sResult = ModelServiceStatus::SERVICE_DOWN; break;
-        case 2: sResult = ModelServiceStatus::SERVICE_MUMBLE; break;
-        case 3: sResult = ModelServiceStatus::SERVICE_CORRUPT; break;
-        case 4: sResult = ModelServiceStatus::SERVICE_SHIT; break;
+        case 0: sResult = ServiceStatusCell::SERVICE_UP; break;
+        case 1: sResult = ServiceStatusCell::SERVICE_DOWN; break;
+        case 2: sResult = ServiceStatusCell::SERVICE_MUMBLE; break;
+        case 3: sResult = ServiceStatusCell::SERVICE_CORRUPT; break;
+        case 4: sResult = ServiceStatusCell::SERVICE_SHIT; break;
     }
     return sResult;
 }
@@ -88,7 +88,7 @@ void Scoreboard::setServiceStatus(const std::string &sTeamId, const std::string 
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sStatus;
 
-    std::map<std::string,ModelTeamStatus *>::iterator it;
+    std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         if (it->second->serviceStatus(sServiceId) != sNewStatus) {
@@ -102,7 +102,7 @@ void Scoreboard::setServiceStatus(const std::string &sTeamId, const std::string 
 
 void Scoreboard::incrementTries(const std::string &sTeamId) {
     std::lock_guard<std::mutex> lock(m_mutexJson);
-    std::map<std::string,ModelTeamStatus *>::iterator it;
+    std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         it->second->setTries(it->second->tries() + 1);
@@ -114,7 +114,7 @@ void Scoreboard::incrementTries(const std::string &sTeamId) {
 
 void Scoreboard::setTries(const std::string &sTeamId, int nTries) {
     std::lock_guard<std::mutex> lock(m_mutexJson);
-    std::map<std::string,ModelTeamStatus *>::iterator it;
+    std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         it->second->setTries(nTries);
@@ -139,7 +139,7 @@ void Scoreboard::incrementDefenceScore(const std::string &sTeamId, const std::st
 // ----------------------------------------------------------------------
 
 std::string Scoreboard::serviceStatus(const std::string &sTeamId, const std::string &sServiceId) {
-    std::map<std::string,ModelTeamStatus *>::iterator it;
+    std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         return it->second->serviceStatus(sServiceId);
@@ -168,7 +168,7 @@ void Scoreboard::setServiceScore(const std::string &sTeamId, const std::string &
     }
 
     {
-        std::map<std::string,ModelTeamStatus *>::iterator it;
+        std::map<std::string,TeamStatusRow *>::iterator it;
         it = m_mapTeamsStatuses.find(sTeamId);
         if (it != m_mapTeamsStatuses.end()) {
             it->second->setServiceScore(sServiceId, nNewDefence, nNewAttack, nNewSLA);
@@ -178,7 +178,7 @@ void Scoreboard::setServiceScore(const std::string &sTeamId, const std::string &
     // sort places
     {
         std::vector<double> vScores;
-        std::map<std::string,ModelTeamStatus *>::iterator it1;
+        std::map<std::string,TeamStatusRow *>::iterator it1;
         for (it1 = m_mapTeamsStatuses.begin(); it1 != m_mapTeamsStatuses.end(); it1++) {
             if(std::find(vScores.begin(), vScores.end(), it1->second->score()) == vScores.end()) {
                 vScores.push_back(it1->second->score());
@@ -198,9 +198,9 @@ void Scoreboard::setServiceScore(const std::string &sTeamId, const std::string &
         m_jsonScoreboard[sTeamId]["services"][sServiceId]["defence"] = nNewDefence;
         m_jsonScoreboard[sTeamId]["services"][sServiceId]["uptime"] = nNewSLA;
 
-        std::map<std::string,ModelTeamStatus *>::iterator it1;
+        std::map<std::string,TeamStatusRow *>::iterator it1;
         for (it1 = m_mapTeamsStatuses.begin(); it1 != m_mapTeamsStatuses.end(); it1++) {
-            ModelTeamStatus *pTeamStatus = it1->second;
+            TeamStatusRow *pTeamStatus = it1->second;
             std::string sTeamId_ = pTeamStatus->teamId();
 
             // std::cout << sTeamNum << ": result: score: " << pTeamStatus->score() << ", place: " << pTeamStatus->place() << "\n";
@@ -276,7 +276,7 @@ void Scoreboard::removeFlagLive(const Flag &flag) {
 std::string Scoreboard::toString(){
     // TODO mutex
     std::string sResult = ""; 
-    std::map<std::string,ModelTeamStatus *>::iterator it;
+    std::map<std::string,TeamStatusRow *>::iterator it;
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); ++it){
         sResult += it->first + ": \n"
             "\tscore: " + std::to_string(it->second->score()) + "\n"

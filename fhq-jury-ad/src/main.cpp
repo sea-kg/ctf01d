@@ -166,7 +166,7 @@ int main(int argc, char* argv[]) {
     signal( SIGTERM, quitApp );
 
     if (helpParseArgs.has("check-http")) {
-        pConfig->setStorage(Storages::create("file", pConfig->scoreboard(), pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
+        pConfig->setStorage(Storages::create("file", pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
         g_httpServer.start(pConfig->scoreboardPort()); // will be block thread
@@ -176,13 +176,14 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("start") || helpParseArgs.has("lazy-start") ) {
         Log::info(TAG, "Starting...");
 
+        pConfig->scoreboard()->initStateFromStorage();
+
         for (unsigned int iservice = 0; iservice < pConfig->servicesConf().size(); iservice++) {
             for (unsigned int iteam = 0; iteam < pConfig->teamsConf().size(); iteam++) {
                 Team teamConf = pConfig->teamsConf()[iteam];
                 Service serviceConf = pConfig->servicesConf()[iservice];
-                
-                pConfig->storage()->updateScoreboard(teamConf, serviceConf);
-                pConfig->scoreboard()->setTries(teamConf.id(), pConfig->storage()->flagAttempts(teamConf.id()));
+
+                // reset status to down
                 pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
                 // pConfig->scoreboard()->setTeamTries();
 

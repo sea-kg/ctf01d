@@ -2,14 +2,13 @@
 #define MYSQL_STORAGE_H
 
 #include <storages.h>
-#include <scoreboard.h>
 #include <config.h>
 #include <map>
 #include <mysql/mysql.h>
 
 class MySqlStorage : public Storage {
     public:
-        MySqlStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
+        MySqlStorage(int nGameStartUTCInSec, int nGameEndUTCInSec);
         static std::string type() { return "mysql"; };
 
         // Storage
@@ -17,22 +16,28 @@ class MySqlStorage : public Storage {
             std::vector<Team> &vTeamsConf, 
             std::vector<Service> &vServicesConf);
         virtual void clean();
-        virtual void addLiveFlag(const Team &teamConf, const Service &service, const Flag &sFlag);
-        virtual void addFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
-        virtual int flagAttempts(const std::string &sTeamId);
-        virtual std::vector<Flag> endedFlags(const Team &teamConf, const Service &serviceConf);
+        virtual void insertFlagLive(const Flag &flag);
+        virtual std::vector<Flag> listOfLiveFlags();
+        virtual void insertFlagPutFail(const Flag &flag, const std::string &sReason);
+        virtual void insertFlagCheckFail(const Flag &flag, const std::string &sReason);
+        virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
+        virtual int numberOfFlagAttempts(const std::string &sTeamId);
+        virtual void insertToArchive(Flag &flag);
+        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId);
+        virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &serviceConf);
         virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
-        virtual void updateScoreboard(const Team &teamConf, const Service &service);
+        virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
-        virtual void removeFlag(Flag &flag);
-        virtual void moveToArchive(Flag &flag);
+        virtual void deleteFlagLive(const Flag &flag);
 
     private:
         std::string TAG;
-        Scoreboard *m_pScoreboard;
-        int m_nGameStartUTCInSec;
-        int m_nGameEndUTCInSec;
+        // int m_nGameStartUTCInSec;
+        // int m_nGameEndUTCInSec;
+        std::string m_sGameStartUTCInMS;
+        std::string m_sGameEndUTCInMS;
 
         bool checkAndInstall(MYSQL *pConn);
 

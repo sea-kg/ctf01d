@@ -101,14 +101,13 @@ function updateScoreboard() {
             updateUIValue(t, teamID, 'place');
             updateUIValue(t, teamID, 'score');
             updateUIValue(t, teamID, 'tries');
-            
-
             for(var sService in t.services){
                 var newState = t.services[sService]['status'];
                 var newAttack = t.services[sService]['attack'];
                 var newDefence = t.services[sService]['defence'];
                 var newSLA = t.services[sService]['uptime'];
-                var el = document.getElementById('status-' + teamID + '-' + sService);
+                var elId = 'status-' + teamID + '-' + sService;
+                var el = document.getElementById(elId);
                 if (el != null) {
                     if (!el.classList.contains(newState)) {
                         el.classList.remove('up');
@@ -119,7 +118,7 @@ function updateScoreboard() {
                         el.classList.add(newState);
                     }
                 } else {
-                    console.error('status-' + teamID + '-' + sService + '- not found');
+                    console.error(elId + '- not found');
                 }
                 var sCell = teamID + '-' + sService;
                 console.log(sCell);
@@ -128,7 +127,7 @@ function updateScoreboard() {
                 var elDef = document.getElementById('def-' + sCell);
                 if (elDef != null) elDef.innerHTML = newDefence; else console.error('def-' + sCell + ' - not found');
                 var elUptime = document.getElementById('uptime-' + sCell);
-                if (elUptime != null) elUptime.innerHTML = newSLA + '%'; else console.error('uptime-' + sCell + ' - not found');
+                if (elUptime != null) elUptime.innerHTML = newSLA.toFixed(2) + '%'; else console.error('uptime-' + sCell + ' - not found');
             }
         }
 

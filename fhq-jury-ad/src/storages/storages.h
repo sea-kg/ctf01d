@@ -6,13 +6,12 @@
 #include <vector>
 #include <storage.h>
 #include <utils_logger.h>
-#include <scoreboard.h>
 
 // ---------------------------------------------------------------------
 
 class IFabricStorage {
     public:
-        virtual Storage *create(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) = 0;
+        virtual Storage *create(int nGameStartUTCInSec, int nGameEndUTCInSec) = 0;
 };
 
 // ---------------------------------------------------------------------
@@ -25,7 +24,7 @@ class Storages {
         static void add(const std::string &sType, IFabricStorage* pStorage);
         static std::vector<std::string> list();
         static bool support(const std::string &sType);
-        static Storage* create(const std::string &sType, Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec);
+        static Storage* create(const std::string &sType, int nGameStartUTCInSec, int nGameEndUTCInSec);
 };
 
 // ---------------------------------------------------------------------
@@ -36,8 +35,8 @@ class FabricStorage : IFabricStorage {
         FabricStorage() {
             Storages::add(T::type(), this);
         };
-        virtual Storage *create(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
-            return new T(pScoreboard, nGameStartUTCInSec, nGameEndUTCInSec);
+        virtual Storage *create(int nGameStartUTCInSec, int nGameEndUTCInSec) {
+            return new T(nGameStartUTCInSec, nGameEndUTCInSec);
         };
 };
 

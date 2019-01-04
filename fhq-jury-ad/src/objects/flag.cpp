@@ -9,7 +9,7 @@ Flag::Flag() {
 
 // ---------------------------------------------------------------------
 
-void Flag::generateRandomFlag(int nTimeFlagLifeInMin) {
+void Flag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId) {
     generateId();
     generateValue();
 
@@ -20,6 +20,8 @@ void Flag::generateRandomFlag(int nTimeFlagLifeInMin) {
     setTimeStart(nTimeStart);
     setTimeEnd(nTimeEnd);
     m_sTeamStole = "";
+    m_sTeamId = sTeamId;
+    m_sServiceId = sServiceId;
 }
 
 // ---------------------------------------------------------------------

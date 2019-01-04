@@ -6,7 +6,7 @@
 class Flag {
     public:
         Flag();
-        void generateRandomFlag(int nTimeFlagLifeInMin);
+        void generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId);
 
         void setId(const std::string &sId);
         void generateId();

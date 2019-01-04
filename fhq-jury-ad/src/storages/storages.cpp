@@ -49,13 +49,13 @@ bool Storages::support(const std::string &sType) {
 
 // ---------------------------------------------------------------------
 
-Storage* Storages::create(const std::string &sType, Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
+Storage* Storages::create(const std::string &sType, int nGameStartUTCInSec, int nGameEndUTCInSec) {
     Storages::initGlobalVariables();
     std::string TAG = "findStorage";
     IFabricStorage *pFabricStorage = nullptr;
     if(g_pFabricStorages->count(sType)){
         pFabricStorage = g_pFabricStorages->at(sType);
-        return pFabricStorage->create(pScoreboard, nGameStartUTCInSec, nGameEndUTCInSec);
+        return pFabricStorage->create(nGameStartUTCInSec, nGameEndUTCInSec);
     }
     return nullptr;
 }

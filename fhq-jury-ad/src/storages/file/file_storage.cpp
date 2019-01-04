@@ -7,8 +7,7 @@
 
 REGISTRY_STORAGE(FileStorage)
 
-FileStorage::FileStorage(Scoreboard *pScoreboard, int nGameStartUTCInSec, int nGameEndUTCInSec) {
-    m_pScoreboard = pScoreboard;
+FileStorage::FileStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
     TAG = "FileStorage";
     m_nGameStartUTCInSec = nGameStartUTCInSec;
     m_nGameEndUTCInSec = nGameEndUTCInSec;
@@ -46,12 +45,12 @@ bool FileStorage::applyConfigFromFile(const std::string &sConfigFile,
 // ----------------------------------------------------------------------
 
 void FileStorage::clean() {
-    
+    Log::warn(TAG, "TODO clean");
 }
 
 // ----------------------------------------------------------------------
 
-void FileStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf, const Flag &flag){
+void FileStorage::insertFlagLive(const Flag &flag){
     std::lock_guard<std::mutex> lock(m_mutexFlags);
 
     Flag *pFlag = new Flag();
@@ -63,20 +62,58 @@ void FileStorage::addLiveFlag(const Team &teamConf, const Service &serviceConf, 
 
 // ----------------------------------------------------------------------
 
-void FileStorage::addFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
-    // TODO
+std::vector<Flag> FileStorage::listOfLiveFlags() {
+    std::vector<Flag> vResult;
+    Log::warn(TAG, "TODO listOfLiveFlags");
+    return vResult;
 }
 
 // ----------------------------------------------------------------------
 
-int FileStorage::flagAttempts(const std::string &sTeamId) {
+void FileStorage::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
+    Log::warn(TAG, "TODO insertFlagPutFail");
+}
+
+// ----------------------------------------------------------------------
+
+void FileStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
+    Log::warn(TAG, "TODO insertFlagCheckFail");
+}
+
+// ----------------------------------------------------------------------
+
+void FileStorage::insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
+    // TODO
+    Log::warn(TAG, "TODO insertFlagAttempt");
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::numberOfFlagAttempts(const std::string &sTeamId) {
+    Log::warn(TAG, "TODO numberOfFlagAttempts");
     return 0;
 }
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> FileStorage::endedFlags(const Team &teamConf, const Service &serviceConf){
+void FileStorage::insertToArchive(Flag &flag) {
+    std::lock_guard<std::mutex> lock(m_mutexFlags);
+    Log::warn(TAG, "TODO insertToArchive");
     // TODO
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) {
+     Log::warn(TAG, "TODO numberOfFlagSuccessPutted");
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Service &serviceConf){
+    // TODO
+    Log::warn(TAG, "TODO outdatedFlags");
     return std::vector<Flag>();
 }
 
@@ -84,12 +121,21 @@ std::vector<Flag> FileStorage::endedFlags(const Team &teamConf, const Service &s
 
 void FileStorage::updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag){
     // TODO
+    Log::warn(TAG, "TODO updateFlag");
 }
 
 // ----------------------------------------------------------------------
 
-void FileStorage::updateScoreboard(const Team &teamConf, const Service &serviceConf) {
-    // TODO
+int FileStorage::defenceValue(const std::string &sTeamId, const std::string &sServiceId) {
+    Log::warn(TAG, "TODO defenceValue");
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::attackValue(const std::string &sTeamId, const std::string &sServiceId) {
+    Log::warn(TAG, "TODO attackValue");
+    return 0;
 }
 
 // ----------------------------------------------------------------------
@@ -108,19 +154,15 @@ bool FileStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
 
 bool FileStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
      // TODO
+     Log::warn(TAG, "TODO updateTeamStole");
     return false;
 }
 
 // ----------------------------------------------------------------------
 
-void FileStorage::removeFlag(Flag &flag) {
+void FileStorage::deleteFlagLive(const Flag &flag) {
     // TODO
+    Log::warn(TAG, "TODO deleteFlagLive");
 }
 
 // ----------------------------------------------------------------------
-
-void FileStorage::moveToArchive(Flag &flag) {
-    std::lock_guard<std::mutex> lock(m_mutexFlags);
-
-    // TODO
-}

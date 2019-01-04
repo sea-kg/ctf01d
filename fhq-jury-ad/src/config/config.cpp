@@ -333,18 +333,24 @@ bool Config::applyConfig(bool bLazyStart){
         return false;
     }
 
-    // scoreboard
-    m_pScoreboard = new Scoreboard(m_bScoreboardRandom, m_nGameStartUTCInSec, m_nGameEndUTCInSec, m_vTeamsConf, m_vServicesConf);
-
     // storage
     Log::info(TAG, "Storage: " + m_sUseStorage);
-    m_pStorage = Storages::create(m_sUseStorage, m_pScoreboard, m_nGameStartUTCInSec, m_nGameEndUTCInSec);
+    m_pStorage = Storages::create(m_sUseStorage, m_nGameStartUTCInSec, m_nGameEndUTCInSec);
     Log::info(TAG, "Init storage: " + m_sUseStorage);
-    
+
     if (m_pStorage == NULL) {
         Log::err(TAG, "server/use_storage: '" + m_sUseStorage + "' is unknown type of storage");
 		return false;
     }
+    
+    // scoreboard
+    m_pScoreboard = new Scoreboard(m_bScoreboardRandom, 
+        m_nGameStartUTCInSec,
+        m_nGameEndUTCInSec, 
+        m_nFlagTimeliveInMin*60,
+        m_vTeamsConf, 
+        m_vServicesConf, 
+        m_pStorage);
 
     // configure storage
     if (!m_pStorage->applyConfigFromFile(m_sWorkspaceDir + "/" + m_sUseStorage + "_storage.conf", m_vTeamsConf, m_vServicesConf)) {

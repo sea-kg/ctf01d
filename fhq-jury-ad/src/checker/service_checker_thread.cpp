@@ -15,6 +15,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
+#include <ts.h>
+
 
 int ServiceCheckerThread::CHECKER_CODE_UP = 101;
 int ServiceCheckerThread::CHECKER_CODE_CORRUPT = 102;
@@ -122,8 +124,7 @@ void ServiceCheckerThread::run() {
     }*/
 
     while(1) {
-        auto now = std::chrono::system_clock::now().time_since_epoch();
-        int nCurrentTime = std::chrono::duration_cast<std::chrono::seconds>(now).count();
+        int nCurrentTime = TS::currentTime_seconds();
         if (nCurrentTime > m_pConfig->gameEndUTCInSec()) {
             Log::warn(TAG, "Game ended (current time: " + std::to_string(nCurrentTime) + ")");
             return;
@@ -143,7 +144,7 @@ void ServiceCheckerThread::run() {
         // then we establish a flag
         if (nCurrentTime < (m_pConfig->gameEndUTCInSec() - m_pConfig->flagTimeliveInMin()*60)) {
             Flag flag;
-            flag.generateRandomFlag(m_pConfig->flagTimeliveInMin());
+            flag.generateRandomFlag(m_pConfig->flagTimeliveInMin(), m_teamConf.id(), m_serviceConf.id());
 
             // int nExitCode2 = 
             // Log::ok(TAG, " runChecker: " + std::to_string(nExitCode));
@@ -152,25 +153,31 @@ void ServiceCheckerThread::run() {
             if (nExitCode == ServiceCheckerThread::CHECKER_CODE_UP) {
                 // >>>>>>>>>>> service is UP <<<<<<<<<<<<<<
                 Log::ok(TAG, " => service is up");
-                m_pConfig->storage()->addLiveFlag(m_teamConf, m_serviceConf, flag);
+                m_pConfig->scoreboard()->addFlagLive(flag);
                 m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_UP);
+                m_pConfig->scoreboard()->incrementFlagsPutted(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_CORRUPT) {
                 // >>>>>>>>>>> service is CORRUPT <<<<<<<<<<<<<<
+                m_pConfig->storage()->insertFlagPutFail(flag, "corrupt");
                 Log::warn(TAG, " => service is corrupt ");
                 m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_CORRUPT);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
+                m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
                 Log::warn(TAG, " => service is mumble (1) ");
                 m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_MUMBLE);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<
+                m_pConfig->storage()->insertFlagPutFail(flag, "down");
                 Log::warn(TAG, " => service is down ");
                 m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_SHIT) {
                 // >>>>>>>>>>> checker is SHIT <<<<<<<<<<<<<<
+                m_pConfig->storage()->insertFlagPutFail(flag, "shit");
                 Log::err(TAG, " => checker is shit ");
                 m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_SHIT);
             } else {
+                m_pConfig->storage()->insertFlagPutFail(flag, "internal_error");
                 Log::err(TAG, " => runChecker - wrong code return");
             }
         } else {
@@ -178,31 +185,31 @@ void ServiceCheckerThread::run() {
             // check some service status or just update to UP (Ha-Ha I'm the real evil!)
         }
 
-        std::vector<Flag> vEndedFlags = m_pConfig->storage()->endedFlags(m_teamConf, m_serviceConf);
+        std::vector<Flag> vEndedFlags = m_pConfig->scoreboard()->outdatedFlagsLive(m_teamConf.id(), m_serviceConf.id());
 
         for (unsigned int i = 0; i < vEndedFlags.size(); i++) {
-            Flag oldFlag = vEndedFlags[i];
+            Flag outdatedFlag = vEndedFlags[i];
+            m_pConfig->scoreboard()->removeFlagLive(outdatedFlag);
 
-            if (oldFlag.teamStole() != "") {
+            if (outdatedFlag.teamStole() != "") {
                 // some team stoled oldFlag
-                m_pConfig->storage()->moveToArchive(oldFlag);
+                m_pConfig->storage()->insertToArchive(outdatedFlag);
                 continue;
             } else {
-                // nobody stole oldFlag
-                int nCheckExitCode = this->runChecker(oldFlag, "check");
+                // nobody stole outdatedFlag
+                int nCheckExitCode = this->runChecker(outdatedFlag, "check");
                 if (nCheckExitCode != ServiceCheckerThread::CHECKER_CODE_UP) {
                     // service is not up
-                    m_pConfig->storage()->removeFlag(oldFlag);
+                    m_pConfig->storage()->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
                 } else {
                     // service is up
-                    m_pConfig->storage()->moveToArchive(oldFlag);
-                    m_pConfig->scoreboard()->incrementDefenceScore(oldFlag.teamId(), oldFlag.serviceId());
+                    m_pConfig->storage()->insertToArchive(outdatedFlag);
+                    m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag.teamId(), outdatedFlag.serviceId());
                 }
             }
         }
         
         // TODO just update SLA ?
-        m_pConfig->storage()->updateScoreboard(m_teamConf, m_serviceConf);
         end = std::chrono::system_clock::now();
 
         int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();

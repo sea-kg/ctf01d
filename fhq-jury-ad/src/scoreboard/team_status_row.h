@@ -10,7 +10,7 @@
 
 class TeamStatusRow {
     public:
-        TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf);
+        TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf, int nGameStartInSec, int nGameEndInSec);
         const std::string &teamId();
 
         void setPlace(int nPlace);
@@ -22,12 +22,23 @@ class TeamStatusRow {
         void setServiceStatus(const std::string &sServiceId, std::string sStatus);
         std::string serviceStatus(const std::string &sServiceId);
 
+        // TODO deprecated
         void setServiceScore(const std::string &sServiceId, int nNewDefence, int nNewAttack, double nNewSLA);
 
         void setTries(int nScore);
         int tries();
 
         std::string servicesToString();
+
+        int incrementDefence(const std::string &sServiceId);
+        void setServiceDefence(const std::string &sServiceId, int nDefence);
+        int incrementAttack(const std::string &sServiceId);
+        void setServiceAttack(const std::string &sServiceId, int nAttack);
+        int incrementFlagsPutted(const std::string &sServiceId);
+        void setServiceFlagsPutted(const std::string &sServiceId, int nFlagsPutted);
+        double serviceUptime(const std::string &sServiceId);
+
+        void recalculateScore();
 
     private:
         std::mutex m_mutex;

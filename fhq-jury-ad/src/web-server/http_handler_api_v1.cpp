@@ -62,6 +62,8 @@ bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest 
 
 bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
+    LightHttpResponse response(pRequest->sockFd());
+
     if(pRequest->requestPath() == "/api/v1/game") {
         pRequest->response(
             LightHttpResponse::RESP_OK, 
@@ -178,17 +180,17 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             return true;
         }
         m_pConfig->scoreboard()->incrementTries(sTeamId);
-        m_pConfig->storage()->addFlagAttempt(sTeamId, sFlag);
+        m_pConfig->storage()->insertFlagAttempt(sTeamId, sFlag);
 
         Flag flag;
-        if (!m_pConfig->storage()->findFlagByValue(sFlag, flag)) {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-150): flag is too old or flag never existed or flag alredy stole");
-            Log::err(TAG, "Error(-150): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+        if (!m_pConfig->scoreboard()->findFlagLive(sFlag, flag)) {
+            response
+                .forbidden()
+                .sendText("Error(-150): flag is too old or flag never existed or flag alredy stole. "
+                    "Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
             return true;
         }
+
         long nCurrentTimeMSec = (long)nCurrentTimeSec;
         nCurrentTimeMSec = nCurrentTimeMSec*1000;
 

@@ -12,6 +12,10 @@ Or you can use for training.
 * [TRAINING MODE: lazy-start](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/LAZY_START.md)
 * [SIMILAR: systems](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/SIMILAR.md)
 
+
+![img1](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/screen1.png)
+![img1](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/screen2.png)
+
 ### Download and basic configuration
 
 ```

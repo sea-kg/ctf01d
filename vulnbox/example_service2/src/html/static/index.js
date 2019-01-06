@@ -23,7 +23,7 @@ $('#btn_list_flag').unbind().bind('click', function() {
     }).done(function(r){
         $('#tbl_list_flag').html("<tr><th>Flag ID</th></tr>");
         for(var i in r.FlagIDs) {
-            $('#tbl_list_flag').append("<tr><td>" + r.FlagIDs[i] + "</td></tr>");
+            $('#tbl_list_flag').append("<tr><td class='flag-id'>" + r.FlagIDs[i] + "</td></tr>");
         }
     }).fail(function(err){
         $('#tbl_list_flag').html("<tr><th>" + err.responseJSON.Error + "</th></tr>");

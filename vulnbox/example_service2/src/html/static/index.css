@@ -25,3 +25,7 @@ body {
 .tbl {
     display: inline-table;
 }
+
+.flag-id {
+    font-family: monospace;
+}

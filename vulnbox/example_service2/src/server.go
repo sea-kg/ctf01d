@@ -12,7 +12,7 @@ import (
 
 var (
   // dbConnString = "example_service2:example_service2@tcp(localhost:3306)/example_service2"
-  dbConnString = "example_service2:example_service2@tcp(es2_db_20190106:3306)/example_service2"
+  dbConnString = "example_service2:example_service2@tcp(example_service2_db:3306)/example_service2"
 )
 
 type Flag struct {
@@ -57,18 +57,21 @@ func put_flag(w http.ResponseWriter, r *http.Request) {
 	if err2 != nil {
     fmt.Printf("FAILED insert flag=%s with flag_id=%s\n", flag_id, flag)
     err_json(w, err2.Error())
+    db.Close()
     return
   }
   flag2 := Flag{flag_id, flag}
   js, err := json.Marshal(flag2)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
+    db.Close()
     return
   }
   
   fmt.Printf("Inserted flag=%s with flag_id=%s\n", flag_id, flag)
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
+  db.Close()
 }
 
 // --------------------------------------------------------
@@ -87,6 +90,7 @@ func get_flag(w http.ResponseWriter, r *http.Request) {
   var flag Flag
   err2 := db.Get(&flag, `SELECT * FROM flag WHERE flag_id = ?`, flag_id)
 	if err2 != nil {
+    db.Close()
     err_json(w, err2.Error())
     return
   }
@@ -100,6 +104,7 @@ func get_flag(w http.ResponseWriter, r *http.Request) {
 
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
+  db.Close()
 }
 
 // --------------------------------------------------------
@@ -119,18 +124,21 @@ func list_flag(w http.ResponseWriter, r *http.Request) {
   var flag_ids []string
   err2 := db.Select(&flag_ids, "SELECT flag_id FROM flag")
   if err2 != nil {
-		err_json(w, err2.Error())
+    err_json(w, err2.Error())
+    db.Close()
     return
   }
   flags2 := FlagIDs{flag_ids}
   js, err := json.Marshal(flags2)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
+    db.Close()
     return
   }
-
+  
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
+  db.Close()
 }
 
 // --------------------------------------------------------

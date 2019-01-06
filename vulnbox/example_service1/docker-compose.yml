@@ -3,16 +3,16 @@ version: '2'
 services:
   example_service1:
     build: .
-    image: example_service1:0.2.0
+    image: example_service1:2019.1.6
     volumes:
       - "./flags:/root/flags"
     ports:
       - "4441:4441"
     restart: always
     networks:
-      - example_service1
+      - example_service1_net
 
 networks:
-  example_service1:
+  example_service1_net:
     driver: bridge
         

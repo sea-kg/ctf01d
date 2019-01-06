@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  es2_db_20190106:
+  example_service2_db:
     image: mysql:5.7
     volumes:
       - "./dckr_mysql:/var/lib/mysql"
@@ -13,22 +13,22 @@ services:
       MYSQL_USER: example_service2
       MYSQL_PASSWORD: example_service2
     networks:
-      - es2_net
+      - example_service2_net
 
-  es2:
+  example_service2:
     build: .
     image: example_service2:2019.1.6
     depends_on:
-      - es2_db_20190106
+      - example_service2_db
     volumes:
       - "./src:/home/example_service2"
     ports:
       - "4442:4442"
     restart: always
     networks:
-      - es2_net
+      - example_service2_net
 
 networks:
-  es2_net:
+  example_service2_net:
     driver: bridge
         

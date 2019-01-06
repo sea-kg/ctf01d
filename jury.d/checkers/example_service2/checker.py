@@ -5,6 +5,7 @@ import socket
 import random
 import time
 import errno
+import requests
 
 # put-get flag to service success
 def service_up():
@@ -45,19 +46,9 @@ def put_flag():
     global host, port, f_id, flag
     # try put
     try:
-        # print("try connect " + host + ":" + str(port))
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(1)
-        s.connect((host, port))
-        result = s.recv(1024)
-        # print(result)
-        s.send("put" + "\n")
-        result = s.recv(1024)
-        s.send(f_id + "\n")
-        result = s.recv(1024)
-        s.send(flag + "\n")
-        result = s.recv(1024)
-        s.close()
+        r = requests.post('http://' + host + ':' + str(port) + '/api/flags/' + f_id + '/' + flag)
+        if r.status_code != 200:
+            service_corrupt()
     except socket.timeout:
         service_down()
     except socket.error as serr:
@@ -75,23 +66,10 @@ def check_flag():
     # try get
     flag2 = ""
     try:
-        # print("try connect " + host + ":" + str(port))
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(1)
-        s.connect((host, port))
-        result = s.recv(1024)
-        # print(result)
-        s.send("get\n")
-        result = s.recv(1024)
-        s.send(f_id + "\n")
-        result = s.recv(1024)
-        flag2 = result.strip()
-        flag2 = flag2.split("FOUND FLAG: ");
-        if len(flag2) == 2:
-            flag2 = flag2[1]
-        else:
-            flag2 = ''
-        s.close()
+        r = requests.get('http://' + host + ':' + str(port) + '/api/flags/' + f_id)
+        if r.status_code != 200:
+            service_corrupt()
+        flag2 = r.json()['Flag']
     except socket.timeout:
         service_down()
     except socket.error as serr:
@@ -106,7 +84,6 @@ def check_flag():
 
     if flag != flag2:
         service_corrupt()
-
 
 if command == "put":
     put_flag()

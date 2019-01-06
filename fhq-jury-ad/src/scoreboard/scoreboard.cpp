@@ -201,6 +201,21 @@ void Scoreboard::incrementFlagsPutted(const std::string &sTeamId, const std::str
 
 // ----------------------------------------------------------------------
 
+void Scoreboard::updateScore(const std::string &sTeamId, const std::string &sServiceId) {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+    std::map<std::string,TeamStatusRow *>::iterator it;
+    it = m_mapTeamsStatuses.find(sTeamId);
+    if (it != m_mapTeamsStatuses.end()) {
+        TeamStatusRow *pRow = it->second;
+        pRow->updateScore(sServiceId);
+        m_jsonScoreboard[sTeamId]["services"][sServiceId]["uptime"] = pRow->serviceUptime(sServiceId);
+        m_jsonScoreboard[sTeamId]["score"] = pRow->score();
+        sortPlaces();
+    }
+}
+
+// ----------------------------------------------------------------------
+
 std::string Scoreboard::serviceStatus(const std::string &sTeamId, const std::string &sServiceId) {
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);

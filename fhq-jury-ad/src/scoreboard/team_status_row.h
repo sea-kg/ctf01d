@@ -37,6 +37,7 @@ class TeamStatusRow {
         int incrementFlagsPutted(const std::string &sServiceId);
         void setServiceFlagsPutted(const std::string &sServiceId, int nFlagsPutted);
         double serviceUptime(const std::string &sServiceId);
+        void updateScore(const std::string &sServiceId);
 
         void recalculateScore();
 

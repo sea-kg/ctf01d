@@ -32,6 +32,7 @@ class Scoreboard {
         void incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId);
         void incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId);
         void incrementFlagsPutted(const std::string &sTeamId, const std::string &sServiceId);
+        void updateScore(const std::string &sTeamId, const std::string &sServiceId);
         std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
         void addFlagLive(const Flag &flag);

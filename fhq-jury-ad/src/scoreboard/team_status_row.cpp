@@ -136,6 +136,16 @@ int TeamStatusRow::incrementFlagsPutted(const std::string &sServiceId) {
 
 // ----------------------------------------------------------------------
 
+void TeamStatusRow::updateScore(const std::string &sServiceId) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
+    m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
+    recalculateScore();
+    return;
+}
+
+// ----------------------------------------------------------------------
+
 void TeamStatusRow::setServiceFlagsPutted(const std::string &sServiceId, int nFlagSuccess) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagSuccess);

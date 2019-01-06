@@ -13,8 +13,8 @@ Or you can use for training.
 * [SIMILAR: systems](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/SIMILAR.md)
 
 
-![img1](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/screen1.png)
-![img1](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/screen2.png)
+![scoreboard](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/misc/screens/screen1.png)
+![scoreboard-info](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/misc/screens/screen2.png)
 
 ### Download and basic configuration
 

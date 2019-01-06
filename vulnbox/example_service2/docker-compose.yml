@@ -1,18 +1,34 @@
 version: '2'
 
 services:
-  example_service2:
-    build: .
-    image: example_service2:0.0.1
+  es2_db_20190106:
+    image: mysql:5.7
     volumes:
-      - "./flags:/root/flags"
+      - "./dckr_mysql:/var/lib/mysql"
+      - "./sql:/docker-entrypoint-initdb.d"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example_service2
+      MYSQL_DATABASE: example_service2
+      MYSQL_USER: example_service2
+      MYSQL_PASSWORD: example_service2
+    networks:
+      - es2_net
+
+  es2:
+    build: .
+    image: example_service2:2019.1.6
+    depends_on:
+      - es2_db_20190106
+    volumes:
+      - "./src:/home/example_service2"
     ports:
       - "4442:4442"
     restart: always
     networks:
-      - example_service2
+      - es2_net
 
 networks:
-  example_service2:
+  es2_net:
     driver: bridge
         

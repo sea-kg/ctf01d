@@ -2,10 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(fhq-jury-ad)
 
-add_definitions(-DJURY_AD_VERSION="0.2.0")
+add_definitions(-DJURY_AD_VERSION="0.3.0")
 add_definitions(-DJURY_AD_APP_NAME="fhq-jury-ad")
 
-set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(EXECUTABLE_OUTPUT_PATH ${fhq-jury-ad_SOURCE_DIR})
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")

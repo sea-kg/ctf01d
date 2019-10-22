@@ -2,4 +2,4 @@
 
 Classic Service by tcp/ip based on python2
 
-``` python2 service.py ```
+``` python service.py ```

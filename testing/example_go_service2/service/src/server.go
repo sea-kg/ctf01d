@@ -8,13 +8,14 @@ import (
   _ "github.com/go-sql-driver/mysql"
   "github.com/jmoiron/sqlx"
   "encoding/json"
+  "os"
 )
 
 var (
   // dbConnString = "example_service2:example_service2@tcp(localhost:3306)/example_service2"
-  dbConnString = "example_service2:example_service2@tcp(example_service2_db:3306)/example_service2"
+  dbConnString = os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + os.Getenv("MYSQL_HOST") + ":3306)/" + os.Getenv("MYSQL_DATABASE")
 )
-
+      
 type Flag struct {
   Flag_id string `db:"flag_id"`
   Flag string `db:"flag"`
@@ -162,5 +163,5 @@ func main() {
   fs := http.FileServer(http.Dir("html/static"))
   http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.ListenAndServe(":4442", nil)
+	http.ListenAndServe(":4102", nil)
 }

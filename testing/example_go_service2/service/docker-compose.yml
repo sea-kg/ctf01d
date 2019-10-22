@@ -23,7 +23,7 @@ services:
     volumes:
       - "./src:/home/example_service2"
     ports:
-      - "4442:4442"
+      - "4102:4102"
     restart: always
     networks:
       - example_service2_net

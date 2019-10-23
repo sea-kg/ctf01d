@@ -1,15 +1,14 @@
 version: '3'
 
 services:
-  # service 1
+
+  # service 1 - port 4101
   team1_service1_server:
     build: ./example_py_service1/service/
     image: freehackquest/example_py_service1:testing
     volumes:
       - "./tmp/team1_service1_server_flags:/root/flags"
     restart: always
-    ports:
-      - "4101:4101"
     networks:
       - fhqjuryad_net
   
@@ -81,9 +80,23 @@ services:
       MYSQL_DATABASE: go_service2
       MYSQL_USER: service2usr
       MYSQL_PASSWORD: service2pass
-    ports:
-      - "4102:4102"
     restart: always
+    networks:
+      - fhqjuryad_net
+
+  # team1
+  team1_server:
+    image: haproxy:2.0
+    depends_on:
+      - team1_service1_server
+      - team1_service2_server
+    volumes:
+      - "./haproxy/team1.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    restart: always
+    ports:
+      - "4101:4101"
+      - "4102:4102"
     networks:
       - fhqjuryad_net
 

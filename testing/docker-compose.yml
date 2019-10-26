@@ -91,7 +91,7 @@ services:
       - team1_service1_server
       - team1_service2_server
     volumes:
-      - "./haproxy/team1.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+      - "./haproxy.configs/team1.cfg:/usr/local/etc/haproxy/haproxy.cfg"
     command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
     restart: always
     ports:

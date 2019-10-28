@@ -1,6 +1,6 @@
 # fhq-jury-ad
 
-[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad)
+[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad) [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-jury-ad.svg)](https://hub.docker.com/r/freehackquest/fhq-jury-ad/) [![Docker layers](https://images.microbadger.com/badges/image/freehackquest/fhq-jury-ad.svg)](https://microbadger.com/images/freehackquest/fhq-jury-ad) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-jury-ad.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-jury-ad.svg)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-jury-ad.svg?label=github%20forks)](https://github.com/freehackquest/fhq-jury-ad/)
 
 Jury System for a attack-defence ctf game.
 Or you can use for training.

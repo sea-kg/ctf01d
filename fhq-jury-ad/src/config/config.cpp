@@ -7,7 +7,6 @@
 #include <date.h>
 #include <iostream>
 #include <sstream>
-#include <utils_search_lazy_conf.h>
 #include <conf_file_parser.h>
 #include <read_teams_conf.h>
 #include <fs.h>
@@ -28,7 +27,7 @@ Config::Config(const std::string &sWorkspaceDir) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyGameConf(bool bLazyStart) {
+bool Config::applyGameConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/game.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
@@ -48,31 +47,26 @@ bool Config::applyGameConf(bool bLazyStart) {
     Log::info(TAG, "game.id: " + m_sGameId);
     m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
     Log::info(TAG, "game.name: " + m_sGameName);
-    if (bLazyStart) {
-        m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    } else {
-        m_sGameStart = gameConf.getStringValueFromConfig("game.start", m_sGameStart);
-        Log::info(TAG, "game.start: " + m_sGameStart);
-        {
-            std::istringstream in{m_sGameStart.c_str()};
-            date::sys_seconds tp;
-            in >> date::parse("%Y-%m-%d %T", tp);
-            m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
-        }
+    
+    m_sGameStart = gameConf.getStringValueFromConfig("game.start", m_sGameStart);
+    Log::info(TAG, "game.start: " + m_sGameStart);
+    {
+        std::istringstream in{m_sGameStart.c_str()};
+        date::sys_seconds tp;
+        in >> date::parse("%Y-%m-%d %T", tp);
+        m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
     }
+    
     Log::info(TAG, "Game start (UNIX timestamp): " + std::to_string(m_nGameStartUTCInSec));
     
-    if (bLazyStart) {
-        m_nGameEndUTCInSec = m_nGameStartUTCInSec + 4*60*60; // 4 hours
-    } else {
-        m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
-        Log::info(TAG, "game.end: " + m_sGameEnd);
-        {
-            std::istringstream in{m_sGameEnd.c_str()};
-            date::sys_seconds tp;
-            in >> date::parse("%Y-%m-%d %T", tp);
-            m_nGameEndUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
-        }
+    
+    m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
+    Log::info(TAG, "game.end: " + m_sGameEnd);
+    {
+        std::istringstream in{m_sGameEnd.c_str()};
+        date::sys_seconds tp;
+        in >> date::parse("%Y-%m-%d %T", tp);
+        m_nGameEndUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
     }
     Log::info(TAG, "Game end (UNIX timestamp): " + std::to_string(m_nGameEndUTCInSec));
 
@@ -109,7 +103,7 @@ bool Config::applyGameConf(bool bLazyStart) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyServerConf(bool bLazyStart) {
+bool Config::applyServerConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/server.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
@@ -145,7 +139,7 @@ bool Config::applyServerConf(bool bLazyStart) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyScoreboardConf(bool bLazyStart) {
+bool Config::applyScoreboardConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/scoreboard.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
@@ -192,7 +186,7 @@ bool Config::applyScoreboardConf(bool bLazyStart) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyCheckersConf(bool bLazyStart) {
+bool Config::applyCheckersConf() {
     std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
     if (!FS::dirExists(sRootCheckersDir)) {
         Log::err(TAG, "Directory " + sRootCheckersDir + " not exists");
@@ -293,43 +287,33 @@ bool Config::applyCheckersConf(bool bLazyStart) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyConfig(bool bLazyStart){
+bool Config::applyConfig(){
     bool bResult = true;
     Log::info(TAG, "Loading configuration... ");
 
     // apply the game config
-    if (!this->applyGameConf(bLazyStart)) {
+    if (!this->applyGameConf()) {
         return false;
     }
 
     // apply the server config
-    if (!this->applyServerConf(bLazyStart)) {
+    if (!this->applyServerConf()) {
         return false;
     }
 
-    if (!this->applyCheckersConf(bLazyStart)) {
+    if (!this->applyCheckersConf()) {
         return false;
     }
 
     // teams
-    if (bLazyStart) {
-
-        // teams by scanning
-        SearchLazyConf searchLazyConf(this->scoreboardPort());
-        searchLazyConf.scan();
-        m_vTeamsConf.clear();
-        m_vTeamsConf = searchLazyConf.getFoundTeams();
-
-    } else {
-
-        ReadTeamsConf teamsConf(m_sWorkspaceDir);
-        if (!teamsConf.read(bLazyStart, m_vTeamsConf)) {
-            return false;
-        }
+    ReadTeamsConf teamsConf(m_sWorkspaceDir);
+    if (!teamsConf.read(m_vTeamsConf)) {
+        return false;
     }
+    
 
     // apply the scoreboard config
-    if (!this->applyScoreboardConf(bLazyStart)) {
+    if (!this->applyScoreboardConf()) {
         return false;
     }
 

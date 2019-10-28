@@ -255,6 +255,17 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(21, // don't change if after commit
+        "CREATE TABLE `services_flags_costs` ("
+        "  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+        "  `serviceid` VARCHAR(50) DEFAULT '',"
+        "  `dt` bigint DEFAULT NULL," // date
+        "  `flag_cost` int DEFAULT 10,"
+        "  PRIMARY KEY (id),"
+        "  INDEX(`serviceid`, `dt`)"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
     Log::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;

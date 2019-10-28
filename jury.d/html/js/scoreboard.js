@@ -165,6 +165,10 @@ function updateScoreboard() {
     });
 }
 
+function formatGameTimings(periods) {
+    // TODO beauty print periods
+}
+
 // init scoreboard
 getAjax('/api/v1/game', function(err, resp){
     if (err) {
@@ -172,8 +176,16 @@ getAjax('/api/v1/game', function(err, resp){
         return;
     }
     document.getElementById('game_name').innerHTML = resp.game_name;
-    document.getElementById('game_time_range').innerHTML = resp.game_start + ' - ' + resp.game_end;
-    
+
+    // TODO beauty print periods 
+    if (resp.game_has_coffee_break) {
+        document.getElementById('game_time_range').innerHTML = 
+            resp.game_start + ' - ' + resp.game_coffee_break_start + ' (coffee break) '
+            + resp.game_coffee_break_end + ' - ' + resp.game_end;
+    } else {
+        document.getElementById('game_time_range').innerHTML = resp.game_start + ' - ' + resp.game_end;
+    }
+
     console.log(resp);
 
     // generate teams-services table

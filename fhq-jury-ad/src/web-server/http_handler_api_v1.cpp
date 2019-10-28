@@ -20,9 +20,13 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
     m_pConfig = pConfig;    
 
     TAG = "HttpHandlerApiV1";
+    
     m_jsonGame["game_name"] = m_pConfig->gameName();
     m_jsonGame["game_start"] = TS::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
     m_jsonGame["game_end"] = TS::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
+    m_jsonGame["game_has_coffee_break"] = m_pConfig->gameHasCoffeeBreak();
+    m_jsonGame["game_coffee_break_start"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_coffee_break_end"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakEndUTCInSec()) + " (UTC)";
     m_jsonGame["teams"] = nlohmann::json::array();
     m_jsonGame["services"] = nlohmann::json::array();
 
@@ -253,6 +257,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         }
 
         // TODO light update scoreboard
+        // TODO send how match points will be added
         m_pConfig->scoreboard()->incrementAttackScore(sTeamId, flag.serviceId());
 
         pRequest->response(

@@ -23,6 +23,11 @@ Config::Config(const std::string &sWorkspaceDir) {
     m_sUseStorage = ""; // default value
     m_nGameStartUTCInSec = 0;
     m_nGameEndUTCInSec = 0;
+    m_bHasCoffeeBreak = false;
+    m_sGameCoffeeBreakStart = "";
+    m_sGameCoffeeBreakEnd = "";
+    m_nGameCoffeeBreakStartUTCInSec = 0;
+    m_nGameCoffeeBreakEndUTCInSec = 0;
 }
 
 // ---------------------------------------------------------------------
@@ -59,7 +64,6 @@ bool Config::applyGameConf() {
     
     Log::info(TAG, "Game start (UNIX timestamp): " + std::to_string(m_nGameStartUTCInSec));
     
-    
     m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
     Log::info(TAG, "game.end: " + m_sGameEnd);
     {
@@ -74,7 +78,7 @@ bool Config::applyGameConf() {
     Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
 
     if (m_nGameStartUTCInSec == 0) {
-        Log::err(TAG, sConfigFile + ":game.start - not found");
+        Log::err(TAG, sConfigFile + ": game.start - not found");
         return false;
     }
 
@@ -98,6 +102,34 @@ bool Config::applyGameConf() {
         return false;
     }
 
+    m_sGameCoffeeBreakStart = gameConf.getStringValueFromConfig("game.coffee_break_start", m_sGameCoffeeBreakStart);
+    Log::info(TAG, "game.coffee_break_start: " + m_sGameCoffeeBreakStart);
+    {
+        std::istringstream in{m_sGameCoffeeBreakStart.c_str()};
+        date::sys_seconds tp;
+        in >> date::parse("%Y-%m-%d %T", tp);
+        m_nGameCoffeeBreakStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
+    }
+    Log::info(TAG, "Game coffee break start (UNIX timestamp): " + std::to_string(m_nGameCoffeeBreakStartUTCInSec));
+
+    m_sGameCoffeeBreakEnd = gameConf.getStringValueFromConfig("game.coffee_break_end", m_sGameCoffeeBreakEnd);
+    Log::info(TAG, "game.coffee_break_end: " + m_sGameCoffeeBreakEnd);
+    {
+        std::istringstream in{m_sGameCoffeeBreakEnd.c_str()};
+        date::sys_seconds tp;
+        in >> date::parse("%Y-%m-%d %T", tp);
+        m_nGameCoffeeBreakEndUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
+    }
+    Log::info(TAG, "Game coffee break start (UNIX timestamp): " + std::to_string(m_nGameCoffeeBreakEndUTCInSec));
+
+    if (m_nGameStartUTCInSec < m_nGameCoffeeBreakStartUTCInSec
+        && m_nGameCoffeeBreakStartUTCInSec < m_nGameEndUTCInSec
+        && m_nGameStartUTCInSec < m_nGameCoffeeBreakEndUTCInSec
+        && m_nGameCoffeeBreakEndUTCInSec < m_nGameEndUTCInSec
+    ) {
+        Log::info(TAG, "Game has coffee break ");
+        m_bHasCoffeeBreak = true;
+    }
     return true;
 }
 
@@ -305,12 +337,10 @@ bool Config::applyConfig(){
         return false;
     }
 
-    // teams
     ReadTeamsConf teamsConf(m_sWorkspaceDir);
     if (!teamsConf.read(m_vTeamsConf)) {
         return false;
     }
-    
 
     // apply the scoreboard config
     if (!this->applyScoreboardConf()) {
@@ -421,6 +451,24 @@ int Config::gameStartUTCInSec() {
 
 int Config::gameEndUTCInSec() {
     return m_nGameEndUTCInSec;
+}
+
+// ---------------------------------------------------------------------
+
+bool Config::gameHasCoffeeBreak() {
+    return m_bHasCoffeeBreak;
+}
+
+// ---------------------------------------------------------------------
+
+int Config::gameCoffeeBreakStartUTCInSec() {
+    return m_nGameCoffeeBreakStartUTCInSec;
+}
+
+// ---------------------------------------------------------------------
+
+int Config::gameCoffeeBreakEndUTCInSec() {
+    return m_nGameCoffeeBreakEndUTCInSec;
 }
 
 // ---------------------------------------------------------------------

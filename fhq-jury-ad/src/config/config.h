@@ -29,6 +29,10 @@ class Config {
 		int gameStartUTCInSec();
 		int gameEndUTCInSec();
 
+		bool gameHasCoffeeBreak();
+		int gameCoffeeBreakStartUTCInSec();
+		int gameCoffeeBreakEndUTCInSec();
+
 		// storage configuration
 		Storage *storage();
 		void setStorage(Storage *pStorage);
@@ -48,6 +52,7 @@ class Config {
 		bool m_bScoreboardRandom;
 		std::string m_sWorkspaceDir;
 		std::string m_sUseStorage;
+		
 
 		// game conf
 		int m_nFlagTimeliveInMin;
@@ -57,6 +62,13 @@ class Config {
 		std::string m_sGameEnd;
 		int m_nGameStartUTCInSec; // UTC in seconds
 		int m_nGameEndUTCInSec; // UTC in seconds
+
+		bool m_bHasCoffeeBreak;
+		std::string m_sGameCoffeeBreakStart;
+		std::string m_sGameCoffeeBreakEnd;
+		int m_nGameCoffeeBreakStartUTCInSec; // UTC in seconds
+		int m_nGameCoffeeBreakEndUTCInSec; // UTC in seconds
+		
 		
 		std::vector<Team> m_vTeamsConf;
 		std::vector<Service> m_vServicesConf;

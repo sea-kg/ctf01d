@@ -8,14 +8,15 @@
 
 // ---------------------------------------------------------------------
 
-Scoreboard::Scoreboard(bool bRandom,
-        int nGameStartInSec,
-        int nGameEndInSec,
-        int nFlagTimeLiveInSec,
-        const std::vector<Team> &vTeamsConf,
-        const std::vector<Service> &vServicesConf,
-        Storage *pStorage
-    ) {
+Scoreboard::Scoreboard(
+    bool bRandom,
+    int nGameStartInSec,
+    int nGameEndInSec,
+    int nFlagTimeLiveInSec,
+    const std::vector<Team> &vTeamsConf,
+    const std::vector<Service> &vServicesConf,
+    Storage *pStorage
+) {
     TAG = "Scoreboard";
     m_bRandom = bRandom;
     m_pStorage = pStorage;
@@ -23,6 +24,8 @@ Scoreboard::Scoreboard(bool bRandom,
     m_nGameStartInSec = nGameStartInSec;
     m_nGameEndInSec = nGameEndInSec;
     m_nFlagTimeLiveInSec = nFlagTimeLiveInSec;
+    m_nAllStolenFlags = 0;
+    m_nAllDefenceFlags = 0;
 
     m_mapTeamsStatuses.clear(); // possible memory leak
     for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
@@ -53,6 +56,8 @@ Scoreboard::Scoreboard(bool bRandom,
     // keep the list of the services ids
     for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
         m_vServices.push_back(vServicesConf[iservice]);
+        std::string sServiceId = vServicesConf[iservice].id();
+        m_mapServiceCostsAndStatistics[sServiceId] = new ServiceCostsAndStatistics(sServiceId);
     }
 
     {
@@ -154,6 +159,7 @@ void Scoreboard::initStateFromStorage() {
         }
     }
     sortPlaces();
+    // TODO updateCosts
 }
 
 // ----------------------------------------------------------------------
@@ -167,6 +173,13 @@ void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::str
         m_jsonScoreboard[sTeamId]["services"][sServiceId]["attack"] = pRow->incrementAttack(sServiceId);
         m_jsonScoreboard[sTeamId]["score"] = pRow->score();
         sortPlaces();
+    }
+    std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
+    it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
+    if (it2 != m_mapServiceCostsAndStatistics.end()) {
+        it2->second->incrementStolenFlagsForService();
+        m_nAllStolenFlags++;
+        updateCosts(); // TODO update only stolen costs
     }
 }
 
@@ -182,6 +195,15 @@ void Scoreboard::incrementDefenceScore(const std::string &sTeamId, const std::st
         m_jsonScoreboard[sTeamId]["score"] = pRow->score();
         sortPlaces();
     }
+
+    std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
+    it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
+    if (it2 != m_mapServiceCostsAndStatistics.end()) {
+        it2->second->incrementDefenceFlagsForService();
+        m_nAllDefenceFlags++;
+        updateCosts();  // TODO update only defence costs
+    }
+    Log::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
 }
 
 // ----------------------------------------------------------------------
@@ -197,6 +219,7 @@ void Scoreboard::incrementFlagsPutted(const std::string &sTeamId, const std::str
         m_jsonScoreboard[sTeamId]["score"] = pRow->score();
         sortPlaces();
     }
+    // TODO update Costs
 }
 
 // ----------------------------------------------------------------------
@@ -264,6 +287,30 @@ void Scoreboard::sortPlaces() {
             m_jsonScoreboard[sTeamId_]["place"] = pTeamStatus->place();
             m_jsonScoreboard[sTeamId_]["tries"] = pTeamStatus->tries();
         }
+    }
+}
+
+// ----------------------------------------------------------------------
+
+void Scoreboard::updateCosts() {
+    // std::lock_guard<std::mutex> lock(m_mutexJson);
+    // TODO update costs
+    std::map<std::string,ServiceCostsAndStatistics *>::iterator it1;
+    double nSumOfReverseProportionalStolenFlags = 0.0;
+    double nSumOfReverseProportionalDefenceFlags = 0.0;
+    int basicCostStolenFlag = 10;
+    double sf = m_vServices.size() * basicCostStolenFlag;
+    double df = (m_mapTeamsStatuses.size() - 1) * basicCostStolenFlag;
+    // calculate 
+    for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
+        nSumOfReverseProportionalStolenFlags = it1->second->updateProportionalStolenFlagsForService(m_nAllStolenFlags);
+        nSumOfReverseProportionalDefenceFlags = it1->second->updateProportionalDefenceFlagsForService(m_nAllDefenceFlags);
+    }
+
+    for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
+        it1->second->updateCostStolenFlagForService(sf, nSumOfReverseProportionalStolenFlags);
+        double r = it1->second->updateCostDefenceFlagForService(df, nSumOfReverseProportionalDefenceFlags);
+        Log::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
     }
 }
 
@@ -337,7 +384,6 @@ std::string Scoreboard::toString(){
             "\tscore: " + std::to_string(it->second->score()) + "\n"
             + it->second->servicesToString() + "\n";
     }
-
     return sResult;
 }
 

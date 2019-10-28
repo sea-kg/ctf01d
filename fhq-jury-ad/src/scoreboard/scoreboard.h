@@ -11,6 +11,7 @@
 #include <mutex>
 #include <json.hpp>
 #include <storage.h>
+#include <service_costs_and_statistics.h>
 
 class Scoreboard {
     public:
@@ -48,17 +49,22 @@ class Scoreboard {
         Storage *m_pStorage;
         
         void sortPlaces();
+        void updateCosts();
 
         std::mutex m_mutexJson;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
         int m_nFlagTimeLiveInSec;
         std::vector<Service> m_vServices;
+        std::map<std::string, ServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
+        int m_nAllStolenFlags;
+        int m_nAllDefenceFlags;
 
         std::string randomServiceStatus();
         bool m_bRandom;
         std::map<std::string, TeamStatusRow *> m_mapTeamsStatuses;
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
+        // nlohmann::json m_jsonGF; // prepare data for flags costs
         
         // flags live for fast check
         std::mutex m_mutexFlagsLive;

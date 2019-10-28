@@ -139,6 +139,8 @@ list (APPEND JURY_AD_SOURCES "src/resources/resources_manager.cpp")
 # scoreboard
 list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.cpp")
 list (APPEND JURY_AD_SOURCES "src/scoreboard/scoreboard.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/service_costs_and_statistics.h")
+list (APPEND JURY_AD_SOURCES "src/scoreboard/service_costs_and_statistics.cpp")
 list (APPEND JURY_AD_SOURCES "src/scoreboard/service_status_cell.h")
 list (APPEND JURY_AD_SOURCES "src/scoreboard/service_status_cell.cpp")
 list (APPEND JURY_AD_SOURCES "src/scoreboard/team_status_row.h")

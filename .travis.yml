@@ -4,21 +4,24 @@ branches:
   only:
     - master
 
-dist: xenial
+dist: bionic
 
-before_install:
-  - sudo apt -qq update
-  - sudo apt install cmake make
-  - sudo apt install libmysqlclient-dev
-  - sudo apt install pkg-config
-  - sudo apt install libcurl4-openssl-dev
-  - sudo apt install zlibc zlib1g zlib1g-dev
-  - sudo apt install libpng-dev
-  - sudo apt install cppcheck
+addons:
+  apt:
+    packages:
+    - cmake
+    - make
+    - g++
+    - default-libmysqlclient-dev
+    - pkg-config
+    - libcurl4-openssl-dev
+    - zlibc
+    - zlib1g
+    - zlib1g-dev
+    - libpng-dev
 
 # Build steps
 script:
   - cd fhq-jury-ad
-  - cppcheck . -q
   - ./clean.sh
   - ./build_simple.sh

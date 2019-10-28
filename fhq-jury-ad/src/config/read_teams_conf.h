@@ -9,7 +9,7 @@ class ReadTeamsConf {
 	public: 
         ReadTeamsConf(const std::string &sWorkspaceDir);
 		// services configuration
-		bool read(bool bLazyStart, std::vector<Team> &vTeams);
+		bool read(std::vector<Team> &vTeams);
     private:
         std::string TAG;
         std::string m_sWorkspaceDir;

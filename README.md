@@ -9,7 +9,6 @@ Or you can use for training.
 * [CHECKER_INFO: description](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/CHECKER_INFO.md)
 * [API: here](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/API.md)
 * [DOCKER_HUB: description](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/DOCKER_HUB.md)
-* [TRAINING MODE: lazy-start](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/LAZY_START.md)
 * [SIMILAR: systems](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/SIMILAR.md)
 
 

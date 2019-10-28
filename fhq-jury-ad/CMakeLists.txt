@@ -156,8 +156,6 @@ list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_help_parse_args.cpp")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.h")
 list (APPEND JURY_AD_SOURCES "src/utils/utils_logger.cpp")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.h")
-list (APPEND JURY_AD_SOURCES "src/utils/utils_search_lazy_conf.cpp")
 
 # storages
 list (APPEND JURY_AD_SOURCES "src/storages/storages.h")

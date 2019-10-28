@@ -20,7 +20,6 @@
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
-#include <utils_search_lazy_conf.h>
 #include <storages.h>
 #include <unistd.h>
 #include <limits.h>
@@ -53,9 +52,6 @@ int main(int argc, char* argv[]) {
 
     helpParseArgs.addHelp("version", "-v", false,
         "Print version");
-    
-    helpParseArgs.addHelp("search-lazy-conf", "-sl", false, 
-        "Start search lazy-conf service - helpfull function");
 
     helpParseArgs.addHelp("start", "-s", false, 
         "Start jury");
@@ -71,9 +67,6 @@ int main(int argc, char* argv[]) {
 
     helpParseArgs.addHelp("--extract-files", "-ef", false, 
         "Will be created all default files");
-
-    helpParseArgs.addHelp("lazy-start", "-lzs", false, 
-        "Start jury with scanning network for make list of teams use running machines with lazy-conf service");
 
     std::string sArgsErrors;
     if (!helpParseArgs.checkArgs(sArgsErrors)){
@@ -132,18 +125,9 @@ int main(int argc, char* argv[]) {
     Log::setDir(sLogDir);
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
     Log::info(TAG, "Version: " + std::string(JURY_AD_VERSION));
-    if (helpParseArgs.has("search-lazy-conf")){
-        SearchLazyConf searchLazyConf(8080);
-        searchLazyConf.scan();
-        // TODO print list of found teams
-
-        return 0;
-    }
-
-    bool bLazyStart = helpParseArgs.has("lazy-start");
 
     Config *pConfig = new Config(sWorkspace);
-    if(!pConfig->applyConfig(bLazyStart)){
+    if(!pConfig->applyConfig()){
         Log::err(TAG, "Configuration file has some problems");
         return -1;
     }
@@ -173,7 +157,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    if (helpParseArgs.has("start") || helpParseArgs.has("lazy-start") ) {
+    if (helpParseArgs.has("start")) {
         Log::info(TAG, "Starting...");
 
         pConfig->scoreboard()->initStateFromStorage();

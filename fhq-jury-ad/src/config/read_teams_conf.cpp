@@ -7,7 +7,6 @@
 #include <date.h>
 #include <iostream>
 #include <sstream>
-#include <utils_search_lazy_conf.h>
 #include <conf_file_parser.h>
 #include <fs.h>
 
@@ -18,7 +17,7 @@ ReadTeamsConf::ReadTeamsConf(const std::string &sWorkspaceDir) {
 
 // ---------------------------------------------------------------------
 
-bool ReadTeamsConf::read(bool bLazyStart, std::vector<Team> &vTeams) {
+bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
     std::string sRootTeamsDir = m_sWorkspaceDir + "/teams/";
     
     if (!FS::dirExists(sRootTeamsDir)) {

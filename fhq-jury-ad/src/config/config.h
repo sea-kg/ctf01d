@@ -9,7 +9,7 @@
 class Config {
 	public:
 		Config(const std::string &sWorkspaceDir);
-		bool applyConfig(bool bLazyStart);
+		bool applyConfig();
 
 		// services configuration
 		std::vector<Service> &servicesConf();
@@ -35,10 +35,10 @@ class Config {
 		Scoreboard *scoreboard();
 
 	private:
-		bool applyGameConf(bool bLazyStart);
-		bool applyServerConf(bool bLazyStart);
-		bool applyScoreboardConf(bool bLazyStart);
-		bool applyCheckersConf(bool bLazyStart);
+		bool applyGameConf();
+		bool applyServerConf();
+		bool applyScoreboardConf();
+		bool applyCheckersConf();
 
 		std::string TAG;
 		Storage *m_pStorage;

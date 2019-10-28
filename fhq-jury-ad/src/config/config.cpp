@@ -29,6 +29,7 @@ Config::Config(const std::string &sWorkspaceDir) {
     m_sGameCoffeeBreakEnd = "";
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
+    m_nBacisCostsStolenFlagInPoints = 10;
 }
 
 // ---------------------------------------------------------------------
@@ -77,6 +78,9 @@ bool Config::applyGameConf() {
 
     m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
     Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
+
+    m_nBacisCostsStolenFlagInPoints = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nBacisCostsStolenFlagInPoints);
+    Log::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBacisCostsStolenFlagInPoints));
 
     if (m_nGameStartUTCInSec == 0) {
         Log::err(TAG, sConfigFile + ": game.start - not found");
@@ -131,6 +135,17 @@ bool Config::applyGameConf() {
         Log::info(TAG, "Game has coffee break ");
         m_bHasCoffeeBreak = true;
     }
+
+    if (m_nBacisCostsStolenFlagInPoints <= 0) {
+         Log::err(TAG, sConfigFile + ": game.basic_costs_stolen_flag_in_points could not be less than 0");
+        return false;
+    }
+
+    if (m_nBacisCostsStolenFlagInPoints > 500) {
+         Log::err(TAG, sConfigFile + ": game.basic_costs_stolen_flag_in_points could not be gather than 500");
+        return false;
+    }
+
     return true;
 }
 
@@ -365,6 +380,7 @@ bool Config::applyConfig(){
         m_nGameStartUTCInSec,
         m_nGameEndUTCInSec, 
         m_nFlagTimeliveInMin*60,
+        m_nBacisCostsStolenFlagInPoints,
         m_vTeamsConf, 
         m_vServicesConf, 
         m_pStorage);
@@ -430,6 +446,12 @@ bool Config::scoreboardRandom() {
 
 int Config::flagTimeliveInMin(){
     return m_nFlagTimeliveInMin;
+}
+
+// ---------------------------------------------------------------------
+
+int Config::bacisCostsStolenFlagInPoints() {
+    return m_nBacisCostsStolenFlagInPoints;
 }
 
 // ---------------------------------------------------------------------

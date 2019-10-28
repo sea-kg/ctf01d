@@ -20,6 +20,7 @@ class Scoreboard {
             int nGameStartInSec,
             int nGameEndInSec,
             int nFlagTimeLiveInSec,
+            int nBacisCostsStolenFlagInPoints,
             const std::vector<Team> &vTeamsConf, 
             const std::vector<Service> &vServicesConf,
             Storage *pStorage
@@ -55,6 +56,7 @@ class Scoreboard {
         int m_nGameStartInSec;
         int m_nGameEndInSec;
         int m_nFlagTimeLiveInSec;
+        int m_nBacisCostsStolenFlagInPoints;
         std::vector<Service> m_vServices;
         std::map<std::string, ServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
         int m_nAllStolenFlags;

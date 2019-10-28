@@ -13,6 +13,7 @@ Scoreboard::Scoreboard(
     int nGameStartInSec,
     int nGameEndInSec,
     int nFlagTimeLiveInSec,
+    int nBacisCostsStolenFlagInPoints,
     const std::vector<Team> &vTeamsConf,
     const std::vector<Service> &vServicesConf,
     Storage *pStorage
@@ -26,6 +27,7 @@ Scoreboard::Scoreboard(
     m_nFlagTimeLiveInSec = nFlagTimeLiveInSec;
     m_nAllStolenFlags = 0;
     m_nAllDefenceFlags = 0;
+    m_nBacisCostsStolenFlagInPoints = nBacisCostsStolenFlagInPoints;
 
     m_mapTeamsStatuses.clear(); // possible memory leak
     for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
@@ -132,6 +134,11 @@ void Scoreboard::incrementTries(const std::string &sTeamId) {
 // ----------------------------------------------------------------------
 
 void Scoreboard::initStateFromStorage() {
+    // TODO:
+    // calculate All_DefenceFlagSuccess and DefenceFlagSuccess via serviceN
+    // calculate All_StolenFlagSuccess and StolenFlagSuccess via serviceN
+    // calculate costs
+
     std::map<std::string,TeamStatusRow *>::iterator it;
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); it++) {
         TeamStatusRow *pRow = it->second;

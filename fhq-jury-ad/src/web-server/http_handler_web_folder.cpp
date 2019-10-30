@@ -74,11 +74,8 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest
         }
         return false;
     }
-
-    // TODO 1. if file exists and last date change more that in cache so need update
-    // TODO 2. if file not exists but in in resources - response them
     
-    Log::warn(_tag, "Response File " + sFilePath);
+    // Log::warn(_tag, "Response File " + sFilePath);
     response.cacheSec(60).ok().sendFile(sFilePath);
     return true;
 }

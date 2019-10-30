@@ -144,7 +144,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
 
         if (!bTeamFound) {
             response.badRequest().sendText("Error(-130): this is team not found");
-            Log::warn(TAG, "Error(-130): this is team not found");
+            Log::err(TAG, "Error(-130): this is team not found");
             return true;
         }
 
@@ -153,7 +153,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         std::transform(sFlag.begin(), sFlag.end(), sFlag.begin(), ::tolower);
         if (!std::regex_match(sFlag, reFlagFormat)) {
             response.badRequest().sendText("Error(-140): flag has wrong format");
-            Log::warn(TAG, "Error(-140): flag has wrong format");
+            Log::err(TAG, "Error(-140): flag has wrong format");
             return true;
         }
         m_pConfig->scoreboard()->incrementTries(sTeamId);

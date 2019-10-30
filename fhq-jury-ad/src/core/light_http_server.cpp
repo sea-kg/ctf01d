@@ -177,7 +177,7 @@ void LightHttpResponse::sendText(const std::string &sBody) {
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    // Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -203,7 +203,7 @@ void LightHttpResponse::sendOptions(const std::string &sOptions) {
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    // Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -220,7 +220,7 @@ void LightHttpResponse::sendDontUnderstand() {
     }
     m_bClosed = true;
     
-    Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
+    // Log::info(TAG, "\nResponse: \n>>>\n" + sResponse + "\n<<<");
 
     send(m_nSockFd, sResponse.c_str(), sResponse.length(),0);
     close(m_nSockFd);
@@ -599,7 +599,7 @@ void LightHttpThreadWorker::run() {
             char *clientip = new char[20];
             memset(clientip, 0, 20);
             strcpy(clientip, inet_ntoa(addr.sin_addr));
-            Log::info(TAG, "IP-address: " + std::string(clientip));
+            // Log::info(TAG, "IP-address: " + std::string(clientip));
 
             LightHttpResponse *pResponse = new LightHttpResponse(nSockFd);
             int n;
@@ -626,7 +626,7 @@ void LightHttpThreadWorker::run() {
                     //close(nSockFd);
                     break;
                 }
-                Log::info(TAG, "Readed " + std::to_string(n) + " bytes...");
+                // Log::info(TAG, "Readed " + std::to_string(n) + " bytes...");
                 msg[n] = 0;
                 //send(newsockfd,msg,n,0);
                 sRequest = std::string(msg);
@@ -639,7 +639,7 @@ void LightHttpThreadWorker::run() {
                 }
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
-            Log::info(TAG, "\nRequest: \n>>>\n" + sRequest + "\n<<<");
+            // Log::info(TAG, "\nRequest: \n>>>\n" + sRequest + "\n<<<");
 
             if (bErrorRead) {
                 pResponse->sendDontUnderstand();
@@ -748,7 +748,7 @@ void LightHttpServer::startSync() {
 
         // pthread_create(&m_serverThread, NULL, &newRequest, (void *)pInfo);
         // std::cout << "wait \n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     m_pDeque->cleanup();
     for (int i = 0; i < m_vWorkers.size(); i++) {

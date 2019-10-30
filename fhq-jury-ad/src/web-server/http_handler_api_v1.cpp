@@ -6,8 +6,7 @@
 #include <time.h>
 
 #include <utils_logger.h>
-#include <light_http_request.h>
-#include <light_http_response.h>
+#include <light_http_server.h>
 #include <ts.h>
 #include <fs.h>
 #include <str.h>
@@ -46,7 +45,7 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
         teamInfo["name"] = teamConf.name();
         teamInfo["ip_address"] = teamConf.ipAddress();
         teamInfo["logo"] = teamConf.logo();
-        m_jsonGame["teams"].push_back(teamInfo);
+        m_jsonTeams["teams"].push_back(teamInfo);
     }
 }
 
@@ -67,55 +66,40 @@ bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest 
 bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
     LightHttpResponse response(pRequest->sockFd());
-
+    
     if(pRequest->requestPath() == "/api/v1/game") {
-        pRequest->response(
-            LightHttpResponse::RESP_OK, 
-            "application/json", 
-            m_jsonGame.dump());
+        std::string sJsonResponse = m_jsonGame.dump();
+        response.noCache().ok().sendBuffer("game.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
     } else if (pRequest->requestPath() == "/") {
-        pRequest->response(LightHttpResponse::RESP_OK, "text/html", m_sIndexHtml);
+        response.noCache().ok().sendText(m_sIndexHtml);
         return true;
     } else if(pRequest->requestPath() == "/api/v1/scoreboard") {
-
-        pRequest->response(
-            LightHttpResponse::RESP_OK, 
-            "application/json", 
-            m_pConfig->scoreboard()->toJson().dump());
+        std::string sJsonResponse = m_pConfig->scoreboard()->toJson().dump();
+        response.noCache().ok().sendBuffer("scoreboard.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
     } else if(pRequest->requestPath() == "/api/v1/teams") {
-        pRequest->response(
-            LightHttpResponse::RESP_OK, 
-            "application/json", 
-            m_jsonTeams.dump());
+        std::string sJsonResponse = m_jsonTeams.dump();
+        response.noCache().ok().sendBuffer("teams.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
     } else if(pRequest->requestPath() == "/api/v1/services") {
-        pRequest->response(
-            LightHttpResponse::RESP_OK, 
-            "application/json", 
-            m_jsonServices.dump());
+        std::string sJsonResponse = m_jsonServices.dump();
+        response.noCache().ok().sendBuffer("services.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
-        
     } else if(pRequest->requestPath() == "/flag") {
-        
+        response.noCache();
+
         auto now = std::chrono::system_clock::now().time_since_epoch();
         int nCurrentTimeSec = std::chrono::duration_cast<std::chrono::seconds>(now).count();
 
         if (nCurrentTimeSec < m_pConfig->gameStartUTCInSec()) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-8): Game not started yet");
+            response.badRequest().sendText("Error(-8): Game not started yet");
             Log::warn(TAG, "Error(-8): Game not started yet");
             return true;
         }
 
         if (nCurrentTimeSec > m_pConfig->gameEndUTCInSec()) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-9): Game already ended");
+            response.badRequest().sendText("Error(-9): Game already ended");
             Log::warn(TAG, "Error(-9): Game already ended");
             return true;
         }
@@ -123,10 +107,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         std::map<std::string,std::string>::iterator itTeamID;
         itTeamID = pRequest->requestQueryParams().find("teamid");
         if (itTeamID == pRequest->requestQueryParams().end()) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-10): Not found get-parameter 'teamid'");
+            response.badRequest().sendText("Error(-10): Not found get-parameter 'teamid'");
             Log::warn(TAG, "Error(-10): Not found get-parameter 'teamid'");
             return true;
         }
@@ -134,10 +115,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         std::map<std::string,std::string>::iterator itFlag;
         itFlag = pRequest->requestQueryParams().find("flag");
         if (itFlag == pRequest->requestQueryParams().end()) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-11): Not found get-parameter 'flag'");
+            response.badRequest().sendText("Error(-11): Not found get-parameter 'flag'");
             Log::warn(TAG, "Error(-11): Not found get-parameter 'flag'");
             return true;
         }
@@ -164,10 +142,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         }
 
         if (!bTeamFound) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-130): this is team not found");
+            response.badRequest().sendText("Error(-130): this is team not found");
             Log::warn(TAG, "Error(-130): this is team not found");
             return true;
         }
@@ -176,10 +151,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         std::string sFlag = itFlag->second;
         std::transform(sFlag.begin(), sFlag.end(), sFlag.begin(), ::tolower);
         if (!std::regex_match(sFlag, reFlagFormat)) {
-            pRequest->response(
-                LightHttpResponse::RESP_BAD_REQUEST, 
-                "text/html", 
-                "Error(-140): flag has wrong format");
+            response.badRequest().sendText("Error(-140): flag has wrong format");
             Log::warn(TAG, "Error(-140): flag has wrong format");
             return true;
         }
@@ -191,7 +163,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             response
                 .forbidden()
                 .sendText("Error(-150): flag is too old or flag never existed or flag alredy stole. "
-                    "Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+                    "Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag is too old or flag never existed)");
             return true;
         }
 
@@ -199,38 +171,26 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         nCurrentTimeMSec = nCurrentTimeMSec*1000;
 
         if (flag.timeEnd() < nCurrentTimeMSec) {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-151): flag is too old");
-            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+            response.forbidden().sendText("Error(-151): flag is too old");
+            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag is too old)");
             return true;
         }
 
         if (flag.teamStole() == sTeamId) {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-160): flag already stole by your team");
-            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+            response.forbidden().sendText("Error(-160): flag already stole by your team");
+            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stole by your team)");
             return true;
         }
 
         if (flag.teamStole() != "") {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-170): flag already stoled by '" + flag.teamStole() + "'");
-            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+            response.forbidden().sendText("Error(-170): flag already stoled by '" + flag.teamStole() + "'");
+            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
             return true;
         }
 
         if (flag.teamId() == sTeamId) {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-180): this is your flag");
-            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+            response.forbidden().sendText("Error(-180): this is your flag");
+            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (this is your flag)");
             return true;
         }
 
@@ -239,32 +199,22 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         // std::cout << "sServiceStatus: " << sServiceStatus << "\n";
 
         if (sServiceStatus != ServiceStatusCell::SERVICE_UP) {
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-190): Your same service is dead");
-            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+            response.forbidden().sendText("Error(-190): Your same service is dead");
+            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Your same service is dead)");
             return true;
         }
 
-        if (!m_pConfig->storage()->updateTeamStole(flag.value(), sTeamId)){
-            pRequest->response(
-                LightHttpResponse::RESP_FORBIDDEN,
-                "text/html", 
-                "Error(-300): You are late");
-            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+        if (!m_pConfig->storage()->updateTeamStole(flag.value(), sTeamId)) {
+            response.forbidden().sendText("Error(-300): You are late");
+            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (You are late)");
             return true;
         }
 
         // TODO light update scoreboard
         // TODO send how match points will be added
         m_pConfig->scoreboard()->incrementAttackScore(sTeamId, flag.serviceId());
-
-        pRequest->response(
-            LightHttpResponse::RESP_OK, 
-            "text/html", 
-            "Accepted");
-        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
+        response.ok().sendText("Accepted");
+        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted)");
         return true;
     }
     return false;

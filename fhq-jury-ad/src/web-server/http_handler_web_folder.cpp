@@ -1,8 +1,9 @@
 #include "http_handler_web_folder.h"
 #include <utils_logger.h>
 #include <fs.h>
+#include <fallen.h>
 #include <resources_manager.h>
-#include <light_http_response.h>
+#include <light_http_server.h>
 
 // ----------------------------------------------------------------------
 
@@ -29,13 +30,13 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
         return false;
     }
 
-    if (!FS::dirExists(m_sWebFolder)) {
+    if (!Fallen::dirExists(m_sWebFolder)) {
         Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
     // Log::warn(_tag, "Response Resources " + sFilePath);
-    if (!FS::fileExists(sFilePath)) { // TODO check the file exists not dir
+    if (!Fallen::fileExists(sFilePath)) { // TODO check the file exists not dir
         // check in resources
         std::string sResPath = "html" + sRequestPath;
         // Log::warn(_tag, "Response Resources " + sResPath);
@@ -50,6 +51,8 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
 bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->requestPath();
+    LightHttpResponse response(pRequest->sockFd());
+
     // Log::warn(_tag, pRequest->requestPath());
     
     if (sRequestPath == "/") {
@@ -57,12 +60,12 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest
     }
     
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
-    if (!FS::fileExists(sFilePath)) {
+    if (!Fallen::fileExists(sFilePath)) {
         std::string sResPath = "html" + sRequestPath;
         if (ResourcesManager::has(sResPath)) {
             // Log::warn(_tag, "Response Resources " + sResPath);
             ResourceFile *pFile = ResourcesManager::get(sResPath);
-            pRequest->responseBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
+            response.cacheSec(60).sendBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
             return true;
         }
         return false;
@@ -72,6 +75,6 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest
     // TODO 2. if file not exists but in in resources - response them
     
     // Log::warn(_tag, "Response File " + sFilePath);
-    pRequest->responseFile(sFilePath);
+    response.cacheSec(60).sendFile(sFilePath);
     return true;
 }

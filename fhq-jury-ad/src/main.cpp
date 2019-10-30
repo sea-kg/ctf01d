@@ -153,7 +153,9 @@ int main(int argc, char* argv[]) {
         pConfig->setStorage(Storages::create("file", pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
-        g_httpServer.start(pConfig->scoreboardPort()); // will be block thread
+        g_httpServer.setPort(pConfig->scoreboardPort());
+        g_httpServer.setMaxWorkers(1);
+        g_httpServer.startSync(); // will be block thread
         return 0;
     }
 
@@ -180,7 +182,9 @@ int main(int argc, char* argv[]) {
         Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
-        g_httpServer.start(pConfig->scoreboardPort()); // will be block thread
+        g_httpServer.setPort(pConfig->scoreboardPort());
+        g_httpServer.setMaxWorkers(4);
+        g_httpServer.startSync(); // will be block thread
 
         // TODO: stop all threads
 

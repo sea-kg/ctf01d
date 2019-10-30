@@ -24,6 +24,7 @@ list (APPEND JURY_AD_INCLUDE_DIRS "src/resources")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/resources/files")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/scoreboard")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/utils")
+list (APPEND JURY_AD_INCLUDE_DIRS "src/core")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/interfaces")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/storages")
 list (APPEND JURY_AD_INCLUDE_DIRS "src/storages/file")
@@ -38,6 +39,12 @@ list (APPEND JURY_AD_SOURCES "src/3rd_party/nlohmann/json.hpp")
 
 # HowardHinnant/date
 list (APPEND JURY_AD_SOURCES "src/3rd_party/HowardHinnant/date/date.h")
+
+# config
+list (APPEND JURY_AD_SOURCES "src/core/fallen.h")
+list (APPEND JURY_AD_SOURCES "src/core/fallen.cpp")
+list (APPEND JURY_AD_SOURCES "src/core/light_http_server.h")
+list (APPEND JURY_AD_SOURCES "src/core/light_http_server.cpp")
 
 # checker
 list (APPEND JURY_AD_SOURCES "src/checker/dorunchecker.h")
@@ -59,20 +66,6 @@ list (APPEND JURY_AD_SOURCES "src/config/team.cpp")
 
 
 # web-server
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_deque_requests.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_deque_requests.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_handler_base.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_handler_base.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_handlers.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_handlers.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_request.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_response.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_response.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_server.cpp")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_thread_worker.h")
-list (APPEND JURY_AD_SOURCES "src/web-server/core/light_http_thread_worker.cpp")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler_api_v1.h")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler_api_v1.cpp")
 list (APPEND JURY_AD_SOURCES "src/web-server/http_handler_web_folder.h")

@@ -51,6 +51,9 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
 bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->requestPath();
+    sRequestPath = WSJCppCore::doNormalizePath(sRequestPath);
+    // TODO remove /../ in path
+
     LightHttpResponse response(pRequest->sockFd());
 
     // Log::warn(_tag, pRequest->requestPath());
@@ -59,13 +62,14 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest
         sRequestPath = "/index.html";
     }
     
-    std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
+    std::string sFilePath = m_sWebFolder + sRequestPath; 
+
     if (!Fallen::fileExists(sFilePath)) {
         std::string sResPath = "html" + sRequestPath;
         if (ResourcesManager::has(sResPath)) {
             // Log::warn(_tag, "Response Resources " + sResPath);
             ResourceFile *pFile = ResourcesManager::get(sResPath);
-            response.cacheSec(60).sendBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
+            response.cacheSec(60).ok().sendBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
             return true;
         }
         return false;
@@ -74,7 +78,7 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest
     // TODO 1. if file exists and last date change more that in cache so need update
     // TODO 2. if file not exists but in in resources - response them
     
-    // Log::warn(_tag, "Response File " + sFilePath);
-    response.cacheSec(60).sendFile(sFilePath);
+    Log::warn(_tag, "Response File " + sFilePath);
+    response.cacheSec(60).ok().sendFile(sFilePath);
     return true;
 }

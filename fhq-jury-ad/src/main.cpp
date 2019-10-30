@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <fs.h>
+#include <fallen.h>
 #include <resources_manager.h>
 
 LightHttpServer g_httpServer;
@@ -88,6 +89,12 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("--workspace-dir")) {
         // todo replace workspace path
         sWorkspace = helpParseArgs.option("--workspace-dir");
+        sWorkspace = WSJCppCore::getCurrentDirectory() + sWorkspace;
+        sWorkspace = WSJCppCore::doNormalizePath(sWorkspace);
+        if (!Fallen::dirExists(sWorkspace)) {
+            Log::err(TAG, "Directory " + sWorkspace + " does not exists");
+            return -1;
+        }
         // TODO check directory existing and apply dir
     }
     

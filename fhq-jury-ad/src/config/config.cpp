@@ -379,6 +379,8 @@ bool Config::applyConfig(){
     m_pScoreboard = new Scoreboard(m_bScoreboardRandom, 
         m_nGameStartUTCInSec,
         m_nGameEndUTCInSec, 
+        m_nGameCoffeeBreakStartUTCInSec,
+        m_nGameCoffeeBreakEndUTCInSec,
         m_nFlagTimeliveInMin*60,
         m_nBacisCostsStolenFlagInPoints,
         m_vTeamsConf, 

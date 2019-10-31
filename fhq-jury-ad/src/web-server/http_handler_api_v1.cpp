@@ -186,6 +186,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             return true;
         }
 
+        // TODO
         if (flag.teamStole() != "") {
             response.forbidden().sendText("Error(-170): flag already stoled by '" + flag.teamStole() + "'");
             Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");

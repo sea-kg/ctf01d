@@ -231,6 +231,17 @@ img.team-logo {
   padding-left: 25px;
 }
 
+@keyframes blinker {  
+  from { visibility: visible }
+  to { visibility: hidden }
+
+  /* Alternatively you can do this:  
+  0% { visibility: visible; }
+  50% { visibility: hidden; }
+  100% { visibility: visible; }
+  if you don't want to use `alternate` */
+}
+
 .points {
   display: inline-block;
   height: 20px;
@@ -257,12 +268,33 @@ img.team-logo {
   display: inline-block;
 }
 
-@keyframes blinking {
-  from {
-    transform: scale(1);
+@keyframes fastblinking {
+  0% {
+    transform: scale(1.0);
   }
-  to {
-    transform: scale(1.4);
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes blinking {
+  0% {
+    transform: scale(1.0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.0);
+  }
+  75% {
+    transform: scale(0.7);
+  }
+  100% {
+    transform: scale(1.0);
   }
 }
 

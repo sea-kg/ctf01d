@@ -38,6 +38,33 @@ function _animateElement(el, enable) {
     el.style.animation = enable ? "blinking 0.8s reverse infinite" : '';
 }
 
+function _animateElementOneTime(el) {
+    if (el == null) {
+        console.error("_animateElementOneTime el is null");
+        return;
+    }
+
+    el.style.animation = "fastblinking 0.8s reverse infinite";
+    var i = setTimeout(function() {
+        el.style.animation = '';
+        clearTimeout(i);
+    },800);
+}
+
+function silentUpdate(elid, newValue) {
+    var el = document.getElementById(elid)
+    if (!el) {
+        console.error("Not found element with id " + elid);
+        return;
+    }
+    if (el.innerHTML != newValue) {
+        el.innerHTML = newValue;
+        _animateElementOneTime(el);
+        // TODO make simple anim
+    }
+}
+
+
 function updateUIValue(t, teamID, paramName){
     var newValue = '';
     if (paramName == 'score') {
@@ -94,18 +121,27 @@ function updateScoreboard() {
             loader_content.style.display = 'block';
             return;
         }
+        console.log(resp);
+        for (var serviceId in resp.s_sta) {
+            var s = resp.s_sta[serviceId]
+            silentUpdate(serviceId + '-first-blood', s.first_blood);
+            silentUpdate(serviceId + '-cost-att', s.cost_att.toFixed(1));
+            silentUpdate(serviceId + '-cost-def', s.cost_def.toFixed(1));
+            silentUpdate(serviceId + '-all-flags-att', s.af_att)
+            silentUpdate(serviceId + '-all-flags-def', s.af_def)
+        }
         var teamIDs = [];
-        for(var teamID in resp){
-            var t = resp[teamID];
+        for(var teamID in resp.scoreboard){
+            var t = resp.scoreboard[teamID];
             teamIDs.push(teamID);
             updateUIValue(t, teamID, 'place');
             updateUIValue(t, teamID, 'score');
             updateUIValue(t, teamID, 'tries');
-            for(var sService in t.services){
-                var newState = t.services[sService]['status'];
-                var newAttack = t.services[sService]['attack'];
-                var newDefence = t.services[sService]['defence'];
-                var newSLA = t.services[sService]['uptime'];
+            for(var sService in t.ts_sta){
+                var newState = t.ts_sta[sService]['status'];
+                var newAttack = t.ts_sta[sService]['att'];
+                var newDefence = t.ts_sta[sService]['def'];
+                var newSLA = t.ts_sta[sService]['upt'];
                 var elId = 'status-' + teamID + '-' + sService;
                 var el = document.getElementById(elId);
                 if (el != null) {
@@ -116,6 +152,8 @@ function updateScoreboard() {
                         el.classList.remove('corrupt');
                         el.classList.remove('shit');
                         el.classList.add(newState);
+                        _animateElementOneTime(el);
+
                     }
                 } else {
                     console.error(elId + '- not found');
@@ -136,7 +174,7 @@ function updateScoreboard() {
         var elms = document.getElementsByClassName('tm');
         for(var i = 0; i < elms.length; i++){
             var el1 = elms[i];
-            var place1 = parseInt(resp[el1.id]['place'], 10);
+            var place1 = parseInt(resp["scoreboard"][el1.id]['place'], 10);
             elms2.push({
                 e: elms[i],
                 p: place1

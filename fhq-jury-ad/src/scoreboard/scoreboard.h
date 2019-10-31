@@ -20,6 +20,8 @@ class Scoreboard {
             bool bRandom,
             int nGameStartInSec,
             int nGameEndInSec,
+            int nGameCoffeeBreakStartInSec,
+            int nGameCoffeeBreakEndInSec,
             int nFlagTimeLiveInSec,
             int nBacisCostsStolenFlagInPoints,
             const std::vector<Team> &vTeamsConf, 
@@ -49,16 +51,18 @@ class Scoreboard {
     private:
         std::string TAG;
         Storage *m_pStorage;
-        
-        void sortPlaces();
-        void updateCosts();
-
-        std::mutex m_mutexJson;
+        std::vector<Service> m_vServices;
+        std::vector<Team> m_vTeams;
+        int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
+        int m_nGameCoffeeBreakStartInSec;
+        int m_nGameCoffeeBreakEndInSec;
         int m_nFlagTimeLiveInSec;
-        int m_nBacisCostsStolenFlagInPoints;
-        std::vector<Service> m_vServices;
+
+        void sortPlaces(); // TODO merge this function with update costs
+        void updateCosts();
+
         std::map<std::string, ServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
         int m_nAllStolenFlags;
         int m_nAllDefenceFlags;
@@ -66,7 +70,11 @@ class Scoreboard {
         std::string randomServiceStatus();
         bool m_bRandom;
         std::map<std::string, TeamStatusRow *> m_mapTeamsStatuses;
+
+        std::mutex m_mutexJson;
         nlohmann::json m_jsonScoreboard; // prepare data for scoreboard
+        void initJsonScoreboard();
+        void updateJsonScoreboard();
         // nlohmann::json m_jsonGF; // prepare data for flags costs
         
         // flags live for fast check

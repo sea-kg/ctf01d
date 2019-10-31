@@ -12,6 +12,8 @@ Scoreboard::Scoreboard(
     bool bRandom,
     int nGameStartInSec,
     int nGameEndInSec,
+    int nGameCoffeeBreakStartInSec,
+    int nGameCoffeeBreakEndInSec,
     int nFlagTimeLiveInSec,
     int nBacisCostsStolenFlagInPoints,
     const std::vector<Team> &vTeamsConf,
@@ -24,6 +26,8 @@ Scoreboard::Scoreboard(
     std::srand(unsigned(std::time(0)));
     m_nGameStartInSec = nGameStartInSec;
     m_nGameEndInSec = nGameEndInSec;
+    m_nGameCoffeeBreakStartInSec = nGameCoffeeBreakStartInSec;
+    m_nGameCoffeeBreakEndInSec = nGameCoffeeBreakEndInSec;
     m_nFlagTimeLiveInSec = nFlagTimeLiveInSec;
     m_nAllStolenFlags = 0;
     m_nAllDefenceFlags = 0;
@@ -56,38 +60,61 @@ Scoreboard::Scoreboard(
     }
 
     // keep the list of the services ids
-    for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
-        m_vServices.push_back(vServicesConf[iservice]);
-        std::string sServiceId = vServicesConf[iservice].id();
+    for (unsigned int i = 0; i < vServicesConf.size(); i++) {
+        m_vServices.push_back(vServicesConf[i]);
+        std::string sServiceId = vServicesConf[i].id();
         m_mapServiceCostsAndStatistics[sServiceId] = new ServiceCostsAndStatistics(sServiceId);
     }
 
-    {
-        m_jsonScoreboard.clear();
-        for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
-            Team teamConf = vTeamsConf[iteam];
-            std::string sTeamId = teamConf.id();
-            // team.num();
-            nlohmann::json teamData;
-            teamData["place"] = m_mapTeamsStatuses[sTeamId]->place();
-            teamData["score"] = m_mapTeamsStatuses[sTeamId]->score();
-            nlohmann::json jsonServices;
-            for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
-                Service serviceConf = vServicesConf[iservice];
-                nlohmann::json serviceData;
-                serviceData["defence"] = 0;
-                serviceData["attack"] = 0;
-                serviceData["uptime"] = 0.0;
-                serviceData["status"] = m_mapTeamsStatuses[sTeamId]->serviceStatus(serviceConf.id());
-                jsonServices[serviceConf.id()] = serviceData;
-            }
-            teamData["services"] = jsonServices;
-            m_jsonScoreboard[teamConf.id()] = teamData;
-        }
+    // keep the list of the teams ids
+    for (unsigned int i = 0; i < vTeamsConf.size(); i++) {
+        m_vTeams.push_back(vTeamsConf[i]);
     }
 
+    initJsonScoreboard();
 }
 
+// ----------------------------------------------------------------------
+
+void Scoreboard::initJsonScoreboard() {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+    m_jsonScoreboard.clear();
+    nlohmann::json jsonCosts;
+    for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
+        Service serviceConf = m_vServices[iservice];
+        nlohmann::json serviceCosts;
+        serviceCosts["cost_att"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costStolenFlag();
+        serviceCosts["cost_def"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costDefenceFlag();
+        serviceCosts["af_att"] = m_nAllStolenFlags;
+        serviceCosts["af_def"] = m_nAllDefenceFlags;
+        serviceCosts["first_blood"] = "?";
+        jsonCosts[serviceConf.id()] = serviceCosts;
+    }
+    m_jsonScoreboard["s_sta"] = jsonCosts;
+
+    nlohmann::json jsonScoreboard;
+    for (unsigned int iteam = 0; iteam < m_vTeams.size(); iteam++) {
+        Team teamConf = m_vTeams[iteam];
+        std::string sTeamId = teamConf.id();
+        nlohmann::json teamData;
+        teamData["place"] = m_mapTeamsStatuses[sTeamId]->place();
+        teamData["score"] = m_mapTeamsStatuses[sTeamId]->score();
+        teamData["tries"] = 0;
+        nlohmann::json jsonServices;
+        for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
+            Service serviceConf = m_vServices[iservice];
+            nlohmann::json serviceData;
+            serviceData["def"] = 0;
+            serviceData["att"] = 0;
+            serviceData["upt"] = 0.0;
+            serviceData["status"] = m_mapTeamsStatuses[sTeamId]->serviceStatus(serviceConf.id());
+            jsonServices[serviceConf.id()] = serviceData;
+        }
+        teamData["ts_sta"] = jsonServices;
+        jsonScoreboard[teamConf.id()] = teamData;
+    }
+    m_jsonScoreboard["scoreboard"] = jsonScoreboard;
+}
 // ----------------------------------------------------------------------
 
 std::string Scoreboard::randomServiceStatus() {
@@ -114,7 +141,7 @@ void Scoreboard::setServiceStatus(const std::string &sTeamId, const std::string 
     if (it != m_mapTeamsStatuses.end()) {
         if (it->second->serviceStatus(sServiceId) != sNewStatus) {
             it->second->setServiceStatus(sServiceId, sNewStatus);
-            m_jsonScoreboard[sTeamId]["services"][sServiceId]["status"] = sNewStatus;
+            m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["status"] = sNewStatus;
         }
     }
 }
@@ -127,7 +154,7 @@ void Scoreboard::incrementTries(const std::string &sTeamId) {
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         it->second->setTries(it->second->tries() + 1);
-        m_jsonScoreboard[sTeamId]["tries"] = it->second->tries();
+        m_jsonScoreboard["scoreboard"][sTeamId]["tries"] = it->second->tries();
     }
 }
 
@@ -145,7 +172,7 @@ void Scoreboard::initStateFromStorage() {
 
         int nTries = m_pStorage->numberOfFlagAttempts(pRow->teamId());
         pRow->setTries(nTries);
-        m_jsonScoreboard[pRow->teamId()]["tries"] = nTries;
+        m_jsonScoreboard["scoreboard"][pRow->teamId()]["tries"] = nTries;
 
         for (unsigned int i = 0; i < m_vServices.size(); i++) {
             std::string sServiceID = m_vServices[i].id();
@@ -153,12 +180,12 @@ void Scoreboard::initStateFromStorage() {
             // calculate defence
             int nDefence = m_pStorage->defenceValue(pRow->teamId(), sServiceID);
             pRow->setServiceDefence(sServiceID, nDefence);
-            m_jsonScoreboard[pRow->teamId()]["services"][sServiceID]["defence"] = nDefence;
+            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["def"] = nDefence;
 
             // calculate attack
             int nAttack = m_pStorage->attackValue(pRow->teamId(), sServiceID);
             pRow->setServiceAttack(sServiceID, nAttack);
-            m_jsonScoreboard[pRow->teamId()]["services"][sServiceID]["attack"] = nAttack;
+            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["att"] = nAttack;
 
             // calculate uptime
             int nFlagsSuccess = m_pStorage->numberOfFlagSuccessPutted(pRow->teamId(), sServiceID);
@@ -177,8 +204,8 @@ void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::str
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second; 
-        m_jsonScoreboard[sTeamId]["services"][sServiceId]["attack"] = pRow->incrementAttack(sServiceId);
-        m_jsonScoreboard[sTeamId]["score"] = pRow->score();
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["att"] = pRow->incrementAttack(sServiceId);
+        m_jsonScoreboard["scoreboard"][sTeamId]["score"] = pRow->score();
         sortPlaces();
     }
     std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
@@ -198,8 +225,8 @@ void Scoreboard::incrementDefenceScore(const std::string &sTeamId, const std::st
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second; 
-        m_jsonScoreboard[sTeamId]["services"][sServiceId]["defence"] = pRow->incrementDefence(sServiceId);
-        m_jsonScoreboard[sTeamId]["score"] = pRow->score();
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["def"] = pRow->incrementDefence(sServiceId);
+        m_jsonScoreboard["scoreboard"][sTeamId]["score"] = pRow->score();
         sortPlaces();
     }
 
@@ -222,9 +249,10 @@ void Scoreboard::incrementFlagsPutted(const std::string &sTeamId, const std::str
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second;
         pRow->incrementFlagsPutted(sServiceId);
-        m_jsonScoreboard[sTeamId]["services"][sServiceId]["uptime"] = pRow->serviceUptime(sServiceId);
-        m_jsonScoreboard[sTeamId]["score"] = pRow->score();
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["upt"] = pRow->serviceUptime(sServiceId);
+        m_jsonScoreboard["scoreboard"][sTeamId]["score"] = pRow->score();
         sortPlaces();
+        updateCosts();
     }
     // TODO update Costs
 }
@@ -238,8 +266,8 @@ void Scoreboard::updateScore(const std::string &sTeamId, const std::string &sSer
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second;
         pRow->updateScore(sServiceId);
-        m_jsonScoreboard[sTeamId]["services"][sServiceId]["uptime"] = pRow->serviceUptime(sServiceId);
-        m_jsonScoreboard[sTeamId]["score"] = pRow->score();
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["upt"] = pRow->serviceUptime(sServiceId);
+        m_jsonScoreboard["scoreboard"][sTeamId]["score"] = pRow->score();
         sortPlaces();
     }
 }
@@ -290,9 +318,9 @@ void Scoreboard::sortPlaces() {
             std::string sTeamId_ = pTeamStatus->teamId();
 
             // std::cout << sTeamNum << ": result: score: " << pTeamStatus->score() << ", place: " << pTeamStatus->place() << "\n";
-            m_jsonScoreboard[sTeamId_]["score"] = pTeamStatus->score();
-            m_jsonScoreboard[sTeamId_]["place"] = pTeamStatus->place();
-            m_jsonScoreboard[sTeamId_]["tries"] = pTeamStatus->tries();
+            m_jsonScoreboard["scoreboard"][sTeamId_]["score"] = pTeamStatus->score();
+            m_jsonScoreboard["scoreboard"][sTeamId_]["place"] = pTeamStatus->place();
+            m_jsonScoreboard["scoreboard"][sTeamId_]["tries"] = pTeamStatus->tries();
         }
     }
 }
@@ -319,6 +347,19 @@ void Scoreboard::updateCosts() {
         double r = it1->second->updateCostDefenceFlagForService(df, nSumOfReverseProportionalDefenceFlags);
         Log::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
     }
+
+    nlohmann::json jsonCosts;
+    for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
+        Service serviceConf = m_vServices[iservice];
+        nlohmann::json serviceCosts;
+        serviceCosts["cost_att"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costStolenFlag();
+        serviceCosts["cost_def"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costDefenceFlag();
+        serviceCosts["af_att"] = m_nAllStolenFlags;
+        serviceCosts["af_def"] = m_nAllDefenceFlags;
+        serviceCosts["first_blood"] = "111";
+        jsonCosts[serviceConf.id()] = serviceCosts;
+    }
+    m_jsonScoreboard["s_sta"] = jsonCosts;
 }
 
 // ----------------------------------------------------------------------

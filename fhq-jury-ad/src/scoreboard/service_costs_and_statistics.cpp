@@ -5,8 +5,10 @@ ServiceCostsAndStatistics::ServiceCostsAndStatistics(const std::string &sService
     m_sServiceId = sServiceId;
     m_nAllStolenFlagsForService = 0;
     m_nReverseProportionalStolenFlags = 0.0;
+    m_nCostDefenceFlag = 0.0;
     m_nAllDefenceFlagsForService = 0;
     m_nReverseProportionalDefenceFlags = 0.0;
+    m_nCostStolenFlag = 0.0;
 }
 
 // ----------------------------------------------------------------------
@@ -41,6 +43,12 @@ double ServiceCostsAndStatistics::updateCostStolenFlagForService(int nStolenPoin
 
 // ----------------------------------------------------------------------
 
+double ServiceCostsAndStatistics::costStolenFlag() {
+    return m_nCostStolenFlag;
+}
+
+// ----------------------------------------------------------------------
+
 int ServiceCostsAndStatistics::allDefenceFlagsForService() {
     return m_nAllDefenceFlagsForService;
 }
@@ -66,5 +74,11 @@ double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m
 
 double ServiceCostsAndStatistics::updateCostDefenceFlagForService(int nDefencePoints, double nSumOfReverseProportionalDefenceFlags) {
     m_nCostDefenceFlag = double(nDefencePoints) * (m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags);
+    return m_nCostDefenceFlag;
+}
+
+// ----------------------------------------------------------------------
+
+double ServiceCostsAndStatistics::costDefenceFlag() {
     return m_nCostDefenceFlag;
 }

@@ -1,0 +1,138 @@
+version: '3'
+
+services:
+
+  # service 1 - port 4101
+  team1_service1_server:
+    build: ./example_py_service1/service/
+    image: freehackquest/example_py_service1:testing
+    volumes:
+      - "./tmp/team1_service1_server_flags:/root/flags"
+    restart: always
+    networks:
+      - fhqjuryad_net
+  
+  team2_service1_server:
+    image: freehackquest/example_py_service1:testing
+    volumes:
+      - "./tmp/team2_service1_server_flags:/root/flags"
+    restart: always
+    ports:
+      - "4201:4101"
+    networks:
+      - fhqjuryad_net
+
+  team3_service1_server:
+    image: freehackquest/example_py_service1:testing
+    volumes:
+      - "./tmp/team3_service1_server_flags:/root/flags"
+    restart: always
+    ports:
+      - "4301:4101"
+    networks:
+      - fhqjuryad_net
+    
+  # service 1 exploits
+  team1_service1_exploit:
+    build: ./example_py_service1/exploit/
+    image: freehackquest/example_py_service1_exploit:testing
+    restart: always
+    command: python3 attack.py "fhqjuryad_jury:8080" "team1" "team2_service1_server:4101,team3_service1_server:4101"
+    networks:
+      - fhqjuryad_net
+
+  team2_service1_exploit:
+    image: freehackquest/example_py_service1_exploit:testing
+    restart: always
+    command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team1_service1_server:4101"
+    networks:
+      - fhqjuryad_net
+
+  team3_service1_exploit:
+    image: freehackquest/example_py_service1_exploit:testing
+    restart: always
+    command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team2_service1_server:4101"
+    networks:
+      - fhqjuryad_net
+
+  # service 2
+  team1_service2_db:
+    image: mysql:5.7
+    volumes:
+      - "./tmp/team1_service2_mysql:/var/lib/mysql"
+      - "./example_go_service2/service/sql:/docker-entrypoint-initdb.d"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: C148cMqIT2
+      MYSQL_DATABASE: go_service2
+      MYSQL_USER: service2usr
+      MYSQL_PASSWORD: service2pass
+    networks:
+      - fhqjuryad_net
+
+  team1_service2_server:
+    build: ./example_go_service2/service/
+    image: freehackquest/example_go_service2:testing
+    depends_on:
+      - team1_service2_db
+    environment:
+      MYSQL_HOST: team1_service2_db
+      MYSQL_DATABASE: go_service2
+      MYSQL_USER: service2usr
+      MYSQL_PASSWORD: service2pass
+    restart: always
+    networks:
+      - fhqjuryad_net
+
+  # team1
+  team1_server:
+    image: haproxy:2.0
+    depends_on:
+      - team1_service1_server
+      - team1_service2_server
+    volumes:
+      - "./haproxy.configs/team1.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    restart: always
+    ports:
+      - "4101:4101"
+      - "4102:4102"
+    networks:
+      - fhqjuryad_net
+
+  fhqjuryad_db:
+    image: mysql:5.7
+    volumes:
+      - "./tmp/jury_mysql:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: fhqjuryad
+      MYSQL_USER: fhqjuryad
+      MYSQL_PASSWORD: fhqjuryad
+    networks:
+      - fhqjuryad_net
+
+  fhqjuryad_jury:
+    build: ../
+    depends_on:
+      - fhqjuryad_db
+    image: freehackquest/fhq-jury-ad:testing
+    volumes:
+      - "./jury.d:/usr/share/fhq-jury-ad/jury.d"
+      - "./tmp/jury_logs:/usr/share/fhq-jury-ad/jury.d/logs"
+      - "./example_py_service1/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_py_service1"
+      - "./example_go_service2/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_go_service2"
+    ports:
+      - "8080:8080"
+    restart: always
+    command: "fhq-jury-ad start"
+    links:
+      - "fhqjuryad_db"
+    networks:
+      - fhqjuryad_net
+
+networks:
+  fhqjuryad_net:
+    driver: bridge
+        

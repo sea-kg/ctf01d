@@ -26,6 +26,7 @@ class Config {
 		std::string gameId();
 		std::string gameName();
 		int flagTimeliveInMin();
+		int bacisCostsStolenFlagInPoints();
 		int gameStartUTCInSec();
 		int gameEndUTCInSec();
 
@@ -56,6 +57,7 @@ class Config {
 
 		// game conf
 		int m_nFlagTimeliveInMin;
+		int m_nBacisCostsStolenFlagInPoints;
 		std::string m_sGameId;
 		std::string m_sGameName;
 		std::string m_sGameStart;

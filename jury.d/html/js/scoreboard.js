@@ -146,13 +146,12 @@ function updateScoreboard() {
             return a.p - b.p;
         });
         for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = ((i+1)*70) + 'px';
+            elms2[i].e.style.top = (50 + (i+1)*70) + 'px';
         }
         var bSorted = false;
 
         while (!bSorted){
             bSorted = true;
-            
         }
 
         // open controls
@@ -197,7 +196,21 @@ getAjax('/api/v1/game', function(err, resp){
     + "        <div class='team'>Team</div>"
     + "        <div class='score'>Score</div>";
     for (var i = 0; i < resp.services.length; i++) {
-        sContent += "<div class='service'>" + resp.services[i].name + "<br><small>(service)</small></div>";
+        var serviceId = resp.services[i].id
+        sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
+        + "<small>[r:" + resp.services[i].round_time_in_sec + "s]</small>"
+        + "<div>"
+        + "     <div class='text green points' id='" + serviceId + "-cost-def'>0.0</div> "
+        + "     | <div class='text red points' id='" + serviceId + "-cost-att'>0.0</div> "
+        + "</div>"
+        + "<div class='service-att-def'>"
+        + "     <div class='d-icn def' id='" + serviceId + "-all-flags-def'>0</div> "
+        + "     | <div class='d-icn att' id='" + serviceId + "-all-flags-att'>0</div>"
+        + "</div>"
+        + "<div>"
+        + "    <div class='first-blood' id='" + serviceId + "-first-blood'>???</div>"
+        + "</div>"
+        + "</div>";
     }
     sContent += ''
         + '        <div class="activity">Activity</div>'
@@ -216,7 +229,7 @@ getAjax('/api/v1/game', function(err, resp){
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"
             + "  </div>"
-            + "  <div class='score' id='score-" + sTeamId + "'>0</div>";
+            + "  <div class='score'><div class='points' id='score-" + sTeamId + "'>0</div></div>";
 
         for (var i = 0; i < resp.services.length; i++) {
             var sServiceID = resp.services[i].id;

@@ -10,11 +10,11 @@ const std::string &RES_html_js_scoreboard_js::filename() {
 }
 
 const int RES_html_js_scoreboard_js::bufferSize() {
-    return 9305;
+    return 10011;
 }
 
 const char *RES_html_js_scoreboard_js::buffer() {
-    static const std::string sRet =  // size: 9305
+    static const std::string sRet =  // size: 10011
         "\n"
         "// post request to server Async\n"
         "function getAjax (url, callback) {\n"
@@ -163,13 +163,12 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "            return a.p - b.p;\n"
         "        });\n"
         "        for(var i = 0; i < elms2.length; i++){\n"
-        "            elms2[i].e.style.top = ((i+1)*70) + 'px';\n"
+        "            elms2[i].e.style.top = (50 + (i+1)*70) + 'px';\n"
         "        }\n"
         "        var bSorted = false;\n"
         "\n"
         "        while (!bSorted){\n"
         "            bSorted = true;\n"
-        "            \n"
         "        }\n"
         "\n"
         "        // open controls\n"
@@ -214,7 +213,21 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "    + \"        <div class='team'>Team</div>\"\n"
         "    + \"        <div class='score'>Score</div>\";\n"
         "    for (var i = 0; i < resp.services.length; i++) {\n"
-        "        sContent += \"<div class='service'>\" + resp.services[i].name + \"<br><small>(service)</small></div>\";\n"
+        "        var serviceId = resp.services[i].id\n"
+        "        sContent += \"<div class='service'><b>\" + resp.services[i].name + \" </b>\"\n"
+        "        + \"<small>[r:\" + resp.services[i].round_time_in_sec + \"s]</small>\"\n"
+        "        + \"<div>\"\n"
+        "        + \"     <div class='text green points' id='\" + serviceId + \"-cost-def'>0.0</div> \"\n"
+        "        + \"     | <div class='text red points' id='\" + serviceId + \"-cost-att'>0.0</div> \"\n"
+        "        + \"</div>\"\n"
+        "        + \"<div class='service-att-def'>\"\n"
+        "        + \"     <div class='d-icn def' id='\" + serviceId + \"-all-flags-def'>0</div> \"\n"
+        "        + \"     | <div class='d-icn att' id='\" + serviceId + \"-all-flags-att'>0</div>\"\n"
+        "        + \"</div>\"\n"
+        "        + \"<div>\"\n"
+        "        + \"    <div class='first-blood' id='\" + serviceId + \"-first-blood'>???</div>\"\n"
+        "        + \"</div>\"\n"
+        "        + \"</div>\";\n"
         "    }\n"
         "    sContent += ''\n"
         "        + '        <div class=\"activity\">Activity</div>'\n"
@@ -233,7 +246,7 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "            + \"    <div class='team-name'>\" + resp.teams[iteam].name + \"</div>\"\n"
         "            + \"    <div class='team-ip'> id: \" + sTeamId + \", ip: \" + resp.teams[iteam].ip_address + \"</div>\"\n"
         "            + \"  </div>\"\n"
-        "            + \"  <div class='score' id='score-\" + sTeamId + \"'>0</div>\";\n"
+        "            + \"  <div class='score'><div class='points' id='score-\" + sTeamId + \"'>0</div></div>\";\n"
         "\n"
         "        for (var i = 0; i < resp.services.length; i++) {\n"
         "            var sServiceID = resp.services[i].id;\n"

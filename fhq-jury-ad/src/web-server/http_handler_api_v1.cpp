@@ -31,10 +31,13 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
 
     for (unsigned int i = 0; i < m_pConfig->servicesConf().size(); i++) {
         Service serviceConf = m_pConfig->servicesConf()[i];
-        nlohmann::json serviceInfo;
-        serviceInfo["id"] = serviceConf.id();
-        serviceInfo["name"] = serviceConf.name();
-        m_jsonGame["services"].push_back(serviceInfo);
+        if (serviceConf.isEnabled()) {
+            nlohmann::json serviceInfo;
+            serviceInfo["id"] = serviceConf.id();
+            serviceInfo["name"] = serviceConf.name();
+            serviceInfo["round_time_in_sec"] = serviceConf.scriptWaitInSec();
+            m_jsonGame["services"].push_back(serviceInfo);
+        }
     }
 
     for (unsigned int i = 0; i < m_pConfig->teamsConf().size(); i++) {

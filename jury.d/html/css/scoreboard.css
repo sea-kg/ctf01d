@@ -122,7 +122,7 @@ button {
 
 .hdrs {
   border-bottom: 1px solid #111;
-  height: 50px;
+  height: 100px;
   position: absolute;
   padding-top: 15px;
   width: 100%;
@@ -155,6 +155,20 @@ button {
   height: 50px;
   width: 50px;
   vertical-align: top;
+}
+
+.text {
+  display: inline-block;
+}
+
+.text.red {
+  color: #cc5914;
+  font-weight: bold;
+}
+
+.text.green {
+  color: #00b100;
+  font-weight: bold;
 }
 
 img.team-logo {
@@ -197,6 +211,35 @@ img.team-logo {
   padding-left: 15px;
   padding-right: 15px;
   text-align: left;
+}
+
+.hdrs .service {
+  height: 100px;
+  line-height: 20px;
+  text-align: center;
+  width: 150px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.first-blood {
+  display: inline-block;
+  height: 20px;
+  background-image: url("../images/first-blood.svg");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+.points {
+  display: inline-block;
+  height: 20px;
+  background-image: url("../images/points.svg");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 25px;
+  line-height: 20px;
 }
 
 .activity {

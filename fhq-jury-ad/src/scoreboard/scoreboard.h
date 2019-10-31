@@ -16,7 +16,8 @@
 class Scoreboard {
     public:
 
-        Scoreboard(bool bRandom,
+        Scoreboard(
+            bool bRandom,
             int nGameStartInSec,
             int nGameEndInSec,
             int nFlagTimeLiveInSec,

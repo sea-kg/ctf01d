@@ -10,11 +10,11 @@ const std::string &RES_game_conf::filename() {
 }
 
 const int RES_game_conf::bufferSize() {
-    return 625;
+    return 738;
 }
 
 const char *RES_game_conf::buffer() {
-    static const std::string sRet =  // size: 625
+    static const std::string sRet =  // size: 738
         "# uniq gameid must be regexp [a-z0-9]+\n"
         "game.id = test\n"
         "\n"
@@ -37,6 +37,9 @@ const char *RES_game_conf::buffer() {
         "\n"
         "# you can change flag time live (in minutes)\n"
         "game.flag_timelive_in_min = 1\n"
+        "\n"
+        "# basic costs stolen (attack) flag in points for adaptive scoreboard\n"
+        "game.basic_costs_stolen_flag_in_points = 10\n"
     ;
     return sRet.c_str();
 } //::buffer() 

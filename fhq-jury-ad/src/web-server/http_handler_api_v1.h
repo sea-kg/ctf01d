@@ -1,7 +1,7 @@
 #ifndef HTTP_HANDLER_API_V1_H
 #define HTTP_HANDLER_API_V1_H
 
-#include <light_http_handler_base.h>
+#include <light_http_server.h>
 #include <config.h>
 #include <json.hpp>
 

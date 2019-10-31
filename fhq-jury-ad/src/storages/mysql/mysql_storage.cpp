@@ -266,6 +266,23 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(22, // don't change if after commit
+        "CREATE TABLE `flags_stolen` ("
+        "  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+        "  `serviceid` VARCHAR(50) DEFAULT '',"
+        "  `owner_teamid` VARCHAR(50) DEFAULT '',"
+        "  `thief_teamid` VARCHAR(50) DEFAULT '',"
+        "  `flag_id` varchar(50) DEFAULT NULL,"
+        "  `flag` VARCHAR(50) DEFAULT '',"
+        "  `dt` bigint DEFAULT NULL," // date
+        "  `flag_cost` int DEFAULT 0,"
+        "  PRIMARY KEY (id),"
+        "  INDEX(`serviceid`), "
+        "  INDEX(`serviceid`, `thief_teamid`), "
+        "  UNIQUE KEY(`serviceid`, `thief_teamid`, `flag_id`, `flag`)"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
     Log::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;

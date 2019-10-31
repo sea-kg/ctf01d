@@ -24,6 +24,7 @@ class ServiceCostsAndStatistics {
         void setFirstBloodTeamId(const std::string &sFirstBlood);
 
     private:
+        std::string TAG;
         std::string m_sServiceId;
         std::string m_sFirstBlood;
 

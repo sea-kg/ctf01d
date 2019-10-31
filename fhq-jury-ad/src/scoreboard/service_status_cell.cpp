@@ -21,8 +21,11 @@ ServiceStatusCell::ServiceStatusCell(const Service &serviceConf, int nGameStartI
     m_nGameEndInSec = nGameEndInSec;
     m_sStatus = ServiceStatusCell::SERVICE_DOWN;
     m_nUptime = 0.0;
-    m_nDefence = 0;
-    m_nAttack = 0;
+    int m_nDefenceFlags = 0;
+    int m_nAttackFlags = 0;
+    int m_nAttackPoints = 0;
+    int m_nDefencePoints = 0;
+
 }
 
 // ----------------------------------------------------------------------
@@ -33,28 +36,55 @@ const std::string &ServiceStatusCell::serviceId() {
 
 // ----------------------------------------------------------------------
 
-void ServiceStatusCell::setDefence(int nDefence) {
+void ServiceStatusCell::setDefenceFlags(int nDefenceFlags) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    m_nDefence = nDefence;
+    m_nDefenceFlags = nDefenceFlags;
 }
 
 // ----------------------------------------------------------------------
 
-int ServiceStatusCell::defence() {
-    return m_nDefence;
+int ServiceStatusCell::getDefenceFlags() {
+    return m_nDefenceFlags;
 }
 
 // ----------------------------------------------------------------------
 
-void ServiceStatusCell::setAttack(int nAttack) {
+void ServiceStatusCell::incrementDefenceFlags() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    m_nAttack = nAttack;
+    m_nDefenceFlags++;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::setDefencePoints(int nDefencePoints) {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nDefencePoints = nDefencePoints;
+}
+
+// ----------------------------------------------------------------------
+
+int ServiceStatusCell::getDefencePoints() {
+    return m_nDefencePoints;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::addDefencePoints(int nDefencePoints) {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nDefencePoints += nDefencePoints;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::setAttack(int nAttackFlags) {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nAttackFlags = nAttackFlags;
 }
 
 // ----------------------------------------------------------------------
 
 int ServiceStatusCell::attack() {
-    return m_nAttack;
+    return m_nAttackFlags;
 }
 
 // ----------------------------------------------------------------------
@@ -123,7 +153,7 @@ std::string ServiceStatusCell::status() {
 
 double ServiceStatusCell::calculateScore() {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    return  double(m_nAttack + m_nDefence) * (m_nUptime / 100);
+    return  m_nAttackPoints + m_nDefenceFlags;
 }
 
 // ----------------------------------------------------------------------

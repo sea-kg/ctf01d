@@ -163,8 +163,8 @@ list (APPEND JURY_AD_SOURCES "src/storages/storages.h")
 list (APPEND JURY_AD_SOURCES "src/storages/storages.cpp")
 
 # file storage
-list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.h")
-list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.cpp")
+# list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.h")
+# list (APPEND JURY_AD_SOURCES "src/storages/file/file_storage.cpp")
 
 # main
 list (APPEND JURY_AD_SOURCES "src/main.cpp")

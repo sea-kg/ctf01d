@@ -58,7 +58,8 @@ public:
     virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag) = 0;
 
     // return defence value by team and by service
-    virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId) = 0;
+    virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;
+    virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // return defence value by team and by service
     virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId) = 0;

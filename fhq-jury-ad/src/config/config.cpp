@@ -79,7 +79,7 @@ bool Config::applyGameConf() {
     m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
     Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
 
-    m_nBacisCostsStolenFlagInPoints = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nBacisCostsStolenFlagInPoints);
+    m_nBacisCostsStolenFlagInPoints = gameConf.getIntValueFromConfig("game.basic_costs_stolen_flag_in_points", m_nBacisCostsStolenFlagInPoints);
     Log::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBacisCostsStolenFlagInPoints));
 
     if (m_nGameStartUTCInSec == 0) {

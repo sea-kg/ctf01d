@@ -20,10 +20,15 @@ class ServiceStatusCell {
         ServiceStatusCell(const Service &serviceConf, int nGameStartinSec, int nGameEndInSec);
         const std::string &serviceId();
 
-        void setDefence(int nDefence);
-        int defence();
+        void setDefenceFlags(int nDefenceFlags);
+        int getDefenceFlags();
+        void incrementDefenceFlags();
+        
+        void setDefencePoints(int nDefencePoints);
+        int getDefencePoints();
+        void addDefencePoints(int nDefencePoints);
 
-        void setAttack(int nAttack);
+        void setAttack(int nAttackFlags);
         int attack();
 
         void setFlagsPutted(int nFlagsPutted);
@@ -43,8 +48,10 @@ class ServiceStatusCell {
         Service m_serviceConf;
         std::string m_sServiceId;
         std::string m_sStatus; // may be char[10] ?
-        int m_nDefence;
-        int m_nAttack;
+        int m_nDefenceFlags;
+        int m_nAttackFlags;
+        int m_nAttackPoints;
+        int m_nDefencePoints;
 
         // for SLA / uptime
         double m_nUptime;

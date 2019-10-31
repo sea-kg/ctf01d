@@ -597,7 +597,7 @@ void MySqlStorage::updateFlag(const Team &team, const Service &serviceConf, cons
 
 // ----------------------------------------------------------------------
 
-int MySqlStorage::defenceValue(const std::string &sTeamId, const std::string &sServiceId) {
+int MySqlStorage::getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) {
     int nDefence = 0;
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = 
@@ -614,6 +614,31 @@ int MySqlStorage::defenceValue(const std::string &sTeamId, const std::string &sS
         // output table name
         while ((row = mysql_fetch_row(pRes)) != NULL) {
             nDefence += std::stoi(std::string(row[0]));
+        }
+        mysql_free_result(pRes);
+    }
+    return nDefence;
+}
+
+int MySqlStorage::getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) {
+    int nDefence = 0;
+    MYSQL *pConn = getDatabaseConnection();
+    std::string sQuery = 
+        "SELECT SUM(flag_cost) as points FROM flags_defence "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
+        ";";
+
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error select (updateScoreboard - calculate defence): " + std::string(mysql_error(pConn)));
+    } else {
+        MYSQL_RES *pRes = mysql_use_result(pConn);
+        MYSQL_ROW row;
+        // output table name
+        while ((row = mysql_fetch_row(pRes)) != NULL) {
+            if (row[0] != NULL) {
+                nDefence += std::stoi(std::string(row[0]));
+            }
         }
         mysql_free_result(pRes);
     }

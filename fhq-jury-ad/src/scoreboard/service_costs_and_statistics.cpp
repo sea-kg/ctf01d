@@ -1,5 +1,6 @@
 #include "service_costs_and_statistics.h"
 #include <string>
+#include <utils_logger.h>
 
 ServiceCostsAndStatistics::ServiceCostsAndStatistics(const std::string &sServiceId) {
     m_sServiceId = sServiceId;
@@ -10,6 +11,7 @@ ServiceCostsAndStatistics::ServiceCostsAndStatistics(const std::string &sService
     m_nReverseProportionalDefenceFlags = 0.0;
     m_nCostStolenFlag = 0.0;
     m_sFirstBlood = "?";
+    TAG = "ServiceCostsAndStatistics-" + sServiceId;
 }
 
 // ----------------------------------------------------------------------
@@ -78,7 +80,7 @@ double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m
     if (m_nAllDefenceFlagsForService > 0) {
         m_nReverseProportionalDefenceFlags = double(m_nAllDefenceFlags) / double(m_nAllDefenceFlagsForService);
     } else {
-        m_nReverseProportionalDefenceFlags = 1.0;
+        m_nReverseProportionalDefenceFlags = double(m_nAllDefenceFlags) / 1.0;
     }
     return m_nReverseProportionalDefenceFlags;
 }
@@ -86,7 +88,14 @@ double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m
 // ----------------------------------------------------------------------
 
 double ServiceCostsAndStatistics::updateCostDefenceFlagForService(int nDefencePoints, double nSumOfReverseProportionalDefenceFlags) {
-    m_nCostDefenceFlag = double(nDefencePoints) * (m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags);
+    
+    Log::err(TAG, "m_nReverseProportionalDefenceFlags = " + std::to_string(m_nReverseProportionalDefenceFlags));
+    Log::err(TAG, "nSumOfReverseProportionalDefenceFlags = " + std::to_string(nSumOfReverseProportionalDefenceFlags));
+    double k = m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags;
+    Log::err(TAG, "k = " + std::to_string(k));
+    Log::err(TAG, "nDefencePoints = " + std::to_string(nDefencePoints));
+    m_nCostDefenceFlag = double(nDefencePoints) * k;
+    Log::err(TAG, "nDefencePoints = " + std::to_string(m_nCostDefenceFlag));
     return m_nCostDefenceFlag;
 }
 

@@ -10,11 +10,11 @@ const std::string &RES_html_js_scoreboard_js::filename() {
 }
 
 const int RES_html_js_scoreboard_js::bufferSize() {
-    return 11193;
+    return 11380;
 }
 
 const char *RES_html_js_scoreboard_js::buffer() {
-    static const std::string sRet =  // size: 11193
+    static const std::string sRet =  // size: 11380
         "\n"
         "// post request to server Async\n"
         "function getAjax (url, callback) {\n"
@@ -84,8 +84,8 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "\n"
         "function updateUIValue(t, teamID, paramName){\n"
         "    var newValue = '';\n"
-        "    if (paramName == 'score') {\n"
-        "        newValue = t[paramName].toFixed(2);\n"
+        "    if (paramName == 'points') {\n"
+        "        newValue = t[paramName].toFixed(1);\n"
         "    } else {\n"
         "        newValue = '' + t[paramName];\n"
         "    }\n"
@@ -151,8 +151,9 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "        for(var teamID in resp.scoreboard){\n"
         "            var t = resp.scoreboard[teamID];\n"
         "            teamIDs.push(teamID);\n"
+        "            silentUpdate(teamID + '-points', t.points.toFixed(1));\n"
         "            updateUIValue(t, teamID, 'place');\n"
-        "            updateUIValue(t, teamID, 'score');\n"
+        "            // updateUIValue(t, teamID, 'points');\n"
         "            updateUIValue(t, teamID, 'tries');\n"
         "            for(var sService in t.ts_sta){\n"
         "                var newState = t.ts_sta[sService]['status'];\n"
@@ -168,6 +169,8 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "                        el.classList.remove('mumble');\n"
         "                        el.classList.remove('corrupt');\n"
         "                        el.classList.remove('shit');\n"
+        "                        el.classList.remove('wait');\n"
+        "                        el.classList.remove('coffeebreak');\n"
         "                        el.classList.add(newState);\n"
         "                        _animateElementOneTime(el);\n"
         "\n"
@@ -249,7 +252,7 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "    + \"        <div class='place'>#</div>\"\n"
         "    + \"        <div class='team-logo'></div>\"\n"
         "    + \"        <div class='team'>Team</div>\"\n"
-        "    + \"        <div class='score'>Score</div>\";\n"
+        "    + \"        <div class='score'>Points</div>\";\n"
         "    for (var i = 0; i < resp.services.length; i++) {\n"
         "        var serviceId = resp.services[i].id\n"
         "        sContent += \"<div class='service'><b>\" + resp.services[i].name + \" </b>\"\n"
@@ -284,7 +287,7 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "            + \"    <div class='team-name'>\" + resp.teams[iteam].name + \"</div>\"\n"
         "            + \"    <div class='team-ip'> id: \" + sTeamId + \", ip: \" + resp.teams[iteam].ip_address + \"</div>\"\n"
         "            + \"  </div>\"\n"
-        "            + \"  <div class='score'><div class='points' id='score-\" + sTeamId + \"'>0</div></div>\";\n"
+        "            + \"  <div class='score'><div class='points' id='\" + sTeamId + \"-points'>0</div></div>\";\n"
         "\n"
         "        for (var i = 0; i < resp.services.length; i++) {\n"
         "            var sServiceID = resp.services[i].id;\n"

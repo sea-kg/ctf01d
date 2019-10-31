@@ -2,8 +2,8 @@
 
 TeamStatusRow::TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf, int nGameStartInSec, int nGameEndInSec) {
     m_sTeamId = sTeamId;
-    m_nScore = 0.0;
     m_nPlace = 0;
+    m_nPoints = 0;
 
     for (unsigned int i = 0; i < vServicesConf.size(); i++) {
         Service serviceConf = vServicesConf[i];
@@ -35,16 +35,15 @@ const std::string &TeamStatusRow::teamId() {
 
 // ----------------------------------------------------------------------
 
-void TeamStatusRow::setScore(double nScore) {
+void TeamStatusRow::setPoints(int nPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_nScore = nScore;
+    m_nPoints = nPoints;
 }
 
 // ----------------------------------------------------------------------
 
-double TeamStatusRow::score(){
-    std::lock_guard<std::mutex> lock(m_mutex);
-    return m_nScore;
+int TeamStatusRow::getPoints() {
+    return m_nPoints;
 }
 
 // ----------------------------------------------------------------------
@@ -87,21 +86,32 @@ std::string TeamStatusRow::servicesToString() {
 
 // ----------------------------------------------------------------------
 
-int TeamStatusRow::incrementDefence(const std::string &sServiceId) {
+void TeamStatusRow::incrementDefence(const std::string &sServiceId, int nFlagPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    int nDefence = m_mapServicesStatus[sServiceId]->defence();
-    nDefence++;
-    m_mapServicesStatus[sServiceId]->setDefence(nDefence);
-    recalculateScore();
-    return nDefence;
+    m_mapServicesStatus[sServiceId]->incrementDefenceFlags();
+    m_mapServicesStatus[sServiceId]->addDefencePoints(nFlagPoints);
+    m_nPoints += nFlagPoints;
 }
 
 // ----------------------------------------------------------------------
 
-void TeamStatusRow::setServiceDefence(const std::string &sServiceId, int nDefence) {
+int TeamStatusRow::getDefenceFlags(const std::string &sServiceId) {
+    return m_mapServicesStatus[sServiceId]->getDefenceFlags();
+}
+
+// ----------------------------------------------------------------------
+
+int TeamStatusRow::getDefencePoints(const std::string &sServiceId) {
+    return m_mapServicesStatus[sServiceId]->getDefencePoints();
+}
+
+// ----------------------------------------------------------------------
+
+void TeamStatusRow::setServiceDefenceFlagsAndPoints(const std::string &sServiceId, int nDefenceFlags, int nDefencePoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_mapServicesStatus[sServiceId]->setDefence(nDefence);
-    recalculateScore();
+    m_mapServicesStatus[sServiceId]->setDefenceFlags(nDefenceFlags);
+    m_mapServicesStatus[sServiceId]->setDefencePoints(nDefencePoints);
+    m_nPoints += nDefencePoints;
 }
 
 // ----------------------------------------------------------------------
@@ -111,7 +121,6 @@ int TeamStatusRow::incrementAttack(const std::string &sServiceId) {
     int nAttack = m_mapServicesStatus[sServiceId]->attack();
     nAttack++;
     m_mapServicesStatus[sServiceId]->setAttack(nAttack);
-    recalculateScore();
     return nAttack;
 }
 
@@ -120,7 +129,6 @@ int TeamStatusRow::incrementAttack(const std::string &sServiceId) {
 void TeamStatusRow::setServiceAttack(const std::string &sServiceId, int nAttack) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setAttack(nAttack);
-    recalculateScore();
 }
 
 // ----------------------------------------------------------------------
@@ -130,7 +138,6 @@ int TeamStatusRow::incrementFlagsPutted(const std::string &sServiceId) {
     int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
     nFlagsPutted++;
     m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
-    recalculateScore();
     return nFlagsPutted;
 }
 
@@ -140,8 +147,6 @@ void TeamStatusRow::updateScore(const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutex);
     int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
     m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
-    recalculateScore();
-    return;
 }
 
 // ----------------------------------------------------------------------
@@ -149,25 +154,12 @@ void TeamStatusRow::updateScore(const std::string &sServiceId) {
 void TeamStatusRow::setServiceFlagsPutted(const std::string &sServiceId, int nFlagSuccess) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagSuccess);
-    recalculateScore();
 }
 
 // ----------------------------------------------------------------------
 
 double TeamStatusRow::serviceUptime(const std::string &sServiceId) {
-    return 1.0; // m_mapServicesStatus[sServiceId]->uptime();
-}
-
-// ----------------------------------------------------------------------
-
-void TeamStatusRow::recalculateScore() {
-    double nNewScore = 0.0;
-    std::map<std::string,ServiceStatusCell*>::iterator it;
-    for (it = m_mapServicesStatus.begin(); it != m_mapServicesStatus.end(); ++it){
-        ServiceStatusCell *pServiceStatus = it->second;
-        nNewScore += pServiceStatus->calculateScore();
-    }
-    m_nScore = nNewScore;
+    return 100.0; // m_mapServicesStatus[sServiceId]->uptime();
 }
 
 // ----------------------------------------------------------------------

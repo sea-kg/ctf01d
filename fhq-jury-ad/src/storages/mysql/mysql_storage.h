@@ -31,7 +31,10 @@ class MySqlStorage : public Storage {
 
         virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &serviceConf);
         virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
-        virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);
+        
+        virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);
+
         virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);

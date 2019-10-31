@@ -172,12 +172,29 @@ void Scoreboard::incrementTries(const std::string &sTeamId) {
 // ----------------------------------------------------------------------
 
 void Scoreboard::initStateFromStorage() {
-    // TODO:
-    // calculate All_DefenceFlagSuccess and DefenceFlagSuccess via serviceN
-    // calculate All_StolenFlagSuccess and StolenFlagSuccess via serviceN
-    // calculate costs
+    // load flag lives
+    std::vector<Flag> vFlagLives = m_pStorage->listOfLiveFlags();
+    for (unsigned int i = 0; i < vFlagLives.size(); i++) {
+        Flag flag = vFlagLives[i];
+        m_mapFlagsLive[flag.value()] = flag;
+    }
 
-    std::map<std::string,TeamStatusRow *>::iterator it;
+    // load services statistics
+    m_nAllStolenFlags = 0;
+    m_nAllDefenceFlags = 0;
+    for (unsigned int i = 0; i < m_vServices.size(); i++) {
+        std::string sServiceID = m_vServices[i].id();
+        
+        int nStolenFlags = m_pStorage->numberOfStolenFlagsForService(sServiceID);
+        m_mapServiceCostsAndStatistics[sServiceID]->setStolenFlagsForService(nStolenFlags);
+        m_nAllStolenFlags += nStolenFlags;
+
+        int nDefenceFlags = m_pStorage->numberOfDefenceFlagForService(sServiceID);
+        m_mapServiceCostsAndStatistics[sServiceID]->setDefenceFlagsForService(nDefenceFlags);
+        m_nAllDefenceFlags += nDefenceFlags;
+    }
+
+    std::map<std::string, TeamStatusRow *>::iterator it;
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); it++) {
         TeamStatusRow *pRow = it->second;
 
@@ -208,8 +225,13 @@ void Scoreboard::initStateFromStorage() {
             // setUpPointTime
         }
     }
-    sortPlaces();
-    // TODO updateCosts
+
+    {
+        std::lock_guard<std::mutex> lock(m_mutexJson);
+        sortPlaces();
+        updateCosts();
+    }
+    
 }
 
 // ----------------------------------------------------------------------
@@ -238,6 +260,8 @@ void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::str
 void Scoreboard::incrementDefenceScore(const Flag &flag) {
     std::string sTeamId = flag.teamId();
     std::string sServiceId = flag.serviceId();
+    int nPoints = m_mapServiceCostsAndStatistics[flag.serviceId()]->costDefenceFlag()*10;
+    m_pStorage->insertToFlagsDefence(flag, nPoints);
 
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;
@@ -402,8 +426,8 @@ void Scoreboard::updateCosts() {
     double df = (m_mapTeamsStatuses.size() - 1) * basicCostStolenFlag;
     // calculate 
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
-        nSumOfReverseProportionalStolenFlags = it1->second->updateProportionalStolenFlagsForService(m_nAllStolenFlags);
-        nSumOfReverseProportionalDefenceFlags = it1->second->updateProportionalDefenceFlagsForService(m_nAllDefenceFlags);
+        nSumOfReverseProportionalStolenFlags += it1->second->updateProportionalStolenFlagsForService(m_nAllStolenFlags);
+        nSumOfReverseProportionalDefenceFlags += it1->second->updateProportionalDefenceFlagsForService(m_nAllDefenceFlags);
     }
 
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
@@ -415,15 +439,13 @@ void Scoreboard::updateCosts() {
     nlohmann::json jsonCosts;
     for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
         Service serviceConf = m_vServices[iservice];
-        nlohmann::json serviceCosts;
-        serviceCosts["cost_att"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costStolenFlag();
-        serviceCosts["cost_def"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costDefenceFlag();
-        serviceCosts["af_att"] = m_nAllStolenFlags;
-        serviceCosts["af_def"] = m_nAllDefenceFlags;
-        serviceCosts["first_blood"] = "111";
-        jsonCosts[serviceConf.id()] = serviceCosts;
+        std::string sId = serviceConf.id();
+        m_jsonScoreboard["s_sta"][sId]["cost_att"] = m_mapServiceCostsAndStatistics[sId]->costStolenFlag();
+        m_jsonScoreboard["s_sta"][sId]["cost_def"] = m_mapServiceCostsAndStatistics[sId]->costDefenceFlag();
+        m_jsonScoreboard["s_sta"][sId]["af_att"] = m_mapServiceCostsAndStatistics[sId]->allStolenFlagsForService();
+        m_jsonScoreboard["s_sta"][sId]["af_def"] = m_mapServiceCostsAndStatistics[sId]->allDefenceFlagsForService();
+        m_jsonScoreboard["s_sta"][sId]["first_blood"] = m_mapServiceCostsAndStatistics[sId]->getFirstBloodTeamId();
     }
-    m_jsonScoreboard["s_sta"] = jsonCosts;
 }
 
 // ----------------------------------------------------------------------

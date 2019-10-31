@@ -9,6 +9,7 @@ ServiceCostsAndStatistics::ServiceCostsAndStatistics(const std::string &sService
     m_nAllDefenceFlagsForService = 0;
     m_nReverseProportionalDefenceFlags = 0.0;
     m_nCostStolenFlag = 0.0;
+    m_sFirstBlood = "?";
 }
 
 // ----------------------------------------------------------------------
@@ -25,11 +26,17 @@ void ServiceCostsAndStatistics::incrementStolenFlagsForService() {
 
 // ----------------------------------------------------------------------
 
+void ServiceCostsAndStatistics::setStolenFlagsForService(int nStolenFlags) {
+    m_nAllStolenFlagsForService = nStolenFlags;
+}
+
+// ----------------------------------------------------------------------
+
 double ServiceCostsAndStatistics::updateProportionalStolenFlagsForService(int m_nAllStolenFlags) {
     if (m_nAllStolenFlagsForService > 0) {
         m_nReverseProportionalStolenFlags = double(m_nAllStolenFlags) / double(m_nAllStolenFlagsForService);
     } else {
-        m_nReverseProportionalStolenFlags = 0.0;
+        m_nReverseProportionalStolenFlags = 1.0;
     }
     return m_nReverseProportionalStolenFlags;
 }
@@ -61,11 +68,17 @@ void ServiceCostsAndStatistics::incrementDefenceFlagsForService() {
 
 // ----------------------------------------------------------------------
 
+void ServiceCostsAndStatistics::setDefenceFlagsForService(int nDdefenceFlags) {
+    m_nAllDefenceFlagsForService = nDdefenceFlags;
+}
+
+// ----------------------------------------------------------------------
+
 double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m_nAllDefenceFlags) {
     if (m_nAllDefenceFlagsForService > 0) {
         m_nReverseProportionalDefenceFlags = double(m_nAllDefenceFlags) / double(m_nAllDefenceFlagsForService);
     } else {
-        m_nReverseProportionalDefenceFlags = 0.0;
+        m_nReverseProportionalDefenceFlags = 1.0;
     }
     return m_nReverseProportionalDefenceFlags;
 }
@@ -81,4 +94,16 @@ double ServiceCostsAndStatistics::updateCostDefenceFlagForService(int nDefencePo
 
 double ServiceCostsAndStatistics::costDefenceFlag() {
     return m_nCostDefenceFlag;
+}
+
+// ----------------------------------------------------------------------
+
+std::string ServiceCostsAndStatistics::getFirstBloodTeamId() {
+    return m_sFirstBlood;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceCostsAndStatistics::setFirstBloodTeamId(const std::string &sFirstBlood) {
+    m_sFirstBlood = sFirstBlood;
 }

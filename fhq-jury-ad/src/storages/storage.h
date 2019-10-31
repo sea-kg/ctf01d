@@ -39,8 +39,17 @@ public:
 
     virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
+    // how much defence flags from specify service
+    virtual int numberOfDefenceFlagForService(const std::string &sServiceId) = 0;
+    
+    // how much stolen flags from specify service
+    virtual int numberOfStolenFlagsForService(const std::string &sServiceId) = 0;
+
     // move flag to archive
     virtual void insertToArchive(Flag &flag) = 0;
+
+    // copy flag to defence
+    virtual void insertToFlagsDefence(const Flag &flag, int nPoints) = 0;
 
     // list of flags with ended if server up and check another flag lost on down
     virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &service) = 0;

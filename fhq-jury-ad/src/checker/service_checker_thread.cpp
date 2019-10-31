@@ -218,8 +218,7 @@ void ServiceCheckerThread::run() {
                     m_pConfig->storage()->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
                 } else {
                     // service is up
-                    m_pConfig->storage()->insertToArchive(outdatedFlag);
-                    // only if last time (== flag time live) was up
+                    // TODO: only if last time (== flag time live) was up
                     m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag);
                 }
             }

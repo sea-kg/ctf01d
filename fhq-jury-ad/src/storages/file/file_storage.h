@@ -20,7 +20,10 @@ class FileStorage : public Storage {
         virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
         virtual int numberOfFlagAttempts(const std::string &sTeamId);
         virtual void insertToArchive(Flag &flag);
+        virtual void insertToFlagsDefence(const Flag &flag, int nPoints);
         virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
+        virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
         virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &serviceConf);
         virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
         virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);

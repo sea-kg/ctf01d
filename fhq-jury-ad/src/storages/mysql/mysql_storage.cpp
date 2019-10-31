@@ -283,6 +283,22 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(23, // don't change if after commit
+        "CREATE TABLE `flags_defence` ("
+        "  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
+        "  `serviceid` VARCHAR(50) DEFAULT '',"
+        "  `teamid` VARCHAR(50) DEFAULT '',"
+        "  `flag_id` varchar(50) DEFAULT NULL,"
+        "  `flag` VARCHAR(50) DEFAULT '',"
+        "  `date_start` bigint DEFAULT NULL," // date
+        "  `date_end` bigint DEFAULT NULL," // date
+        "  `flag_cost` int DEFAULT 0,"
+        "  PRIMARY KEY (id),"
+        "  INDEX(`serviceid`), "
+        "  UNIQUE KEY(`serviceid`, `flag_id`, `flag`)"
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    ));
+
     Log::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -585,12 +601,9 @@ int MySqlStorage::defenceValue(const std::string &sTeamId, const std::string &sS
     int nDefence = 0;
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = 
-        "SELECT COUNT(*) as defence FROM flags "
+        "SELECT COUNT(*) as defence FROM flags_defence "
         "WHERE serviceid = '" + sServiceId + "' "
         "   AND teamid = '" + sTeamId + "' "
-        "   AND team_stole = '' "
-        "   AND date_start > " + m_sGameStartUTCInMS + " "
-        "   AND date_end < " + m_sGameEndUTCInMS + " "
         ";";
 
     if (mysql_query(pConn, sQuery.c_str())) {
@@ -647,7 +660,6 @@ int MySqlStorage::attackValue(const std::string &sTeamId, const std::string &sSe
 int MySqlStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) {
     MYSQL *pConn = getDatabaseConnection();
 
-
     // calculate SLA
     int nFlagsSuccess = 0;
     {
@@ -681,6 +693,57 @@ int MySqlStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const st
     }
 
     return nFlagsSuccess;
+}
+
+// ----------------------------------------------------------------------
+
+int MySqlStorage::numberOfDefenceFlagForService(const std::string &sServiceId) {
+    MYSQL *pConn = getDatabaseConnection();
+    int nRet = 0;
+    {
+        std::string sQuery = 
+            "SELECT COUNT(*) as cnt FROM flags_defence WHERE serviceid = '" + sServiceId + "'";
+
+        // std::cout << sQuery << "\n";
+        if (mysql_query(pConn, sQuery.c_str())) {
+            Log::err(TAG, "Error select (updateScoreboard - numberOfDefenceFlagForService): " + std::string(mysql_error(pConn)));
+        } else {
+            MYSQL_RES *pRes = mysql_use_result(pConn);
+            MYSQL_ROW row;
+            // output table name
+            while ((row = mysql_fetch_row(pRes)) != NULL) {
+                nRet += std::stoi(std::string(row[0]));
+            }
+            mysql_free_result(pRes);
+        }
+    }
+    return nRet;
+}
+
+// ----------------------------------------------------------------------
+
+int MySqlStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
+    MYSQL *pConn = getDatabaseConnection();
+    
+    int nRet = 0;
+    {
+        std::string sQuery = 
+            "SELECT COUNT(*) as cnt FROM flags_stolen WHERE serviceid = '" + sServiceId + "'";
+
+        // std::cout << sQuery << "\n";
+        if (mysql_query(pConn, sQuery.c_str())) {
+            Log::err(TAG, "Error select (updateScoreboard - numberOfDefenceFlagForService): " + std::string(mysql_error(pConn)));
+        } else {
+            MYSQL_RES *pRes = mysql_use_result(pConn);
+            MYSQL_ROW row;
+            // output table name
+            while ((row = mysql_fetch_row(pRes)) != NULL) {
+                nRet += std::stoi(std::string(row[0]));
+            }
+            mysql_free_result(pRes);
+        }
+    }
+    return nRet;
 }
 
 // ----------------------------------------------------------------------
@@ -781,6 +844,30 @@ void MySqlStorage::insertToArchive(Flag &flag) {
         + std::to_string(flag.timeStart()) + ", "
         + std::to_string(flag.timeEnd()) + ", "
         + "'" + flag.teamStole() + "'"
+        + ");";
+
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        return;
+    }
+
+    MYSQL_RES *pRes = mysql_use_result(pConn);
+    mysql_free_result(pRes);
+}
+
+// ----------------------------------------------------------------------
+
+void MySqlStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
+    MYSQL *pConn = getDatabaseConnection();
+    std::string sQuery = "INSERT INTO flags_defence(serviceid, teamid, flag_id, flag, "
+        "   date_start, date_end, flag_cost) VALUES("
+        "'" + flag.serviceId() + "', "
+        + "'" + flag.teamId() + "', "
+        + "'" + flag.id() + "', "
+        + "'" + flag.value() + "', "
+        + std::to_string(flag.timeStart()) + ", "
+        + std::to_string(flag.timeEnd()) + ", "
+        + std::to_string(nPoints) + " "
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {

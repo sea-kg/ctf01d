@@ -35,12 +35,12 @@ class Scoreboard {
         void initStateFromStorage();
 
         void incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId);
-        void incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId);
-        void incrementFlagsPutted(const std::string &sTeamId, const std::string &sServiceId);
+        void incrementDefenceScore(const Flag &flag);
+        void incrementFlagsPuttedAndServiceUp(const Flag &flag);
+        void insertFlagPutFail(const Flag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus);
         void updateScore(const std::string &sTeamId, const std::string &sServiceId);
         std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
-        void addFlagLive(const Flag &flag);
         std::vector<Flag> outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId);
         bool findFlagLive(const std::string &sFlagValue, Flag &flag);
         void removeFlagLive(const Flag &flag);

@@ -155,7 +155,7 @@ void TeamStatusRow::setServiceFlagsPutted(const std::string &sServiceId, int nFl
 // ----------------------------------------------------------------------
 
 double TeamStatusRow::serviceUptime(const std::string &sServiceId) {
-    return m_mapServicesStatus[sServiceId]->uptime();
+    return 1.0; // m_mapServicesStatus[sServiceId]->uptime();
 }
 
 // ----------------------------------------------------------------------

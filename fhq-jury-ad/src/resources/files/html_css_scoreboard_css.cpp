@@ -10,11 +10,11 @@ const std::string &RES_html_css_scoreboard_css::filename() {
 }
 
 const int RES_html_css_scoreboard_css::bufferSize() {
-    return 6472;
+    return 6644;
 }
 
 const char *RES_html_css_scoreboard_css::buffer() {
-    static const std::string sRet =  // size: 6472
+    static const std::string sRet =  // size: 6644
         "body{\n"
         "    background-color: #000;\n"
         "    font: 12pt/10pt Arial;\n"
@@ -353,6 +353,14 @@ const char *RES_html_css_scoreboard_css::buffer() {
         "\n"
         ".service-status.shit {\n"
         "	background-image: url(\"../images/states/shit.svg\");\n"
+        "}\n"
+        "\n"
+        ".service-status.wait {\n"
+        "	background-image: url(\"../images/states/wait.svg\");\n"
+        "}\n"
+        "\n"
+        ".service-status.coffeebreak {\n"
+        "	background-image: url(\"../images/states/coffeebreak.svg\");\n"
         "}\n"
         "\n"
         ".service-att-def, .service-sla {\n"

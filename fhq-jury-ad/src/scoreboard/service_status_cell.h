@@ -15,6 +15,7 @@ class ServiceStatusCell {
         static std::string SERVICE_CORRUPT;
         static std::string SERVICE_SHIT;
         static std::string SERVICE_WAIT;
+        static std::string SERVICE_COFFEEBREAK;
 
         ServiceStatusCell(const Service &serviceConf, int nGameStartinSec, int nGameEndInSec);
         const std::string &serviceId();
@@ -28,7 +29,8 @@ class ServiceStatusCell {
         void setFlagsPutted(int nFlagsPutted);
         int flagsPutted();
 
-        double uptime();
+        int getUptimeInSec();
+        void setUpPointTime(int nUpPointTimeInSec);
 
         void setStatus(const std::string &sStatus);
         std::string status();

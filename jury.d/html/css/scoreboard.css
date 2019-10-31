@@ -338,6 +338,14 @@ img.team-logo {
 	background-image: url("../images/states/shit.svg");
 }
 
+.service-status.wait {
+	background-image: url("../images/states/wait.svg");
+}
+
+.service-status.coffeebreak {
+	background-image: url("../images/states/coffeebreak.svg");
+}
+
 .service-att-def, .service-sla {
   height: 25px;
   line-height: 25px;

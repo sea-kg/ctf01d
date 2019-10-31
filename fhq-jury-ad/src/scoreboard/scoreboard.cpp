@@ -115,6 +115,17 @@ void Scoreboard::initJsonScoreboard() {
     }
     m_jsonScoreboard["scoreboard"] = jsonScoreboard;
 }
+
+// ----------------------------------------------------------------------
+
+void Scoreboard::updateJsonScoreboard() {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+
+    
+    // TODO update score
+    // TODO update costs
+}
+
 // ----------------------------------------------------------------------
 
 std::string Scoreboard::randomServiceStatus() {
@@ -190,6 +201,11 @@ void Scoreboard::initStateFromStorage() {
             // calculate uptime
             int nFlagsSuccess = m_pStorage->numberOfFlagSuccessPutted(pRow->teamId(), sServiceID);
             pRow->setServiceFlagsPutted(sServiceID, nFlagsSuccess);
+
+            // TODO
+            // int nUpPointTimeInSec = m_pStorage->lastUpPointTime(pRow->teamId(), sServiceID);
+            // pRow->setUpPointTime(sServiceID, nUpPointTimeInSec);
+            // setUpPointTime
         }
     }
     sortPlaces();
@@ -219,7 +235,10 @@ void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::str
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::incrementDefenceScore(const std::string &sTeamId, const std::string &sServiceId) {
+void Scoreboard::incrementDefenceScore(const Flag &flag) {
+    std::string sTeamId = flag.teamId();
+    std::string sServiceId = flag.serviceId();
+
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
@@ -242,19 +261,64 @@ void Scoreboard::incrementDefenceScore(const std::string &sTeamId, const std::st
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::incrementFlagsPutted(const std::string &sTeamId, const std::string &sServiceId) {
+void Scoreboard::incrementFlagsPuttedAndServiceUp(const Flag &flag) {
+    std::string sServiceId = flag.serviceId();
+    std::string sTeamId = flag.teamId();
+    std::string sNewStatus = m_bRandom ? randomServiceStatus() : ServiceStatusCell::SERVICE_UP;
+
+    // insert flag lives
+    {
+        std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
+        std::map<std::string,Flag>::iterator it;
+        it = m_mapFlagsLive.find(flag.value());
+        if (it != m_mapFlagsLive.end()) {
+            Log::warn(TAG, flag.value() + " - flag already exists");
+        } else {
+            m_mapFlagsLive[flag.value()] = flag;
+            m_pStorage->insertFlagLive(flag);
+        }
+    }
+
+    // success putted
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second;
+        if (pRow->serviceStatus(sServiceId) != sNewStatus) {
+            pRow->setServiceStatus(sServiceId, sNewStatus);
+        }
         pRow->incrementFlagsPutted(sServiceId);
+	m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["status"] = sNewStatus;
         m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["upt"] = pRow->serviceUptime(sServiceId);
         m_jsonScoreboard["scoreboard"][sTeamId]["score"] = pRow->score();
         sortPlaces();
         updateCosts();
     }
     // TODO update Costs
+    // updateScore(flag.teamId(), flag.serviceId());
+}
+
+// ----------------------------------------------------------------------
+
+void Scoreboard::insertFlagPutFail(const Flag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
+    std::string sServiceId = flag.serviceId();
+    std::string sTeamId = flag.teamId();
+    std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
+    m_pStorage->insertFlagPutFail(flag, sDescrStatus);
+
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+    std::map<std::string,TeamStatusRow *>::iterator it;
+    it = m_mapTeamsStatuses.find(flag.teamId());
+    if (it != m_mapTeamsStatuses.end()) {
+        TeamStatusRow *pRow = it->second;
+        if (pRow->serviceStatus(sServiceId) != sNewStatus) {
+            pRow->setServiceStatus(sServiceId, sNewStatus);
+        }
+        m_jsonScoreboard[sTeamId]["services"][sServiceId]["status"] = sNewStatus;
+    }
+    // TODO update score
+    // updateScore(flag.teamId(), flag.serviceId());
 }
 
 // ----------------------------------------------------------------------
@@ -364,7 +428,7 @@ void Scoreboard::updateCosts() {
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::addFlagLive(const Flag &flag) {
+/*void Scoreboard::addFlagLive(const Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
     std::map<std::string,Flag>::iterator it;
     it = m_mapFlagsLive.find(flag.value());
@@ -374,7 +438,7 @@ void Scoreboard::addFlagLive(const Flag &flag) {
         m_mapFlagsLive[flag.value()] = flag;
         m_pStorage->insertFlagLive(flag);
     }
-}
+}*/
 
 // ----------------------------------------------------------------------
 

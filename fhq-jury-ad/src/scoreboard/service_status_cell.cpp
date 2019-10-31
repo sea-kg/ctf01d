@@ -8,6 +8,8 @@ std::string ServiceStatusCell::SERVICE_MUMBLE = "mumble";
 std::string ServiceStatusCell::SERVICE_CORRUPT = "corrupt";
 std::string ServiceStatusCell::SERVICE_SHIT = "shit";
 std::string ServiceStatusCell::SERVICE_WAIT = "wait";
+std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
+
 
 // ----------------------------------------------------------------------
 
@@ -98,9 +100,11 @@ int ServiceStatusCell::flagsPutted() {
 
 // ----------------------------------------------------------------------
 
+/*
 double ServiceStatusCell::uptime() {
     return m_nUptime;
 }
+*/
 
 // ----------------------------------------------------------------------
 

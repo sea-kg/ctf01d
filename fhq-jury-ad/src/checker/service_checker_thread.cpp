@@ -125,6 +125,16 @@ void ServiceCheckerThread::run() {
 
     while(1) {
         int nCurrentTime = TS::currentTime_seconds();
+        if (
+            m_pConfig->gameHasCoffeeBreak()
+            && nCurrentTime > m_pConfig->gameCoffeeBreakStartUTCInSec()
+            && nCurrentTime < m_pConfig->gameCoffeeBreakEndUTCInSec()
+        ) {
+            Log::info(TAG, "Game on coffeebreak");
+            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_COFFEEBREAK);
+            return;
+        }
+
         if (nCurrentTime > m_pConfig->gameEndUTCInSec()) {
             Log::warn(TAG, "Game ended (current time: " + std::to_string(nCurrentTime) + ")");
             return;
@@ -153,37 +163,37 @@ void ServiceCheckerThread::run() {
             if (nExitCode == ServiceCheckerThread::CHECKER_CODE_UP) {
                 // >>>>>>>>>>> service is UP <<<<<<<<<<<<<<
                 Log::ok(TAG, " => service is up");
-                m_pConfig->scoreboard()->addFlagLive(flag);
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_UP);
-                m_pConfig->scoreboard()->incrementFlagsPutted(flag.teamId(), flag.serviceId());
+                m_pConfig->scoreboard()->incrementFlagsPuttedAndServiceUp(flag);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_CORRUPT) {
                 // >>>>>>>>>>> service is CORRUPT <<<<<<<<<<<<<<
-                m_pConfig->storage()->insertFlagPutFail(flag, "corrupt");
                 Log::warn(TAG, " => service is corrupt ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_CORRUPT);
-                m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_CORRUPT, "corrupt");
+                // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_CORRUPT);
+                // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
-                m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
+                // m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
                 Log::warn(TAG, " => service is mumble (1) ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_MUMBLE);
-                m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble_1");
+                // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_MUMBLE);
+                // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<
-                m_pConfig->storage()->insertFlagPutFail(flag, "down");
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_DOWN, "down");
                 Log::warn(TAG, " => service is down ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
-                m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
+                // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
+                // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_SHIT) {
                 // >>>>>>>>>>> checker is SHIT <<<<<<<<<<<<<<
-                m_pConfig->storage()->insertFlagPutFail(flag, "shit");
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_SHIT, "shit");
                 Log::err(TAG, " => checker is shit ");
-                m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_SHIT);
-                m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
+                // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_SHIT);
+                // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else {
-                m_pConfig->storage()->insertFlagPutFail(flag, "internal_error");
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_SHIT, "internal_error");
+                // m_pConfig->storage()->insertFlagPutFail(flag, "internal_error");
                 Log::err(TAG, " => runChecker - wrong code return");
-                m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
+                // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             }
         } else {
             Log::info(TAG, "Game ended after: " + std::to_string(m_pConfig->gameEndUTCInSec() - nCurrentTime) + " sec");
@@ -209,7 +219,8 @@ void ServiceCheckerThread::run() {
                 } else {
                     // service is up
                     m_pConfig->storage()->insertToArchive(outdatedFlag);
-                    m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag.teamId(), outdatedFlag.serviceId());
+                    // only if last time (== flag time live) was up
+                    m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag);
                 }
             }
         }

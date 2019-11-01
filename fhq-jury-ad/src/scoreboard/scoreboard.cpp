@@ -219,7 +219,7 @@ void Scoreboard::initStateFromStorage() {
             int nAttackPoints = m_pStorage->getStollenPoints(pRow->teamId(), sServiceID);
             pRow->setServiceAttackFlagsAndPoints(sServiceID, nAttackFlags, nAttackPoints);
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["att"] = nAttackFlags;
-            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_att"] = nAttackPoints;
+            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_att"] = double(nAttackPoints) / 10.0;
 
             // calculate uptime
             int nFlagsSuccess = m_pStorage->numberOfFlagSuccessPutted(pRow->teamId(), sServiceID);

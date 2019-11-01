@@ -10,11 +10,11 @@ const std::string &RES_html_js_scoreboard_js::filename() {
 }
 
 const int RES_html_js_scoreboard_js::bufferSize() {
-    return 11380;
+    return 11353;
 }
 
 const char *RES_html_js_scoreboard_js::buffer() {
-    static const std::string sRet =  // size: 11380
+    static const std::string sRet =  // size: 11353
         "\n"
         "// post request to server Async\n"
         "function getAjax (url, callback) {\n"
@@ -157,8 +157,10 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "            updateUIValue(t, teamID, 'tries');\n"
         "            for(var sService in t.ts_sta){\n"
         "                var newState = t.ts_sta[sService]['status'];\n"
-        "                var newAttack = t.ts_sta[sService]['att'];\n"
-        "                var newDefence = t.ts_sta[sService]['def'];\n"
+        "                var newAttackFlags = t.ts_sta[sService]['att'];\n"
+        "                var newDefenceFlags = t.ts_sta[sService]['def'];\n"
+        "                var newAttackPoints = t.ts_sta[sService]['pt_att'];\n"
+        "                var newDefencePoints = t.ts_sta[sService]['pt_def'];\n"
         "                var newSLA = t.ts_sta[sService]['upt'];\n"
         "                var elId = 'status-' + teamID + '-' + sService;\n"
         "                var el = document.getElementById(elId);\n"
@@ -180,12 +182,10 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "                }\n"
         "                var sCell = teamID + '-' + sService;\n"
         "                console.log(sCell);\n"
-        "                var elAtt = document.getElementById('att-' + sCell);\n"
-        "                if (elAtt != null) elAtt.innerHTML = newAttack; else console.error('att-' + sCell + ' - not found');\n"
-        "                var elDef = document.getElementById('def-' + sCell);\n"
-        "                if (elDef != null) elDef.innerHTML = newDefence; else console.error('def-' + sCell + ' - not found');\n"
-        "                var elUptime = document.getElementById('uptime-' + sCell);\n"
-        "                if (elUptime != null) elUptime.innerHTML = newSLA.toFixed(2) + '%'; else console.error('uptime-' + sCell + ' - not found');\n"
+        "                silentUpdate('att-' + sCell, newAttackFlags)\n"
+        "                silentUpdate('def-' + sCell, newDefenceFlags)\n"
+        "                silentUpdate('pt_att-' + sCell, newAttackPoints)\n"
+        "                silentUpdate('pt_def-' + sCell, newDefencePoints)\n"
         "            }\n"
         "        }\n"
         "\n"
@@ -299,8 +299,11 @@ const char *RES_html_js_scoreboard_js::buffer() {
         "            + ' | '\n"
         "            + '       <div class=\"d-icn att\" id=\"att-' + sTeamId +  '-' + sServiceID + '\">0</div>'\n"
         "            + '   </div>'\n"
-        "            + '   <div class=\"service-sla d-icn upt\" id=\"uptime-' + sTeamId +  '-' + sServiceID + '\">0.0%</div>'\n"
-        "            + \"  </div>\"\n"
+        "            + '   <div>'\n"
+        "            + '     <div class=\"text green points\" id=\"pt_def-' + sTeamId +  '-' + sServiceID + '\">0.0</div> '\n"
+        "            + '     | <div class=\"text red points\" id=\"pt_att-' + sTeamId +  '-' + sServiceID + '\">0.0</div> '\n"
+        "            + '   </div>'\n"
+        "            + '  </div>'\n"
         "            + \"</div>\\n\";\n"
         "        }\n"
         "        sContent += \"\"\n"

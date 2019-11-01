@@ -140,8 +140,10 @@ function updateScoreboard() {
             updateUIValue(t, teamID, 'tries');
             for(var sService in t.ts_sta){
                 var newState = t.ts_sta[sService]['status'];
-                var newAttack = t.ts_sta[sService]['att'];
-                var newDefence = t.ts_sta[sService]['def'];
+                var newAttackFlags = t.ts_sta[sService]['att'];
+                var newDefenceFlags = t.ts_sta[sService]['def'];
+                var newAttackPoints = t.ts_sta[sService]['pt_att'];
+                var newDefencePoints = t.ts_sta[sService]['pt_def'];
                 var newSLA = t.ts_sta[sService]['upt'];
                 var elId = 'status-' + teamID + '-' + sService;
                 var el = document.getElementById(elId);
@@ -163,12 +165,10 @@ function updateScoreboard() {
                 }
                 var sCell = teamID + '-' + sService;
                 console.log(sCell);
-                var elAtt = document.getElementById('att-' + sCell);
-                if (elAtt != null) elAtt.innerHTML = newAttack; else console.error('att-' + sCell + ' - not found');
-                var elDef = document.getElementById('def-' + sCell);
-                if (elDef != null) elDef.innerHTML = newDefence; else console.error('def-' + sCell + ' - not found');
-                var elUptime = document.getElementById('uptime-' + sCell);
-                if (elUptime != null) elUptime.innerHTML = newSLA.toFixed(2) + '%'; else console.error('uptime-' + sCell + ' - not found');
+                silentUpdate('att-' + sCell, newAttackFlags)
+                silentUpdate('def-' + sCell, newDefenceFlags)
+                silentUpdate('pt_att-' + sCell, newAttackPoints)
+                silentUpdate('pt_def-' + sCell, newDefencePoints)
             }
         }
 
@@ -282,8 +282,11 @@ getAjax('/api/v1/game', function(err, resp){
             + ' | '
             + '       <div class="d-icn att" id="att-' + sTeamId +  '-' + sServiceID + '">0</div>'
             + '   </div>'
-            + '   <div class="service-sla d-icn upt" id="uptime-' + sTeamId +  '-' + sServiceID + '">0.0%</div>'
-            + "  </div>"
+            + '   <div>'
+            + '     <div class="text green points" id="pt_def-' + sTeamId +  '-' + sServiceID + '">0.0</div> '
+            + '     | <div class="text red points" id="pt_att-' + sTeamId +  '-' + sServiceID + '">0.0</div> '
+            + '   </div>'
+            + '  </div>'
             + "</div>\n";
         }
         sContent += ""

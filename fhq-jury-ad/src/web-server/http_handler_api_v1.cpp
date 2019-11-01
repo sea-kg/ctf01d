@@ -35,7 +35,7 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
             nlohmann::json serviceInfo;
             serviceInfo["id"] = serviceConf.id();
             serviceInfo["name"] = serviceConf.name();
-            serviceInfo["round_time_in_sec"] = serviceConf.scriptWaitInSec();
+            serviceInfo["round_time_in_sec"] = serviceConf.timeSleepBetweenRunScriptsInSec();
             m_jsonGame["services"].push_back(serviceInfo);
         }
     }

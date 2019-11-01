@@ -356,7 +356,7 @@ void Scoreboard::insertFlagPutFail(const Flag &flag, const std::string &sService
         if (pRow->serviceStatus(sServiceId) != sNewStatus) {
             pRow->setServiceStatus(sServiceId, sNewStatus);
         }
-        m_jsonScoreboard["scoreboard"][sTeamId]["services"][sServiceId]["status"] = sNewStatus;
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["status"] = sNewStatus;
     }
     // TODO update score
     // updateScore(flag.teamId(), flag.serviceId());

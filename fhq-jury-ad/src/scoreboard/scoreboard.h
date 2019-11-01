@@ -33,7 +33,7 @@ class Scoreboard {
         void incrementTries(const std::string &sTeamId);
         void initStateFromStorage();
 
-        void incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId);
+        int incrementAttackScore(const Flag &flag, const std::string &sTeamId);
         void incrementDefenceScore(const Flag &flag);
         void incrementFlagsPuttedAndServiceUp(const Flag &flag);
         void insertFlagPutFail(const Flag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus);

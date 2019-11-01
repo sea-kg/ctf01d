@@ -185,14 +185,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stole by your team)");
             return true;
         }
-
-        // TODO
-        if (flag.teamStole() != "") {
-            response.forbidden().sendText("Error(-170): flag already stoled by '" + flag.teamStole() + "'");
-            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
-            return true;
-        }
-
+        
         if (flag.teamId() == sTeamId) {
             response.forbidden().sendText("Error(-180): this is your flag");
             Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (this is your flag)");
@@ -209,17 +202,18 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             return true;
         }
 
-        if (!m_pConfig->storage()->updateTeamStole(flag.value(), sTeamId)) {
-            response.forbidden().sendText("Error(-300): You are late");
-            Log::err(TAG, "Error(-300): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (You are late)");
+        if (m_pConfig->storage()->isAlreadyStole(flag, sTeamId)) {
+            response.forbidden().sendText("Error(-170): flag already stoled by your");
+            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
             return true;
         }
 
         // TODO light update scoreboard
-        // TODO send how match points will be added
-        m_pConfig->scoreboard()->incrementAttackScore(sTeamId, flag.serviceId());
-        response.ok().sendText("Accepted");
-        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted)");
+        int nPoints = m_pConfig->scoreboard()->incrementAttackScore(flag, sTeamId);
+        std::string sPoints = std::to_string(double(nPoints) / 10.0);
+
+        response.ok().sendText("Accepted (+ " + sPoints + " points)");
+        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted + " + sPoints + ")");
         return true;
     }
     return false;

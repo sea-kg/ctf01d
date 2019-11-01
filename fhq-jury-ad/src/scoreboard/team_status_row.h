@@ -30,11 +30,13 @@ class TeamStatusRow {
         void incrementDefence(const std::string &sServiceId, int nFlagPoints);
         int getDefenceFlags(const std::string &sServiceId);
         int getDefencePoints(const std::string &sServiceId);
-
         void setServiceDefenceFlagsAndPoints(const std::string &sServiceId, int nDefenceFlags, int nDefencePoints);
-        int incrementAttack(const std::string &sServiceId);
-        void setServiceAttack(const std::string &sServiceId, int nAttack);
-        int incrementFlagsPutted(const std::string &sServiceId);
+
+        void incrementAttack(const std::string &sServiceId, int nFlagPoints);
+        void setServiceAttackFlagsAndPoints(const std::string &sServiceId, int nAttackFlags, int nAttackPoints);
+        int getAttackFlags(const std::string &sServiceId);
+        int getAttackPoints(const std::string &sServiceId);
+
         void setServiceFlagsPutted(const std::string &sServiceId, int nFlagsPutted);
         double serviceUptime(const std::string &sServiceId);
         void updateScore(const std::string &sServiceId);

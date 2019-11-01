@@ -270,11 +270,13 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "CREATE TABLE `flags_stolen` ("
         "  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,"
         "  `serviceid` VARCHAR(50) DEFAULT '',"
-        "  `owner_teamid` VARCHAR(50) DEFAULT '',"
+        "  `teamid` VARCHAR(50) DEFAULT '',"
         "  `thief_teamid` VARCHAR(50) DEFAULT '',"
         "  `flag_id` varchar(50) DEFAULT NULL,"
         "  `flag` VARCHAR(50) DEFAULT '',"
-        "  `dt` bigint DEFAULT NULL," // date
+        "  `date_start` bigint DEFAULT NULL," // date
+        "  `date_end` bigint DEFAULT NULL," // date
+        "  `date_action` bigint DEFAULT NULL," // date
         "  `flag_cost` int DEFAULT 0,"
         "  PRIMARY KEY (id),"
         "  INDEX(`serviceid`), "
@@ -620,6 +622,8 @@ int MySqlStorage::getDefenceFlags(const std::string &sTeamId, const std::string 
     return nDefence;
 }
 
+// ----------------------------------------------------------------------
+
 int MySqlStorage::getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) {
     int nDefence = 0;
     MYSQL *pConn = getDatabaseConnection();
@@ -647,24 +651,15 @@ int MySqlStorage::getDefencePoints(const std::string &sTeamId, const std::string
 
 // ----------------------------------------------------------------------
 
-int MySqlStorage::attackValue(const std::string &sTeamId, const std::string &sServiceId) {
+int MySqlStorage::getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) {
     MYSQL *pConn = getDatabaseConnection();
 
     int nAttack = 0;
     std::string sQuery = 
-        "SELECT SUM(attack) as attack FROM ("
-        "   SELECT COUNT(*) as attack FROM flags_live "
-        "       WHERE serviceid = '" + sServiceId + "' "
-        "           AND team_stole = '" + sTeamId + "' "
-        "           AND date_start > " + m_sGameStartUTCInMS + " "
-        "           AND date_end < " + m_sGameEndUTCInMS + " "
-        "   UNION ALL"
-        "   SELECT COUNT(*) as attack FROM flags "
-        "       WHERE serviceid = '" + sServiceId + "' "
-        "           AND team_stole = '" + sTeamId + "' "
-        "           AND date_start > " + m_sGameStartUTCInMS + " "
-        "           AND date_end < " + m_sGameEndUTCInMS + " "
-        ") t;";
+        "SELECT COUNT(*) as cnt FROM flags_stolen "
+        "   WHERE serviceid = '" + sServiceId + "' "
+        "   AND thief_teamid = '" + sTeamId + "' "
+        ";";
 
     if (mysql_query(pConn, sQuery.c_str())) {
         Log::err(TAG, "Error select (updateScoreboard - calculate attack): " + std::string(mysql_error(pConn)));
@@ -678,6 +673,33 @@ int MySqlStorage::attackValue(const std::string &sTeamId, const std::string &sSe
         mysql_free_result(pRes);
     }
     return nAttack;
+}
+
+// ----------------------------------------------------------------------
+
+int MySqlStorage::getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) {
+    int nDefence = 0;
+    MYSQL *pConn = getDatabaseConnection();
+    std::string sQuery = 
+        "SELECT SUM(flag_cost) as points FROM flags_stolen "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND thief_teamid = '" + sTeamId + "' "
+        ";";
+
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error select (updateScoreboard - calculate defence): " + std::string(mysql_error(pConn)));
+    } else {
+        MYSQL_RES *pRes = mysql_use_result(pConn);
+        MYSQL_ROW row;
+        // output table name
+        while ((row = mysql_fetch_row(pRes)) != NULL) {
+            if (row[0] != NULL) {
+                nDefence += std::stoi(std::string(row[0]));
+            }
+        }
+        mysql_free_result(pRes);
+    }
+    return nDefence;
 }
 
 // ----------------------------------------------------------------------
@@ -902,6 +924,63 @@ void MySqlStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
 
     MYSQL_RES *pRes = mysql_use_result(pConn);
     mysql_free_result(pRes);
+}
+
+// ----------------------------------------------------------------------
+
+void MySqlStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints) {
+    MYSQL *pConn = getDatabaseConnection();
+    std::string sQuery = "INSERT INTO flags_stolen(serviceid, teamid, thief_teamid, flag_id, flag,"
+        "   date_start, date_end, date_action, flag_cost) VALUES("
+        "'" + flag.serviceId() + "', "
+        + "'" + flag.teamId() + "', "
+        + "'" + sTeamId + "', "
+        + "'" + flag.id() + "', "
+        + "'" + flag.value() + "', "
+        + std::to_string(flag.timeStart()) + ", "
+        + std::to_string(flag.timeEnd()) + ", "
+        + std::to_string(TS::currentTime_milliseconds()) + ", "
+        + std::to_string(nPoints) + " "
+        + ");";
+
+    if (mysql_query(pConn, sQuery.c_str())) {
+        Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        return;
+    }
+
+    MYSQL_RES *pRes = mysql_use_result(pConn);
+    mysql_free_result(pRes);
+}
+
+// ----------------------------------------------------------------------
+
+bool MySqlStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) {
+    MYSQL *pConn = getDatabaseConnection();
+    
+    int nRet = 0;
+    {
+        std::string sQuery = 
+            "SELECT COUNT(*) as cnt FROM flags_stolen "
+            " WHERE serviceid = '" + flag.serviceId() + "' "
+            "   AND thief_teamid = '" + sTeamId + "'"
+            "   AND flag_id = '" + flag.id() + "'"
+            "   AND flag = '" + flag.value() + "'"
+        ;
+
+        // std::cout << sQuery << "\n";
+        if (mysql_query(pConn, sQuery.c_str())) {
+            Log::err(TAG, "Error select (updateScoreboard - numberOfDefenceFlagForService): " + std::string(mysql_error(pConn)));
+        } else {
+            MYSQL_RES *pRes = mysql_use_result(pConn);
+            MYSQL_ROW row;
+            // output table name
+            while ((row = mysql_fetch_row(pRes)) != NULL) {
+                nRet += std::stoi(std::string(row[0]));
+            }
+            mysql_free_result(pRes);
+        }
+    }
+    return nRet > 0;
 }
 
 // ----------------------------------------------------------------------

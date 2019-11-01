@@ -76,15 +76,42 @@ void ServiceStatusCell::addDefencePoints(int nDefencePoints) {
 
 // ----------------------------------------------------------------------
 
-void ServiceStatusCell::setAttack(int nAttackFlags) {
+void ServiceStatusCell::setAttackFlags(int nAttackFlags) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_nAttackFlags = nAttackFlags;
 }
 
 // ----------------------------------------------------------------------
 
-int ServiceStatusCell::attack() {
+int ServiceStatusCell::getAttackFlags() {
     return m_nAttackFlags;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::incrementAttackFlags() {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nAttackFlags++;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::setAttackPoints(int nAttackPoints) {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nAttackPoints = nAttackPoints;
+}
+
+// ----------------------------------------------------------------------
+
+int ServiceStatusCell::getAttackPoints() {
+    return m_nAttackPoints;
+}
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::addAttackPoints(int nAttackPoints) {
+    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
+    m_nAttackPoints += nAttackPoints;
 }
 
 // ----------------------------------------------------------------------

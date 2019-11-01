@@ -51,6 +51,10 @@ public:
     // copy flag to defence
     virtual void insertToFlagsDefence(const Flag &flag, int nPoints) = 0;
 
+    virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints) = 0;
+
+    virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId) = 0;
+
     // list of flags with ended if server up and check another flag lost on down
     virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &service) = 0;
 
@@ -62,7 +66,8 @@ public:
     virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // return defence value by team and by service
-    virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId) = 0;
+    virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;
+    virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // DEPRECATED
     // find flag

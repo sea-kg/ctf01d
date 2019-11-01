@@ -207,8 +207,6 @@ void ServiceCheckerThread::run() {
             m_pConfig->scoreboard()->removeFlagLive(outdatedFlag);
 
             if (outdatedFlag.teamStole() != "") {
-                // some team stoled oldFlag
-                m_pConfig->storage()->insertToArchive(outdatedFlag);
                 continue;
             } else {
                 // nobody stole outdatedFlag

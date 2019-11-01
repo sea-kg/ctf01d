@@ -24,8 +24,11 @@ class MySqlStorage : public Storage {
         virtual int numberOfFlagAttempts(const std::string &sTeamId);
         virtual void insertToArchive(Flag &flag);
         virtual void insertToFlagsDefence(const Flag &flag, int nPoints);
+        virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints);
+        
+        virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId);
 
-        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId); // TODO remove
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
 
@@ -35,7 +38,8 @@ class MySqlStorage : public Storage {
         virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
         virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);
 
-        virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void deleteFlagLive(const Flag &flag);

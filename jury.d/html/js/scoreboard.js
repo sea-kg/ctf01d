@@ -67,8 +67,8 @@ function silentUpdate(elid, newValue) {
 
 function updateUIValue(t, teamID, paramName){
     var newValue = '';
-    if (paramName == 'score') {
-        newValue = t[paramName].toFixed(2);
+    if (paramName == 'points') {
+        newValue = t[paramName].toFixed(1);
     } else {
         newValue = '' + t[paramName];
     }
@@ -134,8 +134,9 @@ function updateScoreboard() {
         for(var teamID in resp.scoreboard){
             var t = resp.scoreboard[teamID];
             teamIDs.push(teamID);
+            silentUpdate(teamID + '-points', t.points.toFixed(1));
             updateUIValue(t, teamID, 'place');
-            updateUIValue(t, teamID, 'score');
+            // updateUIValue(t, teamID, 'points');
             updateUIValue(t, teamID, 'tries');
             for(var sService in t.ts_sta){
                 var newState = t.ts_sta[sService]['status'];
@@ -151,6 +152,8 @@ function updateScoreboard() {
                         el.classList.remove('mumble');
                         el.classList.remove('corrupt');
                         el.classList.remove('shit');
+                        el.classList.remove('wait');
+                        el.classList.remove('coffeebreak');
                         el.classList.add(newState);
                         _animateElementOneTime(el);
 
@@ -232,7 +235,7 @@ getAjax('/api/v1/game', function(err, resp){
     + "        <div class='place'>#</div>"
     + "        <div class='team-logo'></div>"
     + "        <div class='team'>Team</div>"
-    + "        <div class='score'>Score</div>";
+    + "        <div class='score'>Points</div>";
     for (var i = 0; i < resp.services.length; i++) {
         var serviceId = resp.services[i].id
         sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
@@ -267,7 +270,7 @@ getAjax('/api/v1/game', function(err, resp){
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"
             + "  </div>"
-            + "  <div class='score'><div class='points' id='score-" + sTeamId + "'>0</div></div>";
+            + "  <div class='score'><div class='points' id='" + sTeamId + "-points'>0</div></div>";
 
         for (var i = 0; i < resp.services.length; i++) {
             var sServiceID = resp.services[i].id;

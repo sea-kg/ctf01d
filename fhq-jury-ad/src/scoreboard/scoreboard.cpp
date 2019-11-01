@@ -107,7 +107,8 @@ void Scoreboard::initJsonScoreboard() {
             serviceData["def"] = 0;
             serviceData["pt_def"] = 0;
             serviceData["att"] = 0;
-            serviceData["upt"] = 0.0;
+            serviceData["pt_att"] = 0;
+            serviceData["upt"] = 100.0;
             serviceData["status"] = m_mapTeamsStatuses[sTeamId]->serviceStatus(serviceConf.id());
             jsonServices[serviceConf.id()] = serviceData;
         }
@@ -214,9 +215,11 @@ void Scoreboard::initStateFromStorage() {
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_def"] = double(nDefencePoints) / 10.0;
 
             // calculate attack
-            int nAttack = m_pStorage->attackValue(pRow->teamId(), sServiceID);
-            pRow->setServiceAttack(sServiceID, nAttack);
-            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["att"] = nAttack;
+            int nAttackFlags = m_pStorage->getStollenFlags(pRow->teamId(), sServiceID);
+            int nAttackPoints = m_pStorage->getStollenPoints(pRow->teamId(), sServiceID);
+            pRow->setServiceAttackFlagsAndPoints(sServiceID, nAttackFlags, nAttackPoints);
+            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["att"] = nAttackFlags;
+            m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_att"] = nAttackPoints;
 
             // calculate uptime
             int nFlagsSuccess = m_pStorage->numberOfFlagSuccessPutted(pRow->teamId(), sServiceID);
@@ -239,16 +242,24 @@ void Scoreboard::initStateFromStorage() {
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::string &sServiceId) {
+int Scoreboard::incrementAttackScore(const Flag &flag, const std::string &sTeamId) {
     std::lock_guard<std::mutex> lock(m_mutexJson);
+    std::string sServiceId = flag.serviceId();
+
+    int nFlagPoints = m_mapServiceCostsAndStatistics[flag.serviceId()]->costStolenFlag()*10; // one number after dot
+    m_pStorage->insertToFlagsStolen(flag, sTeamId, nFlagPoints);
+
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second; 
-        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["att"] = pRow->incrementAttack(sServiceId);
+        pRow->incrementAttack(sServiceId, nFlagPoints);
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["att"] = pRow->getAttackFlags(sServiceId);
+        m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["pt_att"] = double(pRow->getAttackPoints(sServiceId)) / 10.0;
         m_jsonScoreboard["scoreboard"][sTeamId]["points"] = double(pRow->getPoints()) / 10.0;
         sortPlaces();
     }
+
     std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
     it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
     if (it2 != m_mapServiceCostsAndStatistics.end()) {
@@ -256,6 +267,7 @@ void Scoreboard::incrementAttackScore(const std::string &sTeamId, const std::str
         m_nAllStolenFlags++;
         updateCosts(); // TODO update only stolen costs
     }
+    return nFlagPoints;
 }
 
 // ----------------------------------------------------------------------
@@ -318,7 +330,6 @@ void Scoreboard::incrementFlagsPuttedAndServiceUp(const Flag &flag) {
         if (pRow->serviceStatus(sServiceId) != sNewStatus) {
             pRow->setServiceStatus(sServiceId, sNewStatus);
         }
-        pRow->incrementFlagsPutted(sServiceId);
 	    m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["status"] = sNewStatus;
         m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["upt"] = pRow->serviceUptime(sServiceId);
         m_jsonScoreboard["scoreboard"][sTeamId]["points"] = double(pRow->getPoints()) / 10.0;

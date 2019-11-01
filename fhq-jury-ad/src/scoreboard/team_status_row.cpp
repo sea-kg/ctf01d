@@ -116,29 +116,32 @@ void TeamStatusRow::setServiceDefenceFlagsAndPoints(const std::string &sServiceI
 
 // ----------------------------------------------------------------------
 
-int TeamStatusRow::incrementAttack(const std::string &sServiceId) {
+void TeamStatusRow::incrementAttack(const std::string &sServiceId, int nFlagPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    int nAttack = m_mapServicesStatus[sServiceId]->attack();
-    nAttack++;
-    m_mapServicesStatus[sServiceId]->setAttack(nAttack);
-    return nAttack;
+    m_mapServicesStatus[sServiceId]->incrementAttackFlags();
+    m_mapServicesStatus[sServiceId]->addAttackPoints(nFlagPoints);
+    m_nPoints += nFlagPoints;
 }
 
 // ----------------------------------------------------------------------
 
-void TeamStatusRow::setServiceAttack(const std::string &sServiceId, int nAttack) {
+void TeamStatusRow::setServiceAttackFlagsAndPoints(const std::string &sServiceId, int nAttackFlags, int nAttackPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_mapServicesStatus[sServiceId]->setAttack(nAttack);
+    m_mapServicesStatus[sServiceId]->setAttackFlags(nAttackFlags);
+    m_mapServicesStatus[sServiceId]->setAttackPoints(nAttackPoints);
+    m_nPoints += nAttackPoints;
 }
 
 // ----------------------------------------------------------------------
 
-int TeamStatusRow::incrementFlagsPutted(const std::string &sServiceId) {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
-    nFlagsPutted++;
-    m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
-    return nFlagsPutted;
+int TeamStatusRow::getAttackFlags(const std::string &sServiceId) {
+    return m_mapServicesStatus[sServiceId]->getAttackFlags();
+}
+
+// ----------------------------------------------------------------------
+
+int TeamStatusRow::getAttackPoints(const std::string &sServiceId) {
+    return m_mapServicesStatus[sServiceId]->getAttackPoints();
 }
 
 // ----------------------------------------------------------------------

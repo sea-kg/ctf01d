@@ -28,8 +28,13 @@ class ServiceStatusCell {
         int getDefencePoints();
         void addDefencePoints(int nDefencePoints);
 
-        void setAttack(int nAttackFlags);
-        int attack();
+        void setAttackFlags(int nAttackFlags);
+        int getAttackFlags();
+        void incrementAttackFlags();
+
+        void setAttackPoints(int nAttackPoints);
+        int getAttackPoints();
+        void addAttackPoints(int nAttackPoints);
 
         void setFlagsPutted(int nFlagsPutted);
         int flagsPutted();

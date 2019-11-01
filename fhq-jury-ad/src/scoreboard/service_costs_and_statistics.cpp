@@ -88,14 +88,8 @@ double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m
 // ----------------------------------------------------------------------
 
 double ServiceCostsAndStatistics::updateCostDefenceFlagForService(int nDefencePoints, double nSumOfReverseProportionalDefenceFlags) {
-    
-    Log::err(TAG, "m_nReverseProportionalDefenceFlags = " + std::to_string(m_nReverseProportionalDefenceFlags));
-    Log::err(TAG, "nSumOfReverseProportionalDefenceFlags = " + std::to_string(nSumOfReverseProportionalDefenceFlags));
     double k = m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags;
-    Log::err(TAG, "k = " + std::to_string(k));
-    Log::err(TAG, "nDefencePoints = " + std::to_string(nDefencePoints));
     m_nCostDefenceFlag = double(nDefencePoints) * k;
-    Log::err(TAG, "nDefencePoints = " + std::to_string(m_nCostDefenceFlag));
     return m_nCostDefenceFlag;
 }
 

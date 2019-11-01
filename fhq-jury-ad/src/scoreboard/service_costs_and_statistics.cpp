@@ -46,6 +46,10 @@ double ServiceCostsAndStatistics::updateProportionalStolenFlagsForService(int m_
 // ----------------------------------------------------------------------
 
 double ServiceCostsAndStatistics::updateCostStolenFlagForService(int nStolenPoints, double nSumOfReverseProportionalStolenFlags) {
+    if (nSumOfReverseProportionalStolenFlags == 0.0) {
+        m_nCostStolenFlag = nStolenPoints;
+        return m_nCostStolenFlag;
+    }
     double k = m_nReverseProportionalStolenFlags / nSumOfReverseProportionalStolenFlags;
     m_nCostStolenFlag = double(nStolenPoints) * k;
     return m_nCostStolenFlag;
@@ -89,6 +93,10 @@ double ServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int m
 // ----------------------------------------------------------------------
 
 double ServiceCostsAndStatistics::updateCostDefenceFlagForService(int nDefencePoints, double nSumOfReverseProportionalDefenceFlags) {
+    if (nSumOfReverseProportionalDefenceFlags == 0.0) {
+        m_nCostDefenceFlag = nDefencePoints;
+        return m_nCostDefenceFlag;
+    }
     double k = m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags;
     m_nCostDefenceFlag = double(nDefencePoints) * k;
     return m_nCostDefenceFlag;

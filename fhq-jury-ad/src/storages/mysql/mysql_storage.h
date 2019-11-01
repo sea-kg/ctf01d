@@ -27,6 +27,7 @@ class MySqlStorage : public Storage {
         virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints);
         
         virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId);
+        virtual bool isSomebodyStole(const Flag &flag);
 
         virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId); // TODO remove
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);

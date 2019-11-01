@@ -54,6 +54,7 @@ public:
     virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints) = 0;
 
     virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId) = 0;
+    virtual bool isSomebodyStole(const Flag &flag) = 0;
 
     // list of flags with ended if server up and check another flag lost on down
     virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &service) = 0;

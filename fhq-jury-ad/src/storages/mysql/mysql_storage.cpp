@@ -969,7 +969,7 @@ bool MySqlStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) 
 
         // std::cout << sQuery << "\n";
         if (mysql_query(pConn, sQuery.c_str())) {
-            Log::err(TAG, "Error select (updateScoreboard - numberOfDefenceFlagForService): " + std::string(mysql_error(pConn)));
+            Log::err(TAG, "Error select (isAlreadyStole): " + std::string(mysql_error(pConn)));
         } else {
             MYSQL_RES *pRes = mysql_use_result(pConn);
             MYSQL_ROW row;
@@ -984,3 +984,32 @@ bool MySqlStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) 
 }
 
 // ----------------------------------------------------------------------
+
+bool MySqlStorage::isSomebodyStole(const Flag &flag) {
+    MYSQL *pConn = getDatabaseConnection();
+    
+    int nRet = 0;
+    {
+        std::string sQuery = 
+            "SELECT COUNT(*) as cnt FROM flags_stolen "
+            " WHERE serviceid = '" + flag.serviceId() + "' "
+            "   AND teamid = '" + flag.teamId() + "'"
+            "   AND flag_id = '" + flag.id() + "'"
+            "   AND flag = '" + flag.value() + "'"
+        ;
+
+        // std::cout << sQuery << "\n";
+        if (mysql_query(pConn, sQuery.c_str())) {
+            Log::err(TAG, "Error select (isSomebodyStole): " + std::string(mysql_error(pConn)));
+        } else {
+            MYSQL_RES *pRes = mysql_use_result(pConn);
+            MYSQL_ROW row;
+            // output table name
+            while ((row = mysql_fetch_row(pRes)) != NULL) {
+                nRet += std::stoi(std::string(row[0]));
+            }
+            mysql_free_result(pRes);
+        }
+    }
+    return nRet > 0;
+}

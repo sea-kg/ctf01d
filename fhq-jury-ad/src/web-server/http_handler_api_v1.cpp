@@ -102,6 +102,15 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             return true;
         }
 
+        if (m_pConfig->gameHasCoffeeBreak() 
+            && nCurrentTimeSec > m_pConfig->gameCoffeeBreakStartUTCInSec()
+            && nCurrentTimeSec < m_pConfig->gameCoffeeBreakEndUTCInSec()
+        ) {
+            response.badRequest().sendText("Error(-8): Game on coffeebreak now");
+            Log::warn(TAG, "Error(-8): Game on coffeebreak now");
+            return true;
+        }
+
         if (nCurrentTimeSec > m_pConfig->gameEndUTCInSec()) {
             response.badRequest().sendText("Error(-9): Game already ended");
             Log::warn(TAG, "Error(-9): Game already ended");

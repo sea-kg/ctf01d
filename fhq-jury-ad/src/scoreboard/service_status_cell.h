@@ -45,7 +45,7 @@ class ServiceStatusCell {
         void setStatus(const std::string &sStatus);
         std::string status();
 
-        double calculateScore();
+        double calculateScore(); // TODO remove
 
     private:
         std::string TAG;
@@ -57,12 +57,13 @@ class ServiceStatusCell {
         int m_nAttackFlags;
         int m_nAttackPoints;
         int m_nDefencePoints;
+        int m_nUpPointTimeInSec;
 
         // for SLA / uptime
-        double m_nUptime;
-        int m_nGameStartInSec;
-        int m_nGameEndInSec;
-        int m_nFlagsPutted;
+        double m_nUptime; // TODO remove
+        int m_nGameStartInSec; // TODO remove
+        int m_nGameEndInSec; // TODO remove
+        int m_nFlagsPutted; // TODO remove
 };
 
 #endif // SERVICE_STATUS_CELL_H

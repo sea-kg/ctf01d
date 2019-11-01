@@ -15,6 +15,7 @@ std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
 
 ServiceStatusCell::ServiceStatusCell(const Service &serviceConf, int nGameStartInSec, int nGameEndInSec) {
     m_serviceConf = serviceConf;
+    m_nUpPointTimeInSec = TS::currentTime_seconds();
     TAG = "ServiceStatusCell-" + serviceConf.id();
     m_sServiceId = serviceConf.id();
     m_nGameStartInSec = nGameStartInSec;
@@ -160,14 +161,28 @@ int ServiceStatusCell::flagsPutted() {
 /*
 double ServiceStatusCell::uptime() {
     return m_nUptime;
+}*/
+
+// ----------------------------------------------------------------------
+
+int ServiceStatusCell::getUptimeInSec() {
+     return TS::currentTime_seconds() - m_nUpPointTimeInSec;
 }
-*/
+
+// ----------------------------------------------------------------------
+
+void ServiceStatusCell::setUpPointTime(int nUpPointTimeInSec) {
+    m_nUpPointTimeInSec = nUpPointTimeInSec;
+}
 
 // ----------------------------------------------------------------------
 
 void ServiceStatusCell::setStatus(const std::string &sStatus) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_sStatus = sStatus;
+    if (sStatus != ServiceStatusCell::SERVICE_UP) {
+        m_nUpPointTimeInSec = TS::currentTime_seconds();
+    }
 }
 
 // ----------------------------------------------------------------------

@@ -217,7 +217,7 @@ void ServiceCheckerThread::run() {
                 } else {
                     // service is up
                     // TODO: only if last time (== flag time live) was up
-                    if (!m_pConfig->storage()->isSomebodyStole()) {
+                    if (!m_pConfig->storage()->isSomebodyStole(outdatedFlag)) {
                         m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag);
                     }
                 }

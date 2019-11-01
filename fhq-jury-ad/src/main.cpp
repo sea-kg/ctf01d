@@ -190,7 +190,7 @@ int main(int argc, char* argv[]) {
         g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
         g_httpServer.setPort(pConfig->scoreboardPort());
-        g_httpServer.setMaxWorkers(4);
+        g_httpServer.setMaxWorkers(10);
         g_httpServer.startSync(); // will be block thread
 
         // TODO: stop all threads

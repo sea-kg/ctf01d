@@ -1,0 +1,56 @@
+wsjcpp_version: v0.0.1
+cmake_cxx_standard: 11
+cmake_minimum_required: 3.0
+
+name: wsjcpp-core
+version: v0.0.5
+description: Basic Utils for wsjcpp
+issues: https://github.com/wsjcpp/wsjcpp-core/issues
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-core"
+keywords:
+  - c++
+  - wsjcpp
+
+authors:
+  - name: Evgenii Sopov
+    email: mrseakg@gmail.com
+
+required-libraries:
+  - pthread
+
+distribution:
+  - source-file: src/wsjcpp_core.cpp
+    target-file: wsjcpp_core.cpp
+    sha1: "d892bfee196af88dcada57b39bc6bd65ce2ce075"
+    type: "source-code"
+  - source-file: src/wsjcpp_core.h
+    target-file: wsjcpp_core.h
+    sha1: "8f5e7b7ada06814ed123a08e49acffe2e12d398a"
+    type: "source-code" # todo must be header-file
+  - source-file: "src/wsjcpp_unit_tests.cpp"
+    target-file: "wsjcpp_unit_tests.cpp"
+    type: "unit-tests"
+    sha1: "4208e039ec2923636655b3ada79ec223cca7bae2"
+  - source-file: "src/wsjcpp_unit_tests.h"
+    target-file: "wsjcpp_unit_tests.h"
+    type: "unit-tests"
+    sha1: "8d2ec886f23161a639bb2419bb5e4af48278f18b"
+  - source-file: "src/wsjcpp_unit_tests_main.cpp"
+    target-file: "wsjcpp_unit_tests_main.cpp"
+    type: "unit-tests"
+    sha1: "2c02fb58f51687eeac2076096b7df698cc246c9d"
+
+unit-tests:
+  cases:
+    - name: CoreNormalizePath
+      description: Check function normalizePath
+    - name: CoreUuid
+      description: Check test generate uuid function
+    - name: CoreExtractFilename
+      description: Check function extract filenane from path
+    - name: "ToUpper"
+      description: "String to upper"
+    - name: "CreateUuid"
+      description: "Test generation uuids"

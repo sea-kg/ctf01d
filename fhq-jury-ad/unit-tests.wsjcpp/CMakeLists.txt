@@ -52,6 +52,11 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/HowardHinnant_date/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/HowardHinnant_date/date.h")
 
+# wsjcpp-yaml:v0.1.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
 # fhq-jury-ad:v0.3.1
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 

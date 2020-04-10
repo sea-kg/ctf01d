@@ -20,9 +20,6 @@ class ConfFileParser {
         bool fileExists(const std::string &sFilename);
         void string_trim(std::string &sLine);
         std::map<std::string,std::string> m_mapConfigValues;
-
-        
-
 };
 
 #endif // CONF_FILE_PARSER_H

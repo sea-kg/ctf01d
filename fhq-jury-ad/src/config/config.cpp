@@ -215,8 +215,6 @@ bool Config::applyScoreboardConf() {
     if (m_sScoreboardHtmlFolder.length() > 0) {
         if (m_sScoreboardHtmlFolder[0] != '/') {
             m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + m_sScoreboardHtmlFolder;
-        } else {
-            m_sScoreboardHtmlFolder = m_sScoreboardHtmlFolder;
         }
     } else {
         m_sScoreboardHtmlFolder = m_sWorkspaceDir + "/html";
@@ -371,7 +369,7 @@ bool Config::applyConfig(){
 
     if (m_pStorage == NULL) {
         Log::err(TAG, "server/use_storage: '" + m_sUseStorage + "' is unknown type of storage");
-		return false;
+        return false;
     }
     
     // scoreboard

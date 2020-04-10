@@ -48,6 +48,10 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
+# HowardHinnant/date:v2.4.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/HowardHinnant_date/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/HowardHinnant_date/date.h")
+
 # fhq-jury-ad:v0.3.1
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 

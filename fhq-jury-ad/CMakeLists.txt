@@ -28,11 +28,6 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server/core")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/3rd_party/HowardHinnant/date")
-
-
-# HowardHinnant/date
-list (APPEND WSJCPP_SOURCES "src/3rd_party/HowardHinnant/date/date.h")
 
 # core
 list (APPEND WSJCPP_SOURCES "src/core/fallen.h")

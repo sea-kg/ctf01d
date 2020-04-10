@@ -2,18 +2,18 @@
 
 #include <html_images_first_blood_svg.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_first_blood_svg)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_first_blood_svg)
 
-const std::string &RES_html_images_first_blood_svg::filename() {
+const std::string &RES_html_images_first_blood_svg::getFilename() {
     static const std::string s = "html/images/first-blood.svg";
     return s;
 }
 
-const int RES_html_images_first_blood_svg::bufferSize() {
+const int RES_html_images_first_blood_svg::getBufferSize() {
     return 3799;
 }
 
-const char *RES_html_images_first_blood_svg::buffer() {
+const char *RES_html_images_first_blood_svg::getBuffer() {
     static const std::string sRet =  // size: 3799
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"

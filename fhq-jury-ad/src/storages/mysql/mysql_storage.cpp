@@ -2,7 +2,6 @@
 #include <utils_logger.h>
 #include <mysql/mysql.h>
 #include <conf_file_parser.h>
-#include <fs.h>
 #include <wsjcpp_core.h>
 
 REGISTRY_STORAGE(MySqlStorage)
@@ -27,7 +26,7 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile,
             std::vector<Service> &vServicesConf) {
     Log::info(TAG, "Reading config: " + sConfigFile);
     
-    if (!FS::fileExists(sConfigFile)) {
+    if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }

@@ -2,18 +2,18 @@
 
 #include <html_favicon_ico.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_favicon_ico)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_favicon_ico)
 
-const std::string &RES_html_favicon_ico::filename() {
+const std::string &RES_html_favicon_ico::getFilename() {
     static const std::string s = "html/favicon.ico";
     return s;
 }
 
-const int RES_html_favicon_ico::bufferSize() {
+const int RES_html_favicon_ico::getBufferSize() {
     return 16958;
 }
 
-const char *RES_html_favicon_ico::buffer() {
+const char *RES_html_favicon_ico::getBuffer() {
     static const unsigned char b[16958] = {
         0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x40, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x28, 0x42, 
         0x00, 0x00, 0x16, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x80, 0x00, 

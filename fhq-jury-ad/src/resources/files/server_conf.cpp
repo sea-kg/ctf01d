@@ -2,18 +2,18 @@
 
 #include <server_conf.h>
 
-REGISTRY_RESOURCE_FILE(RES_server_conf)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_server_conf)
 
-const std::string &RES_server_conf::filename() {
+const std::string &RES_server_conf::getFilename() {
     static const std::string s = "server.conf";
     return s;
 }
 
-const int RES_server_conf::bufferSize() {
+const int RES_server_conf::getBufferSize() {
     return 240;
 }
 
-const char *RES_server_conf::buffer() {
+const char *RES_server_conf::getBuffer() {
     static const std::string sRet =  // size: 240
         "# use storage which storage will be used, now possible values:\n"
         "# mysql - will be used mysql database\n"

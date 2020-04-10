@@ -2,18 +2,18 @@
 
 #include <html_images_states_wait_svg.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_states_wait_svg)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_states_wait_svg)
 
-const std::string &RES_html_images_states_wait_svg::filename() {
+const std::string &RES_html_images_states_wait_svg::getFilename() {
     static const std::string s = "html/images/states/wait.svg";
     return s;
 }
 
-const int RES_html_images_states_wait_svg::bufferSize() {
+const int RES_html_images_states_wait_svg::getBufferSize() {
     return 10930;
 }
 
-const char *RES_html_images_states_wait_svg::buffer() {
+const char *RES_html_images_states_wait_svg::getBuffer() {
     static const std::string sRet =  // size: 10930
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         "<svg\n"

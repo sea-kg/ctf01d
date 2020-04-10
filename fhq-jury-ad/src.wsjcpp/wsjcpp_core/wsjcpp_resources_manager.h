@@ -1,5 +1,5 @@
-#ifndef RESOURCES_MANAGER_H
-#define RESOURCES_MANAGER_H
+#ifndef WSJCPP_RESOURCES_MANAGER_H
+#define WSJCPP_RESOURCES_MANAGER_H
 
 #include <string>
 #include <stdio.h>
@@ -33,4 +33,4 @@ class WsjcppResourcesManager {
 #define REGISTRY_WSJCPP_RESOURCE_FILE( classname ) \
     static classname * pRegistryWsjcppResourceFile ## classname = new classname(); \
 
-#endif // RESOURCES_MANAGER_H
+#endif // WSJCPP_RESOURCES_MANAGER_H

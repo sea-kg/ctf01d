@@ -2,18 +2,18 @@
 
 #include <html_images_states_coffeebreak_svg.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_states_coffeebreak_svg)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_states_coffeebreak_svg)
 
-const std::string &RES_html_images_states_coffeebreak_svg::filename() {
+const std::string &RES_html_images_states_coffeebreak_svg::getFilename() {
     static const std::string s = "html/images/states/coffeebreak.svg";
     return s;
 }
 
-const int RES_html_images_states_coffeebreak_svg::bufferSize() {
+const int RES_html_images_states_coffeebreak_svg::getBufferSize() {
     return 16698;
 }
 
-const char *RES_html_images_states_coffeebreak_svg::buffer() {
+const char *RES_html_images_states_coffeebreak_svg::getBuffer() {
     static const std::string sRet =  // size: 16698
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"

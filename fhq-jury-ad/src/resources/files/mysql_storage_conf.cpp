@@ -2,18 +2,18 @@
 
 #include <mysql_storage_conf.h>
 
-REGISTRY_RESOURCE_FILE(RES_mysql_storage_conf)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_mysql_storage_conf)
 
-const std::string &RES_mysql_storage_conf::filename() {
+const std::string &RES_mysql_storage_conf::getFilename() {
     static const std::string s = "mysql_storage.conf";
     return s;
 }
 
-const int RES_mysql_storage_conf::bufferSize() {
+const int RES_mysql_storage_conf::getBufferSize() {
     return 194;
 }
 
-const char *RES_mysql_storage_conf::buffer() {
+const char *RES_mysql_storage_conf::getBuffer() {
     static const std::string sRet =  // size: 194
         "\n"
         "# if server.use_storage is mysql\n"

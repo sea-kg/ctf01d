@@ -2,18 +2,18 @@
 
 #include <scoreboard_conf.h>
 
-REGISTRY_RESOURCE_FILE(RES_scoreboard_conf)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_scoreboard_conf)
 
-const std::string &RES_scoreboard_conf::filename() {
+const std::string &RES_scoreboard_conf::getFilename() {
     static const std::string s = "scoreboard.conf";
     return s;
 }
 
-const int RES_scoreboard_conf::bufferSize() {
+const int RES_scoreboard_conf::getBufferSize() {
     return 204;
 }
 
-const char *RES_scoreboard_conf::buffer() {
+const char *RES_scoreboard_conf::getBuffer() {
     static const std::string sRet =  // size: 204
         "\n"
         "# http port for scoreboard\n"

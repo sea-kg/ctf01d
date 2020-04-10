@@ -2,18 +2,18 @@
 
 #include <html_images_attack_svg.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_attack_svg)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_attack_svg)
 
-const std::string &RES_html_images_attack_svg::filename() {
+const std::string &RES_html_images_attack_svg::getFilename() {
     static const std::string s = "html/images/attack.svg";
     return s;
 }
 
-const int RES_html_images_attack_svg::bufferSize() {
+const int RES_html_images_attack_svg::getBufferSize() {
     return 2887;
 }
 
-const char *RES_html_images_attack_svg::buffer() {
+const char *RES_html_images_attack_svg::getBuffer() {
     static const std::string sRet =  // size: 2887
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"

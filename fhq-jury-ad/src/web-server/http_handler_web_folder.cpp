@@ -1,8 +1,7 @@
 #include "http_handler_web_folder.h"
 #include <utils_logger.h>
-#include <fs.h>
-#include <fallen.h>
-#include <resources_manager.h>
+// #include <resources_manager.h>
+#include <wsjcpp_resources_manager.h>
 #include <wsjcpp_light_web_server.h>
 #include <wsjcpp_core.h>
 
@@ -41,7 +40,7 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWe
         // check in resources
         std::string sResPath = "html" + sRequestPath;
         // Log::warn(_tag, "Response Resources " + sResPath);
-        return ResourcesManager::has(sResPath);
+        return WsjcppResourcesManager::has(sResPath);
     }
 
     return true;
@@ -66,10 +65,10 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, WsjcppLightWebHt
 
     if (!WsjcppCore::fileExists(sFilePath)) {
         std::string sResPath = "html" + sRequestPath;
-        if (ResourcesManager::has(sResPath)) {
+        if (WsjcppResourcesManager::has(sResPath)) {
             // Log::warn(_tag, "Response Resources " + sResPath);
-            ResourceFile *pFile = ResourcesManager::get(sResPath);
-            response.cacheSec(60).ok().sendBuffer(sResPath, pFile->buffer(), pFile->bufferSize());
+            WsjcppResourceFile *pFile = WsjcppResourcesManager::get(sResPath);
+            response.cacheSec(60).ok().sendBuffer(sResPath, pFile->getBuffer(), pFile->getBufferSize());
             return true;
         }
         return false;

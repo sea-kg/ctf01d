@@ -2,18 +2,18 @@
 
 #include <game_conf.h>
 
-REGISTRY_RESOURCE_FILE(RES_game_conf)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_game_conf)
 
-const std::string &RES_game_conf::filename() {
+const std::string &RES_game_conf::getFilename() {
     static const std::string s = "game.conf";
     return s;
 }
 
-const int RES_game_conf::bufferSize() {
+const int RES_game_conf::getBufferSize() {
     return 738;
 }
 
-const char *RES_game_conf::buffer() {
+const char *RES_game_conf::getBuffer() {
     static const std::string sRet =  // size: 738
         "# uniq gameid must be regexp [a-z0-9]+\n"
         "game.id = test\n"

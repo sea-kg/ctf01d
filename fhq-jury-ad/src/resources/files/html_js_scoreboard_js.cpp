@@ -2,18 +2,18 @@
 
 #include <html_js_scoreboard_js.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_js_scoreboard_js)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_js_scoreboard_js)
 
-const std::string &RES_html_js_scoreboard_js::filename() {
+const std::string &RES_html_js_scoreboard_js::getFilename() {
     static const std::string s = "html/js/scoreboard.js";
     return s;
 }
 
-const int RES_html_js_scoreboard_js::bufferSize() {
+const int RES_html_js_scoreboard_js::getBufferSize() {
     return 11353;
 }
 
-const char *RES_html_js_scoreboard_js::buffer() {
+const char *RES_html_js_scoreboard_js::getBuffer() {
     static const std::string sRet =  // size: 11353
         "\n"
         "// post request to server Async\n"

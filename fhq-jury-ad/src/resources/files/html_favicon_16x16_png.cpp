@@ -2,18 +2,18 @@
 
 #include <html_favicon_16x16_png.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_favicon_16x16_png)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_favicon_16x16_png)
 
-const std::string &RES_html_favicon_16x16_png::filename() {
+const std::string &RES_html_favicon_16x16_png::getFilename() {
     static const std::string s = "html/favicon-16x16.png";
     return s;
 }
 
-const int RES_html_favicon_16x16_png::bufferSize() {
+const int RES_html_favicon_16x16_png::getBufferSize() {
     return 749;
 }
 
-const char *RES_html_favicon_16x16_png::buffer() {
+const char *RES_html_favicon_16x16_png::getBuffer() {
     static const unsigned char b[749] = {
         0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, 
         0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 

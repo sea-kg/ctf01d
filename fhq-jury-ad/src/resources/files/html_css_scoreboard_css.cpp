@@ -2,18 +2,18 @@
 
 #include <html_css_scoreboard_css.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_css_scoreboard_css)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_css_scoreboard_css)
 
-const std::string &RES_html_css_scoreboard_css::filename() {
+const std::string &RES_html_css_scoreboard_css::getFilename() {
     static const std::string s = "html/css/scoreboard.css";
     return s;
 }
 
-const int RES_html_css_scoreboard_css::bufferSize() {
+const int RES_html_css_scoreboard_css::getBufferSize() {
     return 6644;
 }
 
-const char *RES_html_css_scoreboard_css::buffer() {
+const char *RES_html_css_scoreboard_css::getBuffer() {
     static const std::string sRet =  // size: 6644
         "body{\n"
         "    background-color: #000;\n"

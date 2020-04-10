@@ -9,8 +9,6 @@
 #include <sstream>
 #include <conf_file_parser.h>
 #include <read_teams_conf.h>
-#include <fs.h>
-#include <fallen.h>
 #include <wsjcpp_core.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
@@ -39,7 +37,7 @@ bool Config::applyGameConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/game.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!FS::fileExists(sConfigFile)) {
+    if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
@@ -156,7 +154,7 @@ bool Config::applyServerConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/server.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!FS::fileExists(sConfigFile)) {
+    if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
@@ -192,7 +190,7 @@ bool Config::applyScoreboardConf() {
     std::string sConfigFile = m_sWorkspaceDir + "/scoreboard.conf";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
-    if (!FS::fileExists(sConfigFile)) {
+    if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
@@ -227,7 +225,7 @@ bool Config::applyScoreboardConf() {
 
     Log::info(TAG, "scoreboard.htmlfolder: " + m_sScoreboardHtmlFolder);
 
-    if (!FS::dirExists(m_sScoreboardHtmlFolder)) {
+    if (!WsjcppCore::dirExists(m_sScoreboardHtmlFolder)) {
         Log::err(TAG, "Directory '" + m_sScoreboardHtmlFolder + "' with scorebord does not exists");
         return false;
     }
@@ -239,13 +237,13 @@ bool Config::applyScoreboardConf() {
 
 bool Config::applyCheckersConf() {
     std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
-    if (!FS::dirExists(sRootCheckersDir)) {
+    if (!WsjcppCore::dirExists(sRootCheckersDir)) {
         Log::err(TAG, "Directory " + sRootCheckersDir + " not exists");
         return false;
     }
     Log::info(TAG, "Search service.conf");
 
-    std::vector<std::string> vListOfCheckers = FS::listOfDirs(sRootCheckersDir);
+    std::vector<std::string> vListOfCheckers = WsjcppCore::listOfDirs(sRootCheckersDir);
     if (vListOfCheckers.size() == 0) {
         Log::err(TAG, "Folders with services does not found in " + sRootCheckersDir);
         return false;
@@ -255,7 +253,7 @@ bool Config::applyCheckersConf() {
         std::string sServiceId = vListOfCheckers[i];
         std::string sServiceConfPath =  sRootCheckersDir + sServiceId + "/service.conf";
         Log::info(TAG, "Reading " + sServiceConfPath);
-        if (!FS::fileExists(sServiceConfPath)) {
+        if (!WsjcppCore::fileExists(sServiceConfPath)) {
             Log::err(TAG, "File " + sServiceConfPath + " not exists");
             return false;
         }
@@ -279,7 +277,7 @@ bool Config::applyCheckersConf() {
         Log::info(TAG, sPrefix + "script_path = " + sServiceScriptPath);
         std::string sServiceScriptDir = m_sWorkspaceDir + "/checkers/" + sServiceId + "/";
         Log::info(TAG, "sServiceScriptDir: " + sServiceScriptDir);
-        if (!FS::fileExists(sServiceScriptDir + sServiceScriptPath)) {
+        if (!WsjcppCore::fileExists(sServiceScriptDir + sServiceScriptPath)) {
             Log::err(TAG, "File " + sServiceScriptPath + " did not exists");
             return false;
         }

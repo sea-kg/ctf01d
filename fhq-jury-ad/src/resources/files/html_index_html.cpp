@@ -2,18 +2,18 @@
 
 #include <html_index_html.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_index_html)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_index_html)
 
-const std::string &RES_html_index_html::filename() {
+const std::string &RES_html_index_html::getFilename() {
     static const std::string s = "html/index.html";
     return s;
 }
 
-const int RES_html_index_html::bufferSize() {
+const int RES_html_index_html::getBufferSize() {
     return 3585;
 }
 
-const char *RES_html_index_html::buffer() {
+const char *RES_html_index_html::getBuffer() {
     static const std::string sRet =  // size: 3585
         "<html>\n"
         "<head>\n"

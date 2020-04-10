@@ -23,8 +23,6 @@
 #include <storages.h>
 #include <unistd.h>
 #include <limits.h>
-#include <fs.h>
-#include <fallen.h>
 #include <resources_manager.h>
 #include <wsjcpp_core.h>
 
@@ -111,7 +109,7 @@ int main(int argc, char* argv[]) {
         }
     }*/
 
-    if (!FS::dirExists(sWorkspace)) {
+    if (!WsjcppCore::dirExists(sWorkspace)) {
         std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
         return -1;
     }
@@ -125,7 +123,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::string sLogDir = sWorkspace + "/logs";
-    if (!FS::dirExists(sLogDir)) {
+    if (!WsjcppCore::dirExists(sLogDir)) {
         std::cout << "Error: Folder " << sLogDir << " does not exists \n";
         return -1;
     }

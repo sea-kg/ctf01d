@@ -2,18 +2,18 @@
 
 #include <html_images_states_up_svg.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_states_up_svg)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_states_up_svg)
 
-const std::string &RES_html_images_states_up_svg::filename() {
+const std::string &RES_html_images_states_up_svg::getFilename() {
     static const std::string s = "html/images/states/up.svg";
     return s;
 }
 
-const int RES_html_images_states_up_svg::bufferSize() {
+const int RES_html_images_states_up_svg::getBufferSize() {
     return 2647;
 }
 
-const char *RES_html_images_states_up_svg::buffer() {
+const char *RES_html_images_states_up_svg::getBuffer() {
     static const std::string sRet =  // size: 2647
         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
         "<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->\n"

@@ -2,18 +2,18 @@
 
 #include <html_images_logo_png.h>
 
-REGISTRY_RESOURCE_FILE(RES_html_images_logo_png)
+REGISTRY_WSJCPP_RESOURCE_FILE(RES_html_images_logo_png)
 
-const std::string &RES_html_images_logo_png::filename() {
+const std::string &RES_html_images_logo_png::getFilename() {
     static const std::string s = "html/images/logo.png";
     return s;
 }
 
-const int RES_html_images_logo_png::bufferSize() {
+const int RES_html_images_logo_png::getBufferSize() {
     return 22909;
 }
 
-const char *RES_html_images_logo_png::buffer() {
+const char *RES_html_images_logo_png::getBuffer() {
     static const unsigned char b[22909] = {
         0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, 
         0x00, 0x00, 0x01, 0xa6, 0x00, 0x00, 0x01, 0xa6, 0x08, 0x06, 0x00, 0x00, 0x00, 0x37, 0x71, 0x20, 

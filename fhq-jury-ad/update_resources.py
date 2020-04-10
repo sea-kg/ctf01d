@@ -21,6 +21,10 @@ files_html = [os.path.join(dp, f) for dp, dn, filenames in os.walk(basedir + "ht
 
 files = files + files_html
 files.append(basedir + "config.yml")
+files.append(basedir + "checker_example_service1/checker.py")
+files.append(basedir + "checker_example_service2/checker.py")
+files.append(basedir + "checker_example_service3/checker.py")
+files.append(basedir + "checker_example_service4/checker.py")
 
 file_ext_like_text_resources = []
 file_ext_like_text_resources.append(".svg")

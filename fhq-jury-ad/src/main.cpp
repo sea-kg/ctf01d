@@ -92,13 +92,24 @@ int main(int argc, char* argv[]) {
         sWorkspace = helpParseArgs.option("--workspace-dir");
         sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
         sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
-        if (!WsjcppCore::dirExists(sWorkspace)) {
-            WsjcppLog::err(TAG, "Directory " + sWorkspace + " does not exists");
-            return -1;
-        }
-        // TODO check directory existing and apply dir
     }
     
+    // create default folders and files
+    if (helpParseArgs.has("--extract-files")) {
+        if (!WsjcppCore::dirExists(sWorkspace)) {
+            WsjcppCore::makeDir(sWorkspace);
+        }
+        if (!ResourcesManager::make(sWorkspace)) {
+            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
+            return -1;
+        }
+    }
+
+    if (!WsjcppCore::dirExists(sWorkspace)) {
+        WsjcppLog::err(TAG, "Directory " + sWorkspace + " does not exists");
+        return -1;
+    }
+
     /*if (sWorkspace.length() > 0) {
         if (sWorkspace[0] != '/') { // linux
             char cwd[PATH_MAX];
@@ -110,19 +121,6 @@ int main(int argc, char* argv[]) {
             }
         }
     }*/
-
-    if (!WsjcppCore::dirExists(sWorkspace)) {
-        std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
-        return -1;
-    }
-
-    // create default folders and files
-    if (helpParseArgs.has("--extract-files")) {
-        if (!ResourcesManager::make(sWorkspace)) {
-            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
-            return -1;
-        }
-    }
 
     std::string sLogDir = sWorkspace + "/logs";
     if (!WsjcppCore::dirExists(sLogDir)) {

@@ -107,6 +107,14 @@ list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.h")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.cpp")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.h")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service1_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service1_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service2_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service2_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service3_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service3_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service4_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service4_checker_py.cpp")
 
 #[end-list-of-resources]
 

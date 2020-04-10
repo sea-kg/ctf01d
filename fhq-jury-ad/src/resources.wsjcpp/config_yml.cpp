@@ -10,11 +10,11 @@ const std::string &RES_config_yml::getFilename() {
 }
 
 const int RES_config_yml::getBufferSize() {
-    return 1735;
+    return 2721;
 }
 
 const char *RES_config_yml::getBuffer() {
-    static const std::string sRet =  // size: 1735
+    static const std::string sRet =  // size: 2721
         "## Combined config for fhq-jury-ad\n"
         "# use 2 spaces for tab\n"
         "\n"
@@ -48,17 +48,45 @@ const char *RES_config_yml::getBuffer() {
         "  dbuser: \"fhqjuryad\"\n"
         "  dbpass: \"fhqjuryad\"\n"
         "\n"
+        "checkers:\n"
+        "  - id: \"example_service1\" # work directory will be checker_example_service4\n"
+        "    service_name: \"Service1\"\n"
+        "    enabled: yes\n"
+        "    script_path: \"./checker.py\"\n"
+        "    script_wait_in_sec: 5 # max time for running script\n"
+        "    time_sleep_between_run_scripts_in_sec: 15 # like a round for service\n"
+        "  - id: \"example_service2\" # work directory will be checker_example_service4\n"
+        "    service_name: \"Service2\"\n"
+        "    enabled: yes\n"
+        "    script_path: \"./checker.py\"\n"
+        "    script_wait_in_sec: 5\n"
+        "    time_sleep_between_run_scripts_in_sec: 15\n"
+        "  - id: \"example_service3\" # work directory will be checker_example_service4\n"
+        "    service_name: \"Service3\"\n"
+        "    enabled: yes\n"
+        "    script_path: \"./checker.py\"\n"
+        "    script_wait_in_sec: 5\n"
+        "    time_sleep_between_run_scripts_in_sec: 15\n"
+        "  - id: \"example_service4\" # work directory will be checker_example_service4\n"
+        "    service_name: \"Service4\"\n"
+        "    enabled: yes\n"
+        "    script_path: \"./checker.py\"\n"
+        "    script_wait_in_sec: 5\n"
+        "    time_sleep_between_run_scripts_in_sec: 15\n"
+        "\n"
         "teams:\n"
         "  - id: \"another_some\" # must be uniq\n"
         "    name: \"Another Some\"\n"
         "    active: yes\n"
-        "    logo: \"images/teams/unknown.svg\"\n"
+        "    logo: \"./html/images/teams/unknown.svg\"\n"
         "    ip_address: \"127.0.1.1\" # address to vulnserver\n"
         "  - id: \"so_some\" # must be uniq\n"
         "    name: \"So Some\"\n"
         "    active: yes\n"
-        "    logo: \"images/teams/unknown.svg\"\n"
+        "    logo: \"./html/images/logo.png\"\n"
         "    ip_address: \"127.0.0.1\" # address to vulnserver\n"
+        "\n"
+        "    \n"
     ;
     return sRet.c_str();
 } //::buffer() 

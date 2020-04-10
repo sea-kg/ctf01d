@@ -219,6 +219,11 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
         std::string sServiceScriptPath = yamlChecker["script_path"].getValue();
         WsjcppLog::info(TAG, "script_path = " + sServiceScriptPath);
         std::string sServiceScriptDir = m_sWorkspaceDir + "/checker_" + sServiceId + "/";
+        if (!WsjcppCore::dirExists(sServiceScriptDir)) {
+            WsjcppLog::err(TAG, "Folder " + sServiceScriptDir + " did not exists");
+            return false;
+        }
+
         WsjcppLog::info(TAG, "sServiceScriptDir: " + sServiceScriptDir);
         if (!WsjcppCore::fileExists(sServiceScriptDir + sServiceScriptPath)) {
             WsjcppLog::err(TAG, "File " + sServiceScriptPath + " did not exists");

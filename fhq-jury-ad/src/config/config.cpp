@@ -8,6 +8,7 @@
 #include <sstream>
 #include <wsjcpp_core.h>
 #include <wsjcpp_yaml.h>
+#include <wsjcpp_validators.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
     TAG = "Config";
@@ -301,7 +302,11 @@ bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
 
         std::string sTeamIpAddress = yamlTeam["ip_address"].getValue();
         WsjcppLog::info(TAG, "ip_address = " + sTeamIpAddress);
-        // TODO check the ip format
+        std::string sError;
+        if (!WsjcppValidators::isValidIPv4(sTeamIpAddress, sError)) {
+            WsjcppLog::err(TAG, "Invalid IPv4 address" + sError);
+            return false;
+        }
 
         std::string sTeamLogo = yamlTeam["logo"].getValue();
         WsjcppLog::info(TAG, "logo = " + sTeamLogo);

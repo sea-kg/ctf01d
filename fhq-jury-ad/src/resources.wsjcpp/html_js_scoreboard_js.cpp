@@ -266,7 +266,7 @@ const char *RES_html_js_scoreboard_js::getBuffer() {
         "        + \"     | <div class='d-icn att' id='\" + serviceId + \"-all-flags-att'>0</div>\"\n"
         "        + \"</div>\"\n"
         "        + \"<div>\"\n"
-        "        + \"    <div class='first-blood' id='\" + serviceId + \"-first-blood'>???</div>\"\n"
+        "        + \"    <div class='first-blood' id='\" + serviceId + \"-first-blood'>-</div>\"\n"
         "        + \"</div>\"\n"
         "        + \"</div>\";\n"
         "    }\n"

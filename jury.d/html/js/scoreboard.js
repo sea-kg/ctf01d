@@ -249,7 +249,7 @@ getAjax('/api/v1/game', function(err, resp){
         + "     | <div class='d-icn att' id='" + serviceId + "-all-flags-att'>0</div>"
         + "</div>"
         + "<div>"
-        + "    <div class='first-blood' id='" + serviceId + "-first-blood'>???</div>"
+        + "    <div class='first-blood' id='" + serviceId + "-first-blood'>-</div>"
         + "</div>"
         + "</div>";
     }

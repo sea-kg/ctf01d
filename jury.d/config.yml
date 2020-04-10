@@ -33,25 +33,25 @@ mysql_storage: # if server.use_storage is mysql
 
 checkers:
   - id: "example_service1" # work directory will be checker_example_service4
-    name: "Service1"
+    service_name: "Service1"
     enabled: yes
     script_path: "./checker.py"
     script_wait_in_sec: 5 # max time for running script
     time_sleep_between_run_scripts_in_sec: 15 # like a round for service
   - id: "example_service2" # work directory will be checker_example_service4
-    name: "Service2"
+    service_name: "Service2"
     enabled: yes
     script_path: "./checker.py"
     script_wait_in_sec: 5
     time_sleep_between_run_scripts_in_sec: 15
   - id: "example_service3" # work directory will be checker_example_service4
-    name: "Service3"
+    service_name: "Service3"
     enabled: yes
     script_path: "./checker.py"
     script_wait_in_sec: 5
     time_sleep_between_run_scripts_in_sec: 15
   - id: "example_service4" # work directory will be checker_example_service4
-    name: "Service4"
+    service_name: "Service4"
     enabled: yes
     script_path: "./checker.py"
     script_wait_in_sec: 5
@@ -66,7 +66,7 @@ teams:
   - id: "so_some" # must be uniq
     name: "So Some"
     active: yes
-    logo: "images/teams/unknown.svg"
+    logo: "images/teams/unknown1.svg"
     ip_address: "127.0.0.1" # address to vulnserver
 
     

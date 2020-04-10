@@ -210,8 +210,8 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
         
         // std::string sServiceConfPath = m_sWorkspaceDir + "/checker_" + sServiceId + "/service.conf";
        
-        std::string sServiceName = yamlChecker["name"].getValue();
-        WsjcppLog::info(TAG, "name = " + sServiceName);
+        std::string sServiceName = yamlChecker["service_name"].getValue();
+        WsjcppLog::info(TAG, "service_name = " + sServiceName);
 
         bool bServiceEnable = yamlChecker["enabled"].getValue() == "yes";
         WsjcppLog::info(TAG, "enabled = " + std::string(bServiceEnable ? "yes" : "no"));

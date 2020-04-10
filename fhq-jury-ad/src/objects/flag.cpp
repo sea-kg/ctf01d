@@ -1,7 +1,7 @@
 #include "flag.h"
 #include <iostream>
 #include <cstring>
-#include <ts.h>
+#include <wsjcpp_core.h>
 
 Flag::Flag() {
     
@@ -14,7 +14,7 @@ void Flag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId
     generateValue();
 
     // __int64
-    long nTimeStart = TS::currentTime_milliseconds();
+    long nTimeStart = WsjcppCore::currentTime_milliseconds();
     // std::cout << "nTimeStart: " << nTimeStart << "\n";
     long nTimeEnd = nTimeStart + nTimeFlagLifeInMin*60*1000;
     setTimeStart(nTimeStart);

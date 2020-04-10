@@ -1,60 +1,6 @@
-#include <resources_manager.h>
-#include <fs.h>
-
-// ---------------------------------------------------------------------
-
-ResourceFile::ResourceFile() {
-    ResourcesManager::add(this);
-}
-
-// ---------------------------------------------------------------------
-
-std::vector<ResourceFile*> *g_pListResourceFiles = nullptr;
-
-// ---------------------------------------------------------------------
-
-void ResourcesManager::initGlobalVariables() {
-    if (g_pListResourceFiles == nullptr) {
-        g_pListResourceFiles = new std::vector<ResourceFile*>();
-    }
-}
-
-// ---------------------------------------------------------------------
-
-void ResourcesManager::add(ResourceFile* pStorage) {
-    ResourcesManager::initGlobalVariables();
-    g_pListResourceFiles->push_back(pStorage);
-}
-
-// ---------------------------------------------------------------------
-
-bool ResourcesManager::has(const std::string &sFilename) {
-    ResourcesManager::initGlobalVariables();
-    for (int i = 0; i < ResourcesManager::list().size(); i++) {
-        if (ResourcesManager::list()[i]->filename() == sFilename) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
-ResourceFile* ResourcesManager::get(const std::string &sFilename) {
-    ResourcesManager::initGlobalVariables();
-    for (int i = 0; i < ResourcesManager::list().size(); i++) {
-        if (ResourcesManager::list()[i]->filename() == sFilename) {
-            return ResourcesManager::list()[i];
-        }
-    }
-    return nullptr;
-}
-
-// ---------------------------------------------------------------------
-
-const std::vector<ResourceFile*> &ResourcesManager::list() {
-    return *g_pListResourceFiles;
-}
+#include "resources_manager.h"
+#include <wsjcpp_core.h>
+#include <wsjcpp_resources_manager.h>
 
 // ---------------------------------------------------------------------
 
@@ -83,9 +29,9 @@ bool ResourcesManager::createFolders(const std::string &sWorkspace) {
     for(int i = 0; i < vCreateDirs.size(); i++) {
         std::string sPath = vCreateDirs[i];
         // check dir existing
-        if (!FS::dirExists(sPath)) {
+        if (!WsjcppCore::dirExists(sPath)) {
             // try make dir
-            if (!FS::makeDir(sPath)) {
+            if (!WsjcppCore::makeDir(sPath)) {
                 std::cout << "Could not create folder " << sPath << std::endl;
                 return false;
             } else {
@@ -100,11 +46,11 @@ bool ResourcesManager::createFolders(const std::string &sWorkspace) {
 
 bool ResourcesManager::extractFiles(const std::string &sWorkspace) {
     // TODO mkdir -p for files
-    const std::vector<ResourceFile*> list = ResourcesManager::list();
+    std::vector<WsjcppResourceFile*> list = WsjcppResourcesManager::list();
     for(int i = 0; i < list.size(); i++) {
-        std::string sFilename = sWorkspace + "/" + list[i]->filename();
-        if (!FS::fileExists(sFilename)) {
-            if (!FS::writeFile(sFilename, list[i]->buffer(), list[i]->bufferSize())) {
+        std::string sFilename = sWorkspace + "/" + list[i]->getFilename();
+        if (!WsjcppCore::fileExists(sFilename)) {
+            if (!WsjcppCore::writeFile(sFilename, list[i]->getBuffer(), list[i]->getBufferSize())) {
                 std::cout << "Could not write file " << sFilename << std::endl;
                 return false;
             } else {

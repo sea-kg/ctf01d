@@ -150,7 +150,7 @@ void HelpParseArgs::printHelp(){
     nMaxSize += 4;
 
     // TODO:
-    std::cout << "" << JURY_AD_APP_NAME << " " << JURY_AD_VERSION << "\n";
+    std::cout << "" << WSJCPP_NAME << " " << WSJCPP_VERSION << "\n";
     std::cout << "Usage: " << m_vArgs.at(0) << "   [PARAM]\n";
     for(unsigned int i = 0; i < m_vHelpArgs.size(); i++){
         HelpParseArg *pHpa = m_vHelpArgs[i];

@@ -55,10 +55,10 @@ $ cd ~/fhq-jury-ad.git/fhq-jury-ad
 $ ./fhq-jury-ad clean
 ```
 
-### Run jury-ad
+### Run fhq-jury-ad
 
 ```
-$ ./jury-ad start
+$ ./fhq-jury-ad start
 ```
 
 ## Scoreboard

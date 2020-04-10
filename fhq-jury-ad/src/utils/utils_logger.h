@@ -7,7 +7,7 @@
 #include <iostream>
 #include <mutex>
 #include <deque>
-#include <colormod.h>
+#include <wsjcpp_core.h>
 
 class Log {
 
@@ -25,7 +25,7 @@ class Log {
         static std::string threadId();
 
     private:
-        static void add(Color::Modifier clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
+        static void add(WsjcppColorModifier clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
         
 };
 

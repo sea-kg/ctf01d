@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_VERSION="ut-v0.0.1")
+add_definitions(-DWSJCPP_VERSION="ut-v0.3.1")
 add_definitions(-DWSJCPP_NAME="unit-tests-fhq-jury-ad")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -19,18 +19,40 @@ set (WSJCPP_SOURCES "")
 find_package(Threads REQUIRED)
 list (APPEND WSJCPP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
-# wsjcpp-core:v0.0.5
+# wsjcpp-core:v0.1.3
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests.h")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_unit_tests_main.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_resources_manager.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_resources_manager.cpp")
 
-# wsjcpp-light-web-server:v0.0.1
+# wsjcpp-light-web-server:v0.1.0
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_light_web_server/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_request.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_response.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_response.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_deque_http_requests.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_deque_http_requests.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_rewrite_folder.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_rewrite_folder.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_web_folder.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_http_handler_web_folder.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.cpp")
 
-# fhq-jury-ad:v0.0.1
+# nlohmann/json:v3.7.3
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
+
+# HowardHinnant/date:v2.4.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/HowardHinnant_date/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/HowardHinnant_date/date.h")
+
+# fhq-jury-ad:v0.3.1
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 
 # unit-tests

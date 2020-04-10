@@ -1,24 +1,44 @@
 name: "fhq-jury-ad"
-version: "v0.0.1"
+version: "v0.3.1"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "Jury System for a attack-defence ctf games"
 authors:
   - name: "Evgenii Sopov"
     email: "mrseakg@gmail.com"
+
 origins:
   - address: "https://sea-kg.com/wsjcpp-package-registry/"
     type: "package-registry"
+
 keywords:
   - "c++"
+
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.0.5"
+    version: "v0.1.3"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
   - name: "wsjcpp-light-web-server"
-    version: "v0.0.1"
+    version: "v0.1.0"
     url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
+  - name: "nlohmann/json"
+    version: "v3.7.3"
+    url: "https://github.com/wsjcpp/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
+  - name: "HowardHinnant/date"
+    version: "v2.4.1"
+    url: "https://github.com/wsjcpp/HowardHinnant_date:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/HowardHinnant_date"
+
+resources:
+  - source-file: "../jury.d/html/favicon.ico"
+    target-file: "html/favicon.ico"
+    filesize: 16958
+    sha1: "cc23f8149e72032de20ee01d8fbc593d26559bb6"
+    modified: 0

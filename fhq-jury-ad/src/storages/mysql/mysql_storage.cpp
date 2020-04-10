@@ -2,8 +2,7 @@
 #include <utils_logger.h>
 #include <mysql/mysql.h>
 #include <conf_file_parser.h>
-#include <fs.h>
-#include <ts.h>
+#include <wsjcpp_core.h>
 
 REGISTRY_STORAGE(MySqlStorage)
 
@@ -27,7 +26,7 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile,
             std::vector<Service> &vServicesConf) {
     Log::info(TAG, "Reading config: " + sConfigFile);
     
-    if (!FS::fileExists(sConfigFile)) {
+    if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
@@ -520,7 +519,7 @@ void MySqlStorage::insertFlagAttempt(const std::string &sTeamId, const std::stri
     // TODO check connection with NULL
 
     std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
-        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(TS::currentTime_milliseconds()) + ");";
+        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::currentTime_milliseconds()) + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
         Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
@@ -939,7 +938,7 @@ void MySqlStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTea
         + "'" + flag.value() + "', "
         + std::to_string(flag.timeStart()) + ", "
         + std::to_string(flag.timeEnd()) + ", "
-        + std::to_string(TS::currentTime_milliseconds()) + ", "
+        + std::to_string(WsjcppCore::currentTime_milliseconds()) + ", "
         + std::to_string(nPoints) + " "
         + ");";
 

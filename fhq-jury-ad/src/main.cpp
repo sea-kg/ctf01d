@@ -16,18 +16,17 @@
 #include <service_checker_thread.h>
 #include <team.h>
 #include <utils_logger.h>
-#include <light_http_server.h>
+#include <wsjcpp_light_web_server.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
 #include <storages.h>
 #include <unistd.h>
 #include <limits.h>
-#include <fs.h>
-#include <fallen.h>
 #include <resources_manager.h>
+#include <wsjcpp_core.h>
 
-LightHttpServer g_httpServer;
+WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
 
 // ---------------------------------------------------------------------
@@ -76,7 +75,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("version")) {
-        std::cout << "" << JURY_AD_APP_NAME << " " << JURY_AD_VERSION << "\n";
+        std::cout << "" << WSJCPP_NAME << " " << WSJCPP_VERSION << "\n";
         return 0;
     }
 
@@ -89,9 +88,9 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("--workspace-dir")) {
         // todo replace workspace path
         sWorkspace = helpParseArgs.option("--workspace-dir");
-        sWorkspace = WSJCppCore::getCurrentDirectory() + sWorkspace;
-        sWorkspace = WSJCppCore::doNormalizePath(sWorkspace);
-        if (!Fallen::dirExists(sWorkspace)) {
+        sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
+        sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
+        if (!WsjcppCore::dirExists(sWorkspace)) {
             Log::err(TAG, "Directory " + sWorkspace + " does not exists");
             return -1;
         }
@@ -110,7 +109,7 @@ int main(int argc, char* argv[]) {
         }
     }*/
 
-    if (!FS::dirExists(sWorkspace)) {
+    if (!WsjcppCore::dirExists(sWorkspace)) {
         std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
         return -1;
     }
@@ -124,14 +123,14 @@ int main(int argc, char* argv[]) {
     }
 
     std::string sLogDir = sWorkspace + "/logs";
-    if (!FS::dirExists(sLogDir)) {
+    if (!WsjcppCore::dirExists(sLogDir)) {
         std::cout << "Error: Folder " << sLogDir << " does not exists \n";
         return -1;
     }
 
     Log::setDir(sLogDir);
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-    Log::info(TAG, "Version: " + std::string(JURY_AD_VERSION));
+    Log::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
     if(!pConfig->applyConfig()){
@@ -151,7 +150,7 @@ int main(int argc, char* argv[]) {
     }
 
     // configure http handlers
-    g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
+    g_httpServer.addHandler(new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
 
     signal( SIGINT, quitApp );
     signal( SIGTERM, quitApp );
@@ -159,7 +158,7 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("check-http")) {
         pConfig->setStorage(Storages::create("file", pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
+        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         g_httpServer.setPort(pConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(1);
         g_httpServer.startSync(); // will be block thread
@@ -187,7 +186,7 @@ int main(int argc, char* argv[]) {
         }
 
         Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
+        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
         g_httpServer.setPort(pConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(10);

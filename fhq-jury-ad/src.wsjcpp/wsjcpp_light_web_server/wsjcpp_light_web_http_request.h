@@ -7,13 +7,25 @@
 
 // ---------------------------------------------------------------------
 
-class WSJCppLightWebHttpRequest {
+class WsjcppLightWebHttpRequestQueryValue {
     public:
-        WSJCppLightWebHttpRequest(
+        WsjcppLightWebHttpRequestQueryValue(const std::string &sName, const std::string &sValue);
+        std::string getName() const;
+        std::string getValue() const;
+    private:
+        std::string m_sName;
+        std::string m_sValue;
+};
+
+// ---------------------------------------------------------------------
+
+class WsjcppLightWebHttpRequest {
+    public:
+        WsjcppLightWebHttpRequest(
             int nSockFd,
             const std::string &sAddress
         );
-        ~WSJCppLightWebHttpRequest() {};
+        ~WsjcppLightWebHttpRequest() {};
 
         int getSockFd() const;
         std::string getUniqueId() const;
@@ -25,7 +37,7 @@ class WSJCppLightWebHttpRequest {
         std::string getRequestPath() const;
         std::string getRequestBody() const;
         std::string getRequestHttpVersion() const;
-        std::map<std::string,std::string> &getRequestQueryParams(); // TODO redesign to std::vector
+        const std::vector<WsjcppLightWebHttpRequestQueryValue> &getRequestQueryParams();
 
     private:
         std::string TAG;
@@ -48,7 +60,7 @@ class WSJCppLightWebHttpRequest {
         std::string m_sRequestType;
         std::string m_sRequestPath;
         std::string m_sRequestBody;
-        std::map<std::string,std::string> m_sRequestQueryParams; // wrong use map for params
+        std::vector<WsjcppLightWebHttpRequestQueryValue> m_vRequestQueryParams;
         std::string m_sRequestHttpVersion;
 
         std::string m_sResponseCacheControl;

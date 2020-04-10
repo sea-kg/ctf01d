@@ -1,3 +1,4 @@
 fhq-jury-ad
 tmp/*
 .wsjcpp/*
+*.log

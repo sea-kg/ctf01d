@@ -15,8 +15,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <signal.h>
-#include <ts.h>
-
+#include <wsjcpp_core.h>
 
 int ServiceCheckerThread::CHECKER_CODE_UP = 101;
 int ServiceCheckerThread::CHECKER_CODE_CORRUPT = 102;
@@ -124,7 +123,7 @@ void ServiceCheckerThread::run() {
     }*/
 
     while(1) {
-        int nCurrentTime = TS::currentTime_seconds();
+        int nCurrentTime = WsjcppCore::currentTime_seconds();
         if (
             m_pConfig->gameHasCoffeeBreak()
             && nCurrentTime > m_pConfig->gameCoffeeBreakStartUTCInSec()

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <conf_file_parser.h>
-#include <fs.h>
+#include <wsjcpp_core.h>
 
 ReadTeamsConf::ReadTeamsConf(const std::string &sWorkspaceDir) {
     TAG = "ReadTeamsConf";
@@ -20,13 +20,13 @@ ReadTeamsConf::ReadTeamsConf(const std::string &sWorkspaceDir) {
 bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
     std::string sRootTeamsDir = m_sWorkspaceDir + "/teams/";
     
-    if (!FS::dirExists(sRootTeamsDir)) {
+    if (!WsjcppCore::dirExists(sRootTeamsDir)) {
         Log::err(TAG, "Directory " + sRootTeamsDir + " not exists");
         return false;
     }
     Log::info(TAG, "Search team.conf");
 
-    std::vector<std::string> vListOfTeams = FS::listOfFiles(sRootTeamsDir);
+    std::vector<std::string> vListOfTeams = WsjcppCore::listOfFiles(sRootTeamsDir);
 
     if (vListOfTeams.size() == 0) {
         Log::err(TAG, "Teams does not defined");
@@ -41,7 +41,7 @@ bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
         }
         std::string sTeamConfPath =  sRootTeamsDir + sTeamId + ".conf";
         Log::info(TAG, "Reading " + sTeamConfPath);
-        if (!FS::fileExists(sTeamConfPath)) {
+        if (!WsjcppCore::fileExists(sTeamConfPath)) {
             Log::err(TAG, "File " + sTeamConfPath + " not exists");
             return false;
         }

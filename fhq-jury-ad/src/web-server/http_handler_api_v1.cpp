@@ -6,26 +6,24 @@
 #include <time.h>
 
 #include <utils_logger.h>
-#include <light_http_server.h>
-#include <ts.h>
-#include <fs.h>
-#include <str.h>
+#include <wsjcpp_light_web_server.h>
+#include <wsjcpp_core.h>
 
 // ----------------------------------------------------------------------
 
 HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig) 
-    : LightHttpHandlerBase("api-v1") {
+: WsjcppLightWebHttpHandlerBase("api-v1") {
 
     m_pConfig = pConfig;    
 
     TAG = "HttpHandlerApiV1";
     
     m_jsonGame["game_name"] = m_pConfig->gameName();
-    m_jsonGame["game_start"] = TS::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
-    m_jsonGame["game_end"] = TS::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
+    m_jsonGame["game_start"] = WsjcppCore::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_end"] = WsjcppCore::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
     m_jsonGame["game_has_coffee_break"] = m_pConfig->gameHasCoffeeBreak();
-    m_jsonGame["game_coffee_break_start"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakStartUTCInSec()) + " (UTC)";
-    m_jsonGame["game_coffee_break_end"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakEndUTCInSec()) + " (UTC)";
+    m_jsonGame["game_coffee_break_start"] = WsjcppCore::formatTimeUTC(m_pConfig->gameCoffeeBreakStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_coffee_break_end"] = WsjcppCore::formatTimeUTC(m_pConfig->gameCoffeeBreakEndUTCInSec()) + " (UTC)";
     m_jsonGame["teams"] = nlohmann::json::array();
     m_jsonGame["services"] = nlohmann::json::array();
 
@@ -55,9 +53,9 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
-    std::string path = pRequest->requestPath();
+    std::string path = pRequest->getRequestPath();
     return path == "/api/v1/game"
         || path == "/api/v1/scoreboard"
         || path == "/api/v1/teams"
@@ -67,30 +65,30 @@ bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, LightHttpRequest 
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
+bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
-    LightHttpResponse response(pRequest->sockFd());
+    WsjcppLightWebHttpResponse response(pRequest->getSockFd());
     
-    if(pRequest->requestPath() == "/api/v1/game") {
+    if(pRequest->getRequestPath() == "/api/v1/game") {
         std::string sJsonResponse = m_jsonGame.dump();
         response.noCache().ok().sendBuffer("game.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
-    } else if (pRequest->requestPath() == "/") {
+    } else if (pRequest->getRequestPath() == "/") {
         response.noCache().ok().sendText(m_sIndexHtml);
         return true;
-    } else if(pRequest->requestPath() == "/api/v1/scoreboard") {
+    } else if(pRequest->getRequestPath() == "/api/v1/scoreboard") {
         std::string sJsonResponse = m_pConfig->scoreboard()->toJson().dump();
         response.noCache().ok().sendBuffer("scoreboard.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
-    } else if(pRequest->requestPath() == "/api/v1/teams") {
+    } else if(pRequest->getRequestPath() == "/api/v1/teams") {
         std::string sJsonResponse = m_jsonTeams.dump();
         response.noCache().ok().sendBuffer("teams.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
-    } else if(pRequest->requestPath() == "/api/v1/services") {
+    } else if(pRequest->getRequestPath() == "/api/v1/services") {
         std::string sJsonResponse = m_jsonServices.dump();
         response.noCache().ok().sendBuffer("services.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
-    } else if(pRequest->requestPath() == "/flag") {
+    } else if(pRequest->getRequestPath() == "/flag") {
         response.noCache();
 
         auto now = std::chrono::system_clock::now().time_since_epoch();
@@ -116,26 +114,38 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
             Log::warn(TAG, "Error(-9): Game already ended");
             return true;
         }
+        std::vector<WsjcppLightWebHttpRequestQueryValue> vParams = pRequest->getRequestQueryParams();
+        
+        std::string sTeamId = "";
+        std::string sFlag = "";
+        for (int i = 0; i < vParams.size(); i++) {
+            std::string sParamName = vParams[i].getName();
+            if (sParamName == "teamid") {
+                sTeamId = vParams[i].getValue();
+                sTeamId = WsjcppCore::trim(sTeamId);
+                sTeamId = WsjcppCore::toLower(sTeamId);
+            } else if (sParamName == "flag") {
+                sFlag = vParams[i].getValue();
+                sFlag = WsjcppCore::trim(sFlag);
+                sFlag = WsjcppCore::toLower(sFlag);
+            }
 
-        std::map<std::string,std::string>::iterator itTeamID;
-        itTeamID = pRequest->requestQueryParams().find("teamid");
-        if (itTeamID == pRequest->requestQueryParams().end()) {
-            response.badRequest().sendText("Error(-10): Not found get-parameter 'teamid'");
-            Log::warn(TAG, "Error(-10): Not found get-parameter 'teamid'");
+        }
+
+        if (sTeamId == "") {
+            static const std::string sError = "Error(-10): Not found get-parameter 'teamid' or parameter is empty";
+            response.badRequest().sendText(sError);
+            Log::warn(TAG, sError);
             return true;
         }
 
-        std::map<std::string,std::string>::iterator itFlag;
-        itFlag = pRequest->requestQueryParams().find("flag");
-        if (itFlag == pRequest->requestQueryParams().end()) {
-            response.badRequest().sendText("Error(-11): Not found get-parameter 'flag'");
-            Log::warn(TAG, "Error(-11): Not found get-parameter 'flag'");
+        if (sFlag == "") {
+            static const std::string sError = "Error(-11): Not found get-parameter 'flag' or parameter is empty";
+            response.badRequest().sendText(sError);
+            Log::warn(TAG, sError);
             return true;
         }
 
-        std::string sTeamId = itTeamID->second;
-        Str::trim(sTeamId);
-        std::transform(sTeamId.begin(), sTeamId.end(), sTeamId.begin(), ::tolower);
         /*int nTeamNum = atoi(sTeamID.c_str());
         if (nTeamNum == 0) {
             pRequest->response(
@@ -161,8 +171,6 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, LightHttpRequest *pR
         }
 
         const std::regex reFlagFormat("[a-f0-9]{8,8}-[a-f0-9]{4,4}-[a-f0-9]{4,4}-[a-f0-9]{4,4}-[a-f0-9]{12,12}");
-        std::string sFlag = itFlag->second;
-        std::transform(sFlag.begin(), sFlag.end(), sFlag.begin(), ::tolower);
         if (!std::regex_match(sFlag, reFlagFormat)) {
             response.badRequest().sendText("Error(-140): flag has wrong format");
             Log::err(TAG, "Error(-140): flag has wrong format");

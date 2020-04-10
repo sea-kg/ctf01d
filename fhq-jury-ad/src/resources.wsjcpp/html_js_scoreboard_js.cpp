@@ -10,11 +10,11 @@ const std::string &RES_html_js_scoreboard_js::getFilename() {
 }
 
 const int RES_html_js_scoreboard_js::getBufferSize() {
-    return 11353;
+    return 11351;
 }
 
 const char *RES_html_js_scoreboard_js::getBuffer() {
-    static const std::string sRet =  // size: 11353
+    static const std::string sRet =  // size: 11351
         "\n"
         "// post request to server Async\n"
         "function getAjax (url, callback) {\n"

@@ -3,7 +3,7 @@
 
 #include <wsjcpp_resources_manager.h>
 
-class RES_game_conf : public WsjcppResourceFile { 
+class RES_config_yml : public WsjcppResourceFile { 
     public:
         virtual const std::string &getFilename();
         virtual const int getBufferSize();

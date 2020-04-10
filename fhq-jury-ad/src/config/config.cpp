@@ -10,6 +10,7 @@
 #include <conf_file_parser.h>
 #include <read_teams_conf.h>
 #include <wsjcpp_core.h>
+#include <wsjcpp_yaml.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
     TAG = "Config";
@@ -34,27 +35,27 @@ Config::Config(const std::string &sWorkspaceDir) {
 // ---------------------------------------------------------------------
 
 bool Config::applyGameConf() {
-    std::string sConfigFile = m_sWorkspaceDir + "/game.conf";
+    // game.conf
+    std::string sConfigFile = m_sWorkspaceDir + "/config.yml";
     Log::info(TAG, "Reading config: " + sConfigFile);
 
     if (!WsjcppCore::fileExists(sConfigFile)) {
         Log::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
-
-    // game.conf - will be override configs from conf.ini
-    ConfFileParser gameConf = ConfFileParser(sConfigFile);
-    if (!gameConf.parseConfig()) {
+    
+    WsjcppYaml yaml;
+    if (!yaml.loadFromFile(sConfigFile)) {
         Log::err(TAG, "Could not parse " + sConfigFile);
         return false;
     }
 
-    m_sGameId = gameConf.getStringValueFromConfig("game.id", m_sGameId);
+    m_sGameId = yaml["game"]["id"].getValue();
     Log::info(TAG, "game.id: " + m_sGameId);
-    m_sGameName = gameConf.getStringValueFromConfig("game.name", m_sGameName);
+    m_sGameName = yaml["game"]["name"].getValue();
     Log::info(TAG, "game.name: " + m_sGameName);
     
-    m_sGameStart = gameConf.getStringValueFromConfig("game.start", m_sGameStart);
+    m_sGameStart = yaml["game"]["start"].getValue();
     Log::info(TAG, "game.start: " + m_sGameStart);
     {
         std::istringstream in{m_sGameStart.c_str()};
@@ -65,7 +66,7 @@ bool Config::applyGameConf() {
     
     Log::info(TAG, "Game start (UNIX timestamp): " + std::to_string(m_nGameStartUTCInSec));
     
-    m_sGameEnd = gameConf.getStringValueFromConfig("game.end", m_sGameEnd);
+    m_sGameEnd = yaml["game"]["end"].getValue();
     Log::info(TAG, "game.end: " + m_sGameEnd);
     {
         std::istringstream in{m_sGameEnd.c_str()};
@@ -75,10 +76,10 @@ bool Config::applyGameConf() {
     }
     Log::info(TAG, "Game end (UNIX timestamp): " + std::to_string(m_nGameEndUTCInSec));
 
-    m_nFlagTimeliveInMin = gameConf.getIntValueFromConfig("game.flag_timelive_in_min", m_nFlagTimeliveInMin);
+    m_nFlagTimeliveInMin = std::atoi(yaml["game"]["flag_timelive_in_min"].getValue().c_str());
     Log::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
 
-    m_nBacisCostsStolenFlagInPoints = gameConf.getIntValueFromConfig("game.basic_costs_stolen_flag_in_points", m_nBacisCostsStolenFlagInPoints);
+    m_nBacisCostsStolenFlagInPoints = std::atoi(yaml["game"]["basic_costs_stolen_flag_in_points"].getValue().c_str());
     Log::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBacisCostsStolenFlagInPoints));
 
     if (m_nGameStartUTCInSec == 0) {
@@ -102,11 +103,11 @@ bool Config::applyGameConf() {
     }
 
     if (m_nFlagTimeliveInMin > 25) {
-         Log::err(TAG, sConfigFile + ": game.flag_timelive_in_min could not be gather than 25");
+        Log::err(TAG, sConfigFile + ": game.flag_timelive_in_min could not be gather than 25");
         return false;
     }
 
-    m_sGameCoffeeBreakStart = gameConf.getStringValueFromConfig("game.coffee_break_start", m_sGameCoffeeBreakStart);
+    m_sGameCoffeeBreakStart = yaml["game"]["coffee_break_start"].getValue();
     Log::info(TAG, "game.coffee_break_start: " + m_sGameCoffeeBreakStart);
     {
         std::istringstream in{m_sGameCoffeeBreakStart.c_str()};
@@ -116,7 +117,7 @@ bool Config::applyGameConf() {
     }
     Log::info(TAG, "Game coffee break start (UNIX timestamp): " + std::to_string(m_nGameCoffeeBreakStartUTCInSec));
 
-    m_sGameCoffeeBreakEnd = gameConf.getStringValueFromConfig("game.coffee_break_end", m_sGameCoffeeBreakEnd);
+    m_sGameCoffeeBreakEnd = yaml["game"]["coffee_break_end"].getValue();
     Log::info(TAG, "game.coffee_break_end: " + m_sGameCoffeeBreakEnd);
     {
         std::istringstream in{m_sGameCoffeeBreakEnd.c_str()};

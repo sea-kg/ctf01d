@@ -21,13 +21,13 @@ Or you can use for training.
 $ sudo apt install git-core
 $ cd ~
 $ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
-$ nano ~/fhq-jury-ad.git/jury.d/game.conf
+$ nano ~/fhq-jury-ad.git/jury.d/config.yml
 $ nano ~/fhq-jury-ad.git/jury.d/server.conf
 $ nano ~/fhq-jury-ad.git/jury.d/scoreboard.conf
 $ nano ~/fhq-jury-ad.git/jury.d/mysql_storage.conf
 ```
 Config files (look comments in file):
-* `~/fhq-jury-ad.git/jury.d/game.conf` - basic game configurations, start/end/name/flag live time
+* `~/fhq-jury-ad.git/jury.d/config.yml` - basic game configurations, start/end/name/flag-live-time
 * `~/fhq-jury-ad.git/jury.d/mysql_storage.conf` - basic db connection configurations
 * `~/fhq-jury-ad.git/jury.d/scoreboard.conf` - basic scoreboard configurations html folder, port for web
 * `~/fhq-jury-ad.git/jury.d/server.conf` - basic server just a which type of storage will be used (in current time worl only mysql)

@@ -31,7 +31,7 @@ bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile,
         return false;
     }
 
-    // game.conf - will be override configs from conf.ini
+    // mysql_storage.conf - will be override configs from conf.ini
     ConfFileParser mysqlStorageConf = ConfFileParser(sConfigFile);
     if (!mysqlStorageConf.parseConfig()) {
         Log::err(TAG, "Could not parse " + sConfigFile);

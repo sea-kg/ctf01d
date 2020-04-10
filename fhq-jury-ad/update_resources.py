@@ -20,7 +20,7 @@ files = []
 files_html = [os.path.join(dp, f) for dp, dn, filenames in os.walk(basedir + "html/") for f in filenames]
 
 files = files + files_html
-files.append(basedir + "game.conf")
+files.append(basedir + "config.yml")
 files.append(basedir + "mysql_storage.conf")
 files.append(basedir + "scoreboard.conf")
 files.append(basedir + "server.conf")

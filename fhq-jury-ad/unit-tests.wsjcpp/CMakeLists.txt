@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_VERSION="ut-v0.3.1")
+add_definitions(-DWSJCPP_VERSION="ut-v0.4.2")
 add_definitions(-DWSJCPP_NAME="unit-tests-fhq-jury-ad")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -57,7 +57,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
 
-# fhq-jury-ad:v0.3.1
+# fhq-jury-ad:v0.4.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 
 # unit-tests

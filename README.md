@@ -22,7 +22,6 @@ $ sudo apt install git-core
 $ cd ~
 $ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
 $ nano ~/fhq-jury-ad.git/jury.d/config.yml
-$ nano ~/fhq-jury-ad.git/jury.d/server.conf
 $ nano ~/fhq-jury-ad.git/jury.d/scoreboard.conf
 $ nano ~/fhq-jury-ad.git/jury.d/mysql_storage.conf
 ```

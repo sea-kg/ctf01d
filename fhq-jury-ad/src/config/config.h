@@ -5,6 +5,7 @@
 #include <scoreboard.h>
 #include <team.h>
 #include <service.h>
+#include <wsjcpp_yaml.h>
 
 class Config {
 	public:
@@ -40,8 +41,8 @@ class Config {
 		Scoreboard *scoreboard();
 
 	private:
-		bool applyGameConf();
-		bool applyServerConf();
+		bool applyGameConf(WsjcppYaml &yamlConfig);
+		bool applyServerConf(WsjcppYaml &yamlConfig);
 		bool applyScoreboardConf();
 		bool applyCheckersConf();
 

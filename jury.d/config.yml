@@ -10,3 +10,11 @@ game:
   coffee_break_end: "2021-01-04 10:30:00" # end time of game coffee break (UTC), but it will be ignored if period more (or less) then start and end
   flag_timelive_in_min: 1 # you can change flag time live (in minutes)
   basic_costs_stolen_flag_in_points: 10 # basic costs stolen (attack) flag in points for adaptive scoreboard
+
+server:
+  # use storage which storage will be used, now possible values:
+  # mysql - use mysql database
+  # ram - (!not implemented yet) use just memory
+  # local - (!not implemented yet) use just memory
+  # postgres - (!not implemented yet) will be used postgre database
+  use_storage: mysql

@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
     std::string sArgsErrors;
     if (!helpParseArgs.checkArgs(sArgsErrors)){
-        Log::err(TAG, "Arguments has errors " + sArgsErrors);
+        WsjcppLog::err(TAG, "Arguments has errors " + sArgsErrors);
         return -1;
     }
 
@@ -128,9 +128,12 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    Log::setDir(sLogDir);
+    WsjcppLog::setPrefixLogFile("fhq-jury-ad");
+    WsjcppLog::setLogDirectory(sLogDir);
+
+    Log::setDir(sLogDir); // TODO will be remmoved
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-    Log::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
+    WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
     if(!pConfig->applyConfig()){
@@ -166,7 +169,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("start")) {
-        Log::info(TAG, "Starting...");
+        WsjcppLog::info(TAG, "Starting...");
 
         pConfig->scoreboard()->initStateFromStorage();
 
@@ -185,7 +188,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
+        WsjcppLog::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
         g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
         g_httpServer.setPort(pConfig->scoreboardPort());

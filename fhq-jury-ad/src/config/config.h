@@ -45,6 +45,7 @@ class Config {
 		bool applyServerConf(WsjcppYaml &yamlConfig);
 		bool applyScoreboardConf(WsjcppYaml &yamlConfig);
 		bool applyCheckersConf(WsjcppYaml &yamlConfig);
+		bool readTeamsConf(WsjcppYaml &yamlConfig);
 
 		std::string TAG;
 		Storage *m_pStorage;

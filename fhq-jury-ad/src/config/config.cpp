@@ -7,7 +7,6 @@
 #include <iostream>
 #include <sstream>
 #include <conf_file_parser.h>
-#include <read_teams_conf.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_yaml.h>
 
@@ -295,6 +294,70 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
 
 // ---------------------------------------------------------------------
 
+bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
+    m_vTeamsConf.clear();
+
+    WsjcppYamlItem yamlTeams = yamlConfig["teams"];
+
+    if (yamlTeams.getLength() == 0) {
+        WsjcppLog::err(TAG, "Teams does not defined");
+        return false;
+    }
+    
+    for (int i = 0; i < yamlTeams.getLength(); i++) {
+        WsjcppYamlItem yamlTeam = yamlTeams[i];
+        std::string sTeamId = yamlTeam["id"].getValue();
+        // TODO check sTeamId format
+
+        WsjcppLog::info(TAG, "id = " + sTeamId);
+
+        std::string sTeamName = yamlTeam["name"].getValue();
+        WsjcppLog::info(TAG, "name = " + sTeamName);
+
+        bool bTeamActive = yamlTeam["active"].getValue() == "yes";
+        WsjcppLog::info(TAG, "active = " + std::string(bTeamActive ? "yes" : "no"));
+
+        std::string sTeamIpAddress = yamlTeam["ip_address"].getValue();
+        WsjcppLog::info(TAG, "ip_address = " + sTeamIpAddress);
+        // TODO check the ip format
+
+        std::string sTeamLogo = yamlTeam["logo"].getValue();
+        WsjcppLog::info(TAG, "logo = " + sTeamLogo);
+        // TODO check logo exists and read to buffer
+        
+        if (!bTeamActive) {
+            WsjcppLog::warn(TAG, "Team " + sTeamId + " - deactivated");
+            continue;
+        }
+
+        for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
+            if (m_vTeamsConf[i].id() == sTeamId) {
+                WsjcppLog::err(TAG, "Already registered team with id " + sTeamId);
+                return false;
+            }
+        }
+        // default values of service config
+        Team _teamConf;
+        _teamConf.setId(sTeamId);
+        _teamConf.setName(sTeamName);
+        _teamConf.setActive(true);
+        _teamConf.setIpAddress(sTeamIpAddress);
+        _teamConf.setLogo(sTeamLogo);
+
+        m_vTeamsConf.push_back(_teamConf);
+        WsjcppLog::ok(TAG, "Registered team " + sTeamId);
+    }
+    
+    if (m_vTeamsConf.size() == 0) {
+        WsjcppLog::err(TAG, "No one defined team in config");
+        return false;
+    }
+
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
 bool Config::applyConfig(){
     bool bResult = true;
     WsjcppLog::info(TAG, "Loading configuration... ");
@@ -327,8 +390,7 @@ bool Config::applyConfig(){
         return false;
     }
 
-    ReadTeamsConf teamsConf(m_sWorkspaceDir);
-    if (!teamsConf.read(m_vTeamsConf)) {
+    if (!this->readTeamsConf(yamlConfig)) {
         return false;
     }
 

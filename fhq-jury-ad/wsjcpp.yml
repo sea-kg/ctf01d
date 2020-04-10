@@ -35,3 +35,10 @@ dependencies:
     url: "https://github.com/wsjcpp/HowardHinnant_date:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/HowardHinnant_date"
+
+resources:
+  - source-file: "../jury.d/html/favicon.ico"
+    target-file: "html/favicon.ico"
+    filesize: 16958
+    sha1: "cc23f8149e72032de20ee01d8fbc593d26559bb6"
+    modified: 0

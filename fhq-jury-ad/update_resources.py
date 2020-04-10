@@ -5,12 +5,12 @@ import re
 import shutil
 
 basedir = "../jury.d/"
-sourcedir = "./src/resources/files/"
+sourcedir = "./src/resources.wsjcpp/"
 tag_begin_list = '#[begin-list-of-resources]'
 tag_end_list = '#[end-list-of-resources]'
 
-shutil.rmtree('./src/resources/files')
-os.mkdir('./src/resources/files')
+shutil.rmtree('./src/resources.wsjcpp')
+os.mkdir('./src/resources.wsjcpp')
 
 for_cmake = []
 for_cmake.append(tag_begin_list)

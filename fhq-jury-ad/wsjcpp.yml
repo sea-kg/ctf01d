@@ -46,6 +46,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-validators:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_validators"
+  - name: "wsjcpp-employees"
+    version: "v0.1.1"
+    url: "https://github.com/wsjcpp/wsjcpp-employees:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_employees"
 
 resources:
   - source-file: "../jury.d/html/favicon.ico"

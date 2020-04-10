@@ -314,7 +314,18 @@ bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
         }
 
         std::string sTeamLogo = yamlTeam["logo"].getValue();
+        sTeamLogo = WsjcppCore::doNormalizePath(m_sWorkspaceDir + "/" + sTeamLogo);
+        if (!WsjcppCore::fileExists(sTeamLogo)) {
+            WsjcppLog::err(TAG, "File '" + sTeamLogo + "' did not found");
+            return false;
+        }
         WsjcppLog::info(TAG, "logo = " + sTeamLogo);
+        /*char *pBuffer = nullptr;
+        int nBufferSize = 0;
+        if (WsjcppCore::readFileToBuffer("./data/readFileToBuffer.txt", &pBuffer, nBufferSize)) {
+            // your can work with buffer here
+        }*/
+
         // TODO check logo exists and read to buffer
         
         if (!bTeamActive) {

@@ -24,6 +24,7 @@
 #include <limits.h>
 #include <resources_manager.h>
 #include <wsjcpp_core.h>
+#include <wsjcpp_employees.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -82,6 +83,8 @@ int main(int argc, char* argv[]) {
         helpParseArgs.printHelp();
         return 0;
     }
+
+    WsjcppEmployees::init({});
 
     std::string sWorkspace = "/usr/share/fhq-jury-ad/jury.d"; // default workspace
     if (helpParseArgs.has("--workspace-dir")) {

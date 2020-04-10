@@ -57,4 +57,9 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_validators/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
 
+# wsjcpp-employees:v0.1.1
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_employees/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
+
 

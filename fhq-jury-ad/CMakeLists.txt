@@ -26,7 +26,9 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/interfaces")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server/core")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.h")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
 
 # checker
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.h")
@@ -196,3 +198,5 @@ install(
     RUNTIME DESTINATION
         ${CMAKE_INSTALL_PREFIX}/bin
 )
+
+

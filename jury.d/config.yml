@@ -61,12 +61,12 @@ teams:
   - id: "another_some" # must be uniq
     name: "Another Some"
     active: yes
-    logo: "images/teams/unknown.svg"
+    logo: "./html/images/teams/unknown.svg"
     ip_address: "127.0.1.1" # address to vulnserver
   - id: "so_some" # must be uniq
     name: "So Some"
     active: yes
-    logo: "images/teams/unknown1.svg"
+    logo: "./html/images/teams/unknown1.svg"
     ip_address: "127.0.0.1" # address to vulnserver
 
     

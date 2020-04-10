@@ -25,20 +25,8 @@ bool FileStorage::applyConfigFromYaml(
 ) {
     
     Log::info(TAG, "Reading config: " + sConfigFile);
-    
-    if (!FS::fileExists(sConfigFile)) {
-        Log::err(TAG, "File " + sConfigFile + " does not exists ");
-        return false;
-    }
 
-    // file_storage.conf - will be override configs from conf.ini
-    ConfFileParser mysqlStorageConf = ConfFileParser(sConfigFile);
-    if (!mysqlStorageConf.parseConfig()) {
-        Log::err(TAG, "Could not parse " + sConfigFile);
-        return false;
-    }
-
-    m_sDatabasePath = mysqlStorageConf.getStringValueFromConfig("ram_storage.dbpath", m_sDatabasePath);
+    m_sDatabasePath = yamlConfig["ram_storage"]["dbpath"].getValue();
     Log::info(TAG, "ram_storage.dbpath: " + m_sDatabasePath);
 
     return true;

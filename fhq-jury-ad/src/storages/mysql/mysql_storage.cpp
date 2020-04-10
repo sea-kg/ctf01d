@@ -1,6 +1,5 @@
 #include <mysql_storage.h>
 #include <mysql/mysql.h>
-#include <conf_file_parser.h>
 #include <wsjcpp_core.h>
 
 REGISTRY_STORAGE(MySqlStorage)

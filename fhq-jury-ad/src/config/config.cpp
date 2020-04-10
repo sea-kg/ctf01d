@@ -6,7 +6,6 @@
 #include <date.h>
 #include <iostream>
 #include <sstream>
-#include <conf_file_parser.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_yaml.h>
 
@@ -174,7 +173,7 @@ bool Config::applyScoreboardConf(WsjcppYaml &yamlConfig) {
     m_sScoreboardHtmlFolder = yamlConfig["scoreboard"]["htmlfolder"].getValue();
     if (m_sScoreboardHtmlFolder.length() > 0) {
         if (m_sScoreboardHtmlFolder[0] != '/') {
-            m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + m_sScoreboardHtmlFolder;
+            m_sScoreboardHtmlFolder = m_sWorkspaceDir + "/" + m_sScoreboardHtmlFolder;
         }
     } else {
         m_sScoreboardHtmlFolder = m_sWorkspaceDir + "/html";
@@ -194,67 +193,50 @@ bool Config::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 // ---------------------------------------------------------------------
 
 bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
-    std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
-    if (!WsjcppCore::dirExists(sRootCheckersDir)) {
-        WsjcppLog::err(TAG, "Directory " + sRootCheckersDir + " not exists");
-        return false;
-    }
-    WsjcppLog::info(TAG, "Search service.conf");
+    m_vServicesConf.clear();
+    
+    WsjcppYamlItem yamlCheckers = yamlConfig["checkers"];
 
-    std::vector<std::string> vListOfCheckers = WsjcppCore::listOfDirs(sRootCheckersDir);
-    if (vListOfCheckers.size() == 0) {
-        WsjcppLog::err(TAG, "Folders with services does not found in " + sRootCheckersDir);
+    if (yamlCheckers.getLength() == 0) {
+        WsjcppLog::err(TAG, "Checkers does not defined");
         return false;
     }
 
-    for (int i = 0; i < vListOfCheckers.size(); i++) {
-        std::string sServiceId = vListOfCheckers[i];
-        std::string sServiceConfPath =  sRootCheckersDir + sServiceId + "/service.conf";
-        WsjcppLog::info(TAG, "Reading " + sServiceConfPath);
-        if (!WsjcppCore::fileExists(sServiceConfPath)) {
-            WsjcppLog::err(TAG, "File " + sServiceConfPath + " not exists");
-            return false;
-        }
-        ConfFileParser serviceConf = ConfFileParser(sServiceConfPath);
-        if (!serviceConf.parseConfig()) {
-            WsjcppLog::err(TAG, "Could not parse " + sServiceConfPath);
-            return false;
-        }
+    for (int i = 0; i < yamlCheckers.getLength(); i++) {
+        WsjcppYamlItem yamlChecker = yamlCheckers[i];
+        std::string sServiceId = yamlChecker["id"].getValue();
 
-        std::string sPrefix = "services." + sServiceId + ".";
-        std::string sServiceName 
-            = serviceConf.getStringValueFromConfig(sPrefix + "name", "");
-        WsjcppLog::info(TAG, sPrefix + "name = " + sServiceName);
+        
+        // std::string sServiceConfPath = m_sWorkspaceDir + "/checker_" + sServiceId + "/service.conf";
+       
+        std::string sServiceName = yamlChecker["name"].getValue();
+        WsjcppLog::info(TAG, "name = " + sServiceName);
 
-        bool bServiceEnable 
-            = serviceConf.getBoolValueFromConfig(sPrefix + "enabled", true);
-        WsjcppLog::info(TAG, sPrefix + "enabled = " + std::string(bServiceEnable ? "yes" : "no"));
+        bool bServiceEnable = yamlChecker["enabled"].getValue() == "yes";
+        WsjcppLog::info(TAG, "enabled = " + std::string(bServiceEnable ? "yes" : "no"));
 
-        std::string sServiceScriptPath 
-            = serviceConf.getStringValueFromConfig(sPrefix + "script_path", "");
-        WsjcppLog::info(TAG, sPrefix + "script_path = " + sServiceScriptPath);
-        std::string sServiceScriptDir = m_sWorkspaceDir + "/checkers/" + sServiceId + "/";
+        std::string sServiceScriptPath = yamlChecker["script_path"].getValue();
+        WsjcppLog::info(TAG, "script_path = " + sServiceScriptPath);
+        std::string sServiceScriptDir = m_sWorkspaceDir + "/checker_" + sServiceId + "/";
         WsjcppLog::info(TAG, "sServiceScriptDir: " + sServiceScriptDir);
         if (!WsjcppCore::fileExists(sServiceScriptDir + sServiceScriptPath)) {
             WsjcppLog::err(TAG, "File " + sServiceScriptPath + " did not exists");
             return false;
         }
 
-        int nServiceScritpWait
-            = serviceConf.getIntValueFromConfig(sPrefix + "script_wait_in_sec", 5);
-        WsjcppLog::info(TAG, sPrefix + "script_wait_in_sec = " + std::to_string(nServiceScritpWait));
+        int nServiceScritpWait = std::atoi(yamlChecker["script_wait_in_sec"].getValue().c_str());
+        WsjcppLog::info(TAG, "script_wait_in_sec = " + std::to_string(nServiceScritpWait));
 
         if (nServiceScritpWait < 5) {
-            WsjcppLog::err(TAG, "Could not parse " + sPrefix + "script_wait_in_sec - must be more than 4 sec ");
+            WsjcppLog::err(TAG, "Could not parse script_wait_in_sec - must be more than 4 sec ");
             return false;
         }
 
-        int nServiceSleepBetweenRun
-            = serviceConf.getIntValueFromConfig(sPrefix + "time_sleep_between_run_scripts_in_sec", 15);
-        WsjcppLog::info(TAG, sPrefix + "time_sleep_between_run_scripts_in_sec = " + std::to_string(nServiceSleepBetweenRun));
+        int nServiceSleepBetweenRun = std::atoi(yamlChecker["time_sleep_between_run_scripts_in_sec"].getValue().c_str());
+        WsjcppLog::info(TAG, "time_sleep_between_run_scripts_in_sec = " + std::to_string(nServiceSleepBetweenRun));
 
         if (nServiceSleepBetweenRun < nServiceScritpWait*3) {
-            WsjcppLog::err(TAG, "Could not parse " + sPrefix + "time_sleep_between_run_scripts_in_sec - must be more than " + std::to_string(nServiceScritpWait*3-1) + " sec ");
+            WsjcppLog::err(TAG, "Could not parse time_sleep_between_run_scripts_in_sec - must be more than " + std::to_string(nServiceScritpWait*3-1) + " sec ");
             return false;
         }
 
@@ -285,7 +267,7 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
     }
 
     if (m_vServicesConf.size() == 0) {
-        WsjcppLog::err(TAG, "No one defined checker for service in " + sRootCheckersDir);
+        WsjcppLog::err(TAG, "No one defined checkers in config");
         return false;
     }
 

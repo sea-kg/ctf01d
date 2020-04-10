@@ -23,7 +23,6 @@ class Team {
         std::string logo() const;
 
     private:
-        int m_nNum;
         bool m_bActive;
         std::string m_sTeamID;
         std::string m_sName;

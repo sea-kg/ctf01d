@@ -35,8 +35,6 @@ list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.h")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 
 # config
-list (APPEND WSJCPP_SOURCES "src/config/conf_file_parser.h")
-list (APPEND WSJCPP_SOURCES "src/config/conf_file_parser.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/config.h")
 list (APPEND WSJCPP_SOURCES "src/config/config.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/service.h")

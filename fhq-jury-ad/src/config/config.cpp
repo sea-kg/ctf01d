@@ -159,32 +159,20 @@ bool Config::applyServerConf(WsjcppYaml &yamlConfig) {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyScoreboardConf() {
-    std::string sConfigFile = m_sWorkspaceDir + "/scoreboard.conf";
-    WsjcppLog::info(TAG, "Reading config: " + sConfigFile);
+bool Config::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 
-    if (!WsjcppCore::fileExists(sConfigFile)) {
-        WsjcppLog::err(TAG, "File " + sConfigFile + " does not exists ");
-        return false;
-    }
-
-    ConfFileParser scoreboardConf = ConfFileParser(sConfigFile);
-    if (!scoreboardConf.parseConfig()) {
-        WsjcppLog::err(TAG, "Could not parse " + sConfigFile);
-        return false;
-    }
     
-    m_nScoreboardPort = scoreboardConf.getIntValueFromConfig("scoreboard.port", m_nScoreboardPort);
+    m_nScoreboardPort = std::atoi(yamlConfig["scoreboard"]["port"].getValue().c_str());
     if (m_nScoreboardPort <= 10 || m_nScoreboardPort > 65536) {
-        WsjcppLog::err(TAG, sConfigFile + ": wrong scoreboard.port (expected value od 11..65535)");
+        WsjcppLog::err(TAG, "wrong scoreboard.port (expected value od 11..65535)");
         return false;
     }
     WsjcppLog::info(TAG, "scoreboard.port: " + std::to_string(m_nScoreboardPort));
 
-    m_bScoreboardRandom = scoreboardConf.getBoolValueFromConfig("scoreboard.random", m_bScoreboardRandom);
+    m_bScoreboardRandom = yamlConfig["scoreboard"]["port"].getValue() == "yes";
     WsjcppLog::info(TAG, "scoreboard.random: " + std::string(m_bScoreboardRandom == true ? "yes" : "no"));
 
-    m_sScoreboardHtmlFolder = scoreboardConf.getStringValueFromConfig("scoreboard.htmlfolder", m_sScoreboardHtmlFolder);
+    m_sScoreboardHtmlFolder = yamlConfig["scoreboard"]["htmlfolder"].getValue();
     if (m_sScoreboardHtmlFolder.length() > 0) {
         if (m_sScoreboardHtmlFolder[0] != '/') {
             m_sScoreboardHtmlFolder = m_sWorkspaceDir + '/' + m_sScoreboardHtmlFolder;
@@ -206,7 +194,7 @@ bool Config::applyScoreboardConf() {
 
 // ---------------------------------------------------------------------
 
-bool Config::applyCheckersConf() {
+bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
     std::string sRootCheckersDir = m_sWorkspaceDir + "/checkers/";
     if (!WsjcppCore::dirExists(sRootCheckersDir)) {
         WsjcppLog::err(TAG, "Directory " + sRootCheckersDir + " not exists");
@@ -335,7 +323,7 @@ bool Config::applyConfig(){
         return false;
     }
 
-    if (!this->applyCheckersConf()) {
+    if (!this->applyCheckersConf(yamlConfig)) {
         return false;
     }
 
@@ -345,7 +333,7 @@ bool Config::applyConfig(){
     }
 
     // apply the scoreboard config
-    if (!this->applyScoreboardConf()) {
+    if (!this->applyScoreboardConf(yamlConfig)) {
         return false;
     }
 

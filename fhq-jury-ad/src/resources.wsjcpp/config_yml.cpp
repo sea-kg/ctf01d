@@ -10,11 +10,11 @@ const std::string &RES_config_yml::getFilename() {
 }
 
 const int RES_config_yml::getBufferSize() {
-    return 1062;
+    return 1248;
 }
 
 const char *RES_config_yml::getBuffer() {
-    static const std::string sRet =  // size: 1062
+    static const std::string sRet =  // size: 1248
         "## Combined config for fhq-jury-ad\n"
         "# use 2 spaces for tab\n"
         "\n"
@@ -35,6 +35,11 @@ const char *RES_config_yml::getBuffer() {
         "  # local - (!not implemented yet) use just memory\n"
         "  # postgres - (!not implemented yet) will be used postgre database\n"
         "  use_storage: mysql\n"
+        "\n"
+        "scoreboard:\n"
+        "  port: 8080 # http port for scoreboard\n"
+        "  htmlfolder: \"./html\" # web page for scoreboard see index-template.html\n"
+        "  random: no # If yes - will be random values in scoreboard\n"
     ;
     return sRet.c_str();
 } //::buffer() 

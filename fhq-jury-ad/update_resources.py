@@ -22,7 +22,6 @@ files_html = [os.path.join(dp, f) for dp, dn, filenames in os.walk(basedir + "ht
 files = files + files_html
 files.append(basedir + "config.yml")
 files.append(basedir + "mysql_storage.conf")
-files.append(basedir + "scoreboard.conf")
 
 file_ext_like_text_resources = []
 file_ext_like_text_resources.append(".svg")

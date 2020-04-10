@@ -17,6 +17,7 @@
 #include <thread>
 #include <sys/wait.h>
 #include <sysexits.h>
+#include <cstring>
 
 DoRunChecker::DoRunChecker(
     const std::string &sDir,

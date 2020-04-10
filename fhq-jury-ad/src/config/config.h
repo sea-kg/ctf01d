@@ -43,8 +43,8 @@ class Config {
 	private:
 		bool applyGameConf(WsjcppYaml &yamlConfig);
 		bool applyServerConf(WsjcppYaml &yamlConfig);
-		bool applyScoreboardConf();
-		bool applyCheckersConf();
+		bool applyScoreboardConf(WsjcppYaml &yamlConfig);
+		bool applyCheckersConf(WsjcppYaml &yamlConfig);
 
 		std::string TAG;
 		Storage *m_pStorage;

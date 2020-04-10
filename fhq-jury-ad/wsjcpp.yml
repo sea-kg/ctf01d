@@ -1,5 +1,5 @@
 name: "fhq-jury-ad"
-version: "v0.0.1"
+version: "v0.3.1"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "Jury System for a attack-defence ctf games"

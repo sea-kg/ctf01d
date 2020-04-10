@@ -3,12 +3,12 @@
 #include <fs.h>
 #include <fallen.h>
 #include <resources_manager.h>
-#include <light_http_server.h>
+#include <wsjcpp_light_web_server.h>
 
 // ----------------------------------------------------------------------
 
 HttpHandlerWebFolder::HttpHandlerWebFolder(const std::string &sWebFolder)
-    : LightHttpHandlerBase("web-folder") {
+    : WsjcppLightWebHttpHandlerBase("web-folder") {
 
     TAG = "HttpHandlerWebFolder";
     m_sWebFolder = sWebFolder;
@@ -16,10 +16,10 @@ HttpHandlerWebFolder::HttpHandlerWebFolder(const std::string &sWebFolder)
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequest *pRequest) {
+bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     // Log::warn(_tag, "canHandle: " + pRequest->requestPath());
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     
     if (sRequestPath == "/") {
         sRequestPath = "/index.html";
@@ -48,13 +48,12 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, LightHttpRequ
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, LightHttpRequest *pRequest){
+bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
-    std::string sRequestPath = pRequest->requestPath();
+    std::string sRequestPath = pRequest->getRequestPath();
     sRequestPath = WSJCppCore::doNormalizePath(sRequestPath);
-    // TODO remove /../ in path
 
-    LightHttpResponse response(pRequest->sockFd());
+    WsjcppLightWebHttpResponse response(pRequest->getSockFd());
 
     // Log::warn(_tag, pRequest->requestPath());
     

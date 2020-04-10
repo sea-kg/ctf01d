@@ -16,7 +16,7 @@
 #include <service_checker_thread.h>
 #include <team.h>
 #include <utils_logger.h>
-#include <light_http_server.h>
+#include <wsjcpp_light_web_server.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
@@ -27,7 +27,7 @@
 #include <fallen.h>
 #include <resources_manager.h>
 
-LightHttpServer g_httpServer;
+WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
 
 // ---------------------------------------------------------------------
@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("version")) {
-        std::cout << "" << JURY_AD_APP_NAME << " " << JURY_AD_VERSION << "\n";
+        std::cout << "" << WSJCPP_NAME << " " << WSJCPP_VERSION << "\n";
         return 0;
     }
 
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
 
     Log::setDir(sLogDir);
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-    Log::info(TAG, "Version: " + std::string(JURY_AD_VERSION));
+    Log::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
     if(!pConfig->applyConfig()){
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
     }
 
     // configure http handlers
-    g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
+    g_httpServer.addHandler(new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
 
     signal( SIGINT, quitApp );
     signal( SIGTERM, quitApp );
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("check-http")) {
         pConfig->setStorage(Storages::create("file", pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
+        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         g_httpServer.setPort(pConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(1);
         g_httpServer.startSync(); // will be block thread
@@ -187,7 +187,7 @@ int main(int argc, char* argv[]) {
         }
 
         Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
-        g_httpServer.handlers()->add((LightHttpHandlerBase *) new HttpHandlerApiV1(pConfig));
+        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
         g_httpServer.setPort(pConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(10);

@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_VERSION="ut-v0.3.1")
+add_definitions(-DWSJCPP_VERSION="ut-v0.4.2")
 add_definitions(-DWSJCPP_NAME="unit-tests-fhq-jury-ad")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -19,7 +19,7 @@ set (WSJCPP_SOURCES "")
 find_package(Threads REQUIRED)
 list (APPEND WSJCPP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
-# wsjcpp-core:v0.1.3
+# wsjcpp-core:v0.1.4
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -52,7 +52,22 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/HowardHinnant_date/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/HowardHinnant_date/date.h")
 
-# fhq-jury-ad:v0.3.1
+# wsjcpp-yaml:v0.1.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
+# wsjcpp-validators:v0.1.0
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_validators/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
+
+# wsjcpp-employees:v0.1.1
+list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_employees/")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
+list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
+
+# fhq-jury-ad:v0.4.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 
 # unit-tests

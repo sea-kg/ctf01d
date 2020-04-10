@@ -1,5 +1,5 @@
 #include "storages.h"
-#include <utils_logger.h>
+#include <wsjcpp_core.h>
 #include <algorithm>
 
 // ---------------------------------------------------------------------
@@ -21,7 +21,7 @@ void Storages::add(const std::string &sType, IFabricStorage* pStorage){
     Storages::initGlobalVariables();
     const std::string TAG = "addStorage";
     if (g_pFabricStorages->count(sType) > 0) {
-        Log::err(TAG, sType + " - storage already registered");
+        WsjcppLog::err(TAG, sType + " - storage already registered");
     } else {
         g_pFabricStorages->insert(std::pair<std::string, IFabricStorage*>(sType,pStorage));
         // Log::info(sType, "Registered");

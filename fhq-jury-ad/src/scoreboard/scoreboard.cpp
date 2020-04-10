@@ -3,7 +3,6 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
-#include <utils_logger.h>
 #include <wsjcpp_core.h>
 
 // ---------------------------------------------------------------------
@@ -298,7 +297,7 @@ void Scoreboard::incrementDefenceScore(const Flag &flag) {
         m_nAllDefenceFlags++;
         updateCosts();  // TODO update only defence costs
     }
-    Log::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
+    WsjcppLog::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
 }
 
 // ----------------------------------------------------------------------
@@ -314,7 +313,7 @@ void Scoreboard::incrementFlagsPuttedAndServiceUp(const Flag &flag) {
         std::map<std::string,Flag>::iterator it;
         it = m_mapFlagsLive.find(flag.value());
         if (it != m_mapFlagsLive.end()) {
-            Log::warn(TAG, flag.value() + " - flag already exists");
+            WsjcppLog::warn(TAG, flag.value() + " - flag already exists");
         } else {
             m_mapFlagsLive[flag.value()] = flag;
             m_pStorage->insertFlagLive(flag);
@@ -447,13 +446,13 @@ void Scoreboard::updateCosts() {
         nSumOfReverseProportionalDefenceFlags += it1->second->updateProportionalDefenceFlagsForService(m_nAllDefenceFlags);
     }
 
-    Log::err(TAG, "CostDefenceFlagForService nSumOfReverseProportionalDefenceFlags = " + std::to_string(nSumOfReverseProportionalDefenceFlags));
+    WsjcppLog::err(TAG, "CostDefenceFlagForService nSumOfReverseProportionalDefenceFlags = " + std::to_string(nSumOfReverseProportionalDefenceFlags));
 
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
         it1->second->updateCostStolenFlagForService(sf, nSumOfReverseProportionalStolenFlags);
 
         double r = it1->second->updateCostDefenceFlagForService(df, nSumOfReverseProportionalDefenceFlags);
-        Log::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
+        WsjcppLog::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
     }
 
     nlohmann::json jsonCosts;
@@ -523,7 +522,7 @@ void Scoreboard::removeFlagLive(const Flag &flag) {
         m_mapFlagsLive.erase(it);
         m_pStorage->deleteFlagLive(flag);
     } else {
-        Log::warn(TAG, flag.value() + " - flag did not exists");
+        WsjcppLog::warn(TAG, flag.value() + " - flag did not exists");
     }
 }
 

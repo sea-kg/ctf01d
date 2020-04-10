@@ -5,6 +5,7 @@ project(fhq-jury-ad)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
+
 #### END_WSJCPP_APPEND
 
 set(CMAKE_CXX_STANDARD 11)
@@ -25,8 +26,12 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/utils")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/interfaces")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server/core")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
+
+# employees
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.h")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
 
 # checker
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.h")
@@ -35,23 +40,20 @@ list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.h")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 
 # config
-list (APPEND WSJCPP_SOURCES "src/config/conf_file_parser.h")
-list (APPEND WSJCPP_SOURCES "src/config/conf_file_parser.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/config.h")
 list (APPEND WSJCPP_SOURCES "src/config/config.cpp")
-list (APPEND WSJCPP_SOURCES "src/config/read_teams_conf.h")
-list (APPEND WSJCPP_SOURCES "src/config/read_teams_conf.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/service.h")
 list (APPEND WSJCPP_SOURCES "src/config/service.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/team.h")
 list (APPEND WSJCPP_SOURCES "src/config/team.cpp")
 
-
-# web-server
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_api_v1.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_api_v1.cpp")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_folder.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_folder.cpp")
+# http_handlers
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.h")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.cpp")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.h")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.cpp")
+list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.h")
+list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
 
 # objects
 list (APPEND WSJCPP_SOURCES "src/objects/flag.h")
@@ -103,14 +105,16 @@ list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_images_teams_unknown_sv
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_images_teams_unknown_svg.cpp")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.h")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.cpp")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/game_conf.h")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/game_conf.cpp")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/mysql_storage_conf.h")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/mysql_storage_conf.cpp")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/scoreboard_conf.h")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/scoreboard_conf.cpp")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/server_conf.h")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/server_conf.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service1_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service1_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service2_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service2_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service3_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service3_checker_py.cpp")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service4_checker_py.h")
+list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/checker_example_service4_checker_py.cpp")
 
 #[end-list-of-resources]
 
@@ -130,8 +134,6 @@ list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.cpp")
 # utils
 list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.h")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.cpp")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_logger.h")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_logger.cpp")
 
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.h")
@@ -208,3 +210,5 @@ install(
     RUNTIME DESTINATION
         ${CMAKE_INSTALL_PREFIX}/bin
 )
+
+

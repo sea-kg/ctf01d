@@ -1,6 +1,8 @@
 #include "resources_manager.h"
 #include <wsjcpp_core.h>
 #include <wsjcpp_resources_manager.h>
+#include <sys/stat.h>
+#include <stdio.h>
 
 // ---------------------------------------------------------------------
 
@@ -17,8 +19,10 @@ bool ResourcesManager::createFolders(const std::string &sWorkspace) {
     // prepare folders
     std::vector<std::string> vCreateDirs;
     vCreateDirs.push_back(sWorkspace + "/logs");
-    vCreateDirs.push_back(sWorkspace + "/teams");
-    vCreateDirs.push_back(sWorkspace + "/checkers");
+    vCreateDirs.push_back(sWorkspace + "/checker_example_service1");
+    vCreateDirs.push_back(sWorkspace + "/checker_example_service2");
+    vCreateDirs.push_back(sWorkspace + "/checker_example_service3");
+    vCreateDirs.push_back(sWorkspace + "/checker_example_service4");
     vCreateDirs.push_back(sWorkspace + "/html");
     vCreateDirs.push_back(sWorkspace + "/html/css");
     vCreateDirs.push_back(sWorkspace + "/html/js");
@@ -58,5 +62,23 @@ bool ResourcesManager::extractFiles(const std::string &sWorkspace) {
             }
         }
     }
+    // TODO refactor this
+    std::vector<std::string> vExecutableFiles;
+    vExecutableFiles.push_back(sWorkspace + "/checker_example_service1/checker.py");
+    vExecutableFiles.push_back(sWorkspace + "/checker_example_service2/checker.py");
+    vExecutableFiles.push_back(sWorkspace + "/checker_example_service3/checker.py");
+    vExecutableFiles.push_back(sWorkspace + "/checker_example_service4/checker.py");
+
+    for (int i = 0; i < vExecutableFiles.size(); i++) {
+        std::string sScript = vExecutableFiles[i];
+        struct stat info;
+        if (chmod(sScript.c_str(), S_IRWXU|S_IRWXG) != 0) {
+            WsjcppLog::err("extractFiles", "Could not change permissions for " + sScript);
+        } else {
+            stat(sScript.c_str(), &info);
+            printf("after chmod(), permissions are: %08x\n", info.st_mode);
+        }
+    }
+
     return true;
 }

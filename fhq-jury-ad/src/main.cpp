@@ -15,8 +15,7 @@
 #include <algorithm>
 #include <service_checker_thread.h>
 #include <team.h>
-#include <utils_logger.h>
-#include <wsjcpp_light_web_server.h>
+#include <light_web_http_handler_team_logo.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
@@ -25,6 +24,7 @@
 #include <limits.h>
 #include <resources_manager.h>
 #include <wsjcpp_core.h>
+#include <wsjcpp_employees.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
     std::string sArgsErrors;
     if (!helpParseArgs.checkArgs(sArgsErrors)){
-        Log::err(TAG, "Arguments has errors " + sArgsErrors);
+        WsjcppLog::err(TAG, "Arguments has errors " + sArgsErrors);
         return -1;
     }
 
@@ -84,19 +84,32 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    
+
     std::string sWorkspace = "/usr/share/fhq-jury-ad/jury.d"; // default workspace
     if (helpParseArgs.has("--workspace-dir")) {
         // todo replace workspace path
         sWorkspace = helpParseArgs.option("--workspace-dir");
         sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
         sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
-        if (!WsjcppCore::dirExists(sWorkspace)) {
-            Log::err(TAG, "Directory " + sWorkspace + " does not exists");
-            return -1;
-        }
-        // TODO check directory existing and apply dir
     }
     
+    // create default folders and files
+    if (helpParseArgs.has("--extract-files")) {
+        if (!WsjcppCore::dirExists(sWorkspace)) {
+            WsjcppCore::makeDir(sWorkspace);
+        }
+        if (!ResourcesManager::make(sWorkspace)) {
+            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
+            return -1;
+        }
+    }
+
+    if (!WsjcppCore::dirExists(sWorkspace)) {
+        WsjcppLog::err(TAG, "Directory " + sWorkspace + " does not exists");
+        return -1;
+    }
+
     /*if (sWorkspace.length() > 0) {
         if (sWorkspace[0] != '/') { // linux
             char cwd[PATH_MAX];
@@ -109,32 +122,25 @@ int main(int argc, char* argv[]) {
         }
     }*/
 
-    if (!WsjcppCore::dirExists(sWorkspace)) {
-        std::cout << "Error: Folder " << sWorkspace << " does not exists \n";
-        return -1;
-    }
-
-    // create default folders and files
-    if (helpParseArgs.has("--extract-files")) {
-        if (!ResourcesManager::make(sWorkspace)) {
-            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
-            return -1;
-        }
-    }
-
     std::string sLogDir = sWorkspace + "/logs";
     if (!WsjcppCore::dirExists(sLogDir)) {
         std::cout << "Error: Folder " << sLogDir << " does not exists \n";
         return -1;
     }
 
-    Log::setDir(sLogDir);
+    WsjcppLog::setPrefixLogFile("fhq-jury-ad");
+    WsjcppLog::setLogDirectory(sLogDir);
+    WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
+    // TODO rotation period must be in config.yml
+
+    WsjcppEmployees::init({});
+
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-    Log::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
+    WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
-    if(!pConfig->applyConfig()){
-        Log::err(TAG, "Configuration file has some problems");
+    if (!pConfig->applyConfig()) {
+        WsjcppLog::err(TAG, "Configuration file has some problems");
         return -1;
     }
 
@@ -143,13 +149,14 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("clean")) {
-        Log::warn(TAG, "Cleaning flags from storage...");
+        WsjcppLog::warn(TAG, "Cleaning flags from storage...");
         pConfig->storage()->clean();
-        Log::ok(TAG, "DONE");
+        WsjcppLog::ok(TAG, "DONE");
         return 0;
     }
 
     // configure http handlers
+    g_httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
     g_httpServer.addHandler(new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
 
     signal( SIGINT, quitApp );
@@ -166,7 +173,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("start")) {
-        Log::info(TAG, "Starting...");
+        WsjcppLog::info(TAG, "Starting...");
 
         pConfig->scoreboard()->initStateFromStorage();
 
@@ -185,7 +192,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        Log::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
+        WsjcppLog::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
         g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
         g_httpServer.setPort(pConfig->scoreboardPort());

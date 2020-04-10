@@ -6,14 +6,15 @@
 #include <flag.h>
 #include <service.h>
 #include <team.h>
+#include <wsjcpp_yaml.h>
 
 class Storage {
 public:
     // Storage(const std::string &sType);
     static std::string type() { return "unknown"; };
 
-    virtual bool applyConfigFromFile(
-        const std::string &sFilePath, 
+    virtual bool applyConfigFromYaml(
+        WsjcppYaml &yamlConfig,
         std::vector<Team> &vTeamsConf,
         std::vector<Service> &vServicesConf
     ) = 0;

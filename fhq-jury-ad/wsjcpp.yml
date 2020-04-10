@@ -1,14 +1,15 @@
 name: "fhq-jury-ad"
-version: "v0.3.1"
+version: "v0.4.2"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "Jury System for a attack-defence ctf games"
+
 authors:
   - name: "Evgenii Sopov"
     email: "mrseakg@gmail.com"
 
 origins:
-  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+  - address: "https://wsjcpp.org/packages/"
     type: "package-registry"
 
 keywords:
@@ -16,7 +17,7 @@ keywords:
 
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.1.3"
+    version: "v0.1.4"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
@@ -35,10 +36,26 @@ dependencies:
     url: "https://github.com/wsjcpp/HowardHinnant_date:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/HowardHinnant_date"
+  - name: "wsjcpp-yaml"
+    version: "v0.1.1"
+    url: "https://github.com/wsjcpp/wsjcpp-yaml:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_yaml"
+  - name: "wsjcpp-validators"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-validators:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_validators"
+  - name: "wsjcpp-employees"
+    version: "v0.1.1"
+    url: "https://github.com/wsjcpp/wsjcpp-employees:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_employees"
 
 resources:
   - source-file: "../jury.d/html/favicon.ico"
     target-file: "html/favicon.ico"
+    type: "binary"
     filesize: 16958
     sha1: "cc23f8149e72032de20ee01d8fbc593d26559bb6"
     modified: 0

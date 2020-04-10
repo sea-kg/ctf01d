@@ -5,6 +5,7 @@
 #include <scoreboard.h>
 #include <team.h>
 #include <service.h>
+#include <wsjcpp_yaml.h>
 
 class Config {
 	public:
@@ -40,10 +41,11 @@ class Config {
 		Scoreboard *scoreboard();
 
 	private:
-		bool applyGameConf();
-		bool applyServerConf();
-		bool applyScoreboardConf();
-		bool applyCheckersConf();
+		bool applyGameConf(WsjcppYaml &yamlConfig);
+		bool applyServerConf(WsjcppYaml &yamlConfig);
+		bool applyScoreboardConf(WsjcppYaml &yamlConfig);
+		bool applyCheckersConf(WsjcppYaml &yamlConfig);
+		bool readTeamsConf(WsjcppYaml &yamlConfig);
 
 		std::string TAG;
 		Storage *m_pStorage;

@@ -9,9 +9,11 @@ class FileStorage : public Storage {
         static std::string type() { return "file"; };
 
         // Storage
-        virtual bool applyConfigFromFile(const std::string &sFilePath, 
+        virtual bool applyConfigFromYaml(
+            WsjcppYaml &yamlConfig,
             std::vector<Team> &vTeamsConf, 
-            std::vector<Service> &vServicesConf);
+            std::vector<Service> &vServicesConf
+        );
         virtual void clean();
         virtual void insertFlagLive(const Flag &flag);
         virtual std::vector<Flag> listOfLiveFlags();

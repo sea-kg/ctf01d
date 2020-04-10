@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <storage.h>
-#include <utils_logger.h>
+#include <wsjcpp_core.h>
 
 // ---------------------------------------------------------------------
 

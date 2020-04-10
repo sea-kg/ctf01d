@@ -28,11 +28,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server/core")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/3rd_party/nlohmann")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/3rd_party/HowardHinnant/date")
-
-# nlohmann::json
-list (APPEND WSJCPP_SOURCES "src/3rd_party/nlohmann/json.hpp")
 
 
 # HowardHinnant/date

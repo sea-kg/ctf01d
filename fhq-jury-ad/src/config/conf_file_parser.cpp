@@ -5,6 +5,7 @@
 #include <fstream>
 #include <utils_logger.h>
 #include <regex>        // regex, sregex_token_iterator
+#include <cstdlib>
 
 ConfFileParser::ConfFileParser(const std::string &sConfigFile) {
     m_sConfigFile = sConfigFile;
@@ -100,11 +101,10 @@ std::string ConfFileParser::getStringValueFromConfig(const std::string &sParamNa
 
 int ConfFileParser::getIntValueFromConfig(const std::string &sParamName, int defaultValue){
     int nResult = defaultValue;
-    if(m_mapConfigValues.count(sParamName)){
+    if (m_mapConfigValues.count(sParamName)) {
         std::string sParamValue = m_mapConfigValues.at(sParamName);
-        std::istringstream isBuffer(sParamValue);
-        isBuffer >> nResult;
-    }else{
+		nResult = std::atoi(sParamValue.c_str());
+    } else {
         Log::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + std::to_string(defaultValue));
     }
     return nResult;

@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <service_checker_thread.h>
 #include <team.h>
-#include <utils_logger.h>
 #include <wsjcpp_light_web_server.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
@@ -91,7 +90,7 @@ int main(int argc, char* argv[]) {
         sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
         sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
         if (!WsjcppCore::dirExists(sWorkspace)) {
-            Log::err(TAG, "Directory " + sWorkspace + " does not exists");
+            WsjcppLog::err(TAG, "Directory " + sWorkspace + " does not exists");
             return -1;
         }
         // TODO check directory existing and apply dir
@@ -130,14 +129,15 @@ int main(int argc, char* argv[]) {
 
     WsjcppLog::setPrefixLogFile("fhq-jury-ad");
     WsjcppLog::setLogDirectory(sLogDir);
+    WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
+    // TODO rotation period must be in config.yml
 
-    Log::setDir(sLogDir); // TODO will be remmoved
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
     WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
-    if(!pConfig->applyConfig()){
-        Log::err(TAG, "Configuration file has some problems");
+    if (!pConfig->applyConfig()) {
+        WsjcppLog::err(TAG, "Configuration file has some problems");
         return -1;
     }
 
@@ -146,9 +146,9 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("clean")) {
-        Log::warn(TAG, "Cleaning flags from storage...");
+        WsjcppLog::warn(TAG, "Cleaning flags from storage...");
         pConfig->storage()->clean();
-        Log::ok(TAG, "DONE");
+        WsjcppLog::ok(TAG, "DONE");
         return 0;
     }
 

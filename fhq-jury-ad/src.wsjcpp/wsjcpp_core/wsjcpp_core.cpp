@@ -644,12 +644,13 @@ std::string WsjcppLog::g_WSJCPP_LOG_DIR = "./";
 std::string WsjcppLog::g_WSJCPP_LOG_FILE = "";
 std::string WsjcppLog::g_WSJCPP_LOG_PREFIX_FILE = "";
 long WsjcppLog::g_WSJCPP_LOG_START_TIME = 0;
+long WsjcppLog::g_WSJCPP_LOG_ROTATION_PERIOD_IN_SECONDS = 51000;
 
 // ---------------------------------------------------------------------
 
 void WsjcppLog::doLogRotateUpdateFilename(bool bForce) {
     long t = WsjcppCore::currentTime_seconds();
-    long nEverySeconds = 51000; // rotate log if started now or if time left more then 1 day
+    long nEverySeconds = WsjcppLog::g_WSJCPP_LOG_ROTATION_PERIOD_IN_SECONDS; // rotate log if started now or if time left more then 1 day
     if (g_WSJCPP_LOG_START_TIME == 0 || t - g_WSJCPP_LOG_START_TIME > nEverySeconds || bForce) {
         g_WSJCPP_LOG_START_TIME = t;
         g_WSJCPP_LOG_FILE = g_WSJCPP_LOG_DIR + "/"
@@ -718,6 +719,13 @@ void WsjcppLog::setLogDirectory(const std::string &sDirectoryPath) {
 void WsjcppLog::setPrefixLogFile(const std::string &sPrefixLogFile) {
     WsjcppLog::g_WSJCPP_LOG_PREFIX_FILE = sPrefixLogFile;
     WsjcppLog::doLogRotateUpdateFilename(true);
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppLog::setRotationPeriodInSec(long nRotationPeriodInSec) {
+    WsjcppLog::g_WSJCPP_LOG_ROTATION_PERIOD_IN_SECONDS = nRotationPeriodInSec;
+
 }
 
 // ---------------------------------------------------------------------

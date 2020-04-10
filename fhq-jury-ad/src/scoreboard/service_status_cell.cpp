@@ -1,6 +1,7 @@
 #include "service_status_cell.h"
 #include <wsjcpp_core.h>
-#include <utils_logger.h>
+#include <stdio.h>
+#include <cmath>
 
 std::string ServiceStatusCell::SERVICE_UP = "up";
 std::string ServiceStatusCell::SERVICE_DOWN = "down";
@@ -140,10 +141,10 @@ void ServiceStatusCell::setFlagsPutted(int nFlagsPutted) {
     // nTimeAll
     double nResult = (nTimeSuccess*100) / nTimeAll;
     if (nResult > 100.0) {
-        // Log::err(TAG, "calculateSLA nFlagsSuccess = " + std::to_string(nFlagsSuccess) + "");
-        // Log::err(TAG, "calculateSLA nTimeAll_ = " + std::to_string(nTimeAll_) + "");
-        // Log::err(TAG, "calculateSLA serviceConf.timeSleepBetweenRunScriptsInSec() = " + std::to_string(serviceConf.timeSleepBetweenRunScriptsInSec()) + "");
-        Log::err(TAG, "calculateUptime nResult = " + std::to_string(nResult) + "% - wrong");
+        // WsjcppLog::err(TAG, "calculateSLA nFlagsSuccess = " + std::to_string(nFlagsSuccess) + "");
+        // WsjcppLog::err(TAG, "calculateSLA nTimeAll_ = " + std::to_string(nTimeAll_) + "");
+        // WsjcppLog::err(TAG, "calculateSLA serviceConf.timeSleepBetweenRunScriptsInSec() = " + std::to_string(serviceConf.timeSleepBetweenRunScriptsInSec()) + "");
+        WsjcppLog::err(TAG, "calculateUptime nResult = " + std::to_string(nResult) + "% - wrong");
         m_nUptime = 100.0;
     } else {
         m_nUptime = nResult;

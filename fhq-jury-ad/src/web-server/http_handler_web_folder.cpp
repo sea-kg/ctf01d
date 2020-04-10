@@ -1,6 +1,4 @@
 #include "http_handler_web_folder.h"
-#include <utils_logger.h>
-// #include <resources_manager.h>
 #include <wsjcpp_resources_manager.h>
 #include <wsjcpp_light_web_server.h>
 #include <wsjcpp_core.h>
@@ -26,12 +24,12 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWe
     }
 
     if (sRequestPath == "") {
-        Log::err(_tag, "Request path is empty");
+        WsjcppLog::err(_tag, "Request path is empty");
         return false;
     }
 
     if (!WsjcppCore::dirExists(m_sWebFolder)) {
-        Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
+        WsjcppLog::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path

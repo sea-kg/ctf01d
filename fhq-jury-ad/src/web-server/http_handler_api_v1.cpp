@@ -4,8 +4,6 @@
 #include <regex>
 #include <algorithm>
 #include <time.h>
-
-#include <utils_logger.h>
 #include <wsjcpp_light_web_server.h>
 #include <wsjcpp_core.h>
 
@@ -96,7 +94,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
 
         if (nCurrentTimeSec < m_pConfig->gameStartUTCInSec()) {
             response.badRequest().sendText("Error(-8): Game not started yet");
-            Log::warn(TAG, "Error(-8): Game not started yet");
+            WsjcppLog::warn(TAG, "Error(-8): Game not started yet");
             return true;
         }
 
@@ -105,13 +103,13 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
             && nCurrentTimeSec < m_pConfig->gameCoffeeBreakEndUTCInSec()
         ) {
             response.badRequest().sendText("Error(-8): Game on coffeebreak now");
-            Log::warn(TAG, "Error(-8): Game on coffeebreak now");
+            WsjcppLog::warn(TAG, "Error(-8): Game on coffeebreak now");
             return true;
         }
 
         if (nCurrentTimeSec > m_pConfig->gameEndUTCInSec()) {
             response.badRequest().sendText("Error(-9): Game already ended");
-            Log::warn(TAG, "Error(-9): Game already ended");
+            WsjcppLog::warn(TAG, "Error(-9): Game already ended");
             return true;
         }
         std::vector<WsjcppLightWebHttpRequestQueryValue> vParams = pRequest->getRequestQueryParams();
@@ -135,14 +133,14 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         if (sTeamId == "") {
             static const std::string sError = "Error(-10): Not found get-parameter 'teamid' or parameter is empty";
             response.badRequest().sendText(sError);
-            Log::warn(TAG, sError);
+            WsjcppLog::warn(TAG, sError);
             return true;
         }
 
         if (sFlag == "") {
             static const std::string sError = "Error(-11): Not found get-parameter 'flag' or parameter is empty";
             response.badRequest().sendText(sError);
-            Log::warn(TAG, sError);
+            WsjcppLog::warn(TAG, sError);
             return true;
         }
 
@@ -166,14 +164,14 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
 
         if (!bTeamFound) {
             response.badRequest().sendText("Error(-130): this is team not found");
-            Log::err(TAG, "Error(-130): this is team not found");
+            WsjcppLog::err(TAG, "Error(-130): this is team not found");
             return true;
         }
 
         const std::regex reFlagFormat("[a-f0-9]{8,8}-[a-f0-9]{4,4}-[a-f0-9]{4,4}-[a-f0-9]{4,4}-[a-f0-9]{12,12}");
         if (!std::regex_match(sFlag, reFlagFormat)) {
             response.badRequest().sendText("Error(-140): flag has wrong format");
-            Log::err(TAG, "Error(-140): flag has wrong format");
+            WsjcppLog::err(TAG, "Error(-140): flag has wrong format");
             return true;
         }
         m_pConfig->scoreboard()->incrementTries(sTeamId);
@@ -193,19 +191,19 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
 
         if (flag.timeEnd() < nCurrentTimeMSec) {
             response.forbidden().sendText("Error(-151): flag is too old");
-            Log::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag is too old)");
+            WsjcppLog::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag is too old)");
             return true;
         }
 
         if (flag.teamStole() == sTeamId) {
             response.forbidden().sendText("Error(-160): flag already stole by your team");
-            Log::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stole by your team)");
+            WsjcppLog::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stole by your team)");
             return true;
         }
         
         if (flag.teamId() == sTeamId) {
             response.forbidden().sendText("Error(-180): this is your flag");
-            Log::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (this is your flag)");
+            WsjcppLog::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (this is your flag)");
             return true;
         }
 
@@ -215,13 +213,13 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
 
         if (sServiceStatus != ServiceStatusCell::SERVICE_UP) {
             response.forbidden().sendText("Error(-190): Your same service is dead");
-            Log::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Your same service is dead)");
+            WsjcppLog::err(TAG, "Error(-190): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Your same service is dead)");
             return true;
         }
 
         if (m_pConfig->storage()->isAlreadyStole(flag, sTeamId)) {
             response.forbidden().sendText("Error(-170): flag already stoled by your");
-            Log::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
+            WsjcppLog::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
             return true;
         }
 
@@ -230,7 +228,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         std::string sPoints = std::to_string(double(nPoints) / 10.0);
 
         response.ok().sendText("Accepted (+ " + sPoints + " points)");
-        Log::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted + " + sPoints + ")");
+        WsjcppLog::ok(TAG, "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted + " + sPoints + ")");
         return true;
     }
     return false;

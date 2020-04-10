@@ -1,6 +1,6 @@
 #include "service_costs_and_statistics.h"
 #include <string>
-#include <utils_logger.h>
+#include <wsjcpp_core.h>
 
 ServiceCostsAndStatistics::ServiceCostsAndStatistics(const std::string &sServiceId) {
     m_sServiceId = sServiceId;

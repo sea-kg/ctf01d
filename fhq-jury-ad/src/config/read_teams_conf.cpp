@@ -1,5 +1,4 @@
 #include "read_teams_conf.h"
-#include <utils_logger.h>
 #include <sstream>
 #include <storages.h>
 #include <ctime>
@@ -21,15 +20,15 @@ bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
     std::string sRootTeamsDir = m_sWorkspaceDir + "/teams/";
     
     if (!WsjcppCore::dirExists(sRootTeamsDir)) {
-        Log::err(TAG, "Directory " + sRootTeamsDir + " not exists");
+        WsjcppLog::err(TAG, "Directory " + sRootTeamsDir + " not exists");
         return false;
     }
-    Log::info(TAG, "Search team.conf");
+    WsjcppLog::info(TAG, "Search team.conf");
 
     std::vector<std::string> vListOfTeams = WsjcppCore::listOfFiles(sRootTeamsDir);
 
     if (vListOfTeams.size() == 0) {
-        Log::err(TAG, "Teams does not defined");
+        WsjcppLog::err(TAG, "Teams does not defined");
         return false;
     }
     vTeams.clear();
@@ -40,46 +39,46 @@ bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
         if (std::getline(test, sTeamId, '.')) {
         }
         std::string sTeamConfPath =  sRootTeamsDir + sTeamId + ".conf";
-        Log::info(TAG, "Reading " + sTeamConfPath);
+        WsjcppLog::info(TAG, "Reading " + sTeamConfPath);
         if (!WsjcppCore::fileExists(sTeamConfPath)) {
-            Log::err(TAG, "File " + sTeamConfPath + " not exists");
+            WsjcppLog::err(TAG, "File " + sTeamConfPath + " not exists");
             return false;
         }
         ConfFileParser teamConf = ConfFileParser(sTeamConfPath);
         if (!teamConf.parseConfig()) {
-            Log::err(TAG, "Could not parse " + sTeamConfPath);
+            WsjcppLog::err(TAG, "Could not parse " + sTeamConfPath);
             return false;
         }
         std::string sPrefix = "teams." + sTeamId + ".";
 
-        Log::info(TAG, sPrefix + "id = " + sTeamId);
+        WsjcppLog::info(TAG, sPrefix + "id = " + sTeamId);
 
         std::string sTeamName 
             = teamConf.getStringValueFromConfig(sPrefix + "name", "");
-        Log::info(TAG, sPrefix + "name = " + sTeamName);
+        WsjcppLog::info(TAG, sPrefix + "name = " + sTeamName);
 
          bool bTeamActive
             = teamConf.getBoolValueFromConfig(sPrefix + "active", true);
-        Log::info(TAG, sPrefix + "active = " + std::string(bTeamActive ? "yes" : "no"));
+        WsjcppLog::info(TAG, sPrefix + "active = " + std::string(bTeamActive ? "yes" : "no"));
 
         std::string sTeamIpAddress 
             = teamConf.getStringValueFromConfig(sPrefix + "ip_address", "");
-        Log::info(TAG, sPrefix + "ip_address = " + sTeamIpAddress);
+        WsjcppLog::info(TAG, sPrefix + "ip_address = " + sTeamIpAddress);
         // TODO check the ip format
 
         std::string sTeamLogo
             = teamConf.getStringValueFromConfig(sPrefix + "logo", "");
-        Log::info(TAG, sPrefix + "logo = " + sTeamLogo);
+        WsjcppLog::info(TAG, sPrefix + "logo = " + sTeamLogo);
         // TODO check logo exists
         
         if (!bTeamActive) {
-            Log::warn(TAG, "Team " + sTeamId + " - disactivated ");
+            WsjcppLog::warn(TAG, "Team " + sTeamId + " - disactivated ");
             continue;
         }
 
         for (unsigned int i = 0; i < vTeams.size(); i++) {
             if (vTeams[i].id() == sTeamId) {
-                Log::err(TAG, "Already registered team with id " + sTeamId);
+                WsjcppLog::err(TAG, "Already registered team with id " + sTeamId);
                 return false;
             }
         }
@@ -92,11 +91,11 @@ bool ReadTeamsConf::read(std::vector<Team> &vTeams) {
         _teamConf.setLogo(sTeamLogo);
 
         vTeams.push_back(_teamConf);
-        Log::ok(TAG, "Registered team " + sTeamId);
+        WsjcppLog::ok(TAG, "Registered team " + sTeamId);
     }
     
     if (vTeams.size() == 0) {
-        Log::err(TAG, "No one defined team " + sRootTeamsDir);
+        WsjcppLog::err(TAG, "No one defined team " + sRootTeamsDir);
         return false;
     }
 

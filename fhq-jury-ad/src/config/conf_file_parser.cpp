@@ -3,7 +3,7 @@
 #include "conf_file_parser.h"
 #include <sys/stat.h>
 #include <fstream>
-#include <utils_logger.h>
+#include <wsjcpp_core.h>
 #include <regex>        // regex, sregex_token_iterator
 #include <cstdlib>
 
@@ -71,13 +71,13 @@ bool ConfFileParser::parseConfig(){
             
             // std::cout << " [" << sParamName << "]  => [" << sParamValue << "]" << std::endl;
             
-            if(m_mapConfigValues.count(sParamName)){
-                Log::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sConfigFile);
-            }else{
+            if (m_mapConfigValues.count(sParamName)) {
+                WsjcppLog::warn(TAG, "Ignoring duplicate of option line(" + std::to_string(nLineNumber) + ") in config: " + m_sConfigFile);
+            } else {
                 m_mapConfigValues.insert(std::pair<std::string,std::string>(sParamName, sParamValue));    
             }
-        }else{
-            Log::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sConfigFile);
+        } else {
+            WsjcppLog::warn(TAG, "Ignoring invalid line(" + std::to_string(nLineNumber) + ") in config: " + m_sConfigFile);
         }
         
     }
@@ -92,7 +92,7 @@ std::string ConfFileParser::getStringValueFromConfig(const std::string &sParamNa
     if(m_mapConfigValues.count(sParamName)){
         sResult = m_mapConfigValues.at(sParamName);
     }else{
-        Log::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + defaultValue);
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + defaultValue);
     }
     return sResult;
 }
@@ -105,7 +105,7 @@ int ConfFileParser::getIntValueFromConfig(const std::string &sParamName, int def
         std::string sParamValue = m_mapConfigValues.at(sParamName);
         nResult = std::atoi(sParamValue.c_str());
     } else {
-        Log::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + std::to_string(defaultValue));
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + std::to_string(defaultValue));
     }
     return nResult;
 }
@@ -120,13 +120,13 @@ bool ConfFileParser::getBoolValueFromConfig(const std::string &sParamName, bool 
         this->string_trim(sParamValue);
         std::transform(sParamValue.begin(), sParamValue.end(), sParamValue.begin(), ::tolower);
         if (sParamValue != "yes" && sParamValue != "no") {
-            Log::err(TAG, sParamName + " - wrong value (expected 'yes' or 'no') in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
+            WsjcppLog::err(TAG, sParamName + " - wrong value (expected 'yes' or 'no') in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
         } else {
             bResult = sParamValue == "yes";
         }
 
     } else {
-        Log::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
+        WsjcppLog::warn(TAG, sParamName + " - not found in " + m_sConfigFile + "\n\t Will be used default value: " + (defaultValue ? "yes" : "no"));
     }
     return bResult;
 }

@@ -1,6 +1,6 @@
 
 #include "dorunchecker.h"
-#include <utils_logger.h>
+#include <wsjcpp_core.h>
 #include <mutex>
 #include <sstream>
 #include <iostream>
@@ -114,7 +114,7 @@ void DoRunChecker::run() {
 
     if (pipe(fd) != 0) {
         m_sOutput = "Could not open pipe";
-        Log::err(TAG, m_sOutput);
+        WsjcppLog::err(TAG, m_sOutput);
         m_nExitCode = -1;
         m_bHasError = true;
         m_bFinishedByTimeout = false;
@@ -126,7 +126,7 @@ void DoRunChecker::run() {
 
     if(nChildPid < 0) {
         m_sOutput = "fork failed!";
-        Log::err(TAG, m_sOutput);
+        WsjcppLog::err(TAG, m_sOutput);
         m_nExitCode = -1;
         m_bHasError = true;
         m_bFinishedByTimeout = false;
@@ -178,7 +178,7 @@ void DoRunChecker::run() {
         close(nPipeOut);
         m_bHasError = true;
         m_nExitCode = -1;
-        Log::err("DoRunProcess", "bad alloc");
+        WsjcppLog::err("DoRunProcess", "bad alloc");
         return;
     }
     

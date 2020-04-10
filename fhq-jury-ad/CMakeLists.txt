@@ -128,8 +128,6 @@ list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.cpp")
 # utils
 list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.h")
 list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.cpp")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_logger.h")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_logger.cpp")
 
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.h")

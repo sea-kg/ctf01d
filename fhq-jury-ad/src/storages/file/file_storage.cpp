@@ -18,9 +18,11 @@ FileStorage::FileStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 
 // ----------------------------------------------------------------------
 
-bool FileStorage::applyConfigFromFile(const std::string &sConfigFile, 
-            std::vector<Team> &vTeamsConf,
-            std::vector<Service> &vServicesConf) {
+bool FileStorage::applyConfigFromYaml(
+    WsjcppYaml &yamlConfig,
+    std::vector<Team> &vTeamsConf,
+    std::vector<Service> &vServicesConf
+) {
     
     Log::info(TAG, "Reading config: " + sConfigFile);
     

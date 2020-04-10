@@ -105,8 +105,6 @@ list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.h")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/html_js_scoreboard_js.cpp")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.h")
 list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/config_yml.cpp")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/mysql_storage_conf.h")
-list (APPEND WSJCPP_SOURCES "./src/resources.wsjcpp/mysql_storage_conf.cpp")
 
 #[end-list-of-resources]
 

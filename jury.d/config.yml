@@ -23,3 +23,22 @@ scoreboard:
   port: 8080 # http port for scoreboard
   htmlfolder: "./html" # web page for scoreboard see index-template.html
   random: no # If yes - will be random values in scoreboard
+
+mysql_storage: # if server.use_storage is mysql
+  dbhost: "localhost"
+  dbport: 3306
+  dbname: "fhqjuryad"
+  dbuser: "fhqjuryad"
+  dbpass: "fhqjuryad"
+
+teams:
+  - id: "another_some" # must be uniq
+    name: "Another Some"
+    active: yes
+    logo: "images/teams/unknown.svg"
+    ip_address: "127.0.1.1" # address to vulnserver
+  - id: "so_some" # must be uniq
+    name: "So Some"
+    active: yes
+    logo: "images/teams/unknown.svg"
+    ip_address: "127.0.0.1" # address to vulnserver

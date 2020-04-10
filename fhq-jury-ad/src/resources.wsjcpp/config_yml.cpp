@@ -10,11 +10,11 @@ const std::string &RES_config_yml::getFilename() {
 }
 
 const int RES_config_yml::getBufferSize() {
-    return 1248;
+    return 1735;
 }
 
 const char *RES_config_yml::getBuffer() {
-    static const std::string sRet =  // size: 1248
+    static const std::string sRet =  // size: 1735
         "## Combined config for fhq-jury-ad\n"
         "# use 2 spaces for tab\n"
         "\n"
@@ -40,6 +40,25 @@ const char *RES_config_yml::getBuffer() {
         "  port: 8080 # http port for scoreboard\n"
         "  htmlfolder: \"./html\" # web page for scoreboard see index-template.html\n"
         "  random: no # If yes - will be random values in scoreboard\n"
+        "\n"
+        "mysql_storage: # if server.use_storage is mysql\n"
+        "  dbhost: \"localhost\"\n"
+        "  dbport: 3306\n"
+        "  dbname: \"fhqjuryad\"\n"
+        "  dbuser: \"fhqjuryad\"\n"
+        "  dbpass: \"fhqjuryad\"\n"
+        "\n"
+        "teams:\n"
+        "  - id: \"another_some\" # must be uniq\n"
+        "    name: \"Another Some\"\n"
+        "    active: yes\n"
+        "    logo: \"images/teams/unknown.svg\"\n"
+        "    ip_address: \"127.0.1.1\" # address to vulnserver\n"
+        "  - id: \"so_some\" # must be uniq\n"
+        "    name: \"So Some\"\n"
+        "    active: yes\n"
+        "    logo: \"images/teams/unknown.svg\"\n"
+        "    ip_address: \"127.0.0.1\" # address to vulnserver\n"
     ;
     return sRet.c_str();
 } //::buffer() 

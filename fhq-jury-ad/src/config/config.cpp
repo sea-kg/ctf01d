@@ -360,7 +360,7 @@ bool Config::applyConfig(){
         m_pStorage);
 
     // configure storage
-    if (!m_pStorage->applyConfigFromFile(m_sWorkspaceDir + "/" + m_sUseStorage + "_storage.conf", m_vTeamsConf, m_vServicesConf)) {
+    if (!m_pStorage->applyConfigFromYaml(yamlConfig, m_vTeamsConf, m_vServicesConf)) {
         WsjcppLog::err(TAG, "Could not init configuration storage");
         return false;
     }

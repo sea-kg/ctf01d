@@ -20,56 +20,45 @@ MySqlStorage::MySqlStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::applyConfigFromFile(const std::string &sConfigFile, 
-            std::vector<Team> &vTeams, 
-            std::vector<Service> &vServicesConf) {
-    WsjcppLog::info(TAG, "Reading config: " + sConfigFile);
-    
-    if (!WsjcppCore::fileExists(sConfigFile)) {
-        WsjcppLog::err(TAG, "File " + sConfigFile + " does not exists ");
-        return false;
-    }
+bool MySqlStorage::applyConfigFromYaml(
+    WsjcppYaml &yamlConfig, 
+    std::vector<Team> &vTeams, 
+    std::vector<Service> &vServicesConf
+) {
 
-    // mysql_storage.conf - will be override configs from conf.ini
-    ConfFileParser mysqlStorageConf = ConfFileParser(sConfigFile);
-    if (!mysqlStorageConf.parseConfig()) {
-        WsjcppLog::err(TAG, "Could not parse " + sConfigFile);
-        return false;
-    }
-
-    m_sDatabaseHost = mysqlStorageConf.getStringValueFromConfig("mysql_storage.dbhost", m_sDatabaseHost);
+    m_sDatabaseHost = yamlConfig["mysql_storage"]["dbhost"].getValue();
     WsjcppLog::info(TAG, "mysql_storage.dbhost: " + m_sDatabaseHost);
 
-    m_nDatabasePort = mysqlStorageConf.getIntValueFromConfig("mysql_storage.dbport", m_nDatabasePort);
+    m_nDatabasePort = std::atoi(yamlConfig["mysql_storage"]["dbport"].getValue().c_str());
     WsjcppLog::info(TAG, "mysql_storage.dbport: " + std::to_string(m_nDatabasePort));
 
-    m_sDatabaseName = mysqlStorageConf.getStringValueFromConfig("mysql_storage.dbname", m_sDatabaseName);
+    m_sDatabaseName = yamlConfig["mysql_storage"]["dbname"].getValue();
     WsjcppLog::info(TAG, "mysql_storage.dbname: " + m_sDatabaseName);
 
 
-    m_sDatabaseUser = mysqlStorageConf.getStringValueFromConfig("mysql_storage.dbuser", m_sDatabaseUser);
+    m_sDatabaseUser = yamlConfig["mysql_storage"]["dbuser"].getValue();
     WsjcppLog::info(TAG, "mysql_storage.dbuser: " + m_sDatabaseUser);
 
-    m_sDatabasePass = mysqlStorageConf.getStringValueFromConfig("mysql_storage.dbpass", m_sDatabasePass);
+    m_sDatabasePass = yamlConfig["mysql_storage"]["dbpass"].getValue();
     // Log::info(TAG, "mysql_storage.dbpass: " + m_sDatabasePass);
 
     if (this->m_sDatabaseHost == "") {
-        WsjcppLog::err(TAG, sConfigFile + ": mysql_storage.dbhost - not found");
+        WsjcppLog::err(TAG, "mysql_storage.dbhost - not found");
 		return false;
 	}
 
     if (this->m_sDatabaseName == "") {
-		WsjcppLog::err(TAG, sConfigFile + ": mysql_storage.dbname - not found");
+		WsjcppLog::err(TAG, "mysql_storage.dbname - not found");
 		return false;
 	}
 
 	if (this->m_sDatabaseUser == "") {
-		WsjcppLog::err(TAG, sConfigFile + ": mysql_storage.dbuser - not found");
+		WsjcppLog::err(TAG, "mysql_storage.dbuser - not found");
 		return false;
 	}
 
     if (this->m_sDatabasePass == "") {
-		WsjcppLog::err(TAG, sConfigFile + ": mysql_storage.dbpass - not found");
+		WsjcppLog::err(TAG, "mysql_storage.dbpass - not found");
 		return false;
 	}
 

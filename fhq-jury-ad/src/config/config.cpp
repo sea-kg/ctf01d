@@ -9,6 +9,7 @@
 #include <wsjcpp_core.h>
 #include <wsjcpp_yaml.h>
 #include <wsjcpp_validators.h>
+#include <employ_team_logos.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
     TAG = "Config";
@@ -284,6 +285,7 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
 
 bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
     m_vTeamsConf.clear();
+    EmployTeamLogos *pTeamLogos = findWsjcppEmploy<EmployTeamLogos>();
 
     WsjcppYamlItem yamlTeams = yamlConfig["teams"];
 
@@ -298,36 +300,8 @@ bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
         // TODO check sTeamId format
 
         WsjcppLog::info(TAG, "id = " + sTeamId);
-
-        std::string sTeamName = yamlTeam["name"].getValue();
-        WsjcppLog::info(TAG, "name = " + sTeamName);
-
         bool bTeamActive = yamlTeam["active"].getValue() == "yes";
         WsjcppLog::info(TAG, "active = " + std::string(bTeamActive ? "yes" : "no"));
-
-        std::string sTeamIpAddress = yamlTeam["ip_address"].getValue();
-        WsjcppLog::info(TAG, "ip_address = " + sTeamIpAddress);
-        std::string sError;
-        if (!WsjcppValidators::isValidIPv4(sTeamIpAddress, sError)) {
-            WsjcppLog::err(TAG, "Invalid IPv4 address" + sError);
-            return false;
-        }
-
-        std::string sTeamLogo = yamlTeam["logo"].getValue();
-        sTeamLogo = WsjcppCore::doNormalizePath(m_sWorkspaceDir + "/" + sTeamLogo);
-        if (!WsjcppCore::fileExists(sTeamLogo)) {
-            WsjcppLog::err(TAG, "File '" + sTeamLogo + "' did not found");
-            return false;
-        }
-        WsjcppLog::info(TAG, "logo = " + sTeamLogo);
-        /*char *pBuffer = nullptr;
-        int nBufferSize = 0;
-        if (WsjcppCore::readFileToBuffer("./data/readFileToBuffer.txt", &pBuffer, nBufferSize)) {
-            // your can work with buffer here
-        }*/
-
-        // TODO check logo exists and read to buffer
-        
         if (!bTeamActive) {
             WsjcppLog::warn(TAG, "Team " + sTeamId + " - deactivated");
             continue;
@@ -339,6 +313,26 @@ bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
                 return false;
             }
         }
+
+        std::string sTeamName = yamlTeam["name"].getValue();
+        WsjcppLog::info(TAG, "name = " + sTeamName);
+
+        std::string sTeamIpAddress = yamlTeam["ip_address"].getValue();
+        WsjcppLog::info(TAG, "ip_address = " + sTeamIpAddress);
+        std::string sError;
+        if (!WsjcppValidators::isValidIPv4(sTeamIpAddress, sError)) {
+            WsjcppLog::err(TAG, "Invalid IPv4 address" + sError);
+            return false;
+        }
+
+        std::string sTeamLogo = yamlTeam["logo"].getValue();
+        sTeamLogo = WsjcppCore::doNormalizePath(m_sWorkspaceDir + "/" + sTeamLogo);
+        if (!pTeamLogos->loadTeamLogo(sTeamId, sTeamLogo)) {
+            return false;
+        }
+        WsjcppLog::info(TAG, "logo = " + sTeamLogo);
+
+        
         // default values of service config
         Team _teamConf;
         _teamConf.setId(sTeamId);

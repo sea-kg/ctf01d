@@ -5,6 +5,7 @@ project(fhq-jury-ad)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
+
 #### END_WSJCPP_APPEND
 
 set(CMAKE_CXX_STANDARD 11)
@@ -25,8 +26,10 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/utils")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/interfaces")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/web-server")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
+
+# employees
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
 
@@ -44,12 +47,13 @@ list (APPEND WSJCPP_SOURCES "src/config/service.cpp")
 list (APPEND WSJCPP_SOURCES "src/config/team.h")
 list (APPEND WSJCPP_SOURCES "src/config/team.cpp")
 
-
-# web-server
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_api_v1.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_api_v1.cpp")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_folder.h")
-list (APPEND WSJCPP_SOURCES "src/web-server/http_handler_web_folder.cpp")
+# http_handlers
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.h")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.cpp")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.h")
+list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.cpp")
+list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.h")
+list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
 
 # objects
 list (APPEND WSJCPP_SOURCES "src/objects/flag.h")

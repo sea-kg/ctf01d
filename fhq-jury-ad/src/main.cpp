@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <service_checker_thread.h>
 #include <team.h>
-#include <wsjcpp_light_web_server.h>
+#include <light_web_http_handler_team_logo.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
 #include <utils_help_parse_args.h>
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    WsjcppEmployees::init({});
+    
 
     std::string sWorkspace = "/usr/share/fhq-jury-ad/jury.d"; // default workspace
     if (helpParseArgs.has("--workspace-dir")) {
@@ -135,6 +135,8 @@ int main(int argc, char* argv[]) {
     WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
     // TODO rotation period must be in config.yml
 
+    WsjcppEmployees::init({});
+
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
     WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
 
@@ -156,6 +158,7 @@ int main(int argc, char* argv[]) {
     }
 
     // configure http handlers
+    g_httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
     g_httpServer.addHandler(new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
 
     signal( SIGINT, quitApp );

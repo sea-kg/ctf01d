@@ -43,7 +43,7 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
         teamInfo["id"] = teamConf.id();
         teamInfo["name"] = teamConf.name();
         teamInfo["ip_address"] = teamConf.ipAddress();
-        teamInfo["logo"] = teamConf.logo();
+        teamInfo["logo"] = "./team-logo/" + teamConf.id();
         m_jsonGame["teams"].push_back(teamInfo);
         m_jsonTeams["teams"].push_back(teamInfo);
     }

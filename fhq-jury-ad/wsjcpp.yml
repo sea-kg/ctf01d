@@ -41,6 +41,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-yaml:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_yaml"
+  - name: "wsjcpp-validators"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-validators:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_validators"
 
 resources:
   - source-file: "../jury.d/html/favicon.ico"

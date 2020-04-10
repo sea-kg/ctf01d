@@ -52,4 +52,9 @@ list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_yaml/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
 
+# wsjcpp-validators:v0.1.0
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_validators/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.h")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cpp")
+
 

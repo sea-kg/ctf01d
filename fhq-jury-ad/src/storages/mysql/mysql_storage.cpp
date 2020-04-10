@@ -3,7 +3,7 @@
 #include <mysql/mysql.h>
 #include <conf_file_parser.h>
 #include <fs.h>
-#include <ts.h>
+#include <wsjcpp_core.h>
 
 REGISTRY_STORAGE(MySqlStorage)
 
@@ -520,7 +520,7 @@ void MySqlStorage::insertFlagAttempt(const std::string &sTeamId, const std::stri
     // TODO check connection with NULL
 
     std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
-        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(TS::currentTime_milliseconds()) + ");";
+        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::currentTime_milliseconds()) + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
         Log::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
@@ -939,7 +939,7 @@ void MySqlStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTea
         + "'" + flag.value() + "', "
         + std::to_string(flag.timeStart()) + ", "
         + std::to_string(flag.timeEnd()) + ", "
-        + std::to_string(TS::currentTime_milliseconds()) + ", "
+        + std::to_string(WsjcppCore::currentTime_milliseconds()) + ", "
         + std::to_string(nPoints) + " "
         + ");";
 

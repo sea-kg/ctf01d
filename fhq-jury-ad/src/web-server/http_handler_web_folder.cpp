@@ -4,6 +4,7 @@
 #include <fallen.h>
 #include <resources_manager.h>
 #include <wsjcpp_light_web_server.h>
+#include <wsjcpp_core.h>
 
 // ----------------------------------------------------------------------
 
@@ -30,13 +31,13 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWe
         return false;
     }
 
-    if (!Fallen::dirExists(m_sWebFolder)) {
+    if (!WsjcppCore::dirExists(m_sWebFolder)) {
         Log::warn(_tag, "Directory " + m_sWebFolder + " does not exists");
     }
 
     std::string sFilePath = m_sWebFolder + sRequestPath; // TODO check /../ in path
     // Log::warn(_tag, "Response Resources " + sFilePath);
-    if (!Fallen::fileExists(sFilePath)) { // TODO check the file exists not dir
+    if (!WsjcppCore::fileExists(sFilePath)) { // TODO check the file exists not dir
         // check in resources
         std::string sResPath = "html" + sRequestPath;
         // Log::warn(_tag, "Response Resources " + sResPath);
@@ -51,7 +52,7 @@ bool HttpHandlerWebFolder::canHandle(const std::string &sWorkerId, WsjcppLightWe
 bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    sRequestPath = WSJCppCore::doNormalizePath(sRequestPath);
+    sRequestPath = WsjcppCore::doNormalizePath(sRequestPath);
 
     WsjcppLightWebHttpResponse response(pRequest->getSockFd());
 
@@ -63,7 +64,7 @@ bool HttpHandlerWebFolder::handle(const std::string &sWorkerId, WsjcppLightWebHt
     
     std::string sFilePath = m_sWebFolder + sRequestPath; 
 
-    if (!Fallen::fileExists(sFilePath)) {
+    if (!WsjcppCore::fileExists(sFilePath)) {
         std::string sResPath = "html" + sRequestPath;
         if (ResourcesManager::has(sResPath)) {
             // Log::warn(_tag, "Response Resources " + sResPath);

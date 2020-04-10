@@ -8,7 +8,6 @@
 #include <utils_logger.h>
 #include <wsjcpp_light_web_server.h>
 #include <wsjcpp_core.h>
-#include <ts.h>
 #include <fs.h>
 #include <str.h>
 
@@ -22,11 +21,11 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
     TAG = "HttpHandlerApiV1";
     
     m_jsonGame["game_name"] = m_pConfig->gameName();
-    m_jsonGame["game_start"] = TS::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
-    m_jsonGame["game_end"] = TS::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
+    m_jsonGame["game_start"] = WsjcppCore::formatTimeUTC(m_pConfig->gameStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_end"] = WsjcppCore::formatTimeUTC(m_pConfig->gameEndUTCInSec()) + " (UTC)";
     m_jsonGame["game_has_coffee_break"] = m_pConfig->gameHasCoffeeBreak();
-    m_jsonGame["game_coffee_break_start"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakStartUTCInSec()) + " (UTC)";
-    m_jsonGame["game_coffee_break_end"] = TS::formatTimeUTC(m_pConfig->gameCoffeeBreakEndUTCInSec()) + " (UTC)";
+    m_jsonGame["game_coffee_break_start"] = WsjcppCore::formatTimeUTC(m_pConfig->gameCoffeeBreakStartUTCInSec()) + " (UTC)";
+    m_jsonGame["game_coffee_break_end"] = WsjcppCore::formatTimeUTC(m_pConfig->gameCoffeeBreakEndUTCInSec()) + " (UTC)";
     m_jsonGame["teams"] = nlohmann::json::array();
     m_jsonGame["services"] = nlohmann::json::array();
 

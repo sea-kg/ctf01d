@@ -26,6 +26,7 @@
 #include <fs.h>
 #include <fallen.h>
 #include <resources_manager.h>
+#include <wsjcpp_core.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -89,9 +90,9 @@ int main(int argc, char* argv[]) {
     if (helpParseArgs.has("--workspace-dir")) {
         // todo replace workspace path
         sWorkspace = helpParseArgs.option("--workspace-dir");
-        sWorkspace = WSJCppCore::getCurrentDirectory() + sWorkspace;
-        sWorkspace = WSJCppCore::doNormalizePath(sWorkspace);
-        if (!Fallen::dirExists(sWorkspace)) {
+        sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
+        sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
+        if (!WsjcppCore::dirExists(sWorkspace)) {
             Log::err(TAG, "Directory " + sWorkspace + " does not exists");
             return -1;
         }

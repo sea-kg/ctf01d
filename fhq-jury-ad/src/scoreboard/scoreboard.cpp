@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <utils_logger.h>
-#include <ts.h>
+#include <wsjcpp_core.h>
 
 // ---------------------------------------------------------------------
 
@@ -487,7 +487,7 @@ void Scoreboard::updateCosts() {
 std::vector<Flag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
     std::vector<Flag> vResult;
-    long nCurrentTime = TS::currentTime_milliseconds() - m_nFlagTimeLiveInSec*1000;
+    long nCurrentTime = WsjcppCore::currentTime_milliseconds() - m_nFlagTimeLiveInSec*1000;
     std::map<std::string,Flag>::iterator it;
     for (it = m_mapFlagsLive.begin(); it != m_mapFlagsLive.end(); it++) {
         Flag flag = it->second;

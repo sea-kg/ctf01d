@@ -10,34 +10,11 @@
 
 class Fallen {
     public:
-        static long currentTime_milliseconds();
-        static long currentTime_seconds();
-        static std::string currentTime_forFilename();
-        static std::string currentTime_logformat();
-        static std::string threadId();
-        static std::string formatTimeForWeb(long nTimeInSec);
-        static std::string formatTimeForFilename(long nTimeInSec);
-        static std::string formatTimeUTC(int nTimeInSec);
-
-        static bool dirExists(const std::string &sFilename);
-        static bool fileExists(const std::string &sFilename);
-        static std::vector<std::string> listOfDirs(const std::string &sDirname);
-        static std::vector<std::string> listOfFiles(const std::string &sDirname);     
-        static bool makeDir(const std::string &sDirname);
         static bool writeFile(const std::string &sFilename, const std::string &sContent);
         static bool writeFile(const std::string &sFilename, const char *pBuffer, const int nBufferSize);
 
-        static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
-        static std::string& rtrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
-        static std::string& trim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
-        static std::string& to_lower(std::string& str);
-
-        static void initRandom();
-        static std::string createUuid();
         static unsigned long convertVoid2Int(void *p);
         static std::string getPointerAsHex(void *p);
-        
-        
 };
 
 class WSJCppCore {
@@ -49,9 +26,6 @@ class WSJCppCore {
             const std::string &sApplicationAuthor,
             const std::string &sLibraryNameForExports
         );
-
-        static std::string doNormalizePath(const std::string & sPath);
-        static std::string getCurrentDirectory();
 };
 
 // 

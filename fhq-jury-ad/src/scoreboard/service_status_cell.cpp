@@ -1,5 +1,5 @@
 #include "service_status_cell.h"
-#include <ts.h>
+#include <wsjcpp_core.h>
 #include <utils_logger.h>
 
 std::string ServiceStatusCell::SERVICE_UP = "up";
@@ -15,7 +15,7 @@ std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
 
 ServiceStatusCell::ServiceStatusCell(const Service &serviceConf, int nGameStartInSec, int nGameEndInSec) {
     m_serviceConf = serviceConf;
-    m_nUpPointTimeInSec = TS::currentTime_seconds();
+    m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
     TAG = "ServiceStatusCell-" + serviceConf.id();
     m_sServiceId = serviceConf.id();
     m_nGameStartInSec = nGameStartInSec;
@@ -123,7 +123,7 @@ void ServiceStatusCell::setFlagsPutted(int nFlagsPutted) {
     
     double nTimeSuccess = nFlagsPutted * m_serviceConf.timeSleepBetweenRunScriptsInSec();
 
-    int nLastTime = TS::currentTime_seconds();
+    int nLastTime = WsjcppCore::currentTime_seconds();
     nLastTime = std::min(nLastTime, m_nGameEndInSec);
     
     double nTimeAll = (double)nLastTime - (double)m_nGameStartInSec;
@@ -166,7 +166,7 @@ double ServiceStatusCell::uptime() {
 // ----------------------------------------------------------------------
 
 int ServiceStatusCell::getUptimeInSec() {
-     return TS::currentTime_seconds() - m_nUpPointTimeInSec;
+     return WsjcppCore::currentTime_seconds() - m_nUpPointTimeInSec;
 }
 
 // ----------------------------------------------------------------------
@@ -181,7 +181,7 @@ void ServiceStatusCell::setStatus(const std::string &sStatus) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_sStatus = sStatus;
     if (sStatus != ServiceStatusCell::SERVICE_UP) {
-        m_nUpPointTimeInSec = TS::currentTime_seconds();
+        m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
     }
 }
 

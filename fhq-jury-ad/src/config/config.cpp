@@ -11,6 +11,7 @@
 #include <read_teams_conf.h>
 #include <fs.h>
 #include <fallen.h>
+#include <wsjcpp_core.h>
 
 Config::Config(const std::string &sWorkspaceDir) {
     TAG = "Config";
@@ -222,7 +223,7 @@ bool Config::applyScoreboardConf() {
     } else {
         m_sScoreboardHtmlFolder = m_sWorkspaceDir + "/html";
     }
-    m_sScoreboardHtmlFolder = WSJCppCore::doNormalizePath(m_sScoreboardHtmlFolder);
+    m_sScoreboardHtmlFolder = WsjcppCore::doNormalizePath(m_sScoreboardHtmlFolder);
 
     Log::info(TAG, "scoreboard.htmlfolder: " + m_sScoreboardHtmlFolder);
 

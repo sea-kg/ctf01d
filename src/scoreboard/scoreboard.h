@@ -3,6 +3,7 @@
 
 #include <team_status_row.h>
 #include <ctf01d_flag.h>
+#include <employ_flags.h>
 #include <string>
 #include <map>
 #include <vector>

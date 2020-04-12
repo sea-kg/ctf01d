@@ -33,6 +33,8 @@ list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_scoreboard.h")
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_flags.h")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_flags.cpp")
 
 # checker
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.h")
@@ -55,10 +57,6 @@ list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.h")
 list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.cpp")
 list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.h")
 list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
-
-# objects
-list (APPEND WSJCPP_SOURCES "src/objects/flag.h")
-list (APPEND WSJCPP_SOURCES "src/objects/flag.cpp")
 
 # resources
 

@@ -24,6 +24,8 @@
 #include <wsjcpp_core.h>
 #include <argument_processor_ctf01d_main.h>
 #include <employ_config.h>
+#include <wsjcpp_employees.h>
+#include <employ_flags.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -105,6 +107,16 @@ int main(int argc, const char* argv[]) {
 
     /*if (sWorkDir.length() > 0) {
         if (sWorkDir[0] != '/') { // linux
+    std::string sDirFlags = WsjcppCore::doNormalizePath(sWorkspace + "/flags");
+    if (!WsjcppCore::dirExists(sDirFlags)) {
+        WsjcppCore::makeDir(sDirFlags);
+    }
+
+    EmployFlags *pFlags = findWsjcppEmploy<EmployFlags>();
+    pFlags->setDirectory(sDirFlags);
+
+    /*if (sWorkspace.length() > 0) {
+        if (sWorkspace[0] != '/') { // linux
             char cwd[PATH_MAX];
             if (getcwd(cwd, sizeof(cwd)) != NULL) {
                 printf("Current working dir: %s\n", cwd);

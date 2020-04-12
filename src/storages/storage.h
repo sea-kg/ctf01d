@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <ctf01d_flag.h>
+#include <employ_flags.h>
 #include <wsjcpp_yaml.h>
 
 class Storage {

@@ -164,6 +164,10 @@ TableWriteOnly::TableWriteOnly(const std::string &sDir, long nRotateAfter) {
         WsjcppCore::makeDir(m_sDir);
     }
 
+    if (!WsjcppCore::dirExists(m_sDir)) {
+        WsjcppLog::throw_err(TAG, "Could not found directory '" + m_sDir + "'");
+    }
+
     // read count
     m_sFilepathCount = m_sDir + "/count_records";
     if (WsjcppCore::fileExists(m_sFilepathCount)) {
@@ -302,10 +306,18 @@ bool EmployFlags::init() {
         WsjcppLog::info(TAG, "You must setDerectory before init");
         return false;
     }
+
     std::string sFlagsAttempts = WsjcppCore::doNormalizePath(m_sDirectory + "/attempts");
     if (!WsjcppCore::dirExists(sFlagsAttempts)) {
         WsjcppCore::makeDir(sFlagsAttempts);
     }
+
+    std::string sFlagsPutFails = WsjcppCore::doNormalizePath(m_sDirectory + "/put_fails");
+    m_pFlagsPutFails = new TableFlagsPutFails(sFlagsPutFails);
+
+    std::string sFlagsCheckFails = WsjcppCore::doNormalizePath(m_sDirectory + "/check_fails");
+    m_pFlagsCheckFails = new TableFlagsCheckFails(sFlagsCheckFails);
+
     return true;
 }
 
@@ -366,14 +378,14 @@ int EmployFlags::numberOfFlagAttempts(const std::string &sTeamId) {
 
 // when flag put fail
 void EmployFlags::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
-    WsjcppLog::warn(TAG, "insertFlagPutFail - Not implemented");
+    m_pFlagsPutFails->appendFlag(flag, sReason);
 }
 
 // ---------------------------------------------------------------------
 
 // when flag check fail
 void EmployFlags::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
-    WsjcppLog::warn(TAG, "insertFlagCheckFail - Not implemented");
+    m_pFlagsCheckFails->appendFlag(flag, sReason);
 }
 
 // ---------------------------------------------------------------------

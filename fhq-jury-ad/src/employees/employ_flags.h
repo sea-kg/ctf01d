@@ -124,6 +124,10 @@ class EmployFlags : public WsjcppEmployBase {
         std::string TAG;
         std::string m_sDirectory;
         std::map<std::string, TableFlagsAttempt *> m_mapFlagAttemps;
+
+        TableFlagsPutFails *m_pFlagsPutFails;
+        TableFlagsCheckFails *m_pFlagsCheckFails;
+        
 };
 
 

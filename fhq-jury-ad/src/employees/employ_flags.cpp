@@ -1,11 +1,9 @@
-<<<<<<< HEAD:src/objects/ctf01d_flag.cpp
 #include "ctf01d_flag.h"
 #include <iostream>
 #include <cstring>
 #include <wsjcpp_core.h>
 
 Ctf01dFlag::Ctf01dFlag() {
-=======
 
 #include "employ_flags.h"
 #include <wsjcpp_core.h>
@@ -14,7 +12,6 @@ Ctf01dFlag::Ctf01dFlag() {
 // ---------------------------------------------------------------------
 // Flag
 Flag::Flag() {
->>>>>>> Prepare employ flags:fhq-jury-ad/src/employees/employ_flags.cpp
     
 }
 
@@ -51,6 +48,7 @@ void Ctf01dFlag::generateId() {
 
 // ---------------------------------------------------------------------
 
+
 void Ctf01dFlag::setId(const std::string &sId) {
     m_sId = sId;
 }
@@ -64,6 +62,8 @@ std::string Ctf01dFlag::getId() const {
 // ---------------------------------------------------------------------
 
 void Ctf01dFlag::generateValue() {
+    // TODO redesign more freeble format
+
     static const std::string sAlphabet = "0123456789abcdef";
     char sUuid[37];
     memset(&sUuid, '\0', 37);

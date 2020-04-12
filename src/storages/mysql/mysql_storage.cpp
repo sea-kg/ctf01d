@@ -164,6 +164,7 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "ALTER TABLE `flags_live` MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;"
     ));
 
+    // TODO unused
     vUpdates.push_back(MySQLDBUpdate(9, // don't change if after commit
         "CREATE TABLE `flags_attempts` ("
         "  `id` int UNSIGNED NOT NULL,"
@@ -173,6 +174,7 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     ));
 
+    // TODO unused
     vUpdates.push_back(MySQLDBUpdate(10,  // don't change if after commit
         "ALTER TABLE `flags_attempts` ADD PRIMARY KEY (`id`);"
     ));
@@ -354,16 +356,6 @@ void MySqlStorage::clean() {
     
     {
         std::string sQuery = "DELETE FROM flags;";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
-            return;
-        }
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        mysql_free_result(pRes);
-    }
-
-    {
-        std::string sQuery = "DELETE FROM flags_attempts;";
         if (mysql_query(pConn, sQuery.c_str())) {
             WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
             return;

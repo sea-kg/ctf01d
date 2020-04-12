@@ -2,8 +2,11 @@
 #define EMPLOY_FLAGS_H
 
 #include <wsjcpp_employees.h>
-
 #include <string>
+#include <mutex>
+#include <fstream>
+
+// ---------------------------------------------------------------------
 
 class Flag {
     public:
@@ -45,6 +48,29 @@ class Flag {
         std::string m_sTeamStole;
 };
 
+// ---------------------------------------------------------------------
+
+class TableFlagsAttempt {
+    public:
+        TableFlagsAttempt(const std::string &sDir);
+        ~TableFlagsAttempt();
+        void append(const std::string &sTeamId, const std::string &sFlag);
+        long count();
+
+    private:
+        bool doRotateFilename();
+        std::string TAG;
+        std::string m_sDir;
+        std::string m_sFilepathCount;
+        std::string m_sFilepathData;
+        std::mutex m_mutex;
+        long m_nCount;
+        long m_nRoteteWhen;
+        std::ofstream m_ofsFlagsAttempts;
+};
+
+// ---------------------------------------------------------------------
+
 class EmployFlags : public WsjcppEmployBase {
     public:
         EmployFlags();
@@ -52,7 +78,11 @@ class EmployFlags : public WsjcppEmployBase {
         virtual bool init() override;
         virtual bool deinit() override;
 
-        void setDirectory(const std::string &sDirecotry);
+        // set directory
+        void setDirectory(const std::string &sDirectory);
+
+        // cleanup cache and files
+        void clear();
 
         // add flag attempt
         void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
@@ -62,8 +92,9 @@ class EmployFlags : public WsjcppEmployBase {
 
     private:
         std::string TAG;
-        std::string m_sDirecotry;
-        std::map<std::string, int> m_mapNumberFlagAttemps;
+        std::string m_sDirectory;
+        std::map<std::string, TableFlagsAttempt *> m_mapFlagAttemps;
 };
+
 
 #endif // EMPLOY_FLAGS_H

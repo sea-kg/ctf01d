@@ -70,20 +70,6 @@ void FileStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReas
 
 // ----------------------------------------------------------------------
 
-void FileStorage::insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
-    // TODO
-    WsjcppLog::warn(TAG, "TODO insertFlagAttempt");
-}
-
-// ----------------------------------------------------------------------
-
-int FileStorage::numberOfFlagAttempts(const std::string &sTeamId) {
-    WsjcppLog::warn(TAG, "TODO numberOfFlagAttempts");
-    return 0;
-}
-
-// ----------------------------------------------------------------------
-
 void FileStorage::insertToArchive(Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
     WsjcppLog::warn(TAG, "TODO insertToArchive");

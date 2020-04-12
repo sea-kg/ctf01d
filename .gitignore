@@ -9,6 +9,7 @@ ctf01d
 tmp/*
 .wsjcpp/*
 *.log
+jury.d/flags/*
 
 # Prerequisites
 # *.d

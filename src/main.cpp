@@ -89,13 +89,12 @@ int main(int argc, const char* argv[]) {
         return 0;
     }
 
-    
-    // CTF01D_WORKDIR
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
 
     std::string sWorkDir = pEmployConfig->getWorkDir();
     if (sWorkDir == "") {
         WsjcppLog::throw_err(TAG, "Work Directory not defined.");
+
     }
 
     if (!WsjcppCore::dirExists(sWorkDir)) {

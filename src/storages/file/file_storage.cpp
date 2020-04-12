@@ -58,14 +58,6 @@ std::vector<Flag> FileStorage::listOfLiveFlags() {
 
 // ----------------------------------------------------------------------
 
-void FileStorage::insertToArchive(Flag &flag) {
-    std::lock_guard<std::mutex> lock(m_mutexFlags);
-    WsjcppLog::warn(TAG, "TODO insertToArchive");
-    // TODO
-}
-
-// ----------------------------------------------------------------------
-
 void FileStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
     WsjcppLog::warn(TAG, "TODO insertToFlagsDefence");

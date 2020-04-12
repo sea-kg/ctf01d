@@ -863,6 +863,7 @@ void MySqlStorage::insertToArchive(Ctf01dFlag &flag) {
 // ----------------------------------------------------------------------
 
 void MySqlStorage::insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) {
+
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = "INSERT INTO flags_defence(serviceid, teamid, flag_id, flag, "
         "   date_start, date_end, flag_cost) VALUES("

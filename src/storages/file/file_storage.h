@@ -17,7 +17,6 @@ class FileStorage : public Storage {
         virtual void clean();
         virtual void insertFlagLive(const Flag &flag);
         virtual std::vector<Flag> listOfLiveFlags();
-        virtual void insertToArchive(Flag &flag);
         virtual void insertToFlagsDefence(const Flag &flag, int nPoints);
         virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints);
 

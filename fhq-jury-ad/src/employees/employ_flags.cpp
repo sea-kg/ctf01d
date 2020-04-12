@@ -158,7 +158,7 @@ TableFlagsAttempt::TableFlagsAttempt(const std::string &sDir) {
     std::string TAG = "TableFlagsAttempt(" + sDir + ")";
     m_sDir = sDir;
     m_nCount = 0;
-    m_nRoteteWhen = 5;
+    m_nRoteteWhen = 1000;
     if (!WsjcppCore::dirExists(m_sDir)) {
         WsjcppCore::makeDir(m_sDir);
     }

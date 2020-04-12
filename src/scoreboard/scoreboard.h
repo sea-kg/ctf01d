@@ -48,6 +48,9 @@ class Scoreboard {
         std::string TAG;
         int m_nServicesSize;
         Storage *m_pStorage;
+        EmployFlags *m_pEmployFlags;
+        std::vector<Service> m_vServices;
+        std::vector<Team> m_vTeams;
         int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;

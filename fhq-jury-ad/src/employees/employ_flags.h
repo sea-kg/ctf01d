@@ -50,11 +50,11 @@ class Flag {
 
 // ---------------------------------------------------------------------
 
-class TableFlagsAttempt {
+class TableWriteOnly {
     public:
-        TableFlagsAttempt(const std::string &sDir);
-        ~TableFlagsAttempt();
-        void append(const std::string &sTeamId, const std::string &sFlag);
+        TableWriteOnly(const std::string &sDir, long nRotateAfter);
+        ~TableWriteOnly();
+        void append(const std::string &sLine);
         long count();
 
     private:
@@ -66,7 +66,31 @@ class TableFlagsAttempt {
         std::mutex m_mutex;
         long m_nCount;
         long m_nRoteteWhen;
-        std::ofstream m_ofsFlagsAttempts;
+        std::ofstream m_ofsData;
+};
+
+// ---------------------------------------------------------------------
+
+class TableFlagsAttempt : public TableWriteOnly {
+    public:
+        TableFlagsAttempt(const std::string &sDir);
+        void appendAttempt(const std::string &sTeamId, const std::string &sFlag);
+};
+
+// ---------------------------------------------------------------------
+
+class TableFlagsPutFails : public TableWriteOnly {
+    public:
+        TableFlagsPutFails(const std::string &sDir);
+        void appendFlag(const Flag &flag, const std::string &sReason);
+};
+
+// ---------------------------------------------------------------------
+
+class TableFlagsCheckFails : public TableWriteOnly {
+    public:
+        TableFlagsCheckFails(const std::string &sDir);
+        void appendFlag(const Flag &flag, const std::string &sReason);
 };
 
 // ---------------------------------------------------------------------
@@ -89,6 +113,12 @@ class EmployFlags : public WsjcppEmployBase {
 
         // count of flag attempts for init scoreboard
         int numberOfFlagAttempts(const std::string &sTeamId);
+
+        // when flag put fail
+        void insertFlagPutFail(const Flag &flag, const std::string &sReason);
+
+        // when flag check fail
+        void insertFlagCheckFail(const Flag &flag, const std::string &sReason);
 
     private:
         std::string TAG;

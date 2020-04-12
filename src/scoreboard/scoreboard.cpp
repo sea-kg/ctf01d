@@ -4,11 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include <wsjcpp_core.h>
-<<<<<<< HEAD:src/scoreboard/scoreboard.cpp
 #include <employ_config.h>
-=======
 #include <employ_flags.h>
->>>>>>> Redesign flags_attampts from database to file:fhq-jury-ad/src/scoreboard/scoreboard.cpp
 
 // ---------------------------------------------------------------------
 
@@ -39,6 +36,7 @@ Scoreboard::Scoreboard(
     m_nAllDefenceFlags = 0;
     m_nBacisCostsStolenFlagInPoints = nBacisCostsStolenFlagInPoints;
     m_nServicesSize = vServicesConf.size();
+    m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     m_mapTeamsStatuses.clear(); // possible memory leak
     for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
@@ -189,7 +187,6 @@ void Scoreboard::initStateFromStorage() {
     }
 
     // load services statistics
-    EmployFlags *pEmployFlags = findWsjcppEmploy<EmployFlags>();
     m_nAllStolenFlags = 0;
     m_nAllDefenceFlags = 0;
     for (unsigned int i = 0; i < vServices.size(); i++) {
@@ -208,7 +205,7 @@ void Scoreboard::initStateFromStorage() {
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); it++) {
         TeamStatusRow *pRow = it->second;
 
-        int nTries = pEmployFlags->numberOfFlagAttempts(pRow->teamId());
+        int nTries = m_pEmployFlags->numberOfFlagAttempts(pRow->teamId());
         pRow->setTries(nTries);
         m_jsonScoreboard["scoreboard"][pRow->teamId()]["tries"] = nTries;
 
@@ -354,7 +351,7 @@ void Scoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sS
     std::string sServiceId = flag.getServiceId();
     std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
-    m_pStorage->insertFlagPutFail(flag, sDescrStatus);
+    m_pEmployFlags->insertFlagPutFail(flag, sDescrStatus);
 
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;

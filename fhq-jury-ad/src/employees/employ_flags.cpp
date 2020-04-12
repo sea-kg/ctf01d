@@ -151,63 +151,59 @@ void Ctf01dFlag::copyFrom(const Ctf01dFlag &flag) {
     this->setTimeEndInMs(flag.getTimeEndInMs());
 }
 
-// ---------------------------------------------------------------------
-// TableFlagsAttempt
 
-TableFlagsAttempt::TableFlagsAttempt(const std::string &sDir) {
-    std::string TAG = "TableFlagsAttempt(" + sDir + ")";
+// ---------------------------------------------------------------------
+// TableWriteOnly
+
+TableWriteOnly::TableWriteOnly(const std::string &sDir, long nRotateAfter) {
+    std::string TAG = "TableWriteOnly(" + sDir + ")";
     m_sDir = sDir;
     m_nCount = 0;
-    m_nRoteteWhen = 1000;
+    m_nRoteteWhen = nRotateAfter;
     if (!WsjcppCore::dirExists(m_sDir)) {
         WsjcppCore::makeDir(m_sDir);
     }
 
     // read count
-    m_sFilepathCount = m_sDir + "/attemps_count";
+    m_sFilepathCount = m_sDir + "/count_records";
     if (WsjcppCore::fileExists(m_sFilepathCount)) {
         std::string sContent;
         WsjcppCore::readTextFile(m_sFilepathCount, sContent);
         m_nCount = std::atoi(sContent.c_str());
     }
     doRotateFilename();
-    m_ofsFlagsAttempts.open(m_sFilepathData.c_str(), std::ofstream::out | std::ofstream::app);
+    m_ofsData.open(m_sFilepathData.c_str(), std::ofstream::out | std::ofstream::app);
 }
 
 // ---------------------------------------------------------------------
 
-TableFlagsAttempt::~TableFlagsAttempt() {
-    m_ofsFlagsAttempts.close();
+TableWriteOnly::~TableWriteOnly() {
+    m_ofsData.close();
 }
 
 // ---------------------------------------------------------------------
 
-void TableFlagsAttempt::append(const std::string &sTeamId, const std::string &sFlag) {
+void TableWriteOnly::append(const std::string &sLine) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_nCount++;
     if (doRotateFilename()) {
-        m_ofsFlagsAttempts.close();
-        m_ofsFlagsAttempts.open(m_sFilepathData.c_str(), std::ofstream::out | std::fstream::app);
+        m_ofsData.close();
+        m_ofsData.open(m_sFilepathData.c_str(), std::ofstream::out | std::fstream::app);
     }
-    m_ofsFlagsAttempts 
-        << "attempt "
-        << m_nCount
-        << " " << sTeamId << " "
-        << std::to_string(WsjcppCore::currentTime_milliseconds())
-        << " " << sFlag << "\n";
-    m_ofsFlagsAttempts.flush();
+    m_ofsData << m_nCount << " " << sLine << "\n";
+    m_ofsData.flush();
     WsjcppCore::writeFile(m_sFilepathCount, std::to_string(m_nCount));
 }
 
 // ---------------------------------------------------------------------
 
-long TableFlagsAttempt::count() {
+long TableWriteOnly::count() {
     return m_nCount;
 }
 
 // ---------------------------------------------------------------------
 
-bool TableFlagsAttempt::doRotateFilename() {
+bool TableWriteOnly::doRotateFilename() {
     if (m_nCount % m_nRoteteWhen == 0) {
         long nMin = (m_nCount / m_nRoteteWhen) * m_nRoteteWhen;
         std::string sMin = std::to_string(nMin);
@@ -223,6 +219,70 @@ bool TableFlagsAttempt::doRotateFilename() {
         return true;
     }
     return false;
+}
+
+// ---------------------------------------------------------------------
+// TableFlagsAttempt
+
+TableFlagsAttempt::TableFlagsAttempt(const std::string &sDir) 
+: TableWriteOnly(sDir, 1000) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+void TableFlagsAttempt::appendAttempt(const std::string &sTeamId, const std::string &sFlag) {
+    this->append(
+        " attempt " + sTeamId
+        + " " + std::to_string(WsjcppCore::currentTime_milliseconds())
+        + " " + sFlag
+    );
+}
+
+// ---------------------------------------------------------------------
+// TableFlagsPutFails
+
+TableFlagsPutFails::TableFlagsPutFails(const std::string &sDir) 
+: TableWriteOnly(sDir, 1000) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+void TableFlagsPutFails::appendFlag(const Flag &flag, const std::string &sReason) {
+    this->append(
+        " check_fails " + flag.serviceId()
+        + " " + flag.teamId()
+        + " " + flag.id()
+        + " " + flag.value()
+        + std::to_string(flag.timeStart()) + " "
+        + std::to_string(flag.timeEnd()) + " "
+        + " " + flag.teamStole() + " "
+        + " " + sReason
+    );
+}
+
+// ---------------------------------------------------------------------
+// TableFlagsCheckFails
+
+TableFlagsCheckFails::TableFlagsCheckFails(const std::string &sDir) 
+: TableWriteOnly(sDir, 1000) {
+    // nothing
+}
+
+// ---------------------------------------------------------------------
+
+void TableFlagsCheckFails::appendFlag(const Flag &flag, const std::string &sReason) {
+    this->append(
+        " check_fails " + flag.serviceId()
+        + " " + flag.teamId()
+        + " " + flag.id()
+        + " " + flag.value()
+        + std::to_string(flag.timeStart()) + " "
+        + std::to_string(flag.timeEnd()) + " "
+        + " " + flag.teamStole() + " "
+        + " " + sReason
+    );
 }
 
 // ---------------------------------------------------------------------
@@ -284,7 +344,7 @@ void EmployFlags::insertFlagAttempt(const std::string &sTeamId, const std::strin
     } else {
         pFound = it->second;
     }
-    pFound->append(sTeamId, sFlag);
+    pFound->appendAttempt(sTeamId, sFlag);
 }
 
 // ---------------------------------------------------------------------
@@ -300,6 +360,20 @@ int EmployFlags::numberOfFlagAttempts(const std::string &sTeamId) {
         pFound = it->second;
     }
     return pFound->count();
+}
+
+// ---------------------------------------------------------------------
+
+// when flag put fail
+void EmployFlags::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
+    WsjcppLog::warn(TAG, "insertFlagPutFail - Not implemented");
+}
+
+// ---------------------------------------------------------------------
+
+// when flag check fail
+void EmployFlags::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
+    WsjcppLog::warn(TAG, "insertFlagCheckFail - Not implemented");
 }
 
 // ---------------------------------------------------------------------

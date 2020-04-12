@@ -1,9 +1,7 @@
 #include "file_storage.h"
 #include <cstdlib>
 #include <ctime>
-#include <utils_logger.h>
-#include <conf_file_parser.h>
-#include <fs.h>
+#include <wsjcpp_core.h>
 
 REGISTRY_STORAGE(FileStorage)
 
@@ -24,10 +22,10 @@ bool FileStorage::applyConfigFromYaml(
     std::vector<Ctf01dServiceDef> &vServicesConf
 ) {
     
-    Log::info(TAG, "Reading config: " + sConfigFile);
+    WsjcppLog::info(TAG, "Reading config");
 
-    m_sDatabasePath = yamlConfig["ram_storage"]["dbpath"].getValue();
-    Log::info(TAG, "ram_storage.dbpath: " + m_sDatabasePath);
+    m_sDatabasePath = yamlConfig["file_storage"]["dbpath"].getValue();
+    WsjcppLog::info(TAG, "ram_storage.dbpath: " + m_sDatabasePath);
 
     return true;
 }
@@ -35,7 +33,7 @@ bool FileStorage::applyConfigFromYaml(
 // ----------------------------------------------------------------------
 
 void FileStorage::clean() {
-    Log::warn(TAG, "TODO clean");
+    WsjcppLog::warn(TAG, "TODO clean");
 }
 
 // ----------------------------------------------------------------------
@@ -54,33 +52,33 @@ void FileStorage::insertFlagLive(const Flag &flag){
 
 std::vector<Flag> FileStorage::listOfLiveFlags() {
     std::vector<Flag> vResult;
-    Log::warn(TAG, "TODO listOfLiveFlags");
+    WsjcppLog::warn(TAG, "TODO listOfLiveFlags");
     return vResult;
 }
 
 // ----------------------------------------------------------------------
 
 void FileStorage::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
-    Log::warn(TAG, "TODO insertFlagPutFail");
+    WsjcppLog::warn(TAG, "TODO insertFlagPutFail");
 }
 
 // ----------------------------------------------------------------------
 
 void FileStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
-    Log::warn(TAG, "TODO insertFlagCheckFail");
+    WsjcppLog::warn(TAG, "TODO insertFlagCheckFail");
 }
 
 // ----------------------------------------------------------------------
 
 void FileStorage::insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
     // TODO
-    Log::warn(TAG, "TODO insertFlagAttempt");
+    WsjcppLog::warn(TAG, "TODO insertFlagAttempt");
 }
 
 // ----------------------------------------------------------------------
 
 int FileStorage::numberOfFlagAttempts(const std::string &sTeamId) {
-    Log::warn(TAG, "TODO numberOfFlagAttempts");
+    WsjcppLog::warn(TAG, "TODO numberOfFlagAttempts");
     return 0;
 }
 
@@ -88,7 +86,7 @@ int FileStorage::numberOfFlagAttempts(const std::string &sTeamId) {
 
 void FileStorage::insertToArchive(Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
-    Log::warn(TAG, "TODO insertToArchive");
+    WsjcppLog::warn(TAG, "TODO insertToArchive");
     // TODO
 }
 
@@ -96,27 +94,27 @@ void FileStorage::insertToArchive(Flag &flag) {
 
 void FileStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
-    Log::warn(TAG, "TODO insertToFlagsDefence");
+    WsjcppLog::warn(TAG, "TODO insertToFlagsDefence");
 }
 
 // ----------------------------------------------------------------------
 
 int FileStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) {
-    Log::warn(TAG, "TODO numberOfFlagSuccessPutted");
+    WsjcppLog::warn(TAG, "TODO numberOfFlagSuccessPutted");
     return 0;
 }
 
 // ----------------------------------------------------------------------
 
 int FileStorage::numberOfDefenceFlagForService(const std::string &sServiceId) {
-    Log::warn(TAG, "TODO numberOfDefenceFlagForService");
+    WsjcppLog::warn(TAG, "TODO numberOfDefenceFlagForService");
     return 0;
 }
 
 // ----------------------------------------------------------------------
 
 int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
-    Log::warn(TAG, "TODO numberOfStolenFlagsForService");
+    WsjcppLog::warn(TAG, "TODO numberOfStolenFlagsForService");
     return 0;
 }
 
@@ -124,7 +122,7 @@ int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
 
 std::vector<Flag> FileStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     // TODO
-    Log::warn(TAG, "TODO outdatedFlags");
+    WsjcppLog::warn(TAG, "TODO outdatedFlags");
     return std::vector<Flag>();
 }
 
@@ -132,21 +130,7 @@ std::vector<Flag> FileStorage::outdatedFlags(const std::string &sTeamId, const s
 
 void FileStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag){
     // TODO
-    Log::warn(TAG, "TODO updateFlag");
-}
-
-// ----------------------------------------------------------------------
-
-int FileStorage::defenceValue(const std::string &sTeamId, const std::string &sServiceId) {
-    Log::warn(TAG, "TODO defenceValue");
-    return 0;
-}
-
-// ----------------------------------------------------------------------
-
-int FileStorage::attackValue(const std::string &sTeamId, const std::string &sServiceId) {
-    Log::warn(TAG, "TODO attackValue");
-    return 0;
+    WsjcppLog::warn(TAG, "TODO updateFlag");
 }
 
 // ----------------------------------------------------------------------
@@ -163,9 +147,67 @@ bool FileStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
 
 // ----------------------------------------------------------------------
 
+<<<<<<< HEAD:src/storages/file/file_storage.cpp
+=======
+bool FileStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
+    // TODO
+    WsjcppLog::warn(TAG, "TODO updateTeamStole");
+    return false;
+}
+
+// ----------------------------------------------------------------------
+
+bool FileStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) {
+    // TODO
+    WsjcppLog::warn(TAG, "TODO isAlreadyStole");
+    return false;
+}
+
+bool FileStorage::isSomebodyStole(const Flag &flag) {
+    // TODO
+    WsjcppLog::warn(TAG, "TODO isAlreadyStole");
+    return false;
+}
+
+// ----------------------------------------------------------------------
+
+void FileStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints) {
+    // TODO
+}
+
+// ----------------------------------------------------------------------
+
+>>>>>>> Restored interface for file_Storage:fhq-jury-ad/src/storages/file/file_storage.cpp
 void FileStorage::deleteFlagLive(const Flag &flag) {
     // TODO
-    Log::warn(TAG, "TODO deleteFlagLive");
+    WsjcppLog::warn(TAG, "TODO deleteFlagLive");
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) {
+    // TODO
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) {
+    // TODO
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) {
+    // TODO
+    return 0;
+}
+
+// ----------------------------------------------------------------------
+
+int FileStorage::getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) {
+    return 0;
 }
 
 // ----------------------------------------------------------------------

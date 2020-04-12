@@ -23,13 +23,28 @@ class FileStorage : public Storage {
         virtual int numberOfFlagAttempts(const std::string &sTeamId);
         virtual void insertToArchive(Flag &flag);
         virtual void insertToFlagsDefence(const Flag &flag, int nPoints);
+        virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints);
+
+        virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId);
+        virtual bool isSomebodyStole(const Flag &flag);
+
         virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId);
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
+
         virtual std::vector<Flag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId);
         virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag);
         virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
+
+        virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &serviceConf);
+        virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+
+        virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);
+
+        virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
         virtual void deleteFlagLive(const Flag &flag);
 

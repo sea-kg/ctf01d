@@ -139,6 +139,8 @@ list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.cpp")
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.h")
 list (APPEND WSJCPP_SOURCES "src/storages/storages.cpp")
+list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.h")
+list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.cpp")
 
 # file storage
 # list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.h")

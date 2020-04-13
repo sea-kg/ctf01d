@@ -476,6 +476,7 @@ void Scoreboard::updateCosts() {
 
 // ----------------------------------------------------------------------
 
+
 /*void Scoreboard::addFlagLive(const Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
     std::map<std::string,Flag>::iterator it;

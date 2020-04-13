@@ -8,6 +8,7 @@ Ctf01dFlag::Ctf01dFlag() {
 #include "employ_flags.h"
 #include <wsjcpp_core.h>
 #include <fstream>
+#include <cstring>
 
 // ---------------------------------------------------------------------
 // Flag

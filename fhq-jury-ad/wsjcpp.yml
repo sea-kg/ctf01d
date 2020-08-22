@@ -1,5 +1,5 @@
 name: "fhq-jury-ad"
-version: "v0.4.2"
+version: "v0.4.3"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "Jury System for a attack-defence ctf games"
@@ -51,11 +51,3 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-employees:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_employees"
-
-resources:
-  - source-file: "../jury.d/html/favicon.ico"
-    target-file: "html/favicon.ico"
-    type: "binary"
-    filesize: 16958
-    sha1: "cc23f8149e72032de20ee01d8fbc593d26559bb6"
-    modified: 0

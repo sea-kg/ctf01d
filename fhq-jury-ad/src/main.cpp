@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (helpParseArgs.has("version")) {
-        std::cout << "" << WSJCPP_NAME << " " << WSJCPP_VERSION << "\n";
+        std::cout << "" << WSJCPP_APP_NAME << " " << WSJCPP_APP_VERSION << "\n";
         return 0;
     }
 
@@ -85,13 +85,15 @@ int main(int argc, char* argv[]) {
     }
 
     
-
-    std::string sWorkspace = "/usr/share/fhq-jury-ad/jury.d"; // default workspace
+    // CTF01D_WORKDIR
+    std::string sWorkspace;
     if (helpParseArgs.has("--workspace-dir")) {
-        // todo replace workspace path
-        sWorkspace = helpParseArgs.option("--workspace-dir");
-        sWorkspace = WsjcppCore::getCurrentDirectory() + sWorkspace;
+        sWorkspace = WsjcppCore::getCurrentDirectory() + helpParseArgs.option("--workspace-dir");
         sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
+    } else if (WsjcppCore::getEnv("CTF01D_WORKDIR", sWorkspace)) {
+        WsjcppLog::info(TAG, "Work Directory: " + sWorkspace);
+    } else {
+        WsjcppLog::throw_err(TAG, "Work Directory not defined.");
     }
     
     // create default folders and files
@@ -136,7 +138,7 @@ int main(int argc, char* argv[]) {
     WsjcppEmployees::init({});
 
     std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
-    WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_VERSION));
+    WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_APP_VERSION));
 
     Config *pConfig = new Config(sWorkspace);
     if (!pConfig->applyConfig()) {

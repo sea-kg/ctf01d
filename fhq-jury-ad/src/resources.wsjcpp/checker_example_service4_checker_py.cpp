@@ -9,6 +9,11 @@ const std::string &RES_checker_example_service4_checker_py::getFilename() {
     return s;
 }
 
+const std::string &RES_checker_example_service4_checker_py::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_checker_example_service4_checker_py::getBufferSize() {
     return 2954;
 }

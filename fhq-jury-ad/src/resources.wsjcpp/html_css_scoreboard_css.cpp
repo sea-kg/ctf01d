@@ -9,6 +9,11 @@ const std::string &RES_html_css_scoreboard_css::getFilename() {
     return s;
 }
 
+const std::string &RES_html_css_scoreboard_css::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_css_scoreboard_css::getBufferSize() {
     return 6644;
 }

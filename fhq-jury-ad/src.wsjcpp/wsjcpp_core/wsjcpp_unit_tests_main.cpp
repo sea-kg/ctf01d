@@ -32,12 +32,12 @@ int main(int argc, char** argv) {
 
     if (argc == 1) {
         int nAll = g_pWsjcppUnitTests->size();
-        WsjcppLog::info("runUnitTests",  "All tests count " + std::to_string(nAll));
+        WsjcppLog::info(TAG,  "All tests count " + std::to_string(nAll));
         int nSuccess = 0;
         for (int i = 0; i < g_pWsjcppUnitTests->size(); i++) {
             WsjcppUnitTestBase* pUnitTest = g_pWsjcppUnitTests->at(i);
             std::string sTestName = pUnitTest->name();
-            WsjcppLog::info("runUnitTests",  "Run test " + sTestName);
+            WsjcppLog::info(TAG,  "Run test " + sTestName);
             if (pUnitTest->run()) {
                 WsjcppLog::ok(sTestName,  "Test passed");
                 nSuccess++;
@@ -72,7 +72,9 @@ int main(int argc, char** argv) {
                 WsjcppUnitTestBase* pUnitTest = g_pWsjcppUnitTests->at(i);
                 if (pUnitTest->name() == sArg3) {
                     bTestFound = true;
-                    if (pUnitTest->run()) {
+                    WsjcppLog::info(TAG, "Run test " + pUnitTest->name());
+                    bool bResult = pUnitTest->run();
+                    if (bResult) {
                         WsjcppLog::ok(TAG, pUnitTest->name() + " Test passed");
                         nSuccess++;
                     } else {

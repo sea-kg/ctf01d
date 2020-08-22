@@ -9,6 +9,11 @@ const std::string &RES_html_favicon_32x32_png::getFilename() {
     return s;
 }
 
+const std::string &RES_html_favicon_32x32_png::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_favicon_32x32_png::getBufferSize() {
     return 1632;
 }

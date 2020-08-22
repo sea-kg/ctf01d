@@ -9,6 +9,11 @@ const std::string &RES_html_images_logo_png::getFilename() {
     return s;
 }
 
+const std::string &RES_html_images_logo_png::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_images_logo_png::getBufferSize() {
     return 22909;
 }

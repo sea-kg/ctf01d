@@ -9,6 +9,11 @@ const std::string &RES_html_index_html::getFilename() {
     return s;
 }
 
+const std::string &RES_html_index_html::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_index_html::getBufferSize() {
     return 3585;
 }

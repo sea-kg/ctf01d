@@ -9,6 +9,11 @@ const std::string &RES_html_images_first_blood_svg::getFilename() {
     return s;
 }
 
+const std::string &RES_html_images_first_blood_svg::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_images_first_blood_svg::getBufferSize() {
     return 3799;
 }

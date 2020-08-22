@@ -9,6 +9,11 @@ const std::string &RES_config_yml::getFilename() {
     return s;
 }
 
+const std::string &RES_config_yml::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_config_yml::getBufferSize() {
     return 2721;
 }

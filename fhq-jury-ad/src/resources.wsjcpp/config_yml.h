@@ -6,6 +6,7 @@
 class RES_config_yml : public WsjcppResourceFile { 
     public:
         virtual const std::string &getFilename();
+        virtual const std::string &getPackAs();
         virtual const int getBufferSize();
         virtual const char *getBuffer();
 };

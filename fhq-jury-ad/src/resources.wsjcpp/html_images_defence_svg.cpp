@@ -9,6 +9,11 @@ const std::string &RES_html_images_defence_svg::getFilename() {
     return s;
 }
 
+const std::string &RES_html_images_defence_svg::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_images_defence_svg::getBufferSize() {
     return 2922;
 }

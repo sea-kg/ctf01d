@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 add_definitions(-DWSJCPP_APP_VERSION="v0.4.3")
-add_definitions(-DWSJCPP_APP_NAME="fhq-jury-ad")
+add_definitions(-DWSJCPP_APP_NAME="ctf01d")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
@@ -17,7 +17,7 @@ set (WSJCPP_SOURCES "")
 find_package(Threads REQUIRED)
 list (APPEND WSJCPP_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
-# wsjcpp-core:v0.1.4
+# wsjcpp-core:v0.1.7
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_core/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
@@ -39,10 +39,6 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_w
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_web_server.cpp")
 
-# nlohmann/json:v3.7.3
-list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
-list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
-
 # HowardHinnant/date:v2.4.1
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/HowardHinnant_date/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/HowardHinnant_date/date.h")
@@ -61,5 +57,14 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_validators/wsjcpp_validators.cp
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_employees/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
+
+# nlohmann/json:v3.9.1
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
+
+# resources.wsjcpp
+list (APPEND WSJCPP_INCLUDE_DIRS "./src-resources.wsjcpp/")
+list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/___jury_d_html_favicon_ico_path8d4cf5.h")
+list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/___jury_d_html_favicon_ico_path8d4cf5.cpp")
 
 

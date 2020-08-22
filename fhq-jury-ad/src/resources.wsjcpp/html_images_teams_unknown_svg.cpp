@@ -9,6 +9,11 @@ const std::string &RES_html_images_teams_unknown_svg::getFilename() {
     return s;
 }
 
+const std::string &RES_html_images_teams_unknown_svg::getPackAs() {
+    static const std::string s = "binary";
+    return s;
+}
+
 const int RES_html_images_teams_unknown_svg::getBufferSize() {
     return 5633;
 }

@@ -3,7 +3,7 @@ cmake_cxx_standard: 11
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.1.4
+version: v0.1.7
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -47,8 +47,6 @@ unit-tests:
   cases:
     - name: CoreNormalizePath
       description: Check function normalizePath
-    - name: CoreUuid
-      description: Check test generate uuid function
     - name: CoreExtractFilename
       description: Check function extract filenane from path
     - name: "ToUpper"
@@ -79,3 +77,5 @@ unit-tests:
       description: "Test function get human size in bytes"
     - name: "TestResources"
       description: "Test basic resources"
+    - name: "ListOfDirs"
+      description: "Check list of directories"

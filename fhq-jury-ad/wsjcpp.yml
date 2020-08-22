@@ -1,4 +1,4 @@
-name: "fhq-jury-ad"
+name: "ctf01d"
 version: "v0.4.3"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
@@ -17,7 +17,7 @@ keywords:
 
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.1.4"
+    version: "v0.1.7"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
@@ -26,11 +26,6 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
-  - name: "nlohmann/json"
-    version: "v3.7.3"
-    url: "https://github.com/wsjcpp/json:develop"
-    origin: "https://github.com/"
-    installation-dir: "./src.wsjcpp/nlohmann_json"
   - name: "HowardHinnant/date"
     version: "v2.4.1"
     url: "https://github.com/wsjcpp/HowardHinnant_date:master"
@@ -51,3 +46,15 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-employees:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_employees"
+  - name: "nlohmann/json"
+    version: "v3.9.1"
+    url: "https://github.com/nlohmann/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
+
+resources:
+  - filepath: "../jury.d/html/favicon.ico"
+    filesize: 16958
+    pack-as: "binary"
+    modified: 1544879308
+    sha1: ""

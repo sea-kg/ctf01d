@@ -1,7 +1,7 @@
-version: '2'
+version: '3'
 
 services:
-  fhqjuryad_db:
+  ctf01d_db:
     image: mysql:5.7
     volumes:
       - "./dckr_mysql:/var/lib/mysql"
@@ -12,24 +12,26 @@ services:
       MYSQL_USER: fhqjuryad
       MYSQL_PASSWORD: fhqjuryad
     networks:
-      - fhqjuryad_net
+      - ctf01d_net
 
-  fhqjuryad_jury:
+  ctf01d_jury:
     build: .
     depends_on:
-      - fhqjuryad_db
-    image: freehackquest/fhq-jury-ad:test
+      - ctf01d_db
+    image: freehackquest/ctf01d:test
+    environment:
+      CTF01D_WORKDIR: "/usr/share/fhq-jury-ad/jury.d"
     volumes:
       - "./jury.d:/usr/share/fhq-jury-ad/jury.d"
     ports:
       - "8080:8080"
     restart: always
     links:
-      - "fhqjuryad_db"
+      - "ctf01d_db"
     networks:
-      - fhqjuryad_net
+      - ctf01d_net
 
 networks:
-  fhqjuryad_net:
+  ctf01d_net:
     driver: bridge
         

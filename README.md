@@ -5,9 +5,135 @@
 Jury System for a attack-defence ctf game.
 Or you can use for training.
 
-
 ![scoreboard](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/misc/screens/screen1.png)
-![scoreboard-info](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/misc/screens/screen2.png)
+
+## Rules
+
+### 1. Basic
+
+flag_timelive_in_min:
+  - EN: flag lifetime (default: 1 minutes)
+  - RU: время жизни флага (поумолчанию: 1 минут)
+
+basic_costs_stolen_flag_in_points:
+  - EN: Basic cost of stolen flag (default: 10 points)
+  - RU: Базовая стоимость украденного флага (по умолчанию: 10 поинтов)
+
+### 2. Acception of flag defence / Принятие флага защиты 
+
+EN:
+
+Only that flag defence from the service is counted if:
+- the flag was successfully putted to the service
+- the flag has existed on the service all the time of it's life
+- the flag was not stolen by another team (s)
+- And throughout the life of the flag - the service was in UP state
+
+RU:
+
+Засчитываются только тот флаг защиты с сервиса, если:
+- флаг был успешно запулен на сервис
+- флаг просуществовал на сервисе все время своей жизни
+- флаг не был украден другой командой (командами)
+- И в течении всей жизни флага - сервис был в состоянии UP
+
+
+### 3. Acception of flag attack / Принятия флага атаки
+
+EN:
+
+The attack flag counts if:
+- the flag has the correct format
+- the flag does not belong to your team (not from your service)
+- a flag from the same type of service as yours, but your service must be in UP state
+- the flag is dealt the first time by your team (the same flag may be dealt by different teams)
+- the flag is still alive (the flag has not expired)
+- only during the announced game (flags are not accepted during coffeebreaking)
+
+RU:
+
+Засчитывается флаг атаки, если:
+- флаг имеет правильный формат
+- флаг не принадлежит вашей команде (не с вашего сервиса)
+- флаг с того же типа сервиса что и ваш, но ваш сервис должен быть в состоянии UP
+- флаг сдается первый раз вашей командой (может сдаваться разными командами один и тот же флаг)
+- флаг еще жив (не закончилось время жизни флага)
+- только во время объявленной игры (во время кофебрейка флаги не принимаются)
+
+### 4. How to calculate costs of the flags
+
+EN:
+- The cost is different for the defended flag and the stolen flag (difference in the number of teams)
+- Redistribute the cost for flags between services - depending on the number of passed and defended flags
+- The cost of flags should not depend on the "place" in the scoreboard table
+- The cost of the flags should be different as services may have different times between flag throws
+- The cost of flags should be different since the complexity of the services is different
+
+RU:
+- Стоимость разная для защищенного флага и украденного флага (разница в количестве команд)
+- Перераспределять стоимость за флаги между сервисами - в зависимости от количества сданных и защищенных флагов
+- Стоимость флагов не должна зависить от "места" в рейтинговой таблице
+- Стоимость флагов должна быть разной так как сервисы могут иметь разное время между забросами флагов
+- Стоимость флагов должна быть разной так как сложность сервисов разная
+
+Example on python:
+
+``` python
+basic_costs_stolen_flag_in_points = 10
+services = [
+    { "stolen_flags": 100, "defended_flags": 9 }, # service0 
+    { "stolen_flags": 0, "defended_flags": 0 }, # service1
+    { "stolen_flags": 12, "defended_flags": 50 }, # service2
+    { "stolen_flags": 1, "defended_flags": 0 }, # service3
+    { "stolen_flags": 0, "defended_flags": 10 } # service4
+]
+teams = 10 # number of teams
+all_sf = 0 # number of all flags which was stolen
+all_df = 0 # number of all flags which was defended
+for s in services:
+    all_sf = all_sf + s["stolen_flags"]
+    all_df = all_df + s["defended_flags"]
+print("all_sf=" + str(all_sf) + ", all_df=" + str(all_df))
+
+sp4d = len(services) * basic_costs_stolen_flag_in_points
+dp4d = len(services) * (teams - 1) * basic_costs_stolen_flag_in_points
+print("sp4d=%d, dp4d=%d" % (sp4d, dp4d))
+
+sf_rsum = 0 
+df_rsum = 0
+
+# calcululate reverse proportional df_rsum and sf_rsum
+for s in services:
+    if s["stolen_flags"] > 0:
+        s["rpsf"] = float(all_sf / s["stolen_flags"])
+    else:
+        s["rpsf"] = float(all_sf / 1.0)
+
+    if s["defended_flags"] > 0:
+        s["rpdf"] = float(all_df / s["defended_flags"])
+    else:
+        s["rpdf"] = float(all_df / 1.0)
+
+    sf_rsum = sf_rsum + s["rpsf"]
+    df_rsum = df_rsum + s["rpdf"]
+
+# calculate flag costs
+i = 0
+for s in services:
+    cost_attack_flag = 0
+    if sf_rsum == 0:
+        cost_attack_flag = sp4d
+    else:
+        cost_attack_flag = sp4d * (s["rpsf"] / sf_rsum)
+        
+    cost_defence_flag = 0
+    if df_rsum == 0:
+        cost_defence_flag = dp4d
+    else:
+        cost_defence_flag = dp4d * (s["rpdf"] / df_rsum)
+    print("service%d: cost_attack_flag=%.2f, cost_defence_flag=%.2f" % (i, cost_attack_flag, cost_defence_flag))
+    i = i + 1
+```
 
 ## Easy way docker-compose
 
@@ -35,6 +161,8 @@ services:
     image: freehackquest/fhq-jury-ad:test
     volumes:
       - "./data:/usr/share/fhq-jury-ad/jury.d"
+    environment:
+      CTF01D_WORKDIR: "/usr/share/fhq-jury-ad/jury.d"
     ports:
       - "8080:8080"
     restart: always

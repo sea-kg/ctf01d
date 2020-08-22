@@ -19,24 +19,33 @@ body,html{
     height: 40px;
 }
 
-.game-rules {
-  border: 1px solid #aaa;
-  padding: 20px;
-  margin: 20px;
-}
-
-.game-rule-header {
-  font-weight: bold;
+.ctf01d-tabs {
+  display: block;
+  border-bottom: 1px solid #aaa;
   padding-top: 20px;
 }
 
-.game-rule {
-  padding: 20px;
+.ctf01d-tab {
+  display: inline-block;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 1px solid #aaa;
+  padding: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-weight: bold;
+  background-color: #202020;
+  cursor: pointer;
+  margin-bottom: -1px;
 }
 
-.game-legend {
-  display: inline-table;
-  padding-top: 10px;
+.ctf01d-tab.active {
+  margin-bottom: -1px;
+  border-bottom: 1px solid #202020;
+}
+
+.ctf01d-tab-content {
+  display: none;
 }
 
 input, select {
@@ -47,19 +56,6 @@ input, select {
   padding: 5px;
 }
 
-.game-legend-cell {
-  display: table-cell;
-  vertical-align: middle;
-  padding-right: 20px;
-  padding-left: 20px;
-}
-
-.game-legend-cell .service-status {
-  width: 30px;
-  height: 30px;
-  background-size: 100% 100%;
-  padding: 0px;
-}
 
 button {
     background-color: #202020;
@@ -96,7 +92,7 @@ button {
 }
 
 .game-time-range {
-    color: #444;
+    display: inline-block;
 }
 
 .team-name{
@@ -412,4 +408,9 @@ img.team-logo {
   }
 }
 
-
+.legend {
+  width: 50px !important;
+  height: 50px !important;
+  border: 1px solid #aaa;
+  padding: 0px;
+}

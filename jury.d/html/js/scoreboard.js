@@ -1,4 +1,23 @@
 
+// init tabs
+var tabs = document.getElementsByClassName('ctf01d-tab');
+var tabs_content = document.getElementsByClassName('ctf01d-tab-content');
+function switchToTabContent() {
+    var tabcontentid = this.getAttribute('tabcontentid');
+    for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+    }
+    for (var i = 0; i < tabs_content.length; i++) {
+        tabs_content[i].style.display = '';
+    }
+    this.classList.add('active');
+    document.getElementById(tabcontentid).style.display = 'block';
+}
+for (var i in tabs) {
+    console.log(tabs[i]);
+    tabs[i].onclick = switchToTabContent;
+}
+
 // post request to server Async
 function getAjax (url, callback) {
     callback = callback || function(){};

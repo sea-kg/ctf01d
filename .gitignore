@@ -3,6 +3,12 @@ jury.d/logs/*.log
 dckr_mysql/*
 vulnbox/example_service1/flags/*
 *.log
+unit-tests.wsjcpp/tmp/*
+
+ctf01d
+tmp/*
+.wsjcpp/*
+*.log
 
 # Prerequisites
 # *.d

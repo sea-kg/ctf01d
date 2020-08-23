@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(fhq-jury-ad)
+project(ctf01d)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
@@ -9,7 +9,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 #### END_WSJCPP_APPEND
 
 set(CMAKE_CXX_STANDARD 11)
-set(EXECUTABLE_OUTPUT_PATH ${fhq-jury-ad_SOURCE_DIR})
+set(EXECUTABLE_OUTPUT_PATH ${ctf01d_SOURCE_DIR})
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # Sources
@@ -200,13 +200,13 @@ ENDIF(CURL_FOUND)
 
 include_directories(${WSJCPP_INCLUDE_DIRS})
 
-add_executable (fhq-jury-ad ${WSJCPP_SOURCES})
+add_executable (ctf01d ${WSJCPP_SOURCES})
 
-target_link_libraries(fhq-jury-ad -lpthread ${WSJCPP_LIBRARIES} )
+target_link_libraries(ctf01d -lpthread ${WSJCPP_LIBRARIES} )
 
 install(
     TARGETS
-        fhq-jury-ad
+        ctf01d
     RUNTIME DESTINATION
         ${CMAKE_INSTALL_PREFIX}/bin
 )

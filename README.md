@@ -1,6 +1,6 @@
-# fhq-jury-ad
+# ctf01d
 
-[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad) [![Docker Pulls](https://img.shields.io/docker/pulls/freehackquest/fhq-jury-ad.svg)](https://hub.docker.com/r/freehackquest/fhq-jury-ad/) [![Docker layers](https://images.microbadger.com/badges/image/freehackquest/fhq-jury-ad.svg)](https://microbadger.com/images/freehackquest/fhq-jury-ad) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-jury-ad.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-jury-ad.svg)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-jury-ad.svg?label=github%20forks)](https://github.com/freehackquest/fhq-jury-ad/)
+[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctfd01d.svg)](https://hub.docker.com/r/sea5kg/ctfd01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctfd01d.svg)](https://microbadger.com/images/freehackquest/fhq-jury-ad) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-jury-ad.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-jury-ad.svg)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-jury-ad.svg?label=github%20forks)](https://github.com/freehackquest/fhq-jury-ad/)
 
 Jury System for a attack-defence ctf game.
 Or you can use for training.
@@ -135,44 +135,48 @@ for s in services:
     i = i + 1
 ```
 
-## Easy way docker-compose
+## Easy way start (and init) docker-compose
 
 docker-compose.yml
 ```
 version: '3'
 
 services:
-  fhqjuryad_db:
+  ctf01d_db:
     image: mysql:5.7
     volumes:
       - "./tmp/mysql_database:/var/lib/mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: KzhyntJxwt
-      MYSQL_DATABASE: fhqjuryad
-      MYSQL_USER: fhqjuryad
-      MYSQL_PASSWORD: fhqjuryad
+      MYSQL_DATABASE: ctf01d
+      MYSQL_USER: ctf01d
+      MYSQL_PASSWORD: ctf01d
     networks:
-      - fhqjuryad_net
+      - ctf01d_net
 
-  fhqjuryad_jury:
+  ctf01d_jury:
     depends_on:
-      - fhqjuryad_db
-    image: freehackquest/fhq-jury-ad:test
+      - ctf01d_db
+    image: sea5kg/ctf01d:latest
     volumes:
       - "./data:/usr/share/fhq-jury-ad/jury.d"
     environment:
       CTF01D_WORKDIR: "/usr/share/fhq-jury-ad/jury.d"
+      CTF01D_MYSQL_HOST: "ctf01d_db"
+      CTF01D_MYSQL_DATABASE: "ctf01d"
+      CTF01D_MYSQL_USER: "ctf01d"
+      CTF01D_MYSQL_PASSWORD: "ctf01d"
     ports:
       - "8080:8080"
     restart: always
     links:
-      - "fhqjuryad_db"
+      - "ctf01d_db"
     networks:
-      - fhqjuryad_net
+      - ctf01d_net
 
 networks:
-  fhqjuryad_net:
+  ctf01d_net:
     driver: bridge
 ```
 
@@ -182,7 +186,9 @@ And than:
 $ docker-compose up
 ```
 
-After first start just look in './data' folder
+After first start look in './data' folder:
+- You found basic configuration
+- After change config it - you need restart 'docker-compose'
 
 ### Download and basic configuration
 

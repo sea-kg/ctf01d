@@ -25,11 +25,11 @@ scoreboard:
   random: no # If yes - will be random values in scoreboard
 
 mysql_storage: # if server.use_storage is mysql
-  dbhost: "fhqjuryad_db"
+  dbhost: "ctf01d_db"
   dbport: 3306
-  dbname: "fhqjuryad"
-  dbuser: "fhqjuryad"
-  dbpass: "fhqjuryad"
+  dbname: "ctf01d"
+  dbuser: "ctf01d"
+  dbpass: "ctf01d"
 
 checkers:
   - id: "example_service1" # work directory will be checker_example_service4

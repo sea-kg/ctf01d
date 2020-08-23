@@ -8,21 +8,21 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: KzhyntJxwt
-      MYSQL_DATABASE: fhqjuryad
-      MYSQL_USER: fhqjuryad
-      MYSQL_PASSWORD: fhqjuryad
+      MYSQL_DATABASE: ctf01d
+      MYSQL_USER: ctf01d
+      MYSQL_PASSWORD: ctf01d
     networks:
       - ctf01d_net
 
   ctf01d_jury:
-    build: .
+    build: ../
     depends_on:
       - ctf01d_db
-    image: freehackquest/ctf01d:test
+    image: sea5kg/ctf01d:debug
     environment:
-      CTF01D_WORKDIR: "/usr/share/fhq-jury-ad/jury.d"
+      CTF01D_WORKDIR: "/usr/share/ctfd01d/data"
     volumes:
-      - "./jury.d:/usr/share/fhq-jury-ad/jury.d"
+      - "./data_sample:/usr/share/ctfd01d/data"
     ports:
       - "8080:8080"
     restart: always

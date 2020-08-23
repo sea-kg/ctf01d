@@ -1,1 +1,9 @@
 .git
+dckr_mysql
+tmp/*
+.wsjcpp/*
+docs
+misc
+testing/*
+vulnbox/*
+tests/*

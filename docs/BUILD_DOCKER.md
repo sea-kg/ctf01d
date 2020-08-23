@@ -1,30 +1,30 @@
-### Build fhq-jury-ad
+### Build ctf01d
 
 ```
-$ git clone https://github.com/freehackquest/fhq-jury-ad ~/fhq-jury-ad.git
-$ cd ~/fhq-jury-ad.git
-$ docker build --rm=true -t "freehackquest/fhq-jury-ad:test" .
+$ git clone https://github.com/freehackquest/ctf01d ~/ctf01d.git
+$ cd ~/ctf01d.git
+$ docker build --rm=true -t "freehackquest/ctf01d:test" .
 ```
 
 ### rebuild and start
 
 ```
-$ cd ~/fhq-jury-ad.git
-$ docker build --rm=true -t "freehackquest/fhq-jury-ad:test" .
-$ docker rm fhq-jury-ad # if exists
-$ docker run --name=fhq-jury-ad -p 8080:8080 -v ./jury.d:/usr/share/fhq-jury-ad/jury.d freehackquest/fhq-jury-ad:test
+$ cd ~/ctf01d.git
+$ docker build --rm=true -t "freehackquest/ctf01d:test" .
+$ docker rm ctf01d # if exists
+$ docker run --name=ctf01d -p 8080:8080 -v ./jury.d:/usr/share/ctf01d/data freehackquest/ctf01d:test
 ```
 
 
 ### Run docker
 
 ```
-$ cd ~/fhq-jury-ad.git
-$ docker run --name=fhq-jury-ad -p 8080:8080 -v ./jury.d:/usr/share/fhq-jury-ad/jury.d freehackquest/fhq-jury-ad:test
+$ cd ~/ctf01d.git
+$ docker run --name=ctf01d -p 8080:8080 -v ./jury.d:/usr/share/ctf01d/data freehackquest/ctf01d:test
 ```
 
 or restart
 
 ```
-$ docker start -i fhq-jury-ad
+$ docker start -i ctf01d
 ```

@@ -5,9 +5,6 @@ project(ctf01d)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
-
-list (APPEND WSJCPP_SOURCES "./src/argument_processor_ctf01d_main.h")
-list (APPEND WSJCPP_SOURCES "./src/argument_processor_ctf01d_main.cpp")
 #### END_WSJCPP_APPEND
 
 set(CMAKE_CXX_STANDARD 11)
@@ -18,6 +15,7 @@ set(EXECUTABLE_OUTPUT_PATH ${ctf01d_SOURCE_DIR})
 
 # include header dirs
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/checker")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/config")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/objects")
@@ -28,12 +26,18 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/utils")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/interfaces")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
 
+# argument processors
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.cpp")
+
 # employees
-list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.h")
-list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.h")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.cpp")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.h")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.cpp")
 
 # checker
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.h")
@@ -44,10 +48,6 @@ list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 # config
 list (APPEND WSJCPP_SOURCES "src/config/config.h")
 list (APPEND WSJCPP_SOURCES "src/config/config.cpp")
-list (APPEND WSJCPP_SOURCES "src/config/service.h")
-list (APPEND WSJCPP_SOURCES "src/config/service.cpp")
-list (APPEND WSJCPP_SOURCES "src/config/team.h")
-list (APPEND WSJCPP_SOURCES "src/config/team.cpp")
 
 # http_handlers
 list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.h")

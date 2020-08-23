@@ -3,8 +3,7 @@
 
 #include "config.h"
 #include <scoreboard.h>
-#include <team.h>
-#include <service.h>
+#include <employ_config.h>
 
 // struct 
 

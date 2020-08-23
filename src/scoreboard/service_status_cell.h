@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 #include <mutex>
-#include <service.h>
+#include <employ_config.h>
 
 class ServiceStatusCell {
     public:

@@ -5,7 +5,7 @@
 // ---------------------------------------------------------------------
 // EmployTeamLogos
 
-REGISTRY_WJSCPP_EMPLOY(EmployTeamLogos)
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployTeamLogos)
 
 EmployTeamLogos::EmployTeamLogos() 
 : WsjcppEmployBase(EmployTeamLogos::name(), {}) {

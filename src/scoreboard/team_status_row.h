@@ -5,7 +5,7 @@
 #include <map>
 #include <mutex>
 #include <vector>
-#include <service.h>
+#include <employ_config.h>
 #include <service_status_cell.h>
 
 class TeamStatusRow {

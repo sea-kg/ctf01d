@@ -3,8 +3,7 @@
 
 #include <storages.h>
 #include <scoreboard.h>
-#include <team.h>
-#include <service.h>
+#include <employ_config.h>
 #include <wsjcpp_yaml.h>
 
 class Config {

@@ -14,7 +14,6 @@
 #include <thread>
 #include <algorithm>
 #include <service_checker_thread.h>
-#include <team.h>
 #include <light_web_http_handler_team_logo.h>
 #include <http_handler_web_folder.h>
 #include <http_handler_api_v1.h>
@@ -24,8 +23,8 @@
 #include <limits.h>
 #include <resources_manager.h>
 #include <wsjcpp_core.h>
-#include <wsjcpp_employees.h>
 #include <argument_processor_ctf01d_main.h>
+#include <employ_config.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -43,10 +42,11 @@ void quitApp(int signum) {
 int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
 
-    // ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
-    // WsjcppArguments prog(argc, argv, pMain);
-    // prog.exec();
+    WsjcppEmployees::init({});
 
+    ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
+    WsjcppArguments prog(argc, argv, pMain);
+    prog.exec();
     // return prog.exec();
 
     HelpParseArgs helpParseArgs(argc, argv);
@@ -69,9 +69,6 @@ int main(int argc, const char* argv[]) {
     helpParseArgs.addHelp("check-http", "-cht", false, 
         "Start alone http server for check");
 
-    helpParseArgs.addHelp("--workspace-dir", "-wd", true, 
-        "Custom workspace folder with configs, logging, services and etc.");
-
     helpParseArgs.addHelp("--extract-files", "-ef", false, 
         "Will be created all default files");
 
@@ -93,45 +90,42 @@ int main(int argc, const char* argv[]) {
 
     
     // CTF01D_WORKDIR
-    std::string sWorkspace;
-    if (helpParseArgs.has("--workspace-dir")) {
-        sWorkspace = WsjcppCore::getCurrentDirectory() + helpParseArgs.option("--workspace-dir");
-        sWorkspace = WsjcppCore::doNormalizePath(sWorkspace);
-    } else if (WsjcppCore::getEnv("CTF01D_WORKDIR", sWorkspace)) {
-        WsjcppLog::info(TAG, "Work Directory: " + sWorkspace);
-    } else {
+    EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
+
+    std::string sWorkDir = pEmployConfig->getWorkDir();
+    if (sWorkDir == "") {
         WsjcppLog::throw_err(TAG, "Work Directory not defined.");
     }
     
     // create default folders and files
     if (helpParseArgs.has("--extract-files")) {
-        if (!WsjcppCore::dirExists(sWorkspace)) {
-            WsjcppCore::makeDir(sWorkspace);
+        if (!WsjcppCore::dirExists(sWorkDir)) {
+            WsjcppCore::makeDir(sWorkDir);
         }
-        if (!ResourcesManager::make(sWorkspace)) {
-            std::cout << "Could not create some folders or files in " << sWorkspace << " please check access" << std::endl;
+        if (!ResourcesManager::make(sWorkDir)) {
+            std::cout << "Could not create some folders or files in " << sWorkDir << " please check access" << std::endl;
             return -1;
         }
     }
 
-    if (!WsjcppCore::dirExists(sWorkspace)) {
-        WsjcppLog::err(TAG, "Directory " + sWorkspace + " does not exists");
+    if (!WsjcppCore::dirExists(sWorkDir)) {
+        WsjcppLog::err(TAG, "Directory " + sWorkDir + " does not exists");
         return -1;
     }
 
-    /*if (sWorkspace.length() > 0) {
-        if (sWorkspace[0] != '/') { // linux
+    /*if (sWorkDir.length() > 0) {
+        if (sWorkDir[0] != '/') { // linux
             char cwd[PATH_MAX];
             if (getcwd(cwd, sizeof(cwd)) != NULL) {
                 printf("Current working dir: %s\n", cwd);
-                sWorkspace = std::string(cwd) + "/" + sWorkspace;
+                sWorkDir = std::string(cwd) + "/" + sWorkDir;
             } else {
                 std::cout << "getcwd() error" << std::endl;
             }
         }
     }*/
 
-    std::string sLogDir = sWorkspace + "/logs";
+    std::string sLogDir = sWorkDir + "/logs";
     if (!WsjcppCore::dirExists(sLogDir)) {
         std::cout << "Error: Folder " << sLogDir << " does not exists \n";
         return -1;
@@ -144,10 +138,10 @@ int main(int argc, const char* argv[]) {
 
     WsjcppEmployees::init({});
 
-    std::cout << "Logger: '" + sWorkspace + "/logs/' \n";
+    std::cout << "Logger: '" + sWorkDir + "/logs/' \n";
     WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_APP_VERSION));
 
-    Config *pConfig = new Config(sWorkspace);
+    Config *pConfig = new Config(sWorkDir);
     if (!pConfig->applyConfig()) {
         WsjcppLog::err(TAG, "Configuration file has some problems");
         return -1;

@@ -2,8 +2,7 @@
 #define SCOREBOARD_H
 
 #include <team_status_row.h>
-#include <team.h>
-#include <service.h>
+#include <employ_config.h>
 #include <flag.h>
 #include <string>
 #include <map>

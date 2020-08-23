@@ -4,8 +4,7 @@
 #include <string>
 #include <vector>
 #include <flag.h>
-#include <service.h>
-#include <team.h>
+#include <employ_config.h>
 #include <wsjcpp_yaml.h>
 
 class Storage {

@@ -23,7 +23,7 @@ class Scoreboard {
             int nGameCoffeeBreakEndInSec,
             int nFlagTimeLiveInSec,
             int nBacisCostsStolenFlagInPoints,
-            const std::vector<Team> &vTeamsConf, 
+            const std::vector<Ctf01dTeamDef> &vTeamsConf, 
             const std::vector<Ctf01dServiceDef> &vServicesConf,
             Storage *pStorage
         );
@@ -50,7 +50,7 @@ class Scoreboard {
         std::string TAG;
         Storage *m_pStorage;
         std::vector<Ctf01dServiceDef> m_vServices;
-        std::vector<Team> m_vTeams;
+        std::vector<Ctf01dTeamDef> m_vTeams;
         int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;

@@ -15,7 +15,7 @@ Scoreboard::Scoreboard(
     int nGameCoffeeBreakEndInSec,
     int nFlagTimeLiveInSec,
     int nBacisCostsStolenFlagInPoints,
-    const std::vector<Team> &vTeamsConf,
+    const std::vector<Ctf01dTeamDef> &vTeamsConf,
     const std::vector<Ctf01dServiceDef> &vServicesConf,
     Storage *pStorage
 ) {
@@ -34,7 +34,7 @@ Scoreboard::Scoreboard(
 
     m_mapTeamsStatuses.clear(); // possible memory leak
     for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
-        Team teamConf = vTeamsConf[iteam];
+        Ctf01dTeamDef teamConf = vTeamsConf[iteam];
         std::string sTeamId = teamConf.id();
 
         m_mapTeamsStatuses[sTeamId] = new TeamStatusRow(sTeamId, vServicesConf, nGameStartInSec, nGameEndInSec);
@@ -93,7 +93,7 @@ void Scoreboard::initJsonScoreboard() {
 
     nlohmann::json jsonScoreboard;
     for (unsigned int iteam = 0; iteam < m_vTeams.size(); iteam++) {
-        Team teamConf = m_vTeams[iteam];
+        Ctf01dTeamDef teamConf = m_vTeams[iteam];
         std::string sTeamId = teamConf.id();
         nlohmann::json teamData;
         teamData["place"] = m_mapTeamsStatuses[sTeamId]->place();

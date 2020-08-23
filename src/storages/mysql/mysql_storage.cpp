@@ -21,7 +21,7 @@ MySqlStorage::MySqlStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 
 bool MySqlStorage::applyConfigFromYaml(
     WsjcppYaml &yamlConfig, 
-    std::vector<Team> &vTeams, 
+    std::vector<Ctf01dTeamDef> &vTeams, 
     std::vector<Ctf01dServiceDef> &vServicesConf
 ) {
 
@@ -539,7 +539,7 @@ int MySqlStorage::numberOfFlagAttempts(const std::string &sTeamId) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> MySqlStorage::outdatedFlags(const Team &teamConf, const Ctf01dServiceDef &serviceConf){
+std::vector<Flag> MySqlStorage::outdatedFlags(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf){
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -579,7 +579,7 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const Team &teamConf, const Ctf01d
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateFlag(const Team &team, const Ctf01dServiceDef &serviceConf, const Flag &sFlag){
+void MySqlStorage::updateFlag(const Ctf01dTeamDef &team, const Ctf01dServiceDef &serviceConf, const Flag &sFlag){
     // TODO
 }
 

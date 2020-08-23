@@ -334,7 +334,7 @@ bool Config::readTeamsConf(WsjcppYaml &yamlConfig) {
 
         
         // default values of service config
-        Team _teamConf;
+        Ctf01dTeamDef _teamConf;
         _teamConf.setId(sTeamId);
         _teamConf.setName(sTeamName);
         _teamConf.setActive(true);
@@ -447,7 +447,7 @@ Scoreboard *Config::scoreboard(){
 
 // ---------------------------------------------------------------------
 
-std::vector<Team> &Config::teamsConf() {
+std::vector<Ctf01dTeamDef> &Config::teamsConf() {
     return m_vTeamsConf;
 }
 

@@ -18,7 +18,7 @@ class ServiceCheckerThread {
 
 		ServiceCheckerThread(
 			Config *pConfig,
-			const Team &teamConf,
+			const Ctf01dTeamDef &teamConf,
 			const Ctf01dServiceDef &serviceConf
 		);
 		void start();
@@ -28,7 +28,7 @@ class ServiceCheckerThread {
 		std::string TAG;
 		pthread_t m_checkerThread;
 		Config *m_pConfig;
-		Team m_teamConf;
+		Ctf01dTeamDef m_teamConf;
 		Ctf01dServiceDef m_serviceConf;
 
 		int runChecker(Flag &flag, const std::string &sCommand);

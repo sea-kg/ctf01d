@@ -15,7 +15,7 @@ class Config {
 		std::vector<Ctf01dServiceDef> &servicesConf();
 
 		// teams configuration
-		std::vector<Team> &teamsConf();
+		std::vector<Ctf01dTeamDef> &teamsConf();
 
 		// scoreboard configuration
 		int scoreboardPort();
@@ -73,7 +73,7 @@ class Config {
 		int m_nGameCoffeeBreakEndUTCInSec; // UTC in seconds
 		
 		
-		std::vector<Team> m_vTeamsConf;
+		std::vector<Ctf01dTeamDef> m_vTeamsConf;
 		std::vector<Ctf01dServiceDef> m_vServicesConf;
 
 };

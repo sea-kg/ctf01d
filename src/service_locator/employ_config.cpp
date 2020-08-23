@@ -102,69 +102,69 @@ int Ctf01dServiceDef::timeSleepBetweenRunScriptsInSec() const {
 }
 
 // ---------------------------------------------------------------------
-// Team
+// Ctf01dTeamDef
 
-Team::Team() {
+Ctf01dTeamDef::Ctf01dTeamDef() {
     // nothing
 }
 
 // ---------------------------------------------------------------------
 
-void Team::setId(const std::string &sTeamId){
+void Ctf01dTeamDef::setId(const std::string &sTeamId){
     m_sTeamID = sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Team::id() const {
+std::string Ctf01dTeamDef::id() const {
     return m_sTeamID;
 }
 
 // ---------------------------------------------------------------------
 
-void Team::setName(const std::string &sName){
+void Ctf01dTeamDef::setName(const std::string &sName){
     m_sName = sName;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Team::name() const {
+std::string Ctf01dTeamDef::name() const {
     return m_sName;
 }
 
 // ---------------------------------------------------------------------
 
-void Team::setIpAddress(const std::string &sIpAddress){
+void Ctf01dTeamDef::setIpAddress(const std::string &sIpAddress){
     m_sIpAddress = sIpAddress;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Team::ipAddress() const {
+std::string Ctf01dTeamDef::ipAddress() const {
     return m_sIpAddress;
 }
 
 // ---------------------------------------------------------------------
 
-void Team::setActive(bool bActive){
+void Ctf01dTeamDef::setActive(bool bActive){
     m_bActive = bActive;
 }
 
 // ---------------------------------------------------------------------
 
-bool Team::isActive() const {
+bool Ctf01dTeamDef::isActive() const {
     return m_bActive;
 }
 
 // ---------------------------------------------------------------------
 
-void Team::setLogo(const std::string &sLogo){
+void Ctf01dTeamDef::setLogo(const std::string &sLogo){
     m_sLogo = sLogo;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Team::logo() const {
+std::string Ctf01dTeamDef::logo() const {
     return m_sLogo;
 }
 

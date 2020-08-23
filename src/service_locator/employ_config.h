@@ -43,9 +43,9 @@ class Ctf01dServiceDef {
 
 // ----------------------------------------------------------------------
 
-class Team {
+class Ctf01dTeamDef {
     public:
-        Team();
+        Ctf01dTeamDef();
         
         void setId(const std::string &sId);
         std::string id() const;

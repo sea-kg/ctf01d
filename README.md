@@ -19,7 +19,7 @@ basic_costs_stolen_flag_in_points:
   - EN: Basic cost of stolen flag (default: 10 points)
   - RU: Базовая стоимость украденного флага (по умолчанию: 10 поинтов)
 
-### 2. Acception of a defence flag / Принятие флага защиты 
+### 2. Acception of the defence flag / Принятие флага защиты 
 
 EN:
 
@@ -38,7 +38,7 @@ RU:
 - и в течении всей жизни флага - сервис был в состоянии UP
 
 
-### 3. Acception of an attack flag / Принятия флага атаки
+### 3. Acception of the attack flag / Принятия флага атаки
 
 EN:
 

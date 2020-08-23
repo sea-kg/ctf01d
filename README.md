@@ -244,7 +244,7 @@ Where
 
 * up - the flag putting/checking into the service is successful
 * down - service is not available (maybe blocked port or service is down)
-* corrupt - service is available (available tcp connection) but it's impossible to put/get flag
+* corrupt - service is available (available tcp connection) but it's impossible to put/get the flag
 * mumble - waited for a time (for example: for 5 sec), but service hasn't replied
 * shit - checker does not return correct response code
 
@@ -288,8 +288,8 @@ Where:
 
 Commands:
 
- * `put` - put flag to the service
- * `check` - check flag on the service
+ * `put` - put the flag to the service
+ * `check` - check the flag on the service
 
 Call-examples:
 
@@ -300,7 +300,7 @@ Call-examples:
 
  * 101 - service is up  (worked fine)
  * 102 - service is corrupt
- * 103 - service is mumble (or checker infinity work)
+ * 103 - service is mumbled (or checker infinity work)
  * 104 - service is down
  * other - checker is shit
 
@@ -340,7 +340,7 @@ $ docker load -i ./somegame-your_server-0.0.1.tar
 
 ## Preapre checker
 
-### 1. In first you need add to section 'checkers' `config.yml` file for jury system
+### 1. Firstly you need to add `config.yml` file to the 'checkers' section for a jury system
 
 For example:
 
@@ -353,7 +353,7 @@ checkers:
     script_wait_in_sec: 5 # max time for running script
     time_sleep_between_run_scripts_in_sec: 15 # like a round for service
 ```
-where service_ZxjQMahnoK must be unique inside a game config
+where service_ZxjQMahnoK must be unique inside of a game config
 
 Prepare folder and create ./checker.py:
 
@@ -365,9 +365,9 @@ $ chmod +x checker_service_ZxjQMahnoK/checker.py
 
 ### 2. Prepare checker script
 
-You can write checker on any language, but you need install expected requirements to Dockerfile with jury system, so
+You can write checker in any language, but you need to install expected requirements to Dockerfile with jury system
 
-For example Dockerfile.jury with jury:
+For example Dockerfile.jury with a jury:
 
 ```
 FROM freehackquest/ctf01d:latest
@@ -377,40 +377,40 @@ FROM freehackquest/ctf01d:latest
 CMD ["ctf01d","-ef","start"]
 ```
 
-Jury will be call you checker script like  `./checker.py <ip_address> <command> <flag_id> <flag> `
+Jury will be call your checker script like `./checker.py <ip_address> <command> <flag_id> <flag> `
 
 Where:
 
-  * ip_address - address of machine with this service
+  * ip_address - address of a machine with this service
   * command - command, can be "put" or "check"
-  * flag_id - string (10), id of flag [a-zA-Z0-9]{10}
-  * flag - uuid, value of flag [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}
+  * flag_id - string (10), id of the flag [a-zA-Z0-9]{10}
+  * flag - uuid, value of the flag [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}
 
 Commands:
 
- * `put` - put flag to service
- * `check` - check flag on service
+ * `put` - put the flag to the service
+ * `check` - check the flag on the service
 
 Call-examples:
 
  * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
  * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
 
-Allowed return codes one of them:
+Allowed return codes:
 
- * 101 - "service is up"  (worked fine)
- * 102 - "service is corrupt" (something worng with service)
- * 103 - "service is mumble" (or checker infinity work)
+ * 101 - "service is up" (worked fine)
+ * 102 - "service is corrupt" (something wrong with the service)
+ * 103 - "service is mumbled" (or checker infinity work)
  * 104 - "service is down"
  * any - "checker is shit"
 
 
-For example checker script (python):
+For example checker script (in python):
 
 ```
 #!/usr/bin/python
 import sys
-import math 
+import math
 import socket
 import random
 import time
@@ -422,12 +422,12 @@ def service_up():
     print("[service is worked] - 101")
     exit(101)
 
-# service is available (available tcp connect) but protocol wrong could not put/get flag
+# service is available (available tcp connection) but it's impossible to put/get the flag
 def service_corrupt():
     print("[service is corrupt] - 102")
     exit(102)
 
-# waited time (for example: 5 sec) but service did not have time to reply
+# waited for a time (for example: for 5 sec), but service hasn't replied
 def service_mumble():
     print("[service is mumble] - 103")
     exit(103)
@@ -449,7 +449,7 @@ command = sys.argv[2]
 f_id = sys.argv[3]
 flag = sys.argv[4]
 
-# will be mumble (2) - for test jury
+# will be mumbled (2) - for test jury
 # while True: time.sleep(10);
 
 def put_flag():

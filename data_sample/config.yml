@@ -68,5 +68,3 @@ teams:
     active: yes
     logo: "./html/images/logo.png"
     ip_address: "127.0.0.1" # address to vulnserver
-
-    

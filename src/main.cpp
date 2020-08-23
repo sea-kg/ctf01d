@@ -25,6 +25,7 @@
 #include <resources_manager.h>
 #include <wsjcpp_core.h>
 #include <wsjcpp_employees.h>
+#include <argument_processor_ctf01d_main.h>
 
 WsjcppLightWebServer g_httpServer;
 std::vector<ServiceCheckerThread *> g_vThreads;
@@ -32,15 +33,21 @@ std::vector<ServiceCheckerThread *> g_vThreads;
 // ---------------------------------------------------------------------
 
 void quitApp(int signum) {
-  std::cout << std::endl << "Terminating server by signal " << signum << std::endl;
-  g_httpServer.stop();
-  exit(1);
+    std::cout << std::endl << "Terminating server by signal " << signum << std::endl;
+    g_httpServer.stop();
+    exit(1);
 }
 
 // ---------------------------------------------------------------------
 
-int main(int argc, char* argv[]) {
+int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
+
+    // ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
+    // WsjcppArguments prog(argc, argv, pMain);
+    // prog.exec();
+
+    // return prog.exec();
 
     HelpParseArgs helpParseArgs(argc, argv);
 

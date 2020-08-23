@@ -6,6 +6,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/src.wsjcpp/CMakeLists.txt)
 
 #### BEGIN_WSJCPP_APPEND
 
+list (APPEND WSJCPP_SOURCES "./src/argument_processor_ctf01d_main.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processor_ctf01d_main.cpp")
 #### END_WSJCPP_APPEND
 
 set(CMAKE_CXX_STANDARD 11)

@@ -24,7 +24,7 @@ class HelpParseArg {
 
 class HelpParseArgs {
     public:
-        HelpParseArgs(int argc, char** argv);
+        HelpParseArgs(int argc, const char** argv);
         bool has(const std::string &sName);
         std::string option(const std::string &sName);
         void addHelp(const std::string &sName, const std::string &sAlias, bool bIsOption, const std::string &sDescription);

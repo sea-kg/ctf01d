@@ -58,8 +58,8 @@ bool HelpParseArg::isOption(){
 
 // ---------------------------------------------------------------------
 
-HelpParseArgs::HelpParseArgs(int argc, char** argv){
-    for(int i = 0; i < argc; i++){
+HelpParseArgs::HelpParseArgs(int argc, const char** argv){
+    for (int i = 0; i < argc; i++) {
         m_vArgs.push_back(std::string(argv[i]));
     }
 }

@@ -51,6 +51,11 @@ dependencies:
     url: "https://github.com/nlohmann/json:develop"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/nlohmann_json"
+  - name: "wsjcpp-arguments"
+    version: "v0.2.0"
+    url: "https://github.com/wsjcpp/wsjcpp-arguments:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_arguments"
 
 resources:
   - filepath: "../jury.d/html/favicon.ico"

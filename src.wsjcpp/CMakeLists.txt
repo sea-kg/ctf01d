@@ -62,6 +62,11 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp"
 list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
 
+# wsjcpp-arguments:v0.2.0
+list (APPEND WSJCPP_INCLUDE_DIRS "./src.wsjcpp/wsjcpp_arguments/")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
+list (APPEND WSJCPP_SOURCES "./src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
+
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "./src-resources.wsjcpp/")
 list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/___jury_d_html_favicon_ico_path8d4cf5.h")

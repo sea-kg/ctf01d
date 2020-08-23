@@ -20,9 +20,7 @@ MySqlStorage::MySqlStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromYaml(
-    WsjcppYaml &yamlConfig, 
-    std::vector<Ctf01dTeamDef> &vTeams, 
-    std::vector<Ctf01dServiceDef> &vServicesConf
+    WsjcppYaml &yamlConfig
 ) {
 
     m_sDatabaseHost = yamlConfig["mysql_storage"]["dbhost"].getValue();
@@ -539,7 +537,7 @@ int MySqlStorage::numberOfFlagAttempts(const std::string &sTeamId) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> MySqlStorage::outdatedFlags(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf){
+std::vector<Flag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -547,8 +545,8 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const Ctf01dTeamDef &teamConf, con
     std::string sQuery = 
         "SELECT flag_id, flag, date_start, date_end, team_stole "
         "FROM flags_live "
-        "WHERE serviceid = '" + serviceConf.id() + "' "
-        "   AND teamid = '" + teamConf.id() + "' "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
         "   AND date_end < " + std::to_string(nCurrentTime) + " "
         "   AND date_start > " + m_sGameStartUTCInMS + " "
         "   AND date_end < " + m_sGameEndUTCInMS + " "
@@ -563,8 +561,8 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const Ctf01dTeamDef &teamConf, con
         // output table name
         while ((row = mysql_fetch_row(pRes)) != NULL) {
             Flag flag;
-            flag.setServiceId(serviceConf.id());
-            flag.setTeamId(teamConf.id());
+            flag.setServiceId(sServiceId);
+            flag.setTeamId(sTeamId);
             flag.setId(std::string(row[0]));
             flag.setValue(std::string(row[1]));
             flag.setTimeStart(std::stol(std::string(row[2])));
@@ -579,7 +577,7 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const Ctf01dTeamDef &teamConf, con
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateFlag(const Ctf01dTeamDef &team, const Ctf01dServiceDef &serviceConf, const Flag &sFlag){
+void MySqlStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag){
     // TODO
 }
 

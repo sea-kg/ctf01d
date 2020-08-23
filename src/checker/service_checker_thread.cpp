@@ -26,12 +26,11 @@ int ServiceCheckerThread::CHECKER_CODE_SHIT = 400;
 // ---------------------------------------------------------------------
 
 ServiceCheckerThread::ServiceCheckerThread(
-    Config *pConfig,
     const Ctf01dTeamDef &teamConf,
     const Ctf01dServiceDef &service
 ) {
     
-    m_pConfig = pConfig;
+    m_pConfig = findWsjcppEmploy<EmployConfig>();
     m_teamConf = teamConf;
     m_serviceConf = service;
 
@@ -41,7 +40,7 @@ ServiceCheckerThread::ServiceCheckerThread(
 }
 
 // ----------------------------------------------------------------------
-// newRequest
+// newServiceCheckerThread
 
 void* newServiceCheckerThread(void *arg) {
 	// Log::info("newRequest", "");

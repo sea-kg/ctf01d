@@ -2,19 +2,19 @@
 #define HTTP_HANDLER_API_V1_H
 
 #include <wsjcpp_light_web_server.h>
-#include <config.h>
+#include <employ_config.h>
 #include <json.hpp>
 
 class HttpHandlerApiV1 : public WsjcppLightWebHttpHandlerBase {
     public:
-        HttpHandlerApiV1(Config *pConfig);
+        HttpHandlerApiV1();
         virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
         virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
 
     private:
         std::string TAG;
 
-        Config *m_pConfig;
+        EmployConfig *m_pConfig;
         std::string m_sIndexHtml;
 
         nlohmann::json m_jsonGame;

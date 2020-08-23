@@ -1,7 +1,6 @@
 #ifndef SERVICE_CHECKER_THREAD_H
 #define SERVICE_CHECKER_THREAD_H
 
-#include "config.h"
 #include <scoreboard.h>
 #include <employ_config.h>
 
@@ -17,7 +16,6 @@ class ServiceCheckerThread {
 		static int CHECKER_CODE_SHIT;
 
 		ServiceCheckerThread(
-			Config *pConfig,
 			const Ctf01dTeamDef &teamConf,
 			const Ctf01dServiceDef &serviceConf
 		);
@@ -27,7 +25,7 @@ class ServiceCheckerThread {
 	private:
 		std::string TAG;
 		pthread_t m_checkerThread;
-		Config *m_pConfig;
+		EmployConfig *m_pConfig;
 		Ctf01dTeamDef m_teamConf;
 		Ctf01dServiceDef m_serviceConf;
 

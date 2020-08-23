@@ -160,9 +160,9 @@ services:
       - ctf01d_db
     image: sea5kg/ctf01d:latest
     volumes:
-      - "./data_sample:/usr/share/ctf01d/data"
+      - "./data_sample:/usr/share/ctf01d"
     environment:
-      CTF01D_WORKDIR: "/usr/share/ctf01d/data"
+      CTF01D_WORKDIR: "/usr/share/ctf01d"
       CTF01D_MYSQL_HOST: "ctf01d_db"
       CTF01D_MYSQL_DATABASE: "ctf01d"
       CTF01D_MYSQL_USER: "ctf01d"

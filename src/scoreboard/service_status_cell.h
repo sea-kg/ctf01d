@@ -4,7 +4,6 @@
 #include <string>
 #include <map>
 #include <mutex>
-#include <employ_config.h>
 
 class ServiceStatusCell {
     public:
@@ -17,7 +16,7 @@ class ServiceStatusCell {
         static std::string SERVICE_WAIT;
         static std::string SERVICE_COFFEEBREAK;
 
-        ServiceStatusCell(const Ctf01dServiceDef &serviceConf, int nGameStartinSec, int nGameEndInSec);
+        ServiceStatusCell(const std::string &sServiceId);
         const std::string &serviceId();
 
         void setDefenceFlags(int nDefenceFlags);
@@ -50,7 +49,6 @@ class ServiceStatusCell {
     private:
         std::string TAG;
         std::mutex m_mutexServiceStatus;
-        Ctf01dServiceDef m_serviceConf;
         std::string m_sServiceId;
         std::string m_sStatus; // may be char[10] ?
         int m_nDefenceFlags;
@@ -60,9 +58,6 @@ class ServiceStatusCell {
         int m_nUpPointTimeInSec;
 
         // for SLA / uptime
-        double m_nUptime; // TODO remove
-        int m_nGameStartInSec; // TODO remove
-        int m_nGameEndInSec; // TODO remove
         int m_nFlagsPutted; // TODO remove
 };
 

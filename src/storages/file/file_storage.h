@@ -26,8 +26,8 @@ class FileStorage : public Storage {
         virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId);
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
-        virtual std::vector<Flag> outdatedFlags(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf);
-        virtual void updateFlag(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag);
+        virtual std::vector<Flag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag);
         virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);

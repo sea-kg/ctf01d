@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <flag.h>
-#include <employ_config.h>
 #include <wsjcpp_yaml.h>
 
 class Storage {
@@ -13,9 +12,7 @@ public:
     static std::string type() { return "unknown"; };
 
     virtual bool applyConfigFromYaml(
-        WsjcppYaml &yamlConfig,
-        std::vector<Ctf01dTeamDef> &vTeamsConf,
-        std::vector<Ctf01dServiceDef> &vServicesConf
+        WsjcppYaml &yamlConfig
     ) = 0;
 
     virtual void clean() = 0;
@@ -57,10 +54,10 @@ public:
     virtual bool isSomebodyStole(const Flag &flag) = 0;
 
     // list of flags with ended if server up and check another flag lost on down
-    virtual std::vector<Flag> outdatedFlags(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &service) = 0;
+    virtual std::vector<Flag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // update flag status and update scoreboard table for team 
-    virtual void updateFlag(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag) = 0;
+    virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag) = 0;
 
     // return defence value by team and by service
     virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;

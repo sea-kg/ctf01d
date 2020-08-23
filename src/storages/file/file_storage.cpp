@@ -122,7 +122,7 @@ int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Ctf01dServiceDef &serviceConf){
+std::vector<Flag> FileStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     // TODO
     Log::warn(TAG, "TODO outdatedFlags");
     return std::vector<Flag>();
@@ -130,7 +130,7 @@ std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Ctf01dS
 
 // ----------------------------------------------------------------------
 
-void FileStorage::updateFlag(const Team &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag){
+void FileStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag){
     // TODO
     Log::warn(TAG, "TODO updateFlag");
 }

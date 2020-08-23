@@ -2,7 +2,6 @@
 #define SCOREBOARD_H
 
 #include <team_status_row.h>
-#include <employ_config.h>
 #include <flag.h>
 #include <string>
 #include <map>
@@ -23,8 +22,6 @@ class Scoreboard {
             int nGameCoffeeBreakEndInSec,
             int nFlagTimeLiveInSec,
             int nBacisCostsStolenFlagInPoints,
-            const std::vector<Ctf01dTeamDef> &vTeamsConf, 
-            const std::vector<Ctf01dServiceDef> &vServicesConf,
             Storage *pStorage
         );
 
@@ -48,9 +45,8 @@ class Scoreboard {
 
     private:
         std::string TAG;
+        int m_nServicesSize;
         Storage *m_pStorage;
-        std::vector<Ctf01dServiceDef> m_vServices;
-        std::vector<Ctf01dTeamDef> m_vTeams;
         int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
@@ -77,7 +73,7 @@ class Scoreboard {
         
         // flags live for fast check
         std::mutex m_mutexFlagsLive;
-        std::map<std::string, Flag> m_mapFlagsLive;
+        std::map<std::string, Flag> m_mapFlagsLive; // Must be in samewhere in storage
 };
 
 #endif // SCOREBOARD_H

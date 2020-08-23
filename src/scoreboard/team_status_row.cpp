@@ -1,11 +1,14 @@
 #include "team_status_row.h"
+#include <employ_config.h>
 
 TeamStatusRow::TeamStatusRow(
     const std::string &sTeamId,
-    const std::vector<Ctf01dServiceDef> &vServicesConf,
     int nGameStartInSec,
     int nGameEndInSec
 ) {
+    EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
+    const std::vector<Ctf01dServiceDef> &vServicesConf = pConfig->servicesConf();
+
     m_sTeamId = sTeamId;
     m_nPlace = 0;
     m_nPoints = 0;
@@ -13,7 +16,7 @@ TeamStatusRow::TeamStatusRow(
     for (unsigned int i = 0; i < vServicesConf.size(); i++) {
         Ctf01dServiceDef serviceConf = vServicesConf[i];
         std::string sServiceId = serviceConf.id();
-        m_mapServicesStatus[sServiceId] = new ServiceStatusCell(serviceConf, nGameStartInSec, nGameEndInSec);
+        m_mapServicesStatus[sServiceId] = new ServiceStatusCell(serviceConf.id());
     }
 }
 

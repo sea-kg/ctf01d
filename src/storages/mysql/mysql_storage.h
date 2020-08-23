@@ -2,7 +2,6 @@
 #define MYSQL_STORAGE_H
 
 #include <storages.h>
-#include <config.h>
 #include <map>
 #include <mysql/mysql.h>
 
@@ -13,9 +12,7 @@ class MySqlStorage : public Storage {
 
         // Storage
         virtual bool applyConfigFromYaml(
-            WsjcppYaml &yamlConfig,
-            std::vector<Ctf01dTeamDef> &vTeamsConf, 
-            std::vector<Ctf01dServiceDef> &vServicesConf
+            WsjcppYaml &yamlConfig
         );
         virtual void clean();
         virtual void insertFlagLive(const Flag &flag);
@@ -35,8 +32,8 @@ class MySqlStorage : public Storage {
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
 
-        virtual std::vector<Flag> outdatedFlags(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf);
-        virtual void updateFlag(const Ctf01dTeamDef &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag);
+        virtual std::vector<Flag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId);
+        virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag);
         
         virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
         virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);

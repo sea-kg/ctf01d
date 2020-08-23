@@ -9,10 +9,10 @@
 
 // ----------------------------------------------------------------------
 
-HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig) 
+HttpHandlerApiV1::HttpHandlerApiV1() 
 : WsjcppLightWebHttpHandlerBase("api-v1") {
 
-    m_pConfig = pConfig;    
+    m_pConfig = findWsjcppEmploy<EmployConfig>();
 
     TAG = "HttpHandlerApiV1";
     

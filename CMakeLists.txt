@@ -45,10 +45,6 @@ list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.cpp")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.h")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 
-# config
-list (APPEND WSJCPP_SOURCES "src/config/config.h")
-list (APPEND WSJCPP_SOURCES "src/config/config.cpp")
-
 # http_handlers
 list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.h")
 list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.cpp")

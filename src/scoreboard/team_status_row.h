@@ -5,12 +5,11 @@
 #include <map>
 #include <mutex>
 #include <vector>
-#include <employ_config.h>
 #include <service_status_cell.h>
 
 class TeamStatusRow {
     public:
-        TeamStatusRow(const std::string &sTeamId, const std::vector<Ctf01dServiceDef> &vServicesConf, int nGameStartInSec, int nGameEndInSec);
+        TeamStatusRow(const std::string &sTeamId, int nGameStartInSec, int nGameEndInSec);
         const std::string &teamId();
 
         void setPlace(int nPlace);

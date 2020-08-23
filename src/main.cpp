@@ -136,13 +136,11 @@ int main(int argc, const char* argv[]) {
     WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
     // TODO rotation period must be in config.yml
 
-    WsjcppEmployees::init({});
-
     std::cout << "Logger: '" + sWorkDir + "/logs/' \n";
     WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_APP_VERSION));
 
-    Config *pConfig = new Config(sWorkDir);
-    if (!pConfig->applyConfig()) {
+    
+    if (!pEmployConfig->applyConfig()) {
         WsjcppLog::err(TAG, "Configuration file has some problems");
         return -1;
     }
@@ -153,23 +151,23 @@ int main(int argc, const char* argv[]) {
 
     if (helpParseArgs.has("clean")) {
         WsjcppLog::warn(TAG, "Cleaning flags from storage...");
-        pConfig->storage()->clean();
+        pEmployConfig->storage()->clean();
         WsjcppLog::ok(TAG, "DONE");
         return 0;
     }
 
     // configure http handlers
     g_httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
-    g_httpServer.addHandler(new HttpHandlerWebFolder(pConfig->scoreboardHtmlFolder()));
+    g_httpServer.addHandler(new HttpHandlerWebFolder(pEmployConfig->scoreboardHtmlFolder()));
 
     signal( SIGINT, quitApp );
     signal( SIGTERM, quitApp );
 
     if (helpParseArgs.has("check-http")) {
-        pConfig->setStorage(Storages::create("file", pConfig->gameStartUTCInSec(), pConfig->gameEndUTCInSec())); // replace storage to ram for tests
+        pEmployConfig->setStorage(Storages::create("file", pEmployConfig->gameStartUTCInSec(), pEmployConfig->gameEndUTCInSec())); // replace storage to ram for tests
         // std::cout << "==== SCOREBOARD ==== \n" << pConfig->scoreboard()->toString() << "\n";
-        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
-        g_httpServer.setPort(pConfig->scoreboardPort());
+        g_httpServer.addHandler(new HttpHandlerApiV1());
+        g_httpServer.setPort(pEmployConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(1);
         g_httpServer.startSync(); // will be block thread
         return 0;
@@ -178,27 +176,27 @@ int main(int argc, const char* argv[]) {
     if (helpParseArgs.has("start")) {
         WsjcppLog::info(TAG, "Starting...");
 
-        pConfig->scoreboard()->initStateFromStorage();
+        pEmployConfig->scoreboard()->initStateFromStorage();
 
-        for (unsigned int iservice = 0; iservice < pConfig->servicesConf().size(); iservice++) {
-            for (unsigned int iteam = 0; iteam < pConfig->teamsConf().size(); iteam++) {
-                Ctf01dTeamDef teamConf = pConfig->teamsConf()[iteam];
-                Ctf01dServiceDef serviceConf = pConfig->servicesConf()[iservice];
+        for (unsigned int iservice = 0; iservice < pEmployConfig->servicesConf().size(); iservice++) {
+            for (unsigned int iteam = 0; iteam < pEmployConfig->teamsConf().size(); iteam++) {
+                Ctf01dTeamDef teamConf = pEmployConfig->teamsConf()[iteam];
+                Ctf01dServiceDef serviceConf = pEmployConfig->servicesConf()[iservice];
 
                 // reset status to down
-                pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
+                pEmployConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
                 // pConfig->scoreboard()->setTeamTries();
 
-                ServiceCheckerThread *thr = new ServiceCheckerThread(pConfig, teamConf, serviceConf);
+                ServiceCheckerThread *thr = new ServiceCheckerThread(teamConf, serviceConf);
                 thr->start();
                 g_vThreads.push_back(thr);
             }
         }
 
-        WsjcppLog::ok(TAG, "Start scoreboard on " + std::to_string(pConfig->scoreboardPort()));
-        g_httpServer.addHandler(new HttpHandlerApiV1(pConfig));
+        WsjcppLog::ok(TAG, "Start scoreboard on " + std::to_string(pEmployConfig->scoreboardPort()));
+        g_httpServer.addHandler(new HttpHandlerApiV1());
         // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
-        g_httpServer.setPort(pConfig->scoreboardPort());
+        g_httpServer.setPort(pEmployConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(10);
         g_httpServer.startSync(); // will be block thread
 

@@ -14,19 +14,15 @@ std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
 
 // ----------------------------------------------------------------------
 
-ServiceStatusCell::ServiceStatusCell(const Ctf01dServiceDef &serviceConf, int nGameStartInSec, int nGameEndInSec) {
-    m_serviceConf = serviceConf;
+ServiceStatusCell::ServiceStatusCell(const std::string &sServiceId) {
     m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
-    TAG = "ServiceStatusCell-" + serviceConf.id();
-    m_sServiceId = serviceConf.id();
-    m_nGameStartInSec = nGameStartInSec;
-    m_nGameEndInSec = nGameEndInSec;
+    TAG = "ServiceStatusCell-" + sServiceId;
+    m_sServiceId = sServiceId;
     m_sStatus = ServiceStatusCell::SERVICE_DOWN;
-    m_nUptime = 0.0;
-    int m_nDefenceFlags = 0;
-    int m_nAttackFlags = 0;
-    int m_nAttackPoints = 0;
-    int m_nDefencePoints = 0;
+    m_nDefenceFlags = 0;
+    m_nAttackFlags = 0;
+    m_nAttackPoints = 0;
+    m_nDefencePoints = 0;
 
 }
 
@@ -121,34 +117,6 @@ void ServiceStatusCell::addAttackPoints(int nAttackPoints) {
 void ServiceStatusCell::setFlagsPutted(int nFlagsPutted) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_nFlagsPutted = nFlagsPutted;
-    
-    double nTimeSuccess = nFlagsPutted * m_serviceConf.timeSleepBetweenRunScriptsInSec();
-
-    int nLastTime = WsjcppCore::currentTime_seconds();
-    nLastTime = std::min(nLastTime, m_nGameEndInSec);
-    
-    double nTimeAll = (double)nLastTime - (double)m_nGameStartInSec;
-
-    // correction
-    nTimeAll = nTimeAll - std::fmod(nTimeAll, m_serviceConf.timeSleepBetweenRunScriptsInSec());
-    nTimeAll += m_serviceConf.timeSleepBetweenRunScriptsInSec();
-
-    if (nTimeAll == 0) {
-        m_nUptime = 100.0; // Normal
-        return;
-    }
-    
-    // nTimeAll
-    double nResult = (nTimeSuccess*100) / nTimeAll;
-    if (nResult > 100.0) {
-        // WsjcppLog::err(TAG, "calculateSLA nFlagsSuccess = " + std::to_string(nFlagsSuccess) + "");
-        // WsjcppLog::err(TAG, "calculateSLA nTimeAll_ = " + std::to_string(nTimeAll_) + "");
-        // WsjcppLog::err(TAG, "calculateSLA serviceConf.timeSleepBetweenRunScriptsInSec() = " + std::to_string(serviceConf.timeSleepBetweenRunScriptsInSec()) + "");
-        WsjcppLog::err(TAG, "calculateUptime nResult = " + std::to_string(nResult) + "% - wrong");
-        m_nUptime = 100.0;
-    } else {
-        m_nUptime = nResult;
-    }
 }
 
 // ----------------------------------------------------------------------

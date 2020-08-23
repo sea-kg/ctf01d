@@ -2,6 +2,9 @@
 #define EMPLOY_CONFIG_H
 
 #include <wsjcpp_employees.h>
+#include <wsjcpp_yaml.h>
+#include <storages.h>
+#include <scoreboard.h>
 
 // ----------------------------------------------------------------------
 
@@ -80,10 +83,72 @@ class EmployConfig : public WsjcppEmployBase {
         virtual bool deinit() override;
         void setWorkDir(const std::string &sWorkDir);
         std::string getWorkDir();
+        bool applyConfig();
+
+        // services configuration
+        std::vector<Ctf01dServiceDef> &servicesConf();
+
+        // teams configuration
+        std::vector<Ctf01dTeamDef> &teamsConf();
+
+        // scoreboard configuration
+        int scoreboardPort() const ;
+        std::string scoreboardHtmlFolder() const;
+        bool scoreboardRandom() const;
+
+        // game configuration
+        std::string gameId() const;
+        std::string gameName() const;
+        int flagTimeliveInMin() const;
+        int bacisCostsStolenFlagInPoints() const;
+        int gameStartUTCInSec() const;
+        int gameEndUTCInSec() const;
+
+        bool gameHasCoffeeBreak();
+        int gameCoffeeBreakStartUTCInSec();
+        int gameCoffeeBreakEndUTCInSec();
+
+        // storage configuration
+        Storage *storage();
+        void setStorage(Storage *pStorage);
+        Scoreboard *scoreboard();
 
     private:
+        bool applyGameConf(WsjcppYaml &yamlConfig);
+        bool applyServerConf(WsjcppYaml &yamlConfig);
+        bool applyScoreboardConf(WsjcppYaml &yamlConfig);
+        bool applyCheckersConf(WsjcppYaml &yamlConfig);
+        bool readTeamsConf(WsjcppYaml &yamlConfig);
+
         std::string TAG;
         std::string m_sWorkDir;
+        bool m_bApplyedConfig;
+
+        Storage *m_pStorage;
+        Scoreboard *m_pScoreboard;
+        int m_nScoreboardPort;
+        std::string m_sScoreboardHtmlFolder;
+        bool m_bScoreboardRandom;
+        std::string m_sUseStorage;
+
+        // game conf
+        int m_nFlagTimeliveInMin;
+        int m_nBacisCostsStolenFlagInPoints;
+        std::string m_sGameId;
+        std::string m_sGameName;
+        std::string m_sGameStart;
+        std::string m_sGameEnd;
+        int m_nGameStartUTCInSec; // UTC in seconds
+        int m_nGameEndUTCInSec; // UTC in seconds
+
+        bool m_bHasCoffeeBreak;
+        std::string m_sGameCoffeeBreakStart;
+        std::string m_sGameCoffeeBreakEnd;
+        int m_nGameCoffeeBreakStartUTCInSec; // UTC in seconds
+        int m_nGameCoffeeBreakEndUTCInSec; // UTC in seconds
+
+        std::vector<Ctf01dTeamDef> m_vTeamsConf;
+        std::vector<Ctf01dServiceDef> m_vServicesConf;
 };
 
 #endif // EMPLOY_CONFIG_H

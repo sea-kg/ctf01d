@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/freehackquest/ctf01d.svg?branch=master)](https://travis-ci.org/freehackquest/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctfd01d.svg)](https://hub.docker.com/r/sea5kg/ctfd01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctfd01d.svg)](https://microbadger.com/images/freehackquest/ctf01d) [![Github Stars](https://img.shields.io/github/stars/freehackquest/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/ctf01d.svg)](https://github.com/freehackquest/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/ctf01d.svg?label=github%20forks)](https://github.com/freehackquest/ctf01d/)
 
 Jury System for attack-defence ctf game.
-Or you can use for training.
+Or you can use it for training.
 
 ![scoreboard](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/screens/screen1.png)
 
@@ -198,7 +198,7 @@ $ cd ~
 $ git clone http://github.com/freehackquest/ctf01d.git ctf01d.git
 $ nano ~/ctf01d.git/jury.d/config.yml
 ```
-Config files (look comments in file):
+Config files (see comments in file):
 * `~/ctf01d.git/jury.d/config.yml` - main config
 
 
@@ -237,7 +237,7 @@ url: http://{HOST}:{PORT}/
 Where
 
 * {HOST} - host or ip, where jury system started
-* {PORT} - scoreboard/flag port, where jury system started
+* {PORT} - configured scoreboard/flag port of the jury system
 
 
 ### Service statuses
@@ -255,7 +255,7 @@ Where
 Where
 
 * {HOST} - host or ip, where jury system started
-* {PORT} - scoreboard/flag port, where jury system started
+* {PORT} - configured scoreboard/flag port of the jury system
 * {TEAMID} - number, your unique teamid (see scoreboard)
 * {FLAG} - uuid, so that the jury knows that this is a flag from an enemy server
 
@@ -326,7 +326,7 @@ $ cd your_service_dirs
 $ docker build --file "Dockerfile" --tag "somegame/your_server:0.0.1" .
 ```
 
-2. Export your server as "tar" archive (for distribution)
+2. Export your server as a "tar" archive (for distribution)
 
 ```
 $ docker save "somegame/your_server:0.0.1" > somegame-your_server-0.0.1.tar
@@ -353,7 +353,7 @@ checkers:
     script_wait_in_sec: 5 # max time for running script
     time_sleep_between_run_scripts_in_sec: 15 # like a round for service
 ```
-where service_ZxjQMahnoK must be unique inside of a game config
+where "service_ZxjQMahnoK" is a UNIQUE id within the game config
 
 Prepare folder and create ./checker.py:
 
@@ -417,7 +417,7 @@ import time
 import errno
 import requests
 
-# put-get flag to service success
+# the flag putting/checking into the service is successful
 def service_up():
     print("[service is worked] - 101")
     exit(101)
@@ -505,7 +505,7 @@ if command == "check":
     service_up()
 ```
 
-# Simular Systems && Helpful Links
+# Similar Systems && Helpful Links
 
 ## SibirCTF - Attack-Defence ctf system
 

@@ -300,7 +300,7 @@ Call-examples:
 
  * 101 - service is up  (worked fine)
  * 102 - service is corrupt
- * 103 - service is mumbled (or checker infinity work)
+ * 103 - service is mumbled (or checker works endlessly)
  * 104 - service is down
  * other - checker is shit
 
@@ -400,7 +400,7 @@ Allowed return codes:
 
  * 101 - "service is up" (worked fine)
  * 102 - "service is corrupt" (something wrong with the service)
- * 103 - "service is mumbled" (or checker infinity work)
+ * 103 - "service is mumbled" (or checker works endlessly)
  * 104 - "service is down"
  * any - "checker is shit"
 

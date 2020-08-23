@@ -1,7 +1,7 @@
 #!/bin/bash
 # myapp daemon chkconfig: 345 20 80 description: myapp daemon processname: myapp
-DAEMON_PATH="/usr/share/fhq-jury-ad/jury.d/"
-DAEMON="fhq-jury-ad"
+DAEMON_PATH="/usr/share/ctf01d/jury.d/"
+DAEMON="ctf01d"
 DAEMONOPTS=" start"
 NAME=adjd
 DESC="FHQ Jury AD"

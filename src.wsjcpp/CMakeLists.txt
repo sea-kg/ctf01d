@@ -66,5 +66,7 @@ list (APPEND WSJCPP_SOURCES "./src.wsjcpp/nlohmann_json/json.hpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "./src-resources.wsjcpp/")
 list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/___jury_d_html_favicon_ico_path8d4cf5.h")
 list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/___jury_d_html_favicon_ico_path8d4cf5.cpp")
+list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/data_sample_html_index_html_path372dab.h")
+list (APPEND WSJCPP_SOURCES "./src-resources.wsjcpp/data_sample_html_index_html_path372dab.cpp")
 
 

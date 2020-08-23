@@ -1,5 +1,5 @@
-# LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
-# LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
+# LABEL "maintainer"="Ecgenii Sopov <mrseakg@gmail.com>"
+# LABEL "repository"="https://github.com/freehackquest/ctf01d"
 
 # stage 0: build binary
 FROM freehackquest/debian-10-for-cpp-build:latest

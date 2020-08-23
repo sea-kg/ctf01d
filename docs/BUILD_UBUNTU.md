@@ -1,4 +1,4 @@
-### Build fhq-jury-ad system (Ubuntu)
+### Build ctf01d system (Ubuntu)
 
 ```
 $ sudo apt install cmake make \
@@ -7,7 +7,7 @@ $ sudo apt install cmake make \
     libcurl4-openssl-dev \
     zlibc zlib1g zlib1g-dev \
     libpng-dev \
-$ cd ~/fhq-jury-ad.git/fhq-jury-ad
+$ cd ~/ctf01d.git/ctf01d
 $ ./clean.sh
 $ ./build_simple.sh
 ```

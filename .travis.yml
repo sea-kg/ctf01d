@@ -22,6 +22,5 @@ addons:
 
 # Build steps
 script:
-  - cd fhq-jury-ad
   - ./clean.sh
   - ./build_simple.sh

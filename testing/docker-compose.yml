@@ -266,18 +266,18 @@ services:
     build: ../
     depends_on:
       - fhqjuryad_db
-    image: freehackquest/fhq-jury-ad:testing
+    image: freehackquest/ctf01d:testing
     volumes:
-      - "./jury.d:/usr/share/fhq-jury-ad/jury.d"
-      - "./tmp/jury_logs:/usr/share/fhq-jury-ad/jury.d/logs"
-      - "./example_py_service1/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_py_service1"
-      - "./example_go_service2/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_go_service2"
-      - "./example_py_service3/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_py_service3"
-      - "./example_py_service4/checker:/usr/share/fhq-jury-ad/jury.d/checkers/example_py_service4"
+      - "./jury.d:/usr/share/ctf01d/data"
+      - "./tmp/jury_logs:/usr/share/ctf01d/data/logs"
+      - "./example_py_service1/checker:/usr/share/ctf01d/jury.d/checkers/example_py_service1"
+      - "./example_go_service2/checker:/usr/share/ctf01d/jury.d/checkers/example_go_service2"
+      - "./example_py_service3/checker:/usr/share/ctf01d/jury.d/checkers/example_py_service3"
+      - "./example_py_service4/checker:/usr/share/ctf01d/jury.d/checkers/example_py_service4"
     ports:
       - "8080:8080"
     restart: always
-    command: "fhq-jury-ad start"
+    command: "ctf01d start"
     links:
       - "fhqjuryad_db"
     networks:

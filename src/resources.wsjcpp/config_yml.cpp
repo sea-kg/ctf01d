@@ -20,7 +20,7 @@ const int RES_config_yml::getBufferSize() {
 
 const char *RES_config_yml::getBuffer() {
     static const std::string sRet =  // size: 2721
-        "## Combined config for fhq-jury-ad\n"
+        "## Combined config for ctf01d\n"
         "# use 2 spaces for tab\n"
         "\n"
         "game:\n"

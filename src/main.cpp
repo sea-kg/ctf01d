@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    WsjcppLog::setPrefixLogFile("fhq-jury-ad");
+    WsjcppLog::setPrefixLogFile("ctf01d");
     WsjcppLog::setLogDirectory(sLogDir);
     WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
     // TODO rotation period must be in config.yml

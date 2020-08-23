@@ -1,11 +1,11 @@
 # ctf01d
 
-[![Build Status](https://travis-ci.org/freehackquest/fhq-jury-ad.svg?branch=master)](https://travis-ci.org/freehackquest/fhq-jury-ad) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctfd01d.svg)](https://hub.docker.com/r/sea5kg/ctfd01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctfd01d.svg)](https://microbadger.com/images/freehackquest/fhq-jury-ad) [![Github Stars](https://img.shields.io/github/stars/freehackquest/fhq-jury-ad.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/fhq-jury-ad.svg)](https://github.com/freehackquest/fhq-jury-ad/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/fhq-jury-ad.svg?label=github%20forks)](https://github.com/freehackquest/fhq-jury-ad/)
+[![Build Status](https://travis-ci.org/freehackquest/ctf01d.svg?branch=master)](https://travis-ci.org/freehackquest/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctfd01d.svg)](https://hub.docker.com/r/sea5kg/ctfd01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctfd01d.svg)](https://microbadger.com/images/freehackquest/ctf01d) [![Github Stars](https://img.shields.io/github/stars/freehackquest/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/ctf01d.svg)](https://github.com/freehackquest/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/ctf01d.svg?label=github%20forks)](https://github.com/freehackquest/ctf01d/)
 
 Jury System for a attack-defence ctf game.
 Or you can use for training.
 
-![scoreboard](https://raw.githubusercontent.com/freehackquest/fhq-jury-ad/master/misc/screens/screen1.png)
+![scoreboard](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/screens/screen1.png)
 
 ## Rules
 
@@ -160,9 +160,9 @@ services:
       - ctf01d_db
     image: sea5kg/ctf01d:latest
     volumes:
-      - "./data:/usr/share/fhq-jury-ad/jury.d"
+      - "./data_sample:/usr/share/ctf01d/data"
     environment:
-      CTF01D_WORKDIR: "/usr/share/fhq-jury-ad/jury.d"
+      CTF01D_WORKDIR: "/usr/share/ctf01d/data"
       CTF01D_MYSQL_HOST: "ctf01d_db"
       CTF01D_MYSQL_DATABASE: "ctf01d"
       CTF01D_MYSQL_USER: "ctf01d"
@@ -195,24 +195,24 @@ After first start look in './data' folder:
 ```
 $ sudo apt install git-core
 $ cd ~
-$ git clone http://github.com/freehackquest/fhq-jury-ad.git fhq-jury-ad.git
-$ nano ~/fhq-jury-ad.git/jury.d/config.yml
+$ git clone http://github.com/freehackquest/ctf01d.git ctf01d.git
+$ nano ~/ctf01d.git/jury.d/config.yml
 ```
 Config files (look comments in file):
-* `~/fhq-jury-ad.git/jury.d/config.yml` - main config
+* `~/ctf01d.git/jury.d/config.yml` - main config
 
 
-* [BUILD: Ubuntu/Debian](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/BUILD_UBUNTU.md)
-* [BUILD: Docker](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/BUILD_DOCKER.md)
+* [BUILD: Ubuntu/Debian](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_UBUNTU.md)
+* [BUILD: Docker](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_DOCKER.md)
 
 ### Configure database
 
-* [MYSQL DATABASE: create](https://github.com/freehackquest/fhq-jury-ad/blob/master/docs/STORAGE_MYSQL.md)
+* [MYSQL DATABASE: create](https://github.com/freehackquest/ctf01d/blob/master/docs/STORAGE_MYSQL.md)
 
 After configure database options here:
 
 ```
-$ nano ~/fhq-jury-ad.git/jury.d/config.yml
+$ nano ~/ctf01d.git/jury.d/config.yml
 ```
 
 ### Prepare to start with clean all previous data
@@ -220,14 +220,14 @@ $ nano ~/fhq-jury-ad.git/jury.d/config.yml
 Previously data-flags will be clean
 
 ```
-$ cd ~/fhq-jury-ad.git/fhq-jury-ad
-$ ./fhq-jury-ad clean
+$ cd ~/ctf01d.git/ctf01d
+$ ./ctf01d clean
 ```
 
-### Run fhq-jury-ad
+### Run ctf01d
 
 ```
-$ ./fhq-jury-ad -wd ../jury.d/ start
+$ ./ctf01d -wd ../jury.d/ start
 ```
 
 ## Scoreboard
@@ -370,11 +370,11 @@ You can write checker on any language, but you need install expected requirement
 For example Dockerfile.jury with jury:
 
 ```
-FROM freehackquest/fhq-jury-ad:latest
+FROM freehackquest/ctf01d:latest
 
 # TODO add some packages if needs
 
-CMD ["fhq-jury-ad","-ef","start"]
+CMD ["ctf01d","-ef","start"]
 ```
 
 Jury will be call you checker script like  `./checker.py <ip_address> <command> <flag_id> <flag> `

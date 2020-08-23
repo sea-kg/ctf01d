@@ -1,6 +1,6 @@
 FROM golang:1.9.2-stretch
 LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
+LABEL "repository"="https://github.com/freehackquest/ctf01d"
 
 WORKDIR /go/src/app
 

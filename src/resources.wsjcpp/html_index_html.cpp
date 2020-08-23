@@ -87,7 +87,7 @@ const char *RES_html_index_html::getBuffer() {
         "		</div>\n"
         "		<div class=\"game-rule-header\">4. Issues for a jury system</div>\n"
         "		<div class=\"game-rule\">\n"
-        "			<a target=\"_blank\" href=\"https://github.com/freehackquest/fhq-jury-ad/issues\">https://github.com/freehackquest/fhq-jury-ad/issues</a>\n"
+        "			<a target=\"_blank\" href=\"https://github.com/freehackquest/ctf01d/issues\">https://github.com/freehackquest/ctf01d/issues</a>\n"
         "		</div>\n"
         "	</div>\n"
         "	<script>\n"

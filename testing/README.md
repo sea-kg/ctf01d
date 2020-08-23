@@ -1,5 +1,5 @@
 
-# fhq-jury-ad / testing
+# ctf01d / testing
 
 Run testing with several services and teams inside a docker network
 

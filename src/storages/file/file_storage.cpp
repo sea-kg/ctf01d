@@ -21,7 +21,7 @@ FileStorage::FileStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 bool FileStorage::applyConfigFromYaml(
     WsjcppYaml &yamlConfig,
     std::vector<Team> &vTeamsConf,
-    std::vector<Service> &vServicesConf
+    std::vector<Ctf01dServiceDef> &vServicesConf
 ) {
     
     Log::info(TAG, "Reading config: " + sConfigFile);
@@ -122,7 +122,7 @@ int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Service &serviceConf){
+std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Ctf01dServiceDef &serviceConf){
     // TODO
     Log::warn(TAG, "TODO outdatedFlags");
     return std::vector<Flag>();
@@ -130,7 +130,7 @@ std::vector<Flag> FileStorage::outdatedFlags(const Team &teamConf, const Service
 
 // ----------------------------------------------------------------------
 
-void FileStorage::updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag){
+void FileStorage::updateFlag(const Team &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag){
     // TODO
     Log::warn(TAG, "TODO updateFlag");
 }

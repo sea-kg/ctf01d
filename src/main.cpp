@@ -183,7 +183,7 @@ int main(int argc, const char* argv[]) {
         for (unsigned int iservice = 0; iservice < pConfig->servicesConf().size(); iservice++) {
             for (unsigned int iteam = 0; iteam < pConfig->teamsConf().size(); iteam++) {
                 Team teamConf = pConfig->teamsConf()[iteam];
-                Service serviceConf = pConfig->servicesConf()[iservice];
+                Ctf01dServiceDef serviceConf = pConfig->servicesConf()[iservice];
 
                 // reset status to down
                 pConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);

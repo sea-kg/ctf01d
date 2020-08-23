@@ -15,7 +15,7 @@ class MySqlStorage : public Storage {
         virtual bool applyConfigFromYaml(
             WsjcppYaml &yamlConfig,
             std::vector<Team> &vTeamsConf, 
-            std::vector<Service> &vServicesConf
+            std::vector<Ctf01dServiceDef> &vServicesConf
         );
         virtual void clean();
         virtual void insertFlagLive(const Flag &flag);
@@ -35,8 +35,8 @@ class MySqlStorage : public Storage {
         virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
 
-        virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &serviceConf);
-        virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag);
+        virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Ctf01dServiceDef &serviceConf);
+        virtual void updateFlag(const Team &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag);
         
         virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
         virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);

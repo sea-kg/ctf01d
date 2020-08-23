@@ -3,9 +3,9 @@
 #include <wsjcpp_core.h>
 
 // ----------------------------------------------------------------------
-// Service
+// Ctf01dServiceDef
 
-Service::Service(){
+Ctf01dServiceDef::Ctf01dServiceDef(){
     m_nScriptWaitInSec = 10;
     m_bEnabled = true;
     m_nTimeSleepBetweenRunScriptsInSec = 10;
@@ -13,67 +13,67 @@ Service::Service(){
 
 // ----------------------------------------------------------------------
 
-void Service::setId(const std::string &sServiceID){
+void Ctf01dServiceDef::setId(const std::string &sServiceID){
     m_sID = sServiceID;
 }
 
 // ----------------------------------------------------------------------
 
-std::string Service::id() const {
+std::string Ctf01dServiceDef::id() const {
     return m_sID;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setName(const std::string &sName){
+void Ctf01dServiceDef::setName(const std::string &sName){
     m_sName = sName;
 }
 
 // ----------------------------------------------------------------------
 
-std::string Service::name() const {
+std::string Ctf01dServiceDef::name() const {
     return m_sName;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setScriptPath(const std::string &sScriptPath){
+void Ctf01dServiceDef::setScriptPath(const std::string &sScriptPath){
     m_sScriptPath = sScriptPath;
 }
 
 // ----------------------------------------------------------------------
 
-std::string Service::scriptPath() const {
+std::string Ctf01dServiceDef::scriptPath() const {
     return m_sScriptPath;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setScriptDir(const std::string &sScriptDir) {
+void Ctf01dServiceDef::setScriptDir(const std::string &sScriptDir) {
     m_sScriptDir = sScriptDir;
 }
 
 // ----------------------------------------------------------------------
 
-std::string Service::scriptDir() const {
+std::string Ctf01dServiceDef::scriptDir() const {
     return m_sScriptDir;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setEnabled(bool bEnabled){
+void Ctf01dServiceDef::setEnabled(bool bEnabled){
     m_bEnabled = bEnabled;
 }
 
 // ----------------------------------------------------------------------
 
-bool Service::isEnabled() const {
+bool Ctf01dServiceDef::isEnabled() const {
     return m_bEnabled;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setScriptWaitInSec(int nSec){
+void Ctf01dServiceDef::setScriptWaitInSec(int nSec){
     m_nScriptWaitInSec = nSec;
     if(m_nScriptWaitInSec < 1){
         m_nScriptWaitInSec = 10;
@@ -82,13 +82,13 @@ void Service::setScriptWaitInSec(int nSec){
 
 // ----------------------------------------------------------------------
 
-int Service::scriptWaitInSec() const {
+int Ctf01dServiceDef::scriptWaitInSec() const {
     return m_nScriptWaitInSec;
 }
 
 // ----------------------------------------------------------------------
 
-void Service::setTimeSleepBetweenRunScriptsInSec(int nSec){
+void Ctf01dServiceDef::setTimeSleepBetweenRunScriptsInSec(int nSec){
     m_nTimeSleepBetweenRunScriptsInSec = nSec;
     if(m_nTimeSleepBetweenRunScriptsInSec < 1){
         m_nTimeSleepBetweenRunScriptsInSec = 10;
@@ -97,7 +97,7 @@ void Service::setTimeSleepBetweenRunScriptsInSec(int nSec){
 
 // ----------------------------------------------------------------------
 
-int Service::timeSleepBetweenRunScriptsInSec() const {
+int Ctf01dServiceDef::timeSleepBetweenRunScriptsInSec() const {
     return m_nTimeSleepBetweenRunScriptsInSec;
 }
 

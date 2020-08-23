@@ -5,9 +5,9 @@
 
 // ----------------------------------------------------------------------
 
-class Service {
+class Ctf01dServiceDef {
     public:
-        Service();
+        Ctf01dServiceDef();
         
         void setId(const std::string &sServiceId);
         std::string id() const;

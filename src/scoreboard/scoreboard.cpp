@@ -16,7 +16,7 @@ Scoreboard::Scoreboard(
     int nFlagTimeLiveInSec,
     int nBacisCostsStolenFlagInPoints,
     const std::vector<Team> &vTeamsConf,
-    const std::vector<Service> &vServicesConf,
+    const std::vector<Ctf01dServiceDef> &vServicesConf,
     Storage *pStorage
 ) {
     TAG = "Scoreboard";
@@ -47,7 +47,7 @@ Scoreboard::Scoreboard(
         }
 
         for (unsigned int iservice = 0; iservice < vServicesConf.size(); iservice++) {
-            Service service = vServicesConf[iservice];
+            Ctf01dServiceDef service = vServicesConf[iservice];
             m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), ServiceStatusCell::SERVICE_DOWN);
 
             // random states of service for testing 
@@ -80,7 +80,7 @@ void Scoreboard::initJsonScoreboard() {
     m_jsonScoreboard.clear();
     nlohmann::json jsonCosts;
     for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
-        Service serviceConf = m_vServices[iservice];
+        Ctf01dServiceDef serviceConf = m_vServices[iservice];
         nlohmann::json serviceCosts;
         serviceCosts["cost_att"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costStolenFlag();
         serviceCosts["cost_def"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->costDefenceFlag();
@@ -101,7 +101,7 @@ void Scoreboard::initJsonScoreboard() {
         teamData["tries"] = 0;
         nlohmann::json jsonServices;
         for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
-            Service serviceConf = m_vServices[iservice];
+            Ctf01dServiceDef serviceConf = m_vServices[iservice];
             nlohmann::json serviceData;
             serviceData["def"] = 0;
             serviceData["pt_def"] = 0;
@@ -457,7 +457,7 @@ void Scoreboard::updateCosts() {
 
     nlohmann::json jsonCosts;
     for (unsigned int iservice = 0; iservice < m_vServices.size(); iservice++) {
-        Service serviceConf = m_vServices[iservice];
+        Ctf01dServiceDef serviceConf = m_vServices[iservice];
         std::string sId = serviceConf.id();
         m_jsonScoreboard["s_sta"][sId]["cost_att"] = m_mapServiceCostsAndStatistics[sId]->costStolenFlag();
         m_jsonScoreboard["s_sta"][sId]["cost_def"] = m_mapServiceCostsAndStatistics[sId]->costDefenceFlag();

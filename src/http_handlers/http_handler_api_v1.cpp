@@ -26,7 +26,7 @@ HttpHandlerApiV1::HttpHandlerApiV1(Config *pConfig)
     m_jsonGame["services"] = nlohmann::json::array();
 
     for (unsigned int i = 0; i < m_pConfig->servicesConf().size(); i++) {
-        Service serviceConf = m_pConfig->servicesConf()[i];
+        Ctf01dServiceDef serviceConf = m_pConfig->servicesConf()[i];
         if (serviceConf.isEnabled()) {
             nlohmann::json serviceInfo;
             serviceInfo["id"] = serviceConf.id();

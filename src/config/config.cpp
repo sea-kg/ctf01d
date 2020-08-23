@@ -260,7 +260,7 @@ bool Config::applyCheckersConf(WsjcppYaml &yamlConfig) {
         }
 
         // default values of service config
-        Service _serviceConf;
+        Ctf01dServiceDef _serviceConf;
         _serviceConf.setId(sServiceId);
         _serviceConf.setName(sServiceName);
         _serviceConf.setScriptPath(sServiceScriptPath);
@@ -453,7 +453,7 @@ std::vector<Team> &Config::teamsConf() {
 
 // ---------------------------------------------------------------------
 
-std::vector<Service> &Config::servicesConf() {
+std::vector<Ctf01dServiceDef> &Config::servicesConf() {
     return m_vServicesConf;
 }
 

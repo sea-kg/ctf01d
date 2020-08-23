@@ -1,12 +1,17 @@
 #include "team_status_row.h"
 
-TeamStatusRow::TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf, int nGameStartInSec, int nGameEndInSec) {
+TeamStatusRow::TeamStatusRow(
+    const std::string &sTeamId,
+    const std::vector<Ctf01dServiceDef> &vServicesConf,
+    int nGameStartInSec,
+    int nGameEndInSec
+) {
     m_sTeamId = sTeamId;
     m_nPlace = 0;
     m_nPoints = 0;
 
     for (unsigned int i = 0; i < vServicesConf.size(); i++) {
-        Service serviceConf = vServicesConf[i];
+        Ctf01dServiceDef serviceConf = vServicesConf[i];
         std::string sServiceId = serviceConf.id();
         m_mapServicesStatus[sServiceId] = new ServiceStatusCell(serviceConf, nGameStartInSec, nGameEndInSec);
     }

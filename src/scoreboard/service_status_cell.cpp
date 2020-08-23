@@ -14,7 +14,7 @@ std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
 
 // ----------------------------------------------------------------------
 
-ServiceStatusCell::ServiceStatusCell(const Service &serviceConf, int nGameStartInSec, int nGameEndInSec) {
+ServiceStatusCell::ServiceStatusCell(const Ctf01dServiceDef &serviceConf, int nGameStartInSec, int nGameEndInSec) {
     m_serviceConf = serviceConf;
     m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
     TAG = "ServiceStatusCell-" + serviceConf.id();

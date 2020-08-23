@@ -24,7 +24,7 @@ class Scoreboard {
             int nFlagTimeLiveInSec,
             int nBacisCostsStolenFlagInPoints,
             const std::vector<Team> &vTeamsConf, 
-            const std::vector<Service> &vServicesConf,
+            const std::vector<Ctf01dServiceDef> &vServicesConf,
             Storage *pStorage
         );
 
@@ -49,7 +49,7 @@ class Scoreboard {
     private:
         std::string TAG;
         Storage *m_pStorage;
-        std::vector<Service> m_vServices;
+        std::vector<Ctf01dServiceDef> m_vServices;
         std::vector<Team> m_vTeams;
         int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;

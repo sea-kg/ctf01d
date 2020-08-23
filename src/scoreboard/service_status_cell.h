@@ -17,7 +17,7 @@ class ServiceStatusCell {
         static std::string SERVICE_WAIT;
         static std::string SERVICE_COFFEEBREAK;
 
-        ServiceStatusCell(const Service &serviceConf, int nGameStartinSec, int nGameEndInSec);
+        ServiceStatusCell(const Ctf01dServiceDef &serviceConf, int nGameStartinSec, int nGameEndInSec);
         const std::string &serviceId();
 
         void setDefenceFlags(int nDefenceFlags);
@@ -50,7 +50,7 @@ class ServiceStatusCell {
     private:
         std::string TAG;
         std::mutex m_mutexServiceStatus;
-        Service m_serviceConf;
+        Ctf01dServiceDef m_serviceConf;
         std::string m_sServiceId;
         std::string m_sStatus; // may be char[10] ?
         int m_nDefenceFlags;

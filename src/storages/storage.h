@@ -15,7 +15,7 @@ public:
     virtual bool applyConfigFromYaml(
         WsjcppYaml &yamlConfig,
         std::vector<Team> &vTeamsConf,
-        std::vector<Service> &vServicesConf
+        std::vector<Ctf01dServiceDef> &vServicesConf
     ) = 0;
 
     virtual void clean() = 0;
@@ -57,10 +57,10 @@ public:
     virtual bool isSomebodyStole(const Flag &flag) = 0;
 
     // list of flags with ended if server up and check another flag lost on down
-    virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Service &service) = 0;
+    virtual std::vector<Flag> outdatedFlags(const Team &teamConf, const Ctf01dServiceDef &service) = 0;
 
     // update flag status and update scoreboard table for team 
-    virtual void updateFlag(const Team &teamConf, const Service &serviceConf, const Flag &sFlag) = 0;
+    virtual void updateFlag(const Team &teamConf, const Ctf01dServiceDef &serviceConf, const Flag &sFlag) = 0;
 
     // return defence value by team and by service
     virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;

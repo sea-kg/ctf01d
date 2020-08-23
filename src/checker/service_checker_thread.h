@@ -16,7 +16,11 @@ class ServiceCheckerThread {
 		static int CHECKER_CODE_DOWN;
 		static int CHECKER_CODE_SHIT;
 
-		ServiceCheckerThread(Config *pConfig, const Team &teamConf, const Service &serviceConf);
+		ServiceCheckerThread(
+			Config *pConfig,
+			const Team &teamConf,
+			const Ctf01dServiceDef &serviceConf
+		);
 		void start();
 		void run();
 
@@ -25,7 +29,7 @@ class ServiceCheckerThread {
 		pthread_t m_checkerThread;
 		Config *m_pConfig;
 		Team m_teamConf;
-		Service m_serviceConf;
+		Ctf01dServiceDef m_serviceConf;
 
 		int runChecker(Flag &flag, const std::string &sCommand);
 		// int runChecker(Flag &flag, const std::string &sCommand);

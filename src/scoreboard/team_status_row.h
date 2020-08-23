@@ -10,7 +10,7 @@
 
 class TeamStatusRow {
     public:
-        TeamStatusRow(const std::string &sTeamId, const std::vector<Service> &vServicesConf, int nGameStartInSec, int nGameEndInSec);
+        TeamStatusRow(const std::string &sTeamId, const std::vector<Ctf01dServiceDef> &vServicesConf, int nGameStartInSec, int nGameEndInSec);
         const std::string &teamId();
 
         void setPlace(int nPlace);

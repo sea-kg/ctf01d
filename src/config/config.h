@@ -12,7 +12,7 @@ class Config {
 		bool applyConfig();
 
 		// services configuration
-		std::vector<Service> &servicesConf();
+		std::vector<Ctf01dServiceDef> &servicesConf();
 
 		// teams configuration
 		std::vector<Team> &teamsConf();
@@ -74,7 +74,7 @@ class Config {
 		
 		
 		std::vector<Team> m_vTeamsConf;
-		std::vector<Service> m_vServicesConf;
+		std::vector<Ctf01dServiceDef> m_vServicesConf;
 
 };
 

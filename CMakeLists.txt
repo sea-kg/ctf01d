@@ -18,11 +18,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/checker")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/config")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/objects")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/resources")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/resources.wsjcpp")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/utils")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/interfaces")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
@@ -30,10 +26,18 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
 
 # argument processors
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_clean.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_clean.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.cpp")
 
 # employees
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.h")
@@ -68,10 +72,6 @@ list (APPEND WSJCPP_SOURCES "src/scoreboard/service_status_cell.h")
 list (APPEND WSJCPP_SOURCES "src/scoreboard/service_status_cell.cpp")
 list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.h")
 list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.cpp")
-
-# utils
-list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.h")
-list (APPEND WSJCPP_SOURCES "src/utils/utils_help_parse_args.cpp")
 
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.h")

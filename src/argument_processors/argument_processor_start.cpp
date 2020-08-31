@@ -37,12 +37,25 @@ bool ArgumentProcessorStart::applyParameterArgument(
 
 // ---------------------------------------------------------------------
 
+/*void quitApp(int signum) {
+    std::cout << std::endl << "Terminating server by signal " << signum << std::endl;
+    g_httpServer.stop();
+    exit(1);
+}*/
+
 int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     WsjcppLog::info(TAG, "Starting...");
-    WsjcppEmployees::init({});
+    if (!WsjcppEmployees::init({})) {
+        WsjcppLog::err(TAG, "Failed.");
+        return -1;
+    }
+
+    // signal( SIGINT, quitApp );
+    // signal( SIGTERM, quitApp );
 
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
 
+    // TODO move to EmployScoreboard::init
     pEmployConfig->scoreboard()->initStateFromStorage();
 
     for (unsigned int iservice = 0; iservice < pEmployConfig->servicesConf().size(); iservice++) {

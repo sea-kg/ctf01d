@@ -3,6 +3,11 @@
 #include <wsjcpp_core.h>
 #include <employ_config.h>
 #include <argument_processor_start.h>
+#include <argument_processor_clean.h>
+#include <argument_processor_check.h>
+#include <argument_processor_version.h>
+#include <argument_processor_web_test.h>
+
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorCtf01dMain
@@ -14,6 +19,10 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
     registryParameterArgument("-work-dir", "path", "Custom workspace folder with configs, logging, checker scripts and etc. (env: CTF01D_WORKDIR)");
     registryParameterArgument("-db-host", "hostname", "Force apply host to database (env: CTF01D_DB_HOST)");
     registryExample("ctf01d -work-dir ./data_test -db-host localhost start");
+    registryProcessor(new ArgumentProcessorVersion());
+    registryProcessor(new ArgumentProcessorCheck());
+    registryProcessor(new ArgumentProcessorClean());
+    registryProcessor(new ArgumentProcessorWebTest());
     registryProcessor(new ArgumentProcessorStart());
 }
 

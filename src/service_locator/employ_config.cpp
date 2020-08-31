@@ -275,7 +275,6 @@ std::string EmployConfig::getWorkDir() {
 
 void EmployConfig::setDatabaseHost(std::string sDatabaseHost) {
     m_sDatabaseHost = sDatabaseHost;
-    std::cout << " m_sDatabaseHost = " << m_sDatabaseHost << std::endl;
 }
 
 // ---------------------------------------------------------------------

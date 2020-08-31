@@ -552,7 +552,7 @@ Start
 ```
 $ cd ~/ctf01d.git
 $ mkdir data_test
-$ ./ctf01d -work-dir ./data_test -mysql-host localhost start
+$ ./ctf01d -work-dir ./data_test -db-host localhost start
 ```
 
 # Similar Systems && Helpful Links

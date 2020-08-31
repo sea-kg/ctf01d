@@ -4,6 +4,7 @@
 #include <wsjcpp_light_web_server.h>
 #include <employ_config.h>
 #include <json.hpp>
+#include <employ_flags.h>
 
 class HttpHandlerApiV1 : public WsjcppLightWebHttpHandlerBase {
     public:
@@ -15,6 +16,8 @@ class HttpHandlerApiV1 : public WsjcppLightWebHttpHandlerBase {
         std::string TAG;
 
         EmployConfig *m_pConfig;
+        EmployFlags *m_pEmployFlags;
+
         std::string m_sIndexHtml;
 
         nlohmann::json m_jsonGame;

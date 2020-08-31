@@ -57,6 +57,19 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_arguments"
 
+distribution:
+  - source-file: "src/service_locator/employ_flags.cpp"
+    target-file: "employ_flags.cpp"
+    type: "source-code"
+  - source-file: "src/service_locator/employ_flags.h"
+    target-file: "employ_flags.h"
+    type: "source-code"
+
+unit-tests:
+  cases:
+    - name: "StructFlag"
+      description: ""
+
 resources:
   - filepath: "./data_sample/html/index.html"
     filesize: 4691
@@ -188,14 +201,4 @@ resources:
     pack-as: "binary"
     modified: 1536162213
     sha1: ""
-unit-tests:
-  cases:
-    - name: "StructFlag"
-      description: ""
-distribution:
-  - source-file: "src/objects/ctf01d_flag.cpp"
-    target-file: "ctf01d_flag.cpp"
-    type: "source-code"
-  - source-file: "src/objects/ctf01d_flag.h"
-    target-file: "ctf01d_flag.h"
-    type: "source-code"
+

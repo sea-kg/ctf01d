@@ -74,8 +74,8 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
 # ctf01d:v0.4.3
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
-list (APPEND WSJCPP_SOURCES "../src/objects/ctf01d_flag.cpp")
-list (APPEND WSJCPP_SOURCES "../src/objects/ctf01d_flag.h")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_flags.cpp")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_flags.h")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")

@@ -1,10 +1,18 @@
-#include "ctf01d_flag.h"
-#include <iostream>
-#include <cstring>
+#include "employ_flags.h"
+#include <employ_config.h>
 #include <wsjcpp_core.h>
+#include <fstream>
+#include <cstring>
 
+// ---------------------------------------------------------------------
+// Ctf01dFlag
 Ctf01dFlag::Ctf01dFlag() {
-    
+    m_sId = "";
+    m_sValue = "";
+    m_sTeamId = "";
+    m_sServiceId = "";
+    m_nTimeStartInMs = 0;
+    m_nTimeEndInMs = 0;
 }
 
 // ---------------------------------------------------------------------
@@ -53,6 +61,8 @@ std::string Ctf01dFlag::getId() const {
 // ---------------------------------------------------------------------
 
 void Ctf01dFlag::generateValue() {
+    // TODO redesign more freeble format
+
     static const std::string sAlphabet = "0123456789abcdef";
     char sUuid[37];
     memset(&sUuid, '\0', 37);
@@ -141,3 +151,27 @@ void Ctf01dFlag::copyFrom(const Ctf01dFlag &flag) {
 }
 
 // ---------------------------------------------------------------------
+// EmployFlags
+
+REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployFlags)
+
+EmployFlags::EmployFlags() 
+: WsjcppEmployBase(EmployFlags::name(), { EmployConfig::name() }) {
+    TAG = EmployFlags::name();
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployFlags::init() {
+    WsjcppLog::info(TAG, "init");
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+bool EmployFlags::deinit() {
+    WsjcppLog::info(TAG, "deinit");
+    return true;
+}
+
+

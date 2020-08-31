@@ -20,10 +20,14 @@ MySqlStorage::MySqlStorage(int nGameStartUTCInSec, int nGameEndUTCInSec) {
 // ----------------------------------------------------------------------
 
 bool MySqlStorage::applyConfigFromYaml(
-    WsjcppYaml &yamlConfig
+    WsjcppYaml &yamlConfig,
+    const std::string &sHost
 ) {
-
-    m_sDatabaseHost = yamlConfig["mysql_storage"]["dbhost"].getValue();
+    if (sHost == "") {
+        m_sDatabaseHost = yamlConfig["mysql_storage"]["dbhost"].getValue();
+    } else {
+        m_sDatabaseHost = sHost;
+    }
     WsjcppLog::info(TAG, "mysql_storage.dbhost: " + m_sDatabaseHost);
 
     m_nDatabasePort = std::atoi(yamlConfig["mysql_storage"]["dbport"].getValue().c_str());

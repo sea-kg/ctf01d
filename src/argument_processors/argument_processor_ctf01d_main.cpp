@@ -2,6 +2,7 @@
 #include "argument_processor_ctf01d_main.h"
 #include <wsjcpp_core.h>
 #include <employ_config.h>
+#include <argument_processor_start.h>
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorCtf01dMain
@@ -10,10 +11,10 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
 : WsjcppArgumentProcessor({"ctf01d_main"}, "Jury System for ctf-attack-defence", "Jury System for ctf-attack-defence") {
     TAG = "ArgumentProcessorCtf01dMain";
     // registrySingleArgument("--single", "What exactly do this single param?");
-    registryParameterArgument("-mysql-host", "hostname", "Force apply host to mysql database");
-    registryParameterArgument("-work-dir", "path", "Custom workspace folder with configs, logging, checker scripts and etc.");
-    registryExample("ctf01d -work-dir ./data start");
-    // registryProcessor(new ArgumentProcessorOtherProcessor());
+    registryParameterArgument("-work-dir", "path", "Custom workspace folder with configs, logging, checker scripts and etc. (env: CTF01D_WORKDIR)");
+    registryParameterArgument("-db-host", "hostname", "Force apply host to database (env: CTF01D_DB_HOST)");
+    registryExample("ctf01d -work-dir ./data_test -db-host localhost start");
+    registryProcessor(new ArgumentProcessorStart());
 }
 
 // ---------------------------------------------------------------------
@@ -39,8 +40,8 @@ bool ArgumentProcessorCtf01dMain::applyParameterArgument(
         return true;
     }
 
-    if (sArgumentName == "-mysql-host") {
-        pConfig->setMysqlHost(sValue);
+    if (sArgumentName == "-db-host") {
+        pConfig->setDatabaseHost(sValue);
         return true;
     }
 
@@ -54,4 +55,3 @@ int ArgumentProcessorCtf01dMain::exec(const std::vector<std::string> &vRoutes, c
     WsjcppLog::err(TAG, "Not implemented");
     return -1; 
 }
-

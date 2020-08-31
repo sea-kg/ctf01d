@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <ctf01d_flag.h>
+#include <employ_flags.h>
 #include <wsjcpp_yaml.h>
 
 class Storage {
@@ -12,7 +12,8 @@ public:
     static std::string type() { return "unknown"; };
 
     virtual bool applyConfigFromYaml(
-        WsjcppYaml &yamlConfig
+        WsjcppYaml &yamlConfig,
+        const std::string &sHost
     ) = 0;
 
     virtual void clean() = 0;

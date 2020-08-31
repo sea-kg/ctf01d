@@ -207,18 +207,47 @@ EmployConfig::EmployConfig()
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
     m_nBacisCostsStolenFlagInPoints = 10;
-    m_sMysqlHost = "";
+    m_sDatabaseHost = "";
 }
 
 // ---------------------------------------------------------------------
 
 bool EmployConfig::init() {
-    if (WsjcppCore::getEnv("CTF01D_WORKDIR", m_sWorkDir)) {
-        WsjcppLog::info(TAG, "Work Directory from enviroment: " + m_sWorkDir);
+
+    tryLoadFromEnv("CTF01D_WORKDIR", m_sWorkDir, "Work Directory from enviroment");
+    tryLoadFromEnv("CTF01D_DB_HOST", m_sDatabaseHost, "Database Host from enviroment");
+
+    std::string sWorkDir = this->getWorkDir();
+    if (sWorkDir == "") {
+        WsjcppLog::throw_err(TAG, "Work Directory not defined.");
     }
-    if (WsjcppCore::getEnv("CTF01D_MYSQL_HOST", m_sMysqlHost)) {
-        WsjcppLog::info(TAG, "MySQL Host from enviroment: " + m_sMysqlHost);
+
+    if (!WsjcppCore::dirExists(sWorkDir)) {
+        WsjcppLog::err(TAG, "Directory " + sWorkDir + " does not exists");
+        return false;
     }
+
+    // init logger
+    std::string sLogDir = sWorkDir + "/logs";
+    if (!WsjcppCore::dirExists(sLogDir)) {
+        std::cout << "Error: Folder " << sLogDir << " does not exists \n";
+        return false;
+    }
+
+    WsjcppLog::setPrefixLogFile("ctf01d");
+    WsjcppLog::setLogDirectory(sLogDir);
+    WsjcppLog::setRotationPeriodInSec(600); // every 10 min  // TODO rotation period must be in config.yml
+    WsjcppLog::setEnableLogFile(true);
+
+    std::cout << "Logger: '" + sWorkDir + "/logs/' \n";
+
+    this->doExtractFilesIfNotExists();
+
+    if (!this->applyConfig()) {
+        WsjcppLog::err(TAG, "Configuration file has some problems");
+        return false;
+    }
+
     return true;
 }
 
@@ -244,14 +273,15 @@ std::string EmployConfig::getWorkDir() {
 
 // ---------------------------------------------------------------------
 
-void EmployConfig::setMysqlHost(std::string sMysqlHost) {
-    m_sMysqlHost = sMysqlHost;
+void EmployConfig::setDatabaseHost(std::string sDatabaseHost) {
+    m_sDatabaseHost = sDatabaseHost;
+    std::cout << " m_sDatabaseHost = " << m_sDatabaseHost << std::endl;
 }
 
 // ---------------------------------------------------------------------
 
-std::string EmployConfig::getMysqlHost() {
-    return m_sMysqlHost;
+std::string EmployConfig::getDatabaseHost() {
+    return m_sDatabaseHost;
 }
 
 // ---------------------------------------------------------------------
@@ -324,7 +354,7 @@ bool EmployConfig::applyConfig() {
     );
 
     // configure storage
-    if (!m_pStorage->applyConfigFromYaml(yamlConfig)) {
+    if (!m_pStorage->applyConfigFromYaml(yamlConfig, m_sDatabaseHost)) {
         WsjcppLog::err(TAG, "Could not init configuration storage");
         return false;
     }
@@ -855,4 +885,14 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
     }
 
     return true;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployConfig::tryLoadFromEnv(const std::string &sEnvName, std::string &sValue, const std::string &sDescription) {
+    if (sValue == "") { // only if not define previously (from command line param)
+        if (WsjcppCore::getEnv(sEnvName, sValue)) {
+            WsjcppLog::info(TAG, sDescription + ": " + sValue);
+        }
+    }
 }

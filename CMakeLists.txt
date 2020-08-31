@@ -32,10 +32,16 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
 # argument processors
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.cpp")
 
 # employees
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.cpp")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.h")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.cpp")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.h")
+list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.cpp")
 
@@ -52,10 +58,6 @@ list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.h")
 list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.cpp")
 list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.h")
 list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
-
-# objects
-list (APPEND WSJCPP_SOURCES "src/objects/ctf01d_flag.h")
-list (APPEND WSJCPP_SOURCES "src/objects/ctf01d_flag.cpp")
 
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")

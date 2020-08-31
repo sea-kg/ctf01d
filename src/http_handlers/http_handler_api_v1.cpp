@@ -13,6 +13,7 @@ HttpHandlerApiV1::HttpHandlerApiV1()
 : WsjcppLightWebHttpHandlerBase("api-v1") {
 
     m_pConfig = findWsjcppEmploy<EmployConfig>();
+    m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     TAG = "HttpHandlerApiV1";
     
@@ -66,8 +67,8 @@ bool HttpHandlerApiV1::canHandle(const std::string &sWorkerId, WsjcppLightWebHtt
 bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest){
     std::string _tag = TAG + "-" + sWorkerId;
     WsjcppLightWebHttpResponse response(pRequest->getSockFd());
-    
-    if(pRequest->getRequestPath() == "/api/v1/game") {
+
+    if (pRequest->getRequestPath() == "/api/v1/game") {
         std::string sJsonResponse = m_jsonGame.dump();
         response.noCache().ok().sendBuffer("game.json", sJsonResponse.c_str(), sJsonResponse.length());
         return true;
@@ -176,6 +177,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         }
         m_pConfig->scoreboard()->incrementTries(sTeamId);
         m_pConfig->storage()->insertFlagAttempt(sTeamId, sFlag);
+        // TODO m_pEmployFlags->insertFlagAttempt(sTeamId, sFlag);
 
         Ctf01dFlag flag;
         if (!m_pConfig->scoreboard()->findFlagLive(sFlag, flag)) {

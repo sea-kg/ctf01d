@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <wsjcpp_core.h>
 #include <employ_config.h>
+#include <employ_flags.h>
 
 // ---------------------------------------------------------------------
 
@@ -35,6 +36,7 @@ Scoreboard::Scoreboard(
     m_nAllDefenceFlags = 0;
     m_nBacisCostsStolenFlagInPoints = nBacisCostsStolenFlagInPoints;
     m_nServicesSize = vServicesConf.size();
+    m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     m_mapTeamsStatuses.clear(); // possible memory leak
     for (unsigned int iteam = 0; iteam < vTeamsConf.size(); iteam++) {
@@ -124,7 +126,6 @@ void Scoreboard::initJsonScoreboard() {
 void Scoreboard::updateJsonScoreboard() {
     std::lock_guard<std::mutex> lock(m_mutexJson);
 
-    
     // TODO update score
     // TODO update costs
 }

@@ -12,8 +12,9 @@ class MySqlStorage : public Storage {
 
         // Storage
         virtual bool applyConfigFromYaml(
-            WsjcppYaml &yamlConfig
-        );
+            WsjcppYaml &yamlConfig,
+            const std::string &sHost
+        ) override;
         virtual void clean() override;
         virtual void insertFlagLive(const Ctf01dFlag &flag) override;
         virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;

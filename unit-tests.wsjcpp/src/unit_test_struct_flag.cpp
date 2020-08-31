@@ -1,7 +1,7 @@
 #include "unit_test_struct_flag.h"
 #include <vector>
 #include <wsjcpp_core.h>
-#include <ctf01d_flag.h>
+#include <employ_flags.h>
 
 REGISTRY_WSJCPP_UNIT_TEST(UnitTestStructFlag)
 

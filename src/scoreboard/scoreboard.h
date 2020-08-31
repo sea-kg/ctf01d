@@ -2,7 +2,7 @@
 #define SCOREBOARD_H
 
 #include <team_status_row.h>
-#include <ctf01d_flag.h>
+#include <employ_flags.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -47,6 +47,7 @@ class Scoreboard {
         std::string TAG;
         int m_nServicesSize;
         Storage *m_pStorage;
+        EmployFlags *m_pEmployFlags;
         int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;

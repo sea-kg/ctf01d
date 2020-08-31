@@ -1,7 +1,7 @@
-#ifndef CTF01D_FLAG_H
-#define CTF01D_FLAG_H
+#ifndef EMPLOY_FLAGS_H
+#define EMPLOY_FLAGS_H
 
-#include <string>
+#include <wsjcpp_employees.h>
 
 class Ctf01dFlag {
     public:
@@ -39,4 +39,15 @@ class Ctf01dFlag {
         long m_nTimeEndInMs;
 };
 
-#endif // CTF01D_FLAG_H
+class EmployFlags : public WsjcppEmployBase {
+    public:
+        EmployFlags();
+        static std::string name() { return "EmployFlags"; }
+        virtual bool init() override;
+        virtual bool deinit() override;
+
+    private:
+        std::string TAG;
+};
+
+#endif // EMPLOY_FLAGS_H

@@ -24,29 +24,29 @@
 #include <wsjcpp_core.h>
 #include <argument_processor_ctf01d_main.h>
 #include <employ_config.h>
+#include <employ_flags.h>
 
 WsjcppLightWebServer g_httpServer;
-std::vector<ServiceCheckerThread *> g_vThreads;
 
 // ---------------------------------------------------------------------
 
-void quitApp(int signum) {
+/*void quitApp(int signum) {
     std::cout << std::endl << "Terminating server by signal " << signum << std::endl;
     g_httpServer.stop();
     exit(1);
-}
+}*/
 
 // ---------------------------------------------------------------------
 
 int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
 
-    WsjcppEmployees::init({});
+    // WsjcppEmployees::init({});
 
     ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
     WsjcppArguments prog(argc, argv, pMain);
     prog.exec();
-    // return prog.exec();
+    return prog.exec();
 
     HelpParseArgs helpParseArgs(argc, argv);
 
@@ -82,14 +82,8 @@ int main(int argc, const char* argv[]) {
         return 0;
     }
 
-    if (helpParseArgs.has("help")) {
-        helpParseArgs.printHelp();
-        return 0;
-    }
-
-    
-    // CTF01D_WORKDIR
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
+    EmployFlags *pFlags = findWsjcppEmploy<EmployFlags>();
 
     std::string sWorkDir = pEmployConfig->getWorkDir();
     if (sWorkDir == "") {
@@ -115,26 +109,11 @@ int main(int argc, const char* argv[]) {
         }
     }*/
 
-    std::string sLogDir = sWorkDir + "/logs";
-    if (!WsjcppCore::dirExists(sLogDir)) {
-        std::cout << "Error: Folder " << sLogDir << " does not exists \n";
-        return -1;
-    }
-
-    WsjcppLog::setPrefixLogFile("ctf01d");
-    WsjcppLog::setLogDirectory(sLogDir);
-    WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
-    WsjcppLog::setEnableLogFile(true);
-    // TODO rotation period must be in config.yml
-
-    std::cout << "Logger: '" + sWorkDir + "/logs/' \n";
+    
     WsjcppLog::info(TAG, "Version: " + std::string(WSJCPP_APP_VERSION));
 
     
-    if (!pEmployConfig->applyConfig()) {
-        WsjcppLog::err(TAG, "Configuration file has some problems");
-        return -1;
-    }
+    
 
     if (helpParseArgs.has("check")) {
         return 0;
@@ -151,8 +130,8 @@ int main(int argc, const char* argv[]) {
     g_httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
     g_httpServer.addHandler(new HttpHandlerWebFolder(pEmployConfig->scoreboardHtmlFolder()));
 
-    signal( SIGINT, quitApp );
-    signal( SIGTERM, quitApp );
+    // signal( SIGINT, quitApp );
+    // signal( SIGTERM, quitApp );
 
     if (helpParseArgs.has("check-http")) {
         pEmployConfig->setStorage(Storages::create("file", pEmployConfig->gameStartUTCInSec(), pEmployConfig->gameEndUTCInSec())); // replace storage to ram for tests
@@ -161,43 +140,6 @@ int main(int argc, const char* argv[]) {
         g_httpServer.setPort(pEmployConfig->scoreboardPort());
         g_httpServer.setMaxWorkers(1);
         g_httpServer.startSync(); // will be block thread
-        return 0;
-    }
-
-    if (helpParseArgs.has("start")) {
-        WsjcppLog::info(TAG, "Starting...");
-
-        pEmployConfig->scoreboard()->initStateFromStorage();
-
-        for (unsigned int iservice = 0; iservice < pEmployConfig->servicesConf().size(); iservice++) {
-            for (unsigned int iteam = 0; iteam < pEmployConfig->teamsConf().size(); iteam++) {
-                Ctf01dTeamDef teamConf = pEmployConfig->teamsConf()[iteam];
-                Ctf01dServiceDef serviceConf = pEmployConfig->servicesConf()[iservice];
-
-                // reset status to down
-                pEmployConfig->scoreboard()->setServiceStatus(teamConf.id(), serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
-                // pConfig->scoreboard()->setTeamTries();
-
-                ServiceCheckerThread *thr = new ServiceCheckerThread(teamConf, serviceConf);
-                thr->start();
-                g_vThreads.push_back(thr);
-            }
-        }
-
-        WsjcppLog::ok(TAG, "Start scoreboard on " + std::to_string(pEmployConfig->scoreboardPort()));
-        g_httpServer.addHandler(new HttpHandlerApiV1());
-        // pConfig->setStorage(new RamStorage(pConfig->scoreboard())); // replace storage to ram for tests
-        g_httpServer.setPort(pEmployConfig->scoreboardPort());
-        g_httpServer.setMaxWorkers(10);
-        g_httpServer.startSync(); // will be block thread
-
-        // TODO: stop all threads
-
-        /*while(1) {
-            Log::info(TAG, "wait 2 minutes");
-            std::this_thread::sleep_for(std::chrono::minutes(2));
-            Log::info(TAG, "wait ended");
-        }*/
         return 0;
     }
 

@@ -13,6 +13,9 @@
 #include <wsjcpp_yaml.h>
 #include <wsjcpp_validators.h>
 #include <employ_team_logos.h>
+#include <wsjcpp_resources_manager.h>
+#include <sys/stat.h>
+#include <stdio.h>
 
 // ----------------------------------------------------------------------
 // Ctf01dServiceDef
@@ -204,6 +207,7 @@ EmployConfig::EmployConfig()
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
     m_nBacisCostsStolenFlagInPoints = 10;
+    m_sMysqlHost = "";
 }
 
 // ---------------------------------------------------------------------
@@ -211,6 +215,9 @@ EmployConfig::EmployConfig()
 bool EmployConfig::init() {
     if (WsjcppCore::getEnv("CTF01D_WORKDIR", m_sWorkDir)) {
         WsjcppLog::info(TAG, "Work Directory from enviroment: " + m_sWorkDir);
+    }
+    if (WsjcppCore::getEnv("CTF01D_MYSQL_HOST", m_sMysqlHost)) {
+        WsjcppLog::info(TAG, "MySQL Host from enviroment: " + m_sMysqlHost);
     }
     return true;
 }
@@ -233,6 +240,18 @@ void EmployConfig::setWorkDir(const std::string &sWorkDir) {
 
 std::string EmployConfig::getWorkDir() {
     return m_sWorkDir;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployConfig::setMysqlHost(std::string sMysqlHost) {
+    m_sMysqlHost = sMysqlHost;
+}
+
+// ---------------------------------------------------------------------
+
+std::string EmployConfig::getMysqlHost() {
+    return m_sMysqlHost;
 }
 
 // ---------------------------------------------------------------------
@@ -414,6 +433,106 @@ void EmployConfig::setStorage(Storage *pStorage){
 
 Scoreboard *EmployConfig::scoreboard(){
     return m_pScoreboard;
+}
+
+// ---------------------------------------------------------------------
+
+void EmployConfig::doExtractFilesIfNotExists() {
+    if (!WsjcppCore::dirExists(m_sWorkDir + "/logs")) {
+        WsjcppCore::makeDir(m_sWorkDir + "/logs");
+    }
+    if (!WsjcppCore::fileExists(m_sWorkDir + "/config.yml")) {
+        WsjcppLog::warn(TAG, "Extracting config.yml and files");
+        
+        WsjcppLog::warn(TAG, "Extracting checker_example_*");
+        const std::vector<WsjcppResourceFile*> &vFiles = WsjcppResourcesManager::list();
+        std::vector<std::string> vExecutableFiles;
+        for (int i = 0; i < vFiles.size(); i++) {
+            std::string sFilepath = vFiles[i]->getFilename();
+            if (sFilepath.rfind("./data_sample/checker_example_", 0) == 0) {
+                std::vector<std::string> vPath = WsjcppCore::split(sFilepath, "/");
+                std::string sDirname = vPath[2];
+                vPath.erase (vPath.begin(),vPath.begin()+3);
+                std::string sNewFilepath = WsjcppCore::join(vPath, "/");
+                sNewFilepath = WsjcppCore::doNormalizePath(m_sWorkDir + "/" + sDirname + "/" + sNewFilepath);
+                if (!WsjcppCore::fileExists(sNewFilepath)) {
+                    std::cout << "Extracting file '" << sFilepath << "' to '" << sNewFilepath << "'" << std::endl;
+                } else {
+                    std::cout << "File '" << sNewFilepath << "' already exists. Skip." << std::endl;
+                    continue;
+                }
+
+                // prepare folder
+                std::string sFolder = WsjcppCore::doNormalizePath(m_sWorkDir + "/" + sDirname + "/");
+                if (!WsjcppCore::dirExists(sFolder)) {
+                    WsjcppCore::makeDir(sFolder);
+                }
+
+                if (!WsjcppCore::writeFile(sNewFilepath, vFiles[i]->getBuffer(), vFiles[i]->getBufferSize())) {
+                    std::cout << "ERROR. Could not write file. " << std::endl;
+                    continue;
+                } else {
+                    std::cout << "Successfully created file. " << std::endl;
+                    if (chmod(sNewFilepath.c_str(), S_IRWXU|S_IRWXG) != 0) {
+                        std::cout << "ERROR. Could not change permissions for. " << std::endl;
+                    } else {
+                        struct stat info;
+                        stat(sNewFilepath.c_str(), &info);
+                        printf("after chmod(), permissions are: %08x\n", info.st_mode);
+                    }
+                }
+            }
+        }
+
+        WsjcppResourceFile* pConfigYml = WsjcppResourcesManager::get("./data_sample/config.yml");
+        std::string sNewFilepath = WsjcppCore::doNormalizePath(m_sWorkDir + "/config.yml");
+        if (!WsjcppCore::writeFile(sNewFilepath, pConfigYml->getBuffer(), pConfigYml->getBufferSize())) {
+            std::cout << "ERROR. Could not write file. " << std::endl;
+        } else {
+            std::cout << "Successfully created file. " << std::endl;
+        }
+        // TODO extract yaml and example services files
+    }
+
+    if (!WsjcppCore::fileExists(m_sWorkDir + "/html/index.html")) {
+        if (!WsjcppCore::dirExists(m_sWorkDir + "/html")) {
+            WsjcppCore::makeDir(m_sWorkDir + "/html");
+        }
+
+        WsjcppLog::warn(TAG, "Extracting html/index.html and files");
+        const std::vector<WsjcppResourceFile*> &vFiles = WsjcppResourcesManager::list();
+        for (int i = 0; i < vFiles.size(); i++) {
+            std::string sFilepath = vFiles[i]->getFilename();
+            if (sFilepath.rfind("./data_sample/html/", 0) == 0) {
+                std::vector<std::string> vPath = WsjcppCore::split(sFilepath, "/");
+                vPath.erase (vPath.begin(),vPath.begin()+3);
+                std::string sNewFilepath = WsjcppCore::join(vPath, "/");
+                sNewFilepath = WsjcppCore::doNormalizePath(m_sWorkDir + "/html/" + sNewFilepath);
+                if (!WsjcppCore::fileExists(sNewFilepath)) {
+                    std::cout << "Extracting file '" << sFilepath << "' to '" << sNewFilepath << "'" << std::endl;
+                } else {
+                    std::cout << "File '" << sNewFilepath << "' already exists. Skip." << std::endl;
+                    continue;
+                }
+
+                // prepare folders
+                std::string sFolder = WsjcppCore::doNormalizePath(m_sWorkDir + "/html/");
+                for (int p = 0; p < vPath.size()-1; p++) {
+                    sFolder = WsjcppCore::doNormalizePath(sFolder + "/" + vPath[p]);
+                    if (!WsjcppCore::dirExists(sFolder)) {
+                        WsjcppCore::makeDir(sFolder);
+                    }
+                }
+
+                if (!WsjcppCore::writeFile(sNewFilepath, vFiles[i]->getBuffer(), vFiles[i]->getBufferSize())) {
+                    std::cout << "ERROR. Could not write file. " << std::endl;
+                    continue;
+                } else {
+                    std::cout << "Successfully created file. " << std::endl;
+                }
+            }
+        }
+    }
 }
 
 // ---------------------------------------------------------------------

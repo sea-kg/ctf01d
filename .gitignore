@@ -4,7 +4,7 @@ dckr_mysql/*
 vulnbox/example_service1/flags/*
 *.log
 unit-tests.wsjcpp/tmp/*
-
+data_test/*
 ctf01d
 tmp/*
 .wsjcpp/*

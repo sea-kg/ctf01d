@@ -83,6 +83,9 @@ class EmployConfig : public WsjcppEmployBase {
         virtual bool deinit() override;
         void setWorkDir(const std::string &sWorkDir);
         std::string getWorkDir();
+        void setMysqlHost(std::string sMysqlHost);
+        std::string getMysqlHost();
+
         bool applyConfig();
 
         // services configuration
@@ -113,6 +116,8 @@ class EmployConfig : public WsjcppEmployBase {
         void setStorage(Storage *pStorage);
         Scoreboard *scoreboard();
 
+        void doExtractFilesIfNotExists();
+
     private:
         bool applyGameConf(WsjcppYaml &yamlConfig);
         bool applyServerConf(WsjcppYaml &yamlConfig);
@@ -123,6 +128,7 @@ class EmployConfig : public WsjcppEmployBase {
         std::string TAG;
         std::string m_sWorkDir;
         bool m_bApplyedConfig;
+        std::string m_sMysqlHost;
 
         Storage *m_pStorage;
         Scoreboard *m_pScoreboard;

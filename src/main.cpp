@@ -21,7 +21,6 @@
 #include <storages.h>
 #include <unistd.h>
 #include <limits.h>
-#include <resources_manager.h>
 #include <wsjcpp_core.h>
 #include <argument_processor_ctf01d_main.h>
 #include <employ_config.h>
@@ -96,22 +95,13 @@ int main(int argc, const char* argv[]) {
     if (sWorkDir == "") {
         WsjcppLog::throw_err(TAG, "Work Directory not defined.");
     }
-    
-    // create default folders and files
-    if (helpParseArgs.has("--extract-files")) {
-        if (!WsjcppCore::dirExists(sWorkDir)) {
-            WsjcppCore::makeDir(sWorkDir);
-        }
-        if (!ResourcesManager::make(sWorkDir)) {
-            std::cout << "Could not create some folders or files in " << sWorkDir << " please check access" << std::endl;
-            return -1;
-        }
-    }
 
     if (!WsjcppCore::dirExists(sWorkDir)) {
         WsjcppLog::err(TAG, "Directory " + sWorkDir + " does not exists");
         return -1;
     }
+
+    pEmployConfig->doExtractFilesIfNotExists();
 
     /*if (sWorkDir.length() > 0) {
         if (sWorkDir[0] != '/') { // linux

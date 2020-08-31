@@ -12,7 +12,7 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
     // registrySingleArgument("--single", "What exactly do this single param?");
     registryParameterArgument("-mysql-host", "hostname", "Force apply host to mysql database");
     registryParameterArgument("-work-dir", "path", "Custom workspace folder with configs, logging, checker scripts and etc.");
-    // registryExample("here example of command");
+    registryExample("ctf01d -work-dir ./data start");
     // registryProcessor(new ArgumentProcessorOtherProcessor());
 }
 
@@ -36,8 +36,14 @@ bool ArgumentProcessorCtf01dMain::applyParameterArgument(
         std::string sWorkDir = WsjcppCore::getCurrentDirectory() + sValue;
         sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
         pConfig->setWorkDir(sWorkDir);
+        return true;
     }
-    
+
+    if (sArgumentName == "-mysql-host") {
+        pConfig->setMysqlHost(sValue);
+        return true;
+    }
+
     WsjcppLog::err(TAG, "Not implemented");
     return false;
 }

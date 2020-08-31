@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/freehackquest/ctf01d.svg?branch=master)](https://travis-ci.org/freehackquest/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctf01d.svg)](https://hub.docker.com/r/sea5kg/ctf01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctf01d.svg)](https://microbadger.com/images/freehackquest/ctf01d) [![Github Stars](https://img.shields.io/github/stars/freehackquest/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/ctf01d.svg)](https://github.com/freehackquest/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/ctf01d.svg?label=github%20forks)](https://github.com/freehackquest/ctf01d/)
 
-Jury System for attack-defence ctf game.
+Jury System for attack-defence ctf game  (ctf-scoreboard).
 Or you can use it for training.
 
 ![scoreboard](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/screens/screen1.png)
@@ -204,16 +204,6 @@ Config files (see comments in file):
 
 * [BUILD: Ubuntu/Debian](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_UBUNTU.md)
 * [BUILD: Docker](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_DOCKER.md)
-
-### Configure database
-
-* [MYSQL DATABASE: create](https://github.com/freehackquest/ctf01d/blob/master/docs/STORAGE_MYSQL.md)
-
-After database configuration the settings will be here:
-
-```
-$ nano ~/ctf01d.git/jury.d/config.yml
-```
 
 ### Prepare to start with clearing all previous data
 
@@ -505,42 +495,102 @@ if command == "check":
     service_up()
 ```
 
+# FOR DEVELOPERS
+
+## Ubuntu 20.04
+
+Prepare database: mysql:
+
+```
+$ sudo apt install mysql-server mysql-common mysql-client
+$ systemctl start mysql
+```
+
+Create database:
+```
+$ sudo mysql
+...
+mysql> CREATE DATABASE ctf01d CHARACTER SET utf8 COLLATE utf8_general_ci;
+Query OK, 1 row affected, 2 warnings (0.01 sec)
+
+mysql> CREATE USER 'ctf01d'@'localhost' IDENTIFIED BY 'ctf01d';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON ctf01d.* TO 'ctf01d'@'localhost' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> exit;
+Bye
+```
+
+Install package-requirements
+
+```
+sudo apt install git git-core\
+    make cmake g++ pkg-config \
+    libcurl4-openssl-dev \
+    zlibc zlib1g zlib1g-dev \
+    libpng-dev \
+    default-libmysqlclient-dev
+```
+
+Clone source code of the project:
+```
+$ git clone https://github.com/freehackquest/fhq-jury-ad ~/ctf01d.git
+```
+
+Build
+```
+$ cd ~/ctf01d.git
+$ ./build_simple.sh
+```
+
+Start
+```
+$ cd ~/ctf01d.git
+$ mkdir data_test
+$ ./ctf01d -work-dir ./data_test -mysql-host localhost start
+```
+
 # Similar Systems && Helpful Links
 
-## SibirCTF - Attack-Defence ctf system
+### SibirCTF - Attack-Defence ctf system
 
 https://github.com/KevaTeam/ctf-attack-defense
 
 Basic Technology: python
 
-## FAUST CTF - Attack-Defence ctf system
+### FAUST CTF - Attack-Defence ctf system
 
 https://github.com/fausecteam/ctf-gameserver
 
-## In CTF - Attack-Defence ctf system
+### In CTF - Attack-Defence ctf system
 
 https://github.com/inctf/inctf-framework
 
-## RuCTFe - Attack-Defence ctf system 
+### RuCTFe - Attack-Defence ctf system 
 
 https://github.com/hackerdom/checksystem
 
-## Tin foil hat (?) - Attack-Defence ctf system
+### Tin foil hat (?) - Attack-Defence ctf system
 
 https://github.com/jollheef/tin_foil_hat
 
-## floatec - Attack-Defence ctf system
+### floatec - Attack-Defence ctf system
 
 https://github.com/floatec/attack-defense-CTF-demo
 
-## udinIMM - Attack-Defence ctf system
+### udinIMM - Attack-Defence ctf system
 
 https://github.com/udinIMM/attack-defense-ctf
 
-## Google - Attack-Defence ctf system
+### Google - Attack-Defence ctf system
 
 https://github.com/google/ctfscoreboard
 
-## hackthearch (ruby) - Attack-Defence ctf system
+### hackthearch (ruby) - Attack-Defence ctf system
 
 https://github.com/mcpa-stlouis/hack-the-arch

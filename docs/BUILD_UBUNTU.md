@@ -1,17 +1,3 @@
-### Build ctf01d system (Ubuntu)
-
-```
-$ sudo apt install cmake make \
-    libmysqlclient-dev \
-    pkg-config \
-    libcurl4-openssl-dev \
-    zlibc zlib1g zlib1g-dev \
-    libpng-dev \
-$ cd ~/ctf01d.git/ctf01d
-$ ./clean.sh
-$ ./build_simple.sh
-```
-
 ### Build jury system (Debian)
 
 after 

@@ -666,7 +666,6 @@ bool EmployConfig::applyServerConf(WsjcppYaml &yamlConfig) {
 
 bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 
-    
     m_nScoreboardPort = std::atoi(yamlConfig["scoreboard"]["port"].getValue().c_str());
     if (m_nScoreboardPort <= 10 || m_nScoreboardPort > 65536) {
         WsjcppLog::err(TAG, "wrong scoreboard.port (expected value od 11..65535)");

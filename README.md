@@ -557,40 +557,38 @@ $ ./ctf01d -work-dir ./data_test -mysql-host localhost start
 
 # Similar Systems && Helpful Links
 
-### SibirCTF - Attack-Defence ctf system
+SibirCTF - Attack-Defence ctf system (python):
 
 https://github.com/KevaTeam/ctf-attack-defense
 
-Basic Technology: python
-
-### FAUST CTF - Attack-Defence ctf system
+FAUST CTF - Attack-Defence ctf system:
 
 https://github.com/fausecteam/ctf-gameserver
 
-### In CTF - Attack-Defence ctf system
+In CTF - Attack-Defence ctf system:
 
 https://github.com/inctf/inctf-framework
 
-### RuCTFe - Attack-Defence ctf system 
+RuCTFe - Attack-Defence ctf system:
 
 https://github.com/hackerdom/checksystem
 
-### Tin foil hat (?) - Attack-Defence ctf system
+Tin foil hat (?) - Attack-Defence ctf system:
 
 https://github.com/jollheef/tin_foil_hat
 
-### floatec - Attack-Defence ctf system
+floatec - Attack-Defence ctf system:
 
 https://github.com/floatec/attack-defense-CTF-demo
 
-### udinIMM - Attack-Defence ctf system
+udinIMM - Attack-Defence ctf system:
 
 https://github.com/udinIMM/attack-defense-ctf
 
-### Google - Attack-Defence ctf system
+Google - Attack-Defence ctf system:
 
 https://github.com/google/ctfscoreboard
 
-### hackthearch (ruby) - Attack-Defence ctf system
+hackthearch (ruby) - Attack-Defence ctf system:
 
 https://github.com/mcpa-stlouis/hack-the-arch

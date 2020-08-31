@@ -345,29 +345,18 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
 void MySqlStorage::clean() {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
-
-    {
-        std::string sQuery = "DELETE FROM flags_live;";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
-            return;
-        }
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        mysql_free_result(pRes);
-    }
+    std::vector<std::string> vTables;
+    vTables.push_back("flags_live");
+    vTables.push_back("flags");
+    vTables.push_back("flags_attempts");
+    vTables.push_back("flags_put_fails");
+    vTables.push_back("flags_check_fails");
+    vTables.push_back("flags_stolen");
+    vTables.push_back("flags_defence");
+    vTables.push_back("services_flags_costs");
     
-    {
-        std::string sQuery = "DELETE FROM flags;";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
-            return;
-        }
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        mysql_free_result(pRes);
-    }
-
-    {
-        std::string sQuery = "DELETE FROM flags_attempts;";
+    for (int i = 0; i < vTables.size(); i++) {
+        std::string sQuery = "DELETE FROM " + vTables[i] + ";";
         if (mysql_query(pConn, sQuery.c_str())) {
             WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
             return;

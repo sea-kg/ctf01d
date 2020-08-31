@@ -29,7 +29,7 @@ class ServiceCheckerThread {
 		Ctf01dTeamDef m_teamConf;
 		Ctf01dServiceDef m_serviceConf;
 
-		int runChecker(Flag &flag, const std::string &sCommand);
+		int runChecker(Ctf01dFlag &flag, const std::string &sCommand);
 		// int runChecker(Flag &flag, const std::string &sCommand);
 		
 		// void run();

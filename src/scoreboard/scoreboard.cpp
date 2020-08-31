@@ -179,10 +179,10 @@ void Scoreboard::initStateFromStorage() {
     const std::vector<Ctf01dServiceDef> &vServices = pConfig->servicesConf();
 
     // load flag lives
-    std::vector<Flag> vFlagLives = m_pStorage->listOfLiveFlags();
+    std::vector<Ctf01dFlag> vFlagLives = m_pStorage->listOfLiveFlags();
     for (unsigned int i = 0; i < vFlagLives.size(); i++) {
-        Flag flag = vFlagLives[i];
-        m_mapFlagsLive[flag.value()] = flag;
+        Ctf01dFlag flag = vFlagLives[i];
+        m_mapFlagsLive[flag.getValue()] = flag;
     }
 
     // load services statistics
@@ -246,11 +246,11 @@ void Scoreboard::initStateFromStorage() {
 
 // ----------------------------------------------------------------------
 
-int Scoreboard::incrementAttackScore(const Flag &flag, const std::string &sTeamId) {
+int Scoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::string &sTeamId) {
     std::lock_guard<std::mutex> lock(m_mutexJson);
-    std::string sServiceId = flag.serviceId();
+    std::string sServiceId = flag.getServiceId();
 
-    int nFlagPoints = m_mapServiceCostsAndStatistics[flag.serviceId()]->costStolenFlag()*10; // one number after dot
+    int nFlagPoints = m_mapServiceCostsAndStatistics[sServiceId]->costStolenFlag()*10; // one number after dot
     m_pStorage->insertToFlagsStolen(flag, sTeamId, nFlagPoints);
 
     std::map<std::string,TeamStatusRow *>::iterator it;
@@ -276,12 +276,12 @@ int Scoreboard::incrementAttackScore(const Flag &flag, const std::string &sTeamI
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::incrementDefenceScore(const Flag &flag) {
+void Scoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexJson);
 
-    std::string sTeamId = flag.teamId();
-    std::string sServiceId = flag.serviceId();
-    int nFlagPoints = m_mapServiceCostsAndStatistics[flag.serviceId()]->costDefenceFlag()*10; // one number after dot
+    std::string sTeamId = flag.getTeamId();
+    std::string sServiceId = flag.getServiceId();
+    int nFlagPoints = m_mapServiceCostsAndStatistics[sServiceId]->costDefenceFlag()*10; // one number after dot
     m_pStorage->insertToFlagsDefence(flag, nFlagPoints);
 
     std::map<std::string,TeamStatusRow *>::iterator it;
@@ -307,20 +307,20 @@ void Scoreboard::incrementDefenceScore(const Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::incrementFlagsPuttedAndServiceUp(const Flag &flag) {
-    std::string sServiceId = flag.serviceId();
-    std::string sTeamId = flag.teamId();
+void Scoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) {
+    std::string sServiceId = flag.getServiceId();
+    std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : ServiceStatusCell::SERVICE_UP;
 
     // insert flag lives
     {
         std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-        std::map<std::string,Flag>::iterator it;
-        it = m_mapFlagsLive.find(flag.value());
+        std::map<std::string,Ctf01dFlag>::iterator it;
+        it = m_mapFlagsLive.find(flag.getValue());
         if (it != m_mapFlagsLive.end()) {
-            WsjcppLog::warn(TAG, flag.value() + " - flag already exists");
+            WsjcppLog::warn(TAG, flag.getValue() + " - flag already exists");
         } else {
-            m_mapFlagsLive[flag.value()] = flag;
+            m_mapFlagsLive[flag.getValue()] = flag;
             m_pStorage->insertFlagLive(flag);
         }
     }
@@ -346,15 +346,15 @@ void Scoreboard::incrementFlagsPuttedAndServiceUp(const Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::insertFlagPutFail(const Flag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
-    std::string sServiceId = flag.serviceId();
-    std::string sTeamId = flag.teamId();
+void Scoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
+    std::string sServiceId = flag.getServiceId();
+    std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
     m_pStorage->insertFlagPutFail(flag, sDescrStatus);
 
     std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;
-    it = m_mapTeamsStatuses.find(flag.teamId());
+    it = m_mapTeamsStatuses.find(flag.getTeamId());
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second;
         if (pRow->serviceStatus(sServiceId) != sNewStatus) {
@@ -489,16 +489,16 @@ void Scoreboard::updateCosts() {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId) {
+std::vector<Ctf01dFlag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-    std::vector<Flag> vResult;
+    std::vector<Ctf01dFlag> vResult;
     long nCurrentTime = WsjcppCore::currentTime_milliseconds() - m_nFlagTimeLiveInSec*1000;
-    std::map<std::string,Flag>::iterator it;
+    std::map<std::string,Ctf01dFlag>::iterator it;
     for (it = m_mapFlagsLive.begin(); it != m_mapFlagsLive.end(); it++) {
-        Flag flag = it->second;
-        if (flag.teamId() == sTeamId 
-            && flag.serviceId() == sServiceId
-            && flag.timeEnd() < nCurrentTime
+        Ctf01dFlag flag = it->second;
+        if (flag.getTeamId() == sTeamId 
+            && flag.getServiceId() == sServiceId
+            && flag.getTimeEndInMs() < nCurrentTime
         ) {
             vResult.push_back(flag);
         }
@@ -508,9 +508,9 @@ std::vector<Flag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId, cons
 
 // ----------------------------------------------------------------------
 
-bool Scoreboard::findFlagLive(const std::string &sFlagValue, Flag &flag) {
+bool Scoreboard::findFlagLive(const std::string &sFlagValue, Ctf01dFlag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-    std::map<std::string,Flag>::iterator it = m_mapFlagsLive.find(sFlagValue);
+    std::map<std::string,Ctf01dFlag>::iterator it = m_mapFlagsLive.find(sFlagValue);
     if (it != m_mapFlagsLive.end()) {
         flag.copyFrom(it->second);
         return true;
@@ -520,15 +520,15 @@ bool Scoreboard::findFlagLive(const std::string &sFlagValue, Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-void Scoreboard::removeFlagLive(const Flag &flag) {
+void Scoreboard::removeFlagLive(const Ctf01dFlag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-    std::map<std::string,Flag>::iterator it;
-    it = m_mapFlagsLive.find(flag.value());
+    std::map<std::string,Ctf01dFlag>::iterator it;
+    it = m_mapFlagsLive.find(flag.getValue());
     if (it != m_mapFlagsLive.end()) {
         m_mapFlagsLive.erase(it);
         m_pStorage->deleteFlagLive(flag);
     } else {
-        WsjcppLog::warn(TAG, flag.value() + " - flag did not exists");
+        WsjcppLog::warn(TAG, flag.getValue() + " - flag did not exists");
     }
 }
 

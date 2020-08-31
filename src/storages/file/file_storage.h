@@ -31,7 +31,6 @@ class FileStorage : public Storage {
         virtual int defenceValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual int attackValue(const std::string &sTeamId, const std::string &sServiceId);
         virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
-        virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
         virtual void deleteFlagLive(const Flag &flag);
 
     private:

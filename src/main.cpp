@@ -124,6 +124,7 @@ int main(int argc, const char* argv[]) {
     WsjcppLog::setPrefixLogFile("ctf01d");
     WsjcppLog::setLogDirectory(sLogDir);
     WsjcppLog::setRotationPeriodInSec(600); // every 10 min 
+    WsjcppLog::setEnableLogFile(true);
     // TODO rotation period must be in config.yml
 
     std::cout << "Logger: '" + sWorkDir + "/logs/' \n";

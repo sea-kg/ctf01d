@@ -163,14 +163,6 @@ bool FileStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
 
 // ----------------------------------------------------------------------
 
-bool FileStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
-     // TODO
-     Log::warn(TAG, "TODO updateTeamStole");
-    return false;
-}
-
-// ----------------------------------------------------------------------
-
 void FileStorage::deleteFlagLive(const Flag &flag) {
     // TODO
     Log::warn(TAG, "TODO deleteFlagLive");

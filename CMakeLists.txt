@@ -54,8 +54,8 @@ list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_log
 list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
 
 # objects
-list (APPEND WSJCPP_SOURCES "src/objects/flag.h")
-list (APPEND WSJCPP_SOURCES "src/objects/flag.cpp")
+list (APPEND WSJCPP_SOURCES "src/objects/ctf01d_flag.h")
+list (APPEND WSJCPP_SOURCES "src/objects/ctf01d_flag.cpp")
 
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")

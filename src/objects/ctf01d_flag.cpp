@@ -1,38 +1,31 @@
-#include "flag.h"
+#include "ctf01d_flag.h"
 #include <iostream>
 #include <cstring>
 #include <wsjcpp_core.h>
 
-Flag::Flag() {
+Ctf01dFlag::Ctf01dFlag() {
     
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId) {
+void Ctf01dFlag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId) {
     generateId();
     generateValue();
 
     // __int64
-    long nTimeStart = WsjcppCore::currentTime_milliseconds();
+    long nTimeStartInMs = WsjcppCore::currentTime_milliseconds();
     // std::cout << "nTimeStart: " << nTimeStart << "\n";
-    long nTimeEnd = nTimeStart + nTimeFlagLifeInMin*60*1000;
-    setTimeStart(nTimeStart);
-    setTimeEnd(nTimeEnd);
-    m_sTeamStole = "";
+    long nTimeEndInMs = nTimeStartInMs + nTimeFlagLifeInMin*60*1000;
+    setTimeStartInMs(nTimeStartInMs);
+    setTimeEndInMs(nTimeEndInMs);
     m_sTeamId = sTeamId;
     m_sServiceId = sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setId(const std::string &sId) {
-    m_sId = sId;
-}
-
-// ---------------------------------------------------------------------
-
-void Flag::generateId() {
+void Ctf01dFlag::generateId() {
     static const std::string sAlphabet =
             "0123456789"
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -47,7 +40,19 @@ void Flag::generateId() {
 
 // ---------------------------------------------------------------------
 
-void Flag::generateValue() {
+void Ctf01dFlag::setId(const std::string &sId) {
+    m_sId = sId;
+}
+
+// ---------------------------------------------------------------------
+
+std::string Ctf01dFlag::getId() const {
+    return m_sId;
+}
+
+// ---------------------------------------------------------------------
+
+void Ctf01dFlag::generateValue() {
     static const std::string sAlphabet = "0123456789abcdef";
     char sUuid[37];
     memset(&sUuid, '\0', 37);
@@ -66,92 +71,73 @@ void Flag::generateValue() {
 
 // ---------------------------------------------------------------------
 
-std::string Flag::id() const {
-    return m_sId;
-}
-
-// ---------------------------------------------------------------------
-
-void Flag::setValue(const std::string &sValue) {
+void Ctf01dFlag::setValue(const std::string &sValue) {
     m_sValue = sValue;
 }
 
 // ---------------------------------------------------------------------
 
-std::string Flag::value() const {
+std::string Ctf01dFlag::getValue() const {
     return m_sValue;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setTeamId(const std::string &sTeamId) {
+void Ctf01dFlag::setTeamId(const std::string &sTeamId) {
     m_sTeamId = sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &Flag::teamId() const {
+const std::string &Ctf01dFlag::getTeamId() const {
     return m_sTeamId;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setServiceId(const std::string &sServiceId) {
+void Ctf01dFlag::setServiceId(const std::string &sServiceId) {
     m_sServiceId = sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-const std::string &Flag::serviceId() const {
+const std::string &Ctf01dFlag::getServiceId() const {
     return m_sServiceId;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setTimeStart(long nTimeStart) {
-    m_nTimeStart = nTimeStart;
+void Ctf01dFlag::setTimeStartInMs(long nTimeStartInMs) {
+    m_nTimeStartInMs = nTimeStartInMs;
 }
 
 // ---------------------------------------------------------------------
 
-long Flag::timeStart() const {
-    return m_nTimeStart;
+long Ctf01dFlag::getTimeStartInMs() const {
+    return m_nTimeStartInMs;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setTimeEnd(long nTimeEnd) {
-    m_nTimeEnd = nTimeEnd;
+void Ctf01dFlag::setTimeEndInMs(long nTimeEndInMs) {
+    m_nTimeEndInMs = nTimeEndInMs;
 }
 
 // ---------------------------------------------------------------------
 
-long Flag::timeEnd() const {
-    return m_nTimeEnd;
+long Ctf01dFlag::getTimeEndInMs() const {
+    return m_nTimeEndInMs;
 }
 
 // ---------------------------------------------------------------------
 
-void Flag::setTeamStole(const std::string &sTeamStole) {
-    m_sTeamStole = sTeamStole;
-}
-
-// ---------------------------------------------------------------------
-
-const std::string & Flag::teamStole() const {
-    return m_sTeamStole;
-}
-
-// ---------------------------------------------------------------------
-
-void Flag::copyFrom(const Flag &flag) {
-    this->setId(flag.id());
-    this->setValue(flag.value());
-    this->setServiceId(flag.serviceId());
-    this->setTeamId(flag.teamId());
-    this->setTeamStole(flag.teamStole());
-    this->setTimeStart(flag.timeStart());
-    this->setTimeEnd(flag.timeEnd());
+void Ctf01dFlag::copyFrom(const Ctf01dFlag &flag) {
+    this->setId(flag.getId());
+    this->setValue(flag.getValue());
+    this->setServiceId(flag.getServiceId());
+    this->setTeamId(flag.getTeamId());
+    this->setTimeStartInMs(flag.getTimeStartInMs());
+    this->setTimeEndInMs(flag.getTimeEndInMs());
 }
 
 // ---------------------------------------------------------------------

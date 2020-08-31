@@ -177,7 +177,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         m_pConfig->scoreboard()->incrementTries(sTeamId);
         m_pConfig->storage()->insertFlagAttempt(sTeamId, sFlag);
 
-        Flag flag;
+        Ctf01dFlag flag;
         if (!m_pConfig->scoreboard()->findFlagLive(sFlag, flag)) {
             response
                 .forbidden()
@@ -189,25 +189,25 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         long nCurrentTimeMSec = (long)nCurrentTimeSec;
         nCurrentTimeMSec = nCurrentTimeMSec*1000;
 
-        if (flag.timeEnd() < nCurrentTimeMSec) {
+        if (flag.getTimeEndInMs() < nCurrentTimeMSec) {
             response.forbidden().sendText("Error(-151): flag is too old");
             WsjcppLog::err(TAG, "Error(-151): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag is too old)");
             return true;
         }
 
-        if (flag.teamStole() == sTeamId) {
+        /*if (flag.teamStole() == sTeamId) {
             response.forbidden().sendText("Error(-160): flag already stole by your team");
             WsjcppLog::err(TAG, "Error(-160): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stole by your team)");
             return true;
-        }
+        }*/
         
-        if (flag.teamId() == sTeamId) {
+        if (flag.getTeamId() == sTeamId) {
             response.forbidden().sendText("Error(-180): this is your flag");
             WsjcppLog::err(TAG, "Error(-180): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (this is your flag)");
             return true;
         }
 
-        std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(sTeamId, flag.serviceId());
+        std::string sServiceStatus = m_pConfig->scoreboard()->serviceStatus(sTeamId, flag.getServiceId());
 
         // std::cout << "sServiceStatus: " << sServiceStatus << "\n";
 
@@ -219,7 +219,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
 
         if (m_pConfig->storage()->isAlreadyStole(flag, sTeamId)) {
             response.forbidden().sendText("Error(-170): flag already stoled by your");
-            WsjcppLog::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + flag.teamStole() + "' team)");
+            WsjcppLog::err(TAG, "Error(-170): Recieved flag {" + sFlag + "} from {" + sTeamId + "} (flag already stolen by '" + sTeamId + "' team)");
             return true;
         }
 

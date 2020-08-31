@@ -2,7 +2,7 @@
 #define SCOREBOARD_H
 
 #include <team_status_row.h>
-#include <flag.h>
+#include <ctf01d_flag.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -29,16 +29,16 @@ class Scoreboard {
         void incrementTries(const std::string &sTeamId);
         void initStateFromStorage();
 
-        int incrementAttackScore(const Flag &flag, const std::string &sTeamId);
-        void incrementDefenceScore(const Flag &flag);
-        void incrementFlagsPuttedAndServiceUp(const Flag &flag);
-        void insertFlagPutFail(const Flag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus);
+        int incrementAttackScore(const Ctf01dFlag &flag, const std::string &sTeamId);
+        void incrementDefenceScore(const Ctf01dFlag &flag);
+        void incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag);
+        void insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus);
         void updateScore(const std::string &sTeamId, const std::string &sServiceId);
         std::string serviceStatus(const std::string &sTeamId, const std::string &sServiceId);
 
-        std::vector<Flag> outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId);
-        bool findFlagLive(const std::string &sFlagValue, Flag &flag);
-        void removeFlagLive(const Flag &flag);
+        std::vector<Ctf01dFlag> outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId);
+        bool findFlagLive(const std::string &sFlagValue, Ctf01dFlag &flag);
+        void removeFlagLive(const Ctf01dFlag &flag);
 
         std::string toString();
         const nlohmann::json &toJson();
@@ -73,7 +73,7 @@ class Scoreboard {
         
         // flags live for fast check
         std::mutex m_mutexFlagsLive;
-        std::map<std::string, Flag> m_mapFlagsLive; // Must be in samewhere in storage
+        std::map<std::string, Ctf01dFlag> m_mapFlagsLive; // Must be in samewhere in storage
 };
 
 #endif // SCOREBOARD_H

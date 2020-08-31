@@ -1,2 +1,4 @@
 ## You can here write some custom includes
 
+
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/objects/")

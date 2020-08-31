@@ -58,7 +58,7 @@ void ServiceCheckerThread::start() {
 
 // ---------------------------------------------------------------------
 
-int ServiceCheckerThread::runChecker(Flag &flag, const std::string &sCommand) {
+int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sCommand) {
     if (sCommand != "put" &&  sCommand != "check") {
         WsjcppLog::err(TAG, "runChecker - sCommand must be 'put' or 'check' ");
         return ServiceCheckerThread::CHECKER_CODE_SHIT;
@@ -70,12 +70,18 @@ int ServiceCheckerThread::runChecker(Flag &flag, const std::string &sCommand) {
     std::string sShellCommand = m_serviceConf.scriptPath()
         + " " + m_teamConf.ipAddress()
         + " " + sCommand
-        + " " + flag.id()
-        + " " + flag.value();
+        + " " + flag.getId()
+        + " " + flag.getValue();
 
     WsjcppLog::info(TAG, "Start script " + sShellCommand);
 
-    DoRunChecker process(m_serviceConf.scriptDir(), m_serviceConf.scriptPath(), m_teamConf.ipAddress(), sCommand, flag.id(), flag.value());
+    DoRunChecker process(
+        m_serviceConf.scriptDir(),
+        m_serviceConf.scriptPath(),
+        m_teamConf.ipAddress(),
+        sCommand, flag.getId(),
+        flag.getValue()
+    );
     process.start(m_serviceConf.scriptWaitInSec()*1000);
 
     if (process.isTimeout()) {
@@ -154,7 +160,7 @@ void ServiceCheckerThread::run() {
         // If there is more time left before the end of the game than the life of the flag,
         // then we establish a flag
         if (nCurrentTime < (m_pConfig->gameEndUTCInSec() - m_pConfig->flagTimeliveInMin()*60)) {
-            Flag flag;
+            Ctf01dFlag flag;
             flag.generateRandomFlag(m_pConfig->flagTimeliveInMin(), m_teamConf.id(), m_serviceConf.id());
 
             // int nExitCode2 = 
@@ -201,28 +207,28 @@ void ServiceCheckerThread::run() {
             // check some service status or just update to UP (Ha-Ha I'm the real evil!)
         }
 
-        std::vector<Flag> vEndedFlags = m_pConfig->scoreboard()->outdatedFlagsLive(m_teamConf.id(), m_serviceConf.id());
+        std::vector<Ctf01dFlag> vEndedFlags = m_pConfig->scoreboard()->outdatedFlagsLive(m_teamConf.id(), m_serviceConf.id());
 
         for (unsigned int i = 0; i < vEndedFlags.size(); i++) {
-            Flag outdatedFlag = vEndedFlags[i];
+            Ctf01dFlag outdatedFlag = vEndedFlags[i];
             m_pConfig->scoreboard()->removeFlagLive(outdatedFlag);
 
-            if (outdatedFlag.teamStole() != "") {
-                continue;
+            // if (outdatedFlag.teamStole() != "") {
+            //     continue;
+            // } else {
+            // nobody stole outdatedFlag
+            int nCheckExitCode = this->runChecker(outdatedFlag, "check");
+            if (nCheckExitCode != ServiceCheckerThread::CHECKER_CODE_UP) {
+                // service is not up
+                m_pConfig->storage()->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
             } else {
-                // nobody stole outdatedFlag
-                int nCheckExitCode = this->runChecker(outdatedFlag, "check");
-                if (nCheckExitCode != ServiceCheckerThread::CHECKER_CODE_UP) {
-                    // service is not up
-                    m_pConfig->storage()->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
-                } else {
-                    // service is up
-                    // TODO: only if last time (== flag time live) was up
-                    if (!m_pConfig->storage()->isSomebodyStole(outdatedFlag)) {
-                        m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag);
-                    }
+                // service is up
+                // TODO: only if last time (== flag time live) was up
+                if (!m_pConfig->storage()->isSomebodyStole(outdatedFlag)) {
+                    m_pConfig->scoreboard()->incrementDefenceScore(outdatedFlag);
                 }
             }
+            // }
         }
         
         // TODO just update SLA ?

@@ -763,7 +763,7 @@ WsjcppLogGlobalConf::WsjcppLogGlobalConf() {
     logDir = "./";
     logPrefixFile = "";
     logFile = "";
-    enableLogFile = true;
+    enableLogFile = false; // changed
     logStartTime = 0;
     logRotationPeriodInSeconds = 51000;
 }

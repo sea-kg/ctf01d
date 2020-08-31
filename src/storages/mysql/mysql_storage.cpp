@@ -285,6 +285,22 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(24, // don't change if after commit
+        "ALTER TABLE `flags_check_fails` DROP COLUMN team_stole;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(25, // don't change if after commit
+        "ALTER TABLE `flags_put_fails` DROP COLUMN team_stole;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(26, // don't change if after commit
+        "ALTER TABLE `flags` DROP COLUMN team_stole;" 
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(27, // don't change if after commit
+        "ALTER TABLE `flags_live` DROP COLUMN team_stole;" 
+    ));
+
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -384,18 +400,17 @@ MYSQL *MySqlStorage::getDatabaseConnection() {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertFlagLive(const Flag &flag) {
+void MySqlStorage::insertFlagLive(const Ctf01dFlag &flag) {
     MYSQL *pConn = getDatabaseConnection();
 
     std::string sQuery = "INSERT INTO flags_live(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, team_stole) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + "'" + flag.teamId() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
-        + "'" + flag.teamStole() + "'"
+        "   date_start, date_end) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs())
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
@@ -409,20 +424,20 @@ void MySqlStorage::insertFlagLive(const Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> MySqlStorage::listOfLiveFlags() {
+std::vector<Ctf01dFlag> MySqlStorage::listOfLiveFlags() {
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     std::string sQuery = 
-        "SELECT flag_id, serviceid, teamid, flag, date_start, date_end, team_stole "
+        "SELECT flag_id, serviceid, teamid, flag, date_start, date_end "
         "FROM flags_live "
         "WHERE "
         "   date_start > " + m_sGameStartUTCInMS + " "
         "   AND date_end < " + m_sGameEndUTCInMS + " "
         ";";
 
-    std::vector<Flag> vResult;
+    std::vector<Ctf01dFlag> vResult;
     if (mysql_query(pConn, sQuery.c_str())) {
         WsjcppLog::err(TAG, "Error select (endedFlags): " + std::string(mysql_error(pConn)));
     } else {
@@ -430,14 +445,13 @@ std::vector<Flag> MySqlStorage::listOfLiveFlags() {
         MYSQL_ROW row;
         // output table name
         while ((row = mysql_fetch_row(pRes)) != NULL) {
-            Flag flag;
+            Ctf01dFlag flag;
             flag.setId(std::string(row[0]));
             flag.setServiceId(std::string(row[1]));
             flag.setTeamId(std::string(row[2]));
             flag.setValue(std::string(row[3]));
-            flag.setTimeStart(std::stol(std::string(row[4])));
-            flag.setTimeEnd(std::stol(std::string(row[5])));
-            flag.setTeamStole(std::string(row[6]));
+            flag.setTimeStartInMs(std::stol(std::string(row[4])));
+            flag.setTimeEndInMs(std::stol(std::string(row[5])));
             vResult.push_back(flag);
         }
         mysql_free_result(pRes);
@@ -447,18 +461,17 @@ std::vector<Flag> MySqlStorage::listOfLiveFlags() {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
+void MySqlStorage::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) {
     MYSQL *pConn = getDatabaseConnection();
 
     std::string sQuery = "INSERT INTO flags_put_fails(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, team_stole, reason) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + "'" + flag.teamId() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
-        + "'" + flag.teamStole() + "', "
+        "   date_start, date_end, reason) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
         + "'" + sReason + "'"
         + ");";
 
@@ -473,18 +486,18 @@ void MySqlStorage::insertFlagPutFail(const Flag &flag, const std::string &sReaso
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
+void MySqlStorage::insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) {
     MYSQL *pConn = getDatabaseConnection();
 
     std::string sQuery = "INSERT INTO flags_check_fails(serviceid, flag_id, flag, teamid, "
         "   date_start, date_end, team_stole, reason) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + "'" + flag.teamId() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
-        + "'" + flag.teamStole() + "', "
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
+        + "'', "
         + "'" + sReason + "'"
         + ");";
 
@@ -537,7 +550,7 @@ int MySqlStorage::numberOfFlagAttempts(const std::string &sTeamId) {
 
 // ----------------------------------------------------------------------
 
-std::vector<Flag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
+std::vector<Ctf01dFlag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     MYSQL *pConn = getDatabaseConnection();
 
     long nCurrentTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -552,7 +565,7 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const 
         "   AND date_end < " + m_sGameEndUTCInMS + " "
         ";";
 
-    std::vector<Flag> vResult;
+    std::vector<Ctf01dFlag> vResult;
     if (mysql_query(pConn, sQuery.c_str())) {
         WsjcppLog::err(TAG, "Error select (endedFlags): " + std::string(mysql_error(pConn)));
     } else {
@@ -560,14 +573,13 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const 
         MYSQL_ROW row;
         // output table name
         while ((row = mysql_fetch_row(pRes)) != NULL) {
-            Flag flag;
+            Ctf01dFlag flag;
             flag.setServiceId(sServiceId);
             flag.setTeamId(sTeamId);
             flag.setId(std::string(row[0]));
             flag.setValue(std::string(row[1]));
-            flag.setTimeStart(std::stol(std::string(row[2])));
-            flag.setTimeEnd(std::stol(std::string(row[3])));
-            flag.setTeamStole(std::string(row[4]));
+            flag.setTimeStartInMs(std::stol(std::string(row[2])));
+            flag.setTimeEndInMs(std::stol(std::string(row[3])));
             vResult.push_back(flag);
         }
         mysql_free_result(pRes);
@@ -577,7 +589,7 @@ std::vector<Flag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const 
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag){
+void MySqlStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag){
     // TODO
 }
 
@@ -780,7 +792,7 @@ int MySqlStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
 // ----------------------------------------------------------------------
 
 // TODO must deprecated
-bool MySqlStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
+bool MySqlStorage::findFlagByValue(const std::string &sFlag, Ctf01dFlag &resultFlag) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
 
@@ -793,7 +805,7 @@ bool MySqlStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
         "   AND date_end < " + m_sGameEndUTCInMS + " "
         ";";
 
-    Flag flag;
+    Ctf01dFlag flag;
 
     if (mysql_query(pConn, sQuery.c_str())) {
         WsjcppLog::err(TAG, "Error select (findFlagByValue): " + std::string(mysql_error(pConn)));
@@ -807,9 +819,8 @@ bool MySqlStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
             resultFlag.setId(std::string(row[2]));
             resultFlag.setServiceId(std::string(row[1]));
             resultFlag.setValue(std::string(row[3]));
-            resultFlag.setTimeStart(std::stol(std::string(row[4])));
-            resultFlag.setTimeEnd(std::stol(std::string(row[5])));
-            resultFlag.setTeamStole(std::string(row[6]));
+            resultFlag.setTimeStartInMs(std::stol(std::string(row[4])));
+            resultFlag.setTimeEndInMs(std::stol(std::string(row[5])));
             mysql_free_result(pRes);
             return true;
         }
@@ -820,39 +831,11 @@ bool MySqlStorage::findFlagByValue(const std::string &sFlag, Flag &resultFlag) {
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::updateTeamStole(const std::string &sFlag, const std::string &sTeamId) {
+void MySqlStorage::deleteFlagLive(const Ctf01dFlag &flag) {
     MYSQL *pConn = getDatabaseConnection();
     // TODO check on null
 
-    std::string sQuery = ""
-        "UPDATE flags_live SET team_stole = '" + sTeamId + "' "
-        "WHERE flag = '" + sFlag + "'  "
-        "  AND team_stole = '' "
-        "  AND date_start > " + m_sGameStartUTCInMS + " "
-        "  AND date_end < " + m_sGameEndUTCInMS + " "
-        ";";
-
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error select (updateTeamStole): " + std::string(mysql_error(pConn)));
-        return false;
-    }
-
-    Flag resultFlag;
-
-    if (!this->findFlagByValue(sFlag, resultFlag)) {
-        return false;
-    }
-    return resultFlag.teamStole() == sTeamId;
-}
-
-// ----------------------------------------------------------------------
-
-void MySqlStorage::deleteFlagLive(const Flag &flag) {
-    MYSQL *pConn = getDatabaseConnection();
-    // TODO check on null
-
-    std::string sQuery = "DELETE FROM flags_live WHERE flag = '" + flag.value() + "';";
+    std::string sQuery = "DELETE FROM flags_live WHERE flag = '" + flag.getValue() + "';";
     if (mysql_query(pConn, sQuery.c_str())) {
         WsjcppLog::err(TAG, "Error delete: " + std::string(mysql_error(pConn)));
         return;
@@ -864,17 +847,16 @@ void MySqlStorage::deleteFlagLive(const Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertToArchive(Flag &flag) {
+void MySqlStorage::insertToArchive(Ctf01dFlag &flag) {
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = "INSERT INTO flags(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, team_stole) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + "'" + flag.teamId() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
-        + "'" + flag.teamStole() + "'"
+        "   date_start, date_end) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs())
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
@@ -888,16 +870,16 @@ void MySqlStorage::insertToArchive(Flag &flag) {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
+void MySqlStorage::insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) {
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = "INSERT INTO flags_defence(serviceid, teamid, flag_id, flag, "
         "   date_start, date_end, flag_cost) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.teamId() + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
         + std::to_string(nPoints) + " "
         + ");";
 
@@ -912,17 +894,17 @@ void MySqlStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
 
 // ----------------------------------------------------------------------
 
-void MySqlStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints) {
+void MySqlStorage::insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) {
     MYSQL *pConn = getDatabaseConnection();
     std::string sQuery = "INSERT INTO flags_stolen(serviceid, teamid, thief_teamid, flag_id, flag,"
         "   date_start, date_end, date_action, flag_cost) VALUES("
-        "'" + flag.serviceId() + "', "
-        + "'" + flag.teamId() + "', "
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getTeamId() + "', "
         + "'" + sTeamId + "', "
-        + "'" + flag.id() + "', "
-        + "'" + flag.value() + "', "
-        + std::to_string(flag.timeStart()) + ", "
-        + std::to_string(flag.timeEnd()) + ", "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
         + std::to_string(WsjcppCore::currentTime_milliseconds()) + ", "
         + std::to_string(nPoints) + " "
         + ");";
@@ -938,17 +920,17 @@ void MySqlStorage::insertToFlagsStolen(const Flag &flag, const std::string &sTea
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) {
+bool MySqlStorage::isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) {
     MYSQL *pConn = getDatabaseConnection();
     
     int nRet = 0;
     {
         std::string sQuery = 
             "SELECT COUNT(*) as cnt FROM flags_stolen "
-            " WHERE serviceid = '" + flag.serviceId() + "' "
+            " WHERE serviceid = '" + flag.getServiceId() + "' "
             "   AND thief_teamid = '" + sTeamId + "'"
-            "   AND flag_id = '" + flag.id() + "'"
-            "   AND flag = '" + flag.value() + "'"
+            "   AND flag_id = '" + flag.getId() + "'"
+            "   AND flag = '" + flag.getValue() + "'"
         ;
 
         // std::cout << sQuery << "\n";
@@ -969,17 +951,17 @@ bool MySqlStorage::isAlreadyStole(const Flag &flag, const std::string &sTeamId) 
 
 // ----------------------------------------------------------------------
 
-bool MySqlStorage::isSomebodyStole(const Flag &flag) {
+bool MySqlStorage::isSomebodyStole(const Ctf01dFlag &flag) {
     MYSQL *pConn = getDatabaseConnection();
     
     int nRet = 0;
     {
         std::string sQuery = 
             "SELECT COUNT(*) as cnt FROM flags_stolen "
-            " WHERE serviceid = '" + flag.serviceId() + "' "
-            "   AND teamid = '" + flag.teamId() + "'"
-            "   AND flag_id = '" + flag.id() + "'"
-            "   AND flag = '" + flag.value() + "'"
+            " WHERE serviceid = '" + flag.getServiceId() + "' "
+            "   AND teamid = '" + flag.getTeamId() + "'"
+            "   AND flag_id = '" + flag.getId() + "'"
+            "   AND flag = '" + flag.getValue() + "'"
         ;
 
         // std::cout << sQuery << "\n";

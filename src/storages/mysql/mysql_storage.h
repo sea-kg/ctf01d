@@ -14,35 +14,34 @@ class MySqlStorage : public Storage {
         virtual bool applyConfigFromYaml(
             WsjcppYaml &yamlConfig
         );
-        virtual void clean();
-        virtual void insertFlagLive(const Flag &flag);
-        virtual std::vector<Flag> listOfLiveFlags();
-        virtual void insertFlagPutFail(const Flag &flag, const std::string &sReason);
-        virtual void insertFlagCheckFail(const Flag &flag, const std::string &sReason);
-        virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
-        virtual int numberOfFlagAttempts(const std::string &sTeamId);
-        virtual void insertToArchive(Flag &flag);
-        virtual void insertToFlagsDefence(const Flag &flag, int nPoints);
-        virtual void insertToFlagsStolen(const Flag &flag, const std::string &sTeamId, int nPoints);
+        virtual void clean() override;
+        virtual void insertFlagLive(const Ctf01dFlag &flag) override;
+        virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;
+        virtual void insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) override;
+        virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) override;
+        virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) override;
+        virtual int numberOfFlagAttempts(const std::string &sTeamId) override;
+        virtual void insertToArchive(Ctf01dFlag &flag) override;
+        virtual void insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) override;
+        virtual void insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) override;
         
-        virtual bool isAlreadyStole(const Flag &flag, const std::string &sTeamId);
-        virtual bool isSomebodyStole(const Flag &flag);
+        virtual bool isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) override;
+        virtual bool isSomebodyStole(const Ctf01dFlag &flag) override;
 
-        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId); // TODO remove
-        virtual int numberOfDefenceFlagForService(const std::string &sServiceId);
-        virtual int numberOfStolenFlagsForService(const std::string &sServiceId);
+        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) override; // TODO remove
+        virtual int numberOfDefenceFlagForService(const std::string &sServiceId) override;
+        virtual int numberOfStolenFlagsForService(const std::string &sServiceId) override;
 
-        virtual std::vector<Flag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId);
-        virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag);
+        virtual std::vector<Ctf01dFlag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) override;
+        virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag) override;
         
-        virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId);
-        virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId);
+        virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) override;
+        virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) override;
 
-        virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId);
-        virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId);
-        virtual bool findFlagByValue(const std::string &sFlag, Flag &resultFlag);
-        virtual bool updateTeamStole(const std::string &sFlag, const std::string &sTeamId);
-        virtual void deleteFlagLive(const Flag &flag);
+        virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) override;
+        virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) override;
+        virtual bool findFlagByValue(const std::string &sFlag, Ctf01dFlag &resultFlag) override;
+        virtual void deleteFlagLive(const Ctf01dFlag &flag) override;
 
     private:
         std::string TAG;

@@ -74,6 +74,8 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
 # ctf01d:v0.4.3
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
+list (APPEND WSJCPP_SOURCES "../src/objects/ctf01d_flag.cpp")
+list (APPEND WSJCPP_SOURCES "../src/objects/ctf01d_flag.h")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")
@@ -132,6 +134,8 @@ list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__data_sample_logs__placeho
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
+list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_struct_flag.h")
+list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_struct_flag.cpp")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.user-custom.txt)
 

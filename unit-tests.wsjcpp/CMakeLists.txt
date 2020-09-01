@@ -80,6 +80,13 @@ list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_scoreboard.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/storage.h")
 list (APPEND WSJCPP_SOURCES "../src/storages/storages.h")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_config.cpp")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_config.h")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_team_logos.h")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_team_logos.cpp")
+list (APPEND WSJCPP_SOURCES "../src/scoreboard/scoreboard.h")
+list (APPEND WSJCPP_SOURCES "../src/scoreboard/scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "../src/storages/storages.cpp")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")

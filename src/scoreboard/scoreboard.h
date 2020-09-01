@@ -1,15 +1,12 @@
 #ifndef SCOREBOARD_H
 #define SCOREBOARD_H
 
-#include <team_status_row.h>
 #include <employ_flags.h>
+#include <employ_scoreboard.h>
 #include <string>
-#include <map>
-#include <vector>
-#include <mutex>
 #include <json.hpp>
 #include <storage.h>
-#include <employ_scoreboard.h>
+
 
 class Scoreboard {
     public:
@@ -21,7 +18,6 @@ class Scoreboard {
             int nGameCoffeeBreakStartInSec,
             int nGameCoffeeBreakEndInSec,
             int nFlagTimeLiveInSec,
-            int nBacisCostsStolenFlagInPoints,
             Storage *pStorage
         );
 
@@ -45,10 +41,8 @@ class Scoreboard {
 
     private:
         std::string TAG;
-        int m_nServicesSize;
         Storage *m_pStorage;
         EmployFlags *m_pEmployFlags;
-        int m_nBacisCostsStolenFlagInPoints;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
         int m_nGameCoffeeBreakStartInSec;

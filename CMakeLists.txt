@@ -64,10 +64,6 @@ list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_log
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.h")
-list (APPEND WSJCPP_SOURCES "src/scoreboard/service_status_cell.h")
-list (APPEND WSJCPP_SOURCES "src/scoreboard/service_status_cell.cpp")
-list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.h")
-list (APPEND WSJCPP_SOURCES "src/scoreboard/team_status_row.cpp")
 
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.h")

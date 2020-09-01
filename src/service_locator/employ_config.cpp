@@ -206,7 +206,7 @@ EmployConfig::EmployConfig()
     m_sGameCoffeeBreakEnd = "";
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
-    m_nBacisCostsStolenFlagInPoints = 10;
+    m_nBasicCostsStolenFlagInPoints = 10;
     m_sDatabaseHost = "";
 }
 
@@ -348,7 +348,6 @@ bool EmployConfig::applyConfig() {
         m_nGameCoffeeBreakStartUTCInSec,
         m_nGameCoffeeBreakEndUTCInSec,
         m_nFlagTimeliveInMin*60,
-        m_nBacisCostsStolenFlagInPoints,
         m_pStorage
     );
 
@@ -411,8 +410,8 @@ int EmployConfig::flagTimeliveInMin() const  {
 
 // ---------------------------------------------------------------------
 
-int EmployConfig::bacisCostsStolenFlagInPoints() const {
-    return m_nBacisCostsStolenFlagInPoints;
+int EmployConfig::getBasicCostsStolenFlagInPoints() const {
+    return m_nBasicCostsStolenFlagInPoints;
 }
 
 
@@ -597,8 +596,8 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
     m_nFlagTimeliveInMin = std::atoi(yamlConfig["game"]["flag_timelive_in_min"].getValue().c_str());
     WsjcppLog::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
 
-    m_nBacisCostsStolenFlagInPoints = std::atoi(yamlConfig["game"]["basic_costs_stolen_flag_in_points"].getValue().c_str());
-    WsjcppLog::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBacisCostsStolenFlagInPoints));
+    m_nBasicCostsStolenFlagInPoints = std::atoi(yamlConfig["game"]["basic_costs_stolen_flag_in_points"].getValue().c_str());
+    WsjcppLog::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBasicCostsStolenFlagInPoints));
 
     if (m_nGameStartUTCInSec == 0) {
         WsjcppLog::err(TAG, "game.start - not found");
@@ -654,12 +653,12 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
         m_bHasCoffeeBreak = true;
     }
 
-    if (m_nBacisCostsStolenFlagInPoints <= 0) {
+    if (m_nBasicCostsStolenFlagInPoints <= 0) {
         WsjcppLog::err(TAG, "game.basic_costs_stolen_flag_in_points could not be less than 0");
         return false;
     }
 
-    if (m_nBacisCostsStolenFlagInPoints > 500) {
+    if (m_nBasicCostsStolenFlagInPoints > 500) {
         WsjcppLog::err(TAG, "game.basic_costs_stolen_flag_in_points could not be gather than 500");
         return false;
     }

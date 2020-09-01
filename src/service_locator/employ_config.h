@@ -103,7 +103,7 @@ class EmployConfig : public WsjcppEmployBase {
         std::string gameId() const;
         std::string gameName() const;
         int flagTimeliveInMin() const;
-        int bacisCostsStolenFlagInPoints() const;
+        int getBasicCostsStolenFlagInPoints() const;
         int gameStartUTCInSec() const;
         int gameEndUTCInSec() const;
 
@@ -140,7 +140,7 @@ class EmployConfig : public WsjcppEmployBase {
 
         // game conf
         int m_nFlagTimeliveInMin;
-        int m_nBacisCostsStolenFlagInPoints;
+        int m_nBasicCostsStolenFlagInPoints;
         std::string m_sGameId;
         std::string m_sGameName;
         std::string m_sGameStart;

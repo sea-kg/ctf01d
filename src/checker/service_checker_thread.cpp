@@ -33,6 +33,7 @@ ServiceCheckerThread::ServiceCheckerThread(
     m_pConfig = findWsjcppEmploy<EmployConfig>();
     m_teamConf = teamConf;
     m_serviceConf = service;
+    m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     TAG = "Checker: " + m_teamConf.id() + std::string( 15 - m_teamConf.id().length(), ' ')
          + m_serviceConf.id() + " ";

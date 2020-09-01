@@ -1,6 +1,7 @@
 
 #include "employ_team_logos.h"
 #include <wsjcpp_core.h>
+#include <employ_config.h>
 
 // ---------------------------------------------------------------------
 // EmployTeamLogos
@@ -8,7 +9,7 @@
 REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployTeamLogos)
 
 EmployTeamLogos::EmployTeamLogos() 
-: WsjcppEmployBase(EmployTeamLogos::name(), {}) {
+: WsjcppEmployBase(EmployTeamLogos::name(), { EmployConfig::name() }) {
     TAG = EmployTeamLogos::name();
 }
 

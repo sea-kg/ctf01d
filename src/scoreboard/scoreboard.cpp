@@ -67,7 +67,7 @@ Scoreboard::Scoreboard(
     // keep the list of the services ids
     for (unsigned int i = 0; i < vServicesConf.size(); i++) {
         std::string sServiceId = vServicesConf[i].id();
-        m_mapServiceCostsAndStatistics[sServiceId] = new ServiceCostsAndStatistics(sServiceId);
+        m_mapServiceCostsAndStatistics[sServiceId] = new Ctf01dServiceCostsAndStatistics(sServiceId);
     }
 
     initJsonScoreboard();
@@ -189,16 +189,30 @@ void Scoreboard::initStateFromStorage() {
     // load services statistics
     m_nAllStolenFlags = 0;
     m_nAllDefenceFlags = 0;
+    struct FlagsForService {
+        std::string sServiceID;
+        int nStolenFlags;
+        int nDefenceFlags;
+    };
+    std::vector<FlagsForService> vFlags;
     for (unsigned int i = 0; i < vServices.size(); i++) {
         std::string sServiceID = vServices[i].id();
-        
-        int nStolenFlags = m_pStorage->numberOfStolenFlagsForService(sServiceID);
-        m_mapServiceCostsAndStatistics[sServiceID]->setStolenFlagsForService(nStolenFlags);
-        m_nAllStolenFlags += nStolenFlags;
+        FlagsForService f;
+        f.sServiceID = sServiceID;
+        f.nStolenFlags = m_pStorage->numberOfStolenFlagsForService(sServiceID);
+        f.nDefenceFlags = m_pStorage->numberOfDefenceFlagForService(sServiceID);
 
-        int nDefenceFlags = m_pStorage->numberOfDefenceFlagForService(sServiceID);
-        m_mapServiceCostsAndStatistics[sServiceID]->setDefenceFlagsForService(nDefenceFlags);
-        m_nAllDefenceFlags += nDefenceFlags;
+        m_nAllStolenFlags += f.nStolenFlags;
+        m_nAllDefenceFlags += f.nDefenceFlags;
+        vFlags.push_back(f);
+    }
+
+    for (int i = 0; i < vFlags.size(); i++) {
+        FlagsForService f = vFlags[i];
+        // TODO redesign to call updateProportionalStolenFlagsForService(all, f.nStolenFlags);
+        // TODO remove setStolenFlagsForService setDefenceFlagsForService
+        m_mapServiceCostsAndStatistics[f.sServiceID]->setStolenFlagsForService(f.nStolenFlags);
+        m_mapServiceCostsAndStatistics[f.sServiceID]->setDefenceFlagsForService(f.nDefenceFlags);
     }
 
     std::map<std::string, TeamStatusRow *>::iterator it;
@@ -265,7 +279,7 @@ int Scoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::string &
         sortPlaces();
     }
 
-    std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
+    std::map<std::string, Ctf01dServiceCostsAndStatistics *>::iterator it2;
     it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
     if (it2 != m_mapServiceCostsAndStatistics.end()) {
         it2->second->incrementStolenFlagsForService();
@@ -296,7 +310,7 @@ void Scoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
         sortPlaces();
     }
 
-    std::map<std::string,ServiceCostsAndStatistics *>::iterator it2;
+    std::map<std::string, Ctf01dServiceCostsAndStatistics *>::iterator it2;
     it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
     if (it2 != m_mapServiceCostsAndStatistics.end()) {
         it2->second->incrementDefenceFlagsForService();
@@ -440,7 +454,7 @@ void Scoreboard::sortPlaces() {
 void Scoreboard::updateCosts() {
     // std::lock_guard<std::mutex> lock(m_mutexJson);
     // TODO update costs
-    std::map<std::string,ServiceCostsAndStatistics *>::iterator it1;
+    std::map<std::string, Ctf01dServiceCostsAndStatistics *>::iterator it1;
     double nSumOfReverseProportionalStolenFlags = 0.0;
     double nSumOfReverseProportionalDefenceFlags = 0.0;
     double sf = m_nServicesSize * m_nBacisCostsStolenFlagInPoints;

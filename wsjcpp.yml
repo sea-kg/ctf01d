@@ -64,10 +64,24 @@ distribution:
   - source-file: "src/service_locator/employ_flags.h"
     target-file: "employ_flags.h"
     type: "source-code"
+  - source-file: "src/service_locator/employ_scoreboard.cpp"
+    target-file: "employ_scoreboard.cpp"
+    type: "source-code"
+  - source-file: "src/service_locator/employ_scoreboard.h"
+    target-file: "employ_scoreboard.h"
+    type: "source-code"
+  - source-file: "src/storages/storage.h"
+    target-file: "storage.h"
+    type: "source-code"
+  - source-file: "src/storages/storages.h"
+    target-file: "storages.h"
+    type: "source-code"
 
 unit-tests:
   cases:
     - name: "StructFlag"
+      description: ""
+    - name: "ServiceCostsAndStatistics"
       description: ""
 
 resources:
@@ -201,4 +215,3 @@ resources:
     pack-as: "binary"
     modified: 1536162213
     sha1: ""
-

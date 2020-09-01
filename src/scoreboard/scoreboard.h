@@ -9,7 +9,7 @@
 #include <mutex>
 #include <json.hpp>
 #include <storage.h>
-#include <service_costs_and_statistics.h>
+#include <employ_scoreboard.h>
 
 class Scoreboard {
     public:
@@ -58,7 +58,7 @@ class Scoreboard {
         void sortPlaces(); // TODO merge this function with update costs
         void updateCosts();
 
-        std::map<std::string, ServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
+        std::map<std::string, Ctf01dServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
         int m_nAllStolenFlags;
         int m_nAllDefenceFlags;
 

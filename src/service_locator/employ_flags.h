@@ -2,6 +2,9 @@
 #define EMPLOY_FLAGS_H
 
 #include <wsjcpp_employees.h>
+#include <string>
+#include <mutex>
+#include <fstream>
 
 class Ctf01dFlag {
     public:

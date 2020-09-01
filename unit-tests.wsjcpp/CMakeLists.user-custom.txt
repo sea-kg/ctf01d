@@ -2,3 +2,9 @@
 
 
 list (APPEND WSJCPP_INCLUDE_DIRS "../src/service_locator/")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/checker")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/scoreboard")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/storages")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/storages/file")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/service_locator")
+list (APPEND WSJCPP_INCLUDE_DIRS "../src/http_handlers")

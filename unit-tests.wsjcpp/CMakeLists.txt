@@ -76,6 +76,10 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_flags.cpp")
 list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_flags.h")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "../src/service_locator/employ_scoreboard.h")
+list (APPEND WSJCPP_SOURCES "../src/storages/storage.h")
+list (APPEND WSJCPP_SOURCES "../src/storages/storages.h")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "../src-resources.wsjcpp/")
@@ -136,6 +140,8 @@ list (APPEND WSJCPP_SOURCES "../src-resources.wsjcpp/__data_sample_logs__placeho
 list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_struct_flag.h")
 list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_struct_flag.cpp")
+list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_service_costs_and_statistics.h")
+list (APPEND WSJCPP_SOURCES "../unit-tests.wsjcpp/src/unit_test_service_costs_and_statistics.cpp")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.user-custom.txt)
 

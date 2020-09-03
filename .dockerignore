@@ -2,8 +2,10 @@
 dckr_mysql
 tmp/*
 .wsjcpp/*
-docs
-misc
-testing/*
+docs/*
+misc/*
+data_test/*
+game-simulation/*
+dockers/*
 vulnbox/*
 tests/*

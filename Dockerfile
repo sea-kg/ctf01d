@@ -1,20 +1,21 @@
-# LABEL "maintainer"="Ecgenii Sopov <mrseakg@gmail.com>"
-# LABEL "repository"="https://github.com/freehackquest/ctf01d"
-
 # stage 0: build binary
-FROM freehackquest/debian-10-for-cpp-build:latest
+FROM sea5kg/ctf01d-stage-build:v20200903
 
 COPY ./ /root/
 WORKDIR /root/
 RUN ./clean.sh && ./build_simple.sh
 
 WORKDIR /root/unit-tests.wsjcpp
+RUN ./build_simple.sh
 RUN ./unit-tests
 
-# stage 1: finish
-FROM freehackquest/debian-10-for-cpp-common:latest
+# stage 1: release
+FROM sea5kg/ctf01d-stage-release:v20200903
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/ctf01d"
 
+RUN mkdir /root/data
 COPY --from=0 /root/ctf01d /usr/bin/ctf01d
 
 EXPOSE 8080
-CMD ["ctf01d","-work-dir","/usr/share/ctf01d","--extract-files","start"]
+CMD ["ctf01d","-work-dir","/root/data","start"]

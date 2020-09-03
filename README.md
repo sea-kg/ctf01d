@@ -632,6 +632,40 @@ root@604feda3c718:~/ctf01d.dev# ./ctf01d -work-dir ./data_sample/ -db-host ctf01
 
 Now you can see scoreboard on http://localhost:8081
 
+# GAME SIMULATION
+
+It's need for testing close to real game
+- 3 teams
+- 4 services (on different languages)
+- 5 subnetworks (with masquerade - base on docker network)
+
+
+1. Build images
+
+Vuln images / images with exploits / ctf01d
+
+```
+$ cd ~/ctf01d.git/game-simulation/
+$ ./build_images.sh 
+```
+
+2. Start
+Need swarn init for docker services : `docker swarm init`
+
+Start all containers:
+```
+$ cd ~/ctf01d.git/game-simulation/
+$ ./start.sh 
+```
+
+3. For stop and clean
+
+Use script 
+```
+$ cd ~/ctf01d.git/game-simulation/
+$ ./stop_and_clean.sh 
+```
+
 # THANKS FOR
 
 * Danil Dudkin

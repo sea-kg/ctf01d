@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  example_service2_db:
+  service2_db:
     image: mysql:5.7
     volumes:
       - "./dckr_mysql:/var/lib/mysql"
@@ -13,11 +13,10 @@ services:
       MYSQL_USER: example_service2
       MYSQL_PASSWORD: example_service2
     networks:
-      - example_service2_net
+      - team1_net
 
-  example_service2:
-    build: .
-    image: example_service2:2019.1.6
+  service2_go:
+    image: ctf01d-game-simulation/service2_go:latest
     depends_on:
       - example_service2_db
     volumes:
@@ -26,9 +25,9 @@ services:
       - "4102:4102"
     restart: always
     networks:
-      - example_service2_net
+      - team1_net
 
 networks:
-  example_service2_net:
+  team1_net:
     driver: bridge
         

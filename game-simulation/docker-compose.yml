@@ -10,7 +10,7 @@ services:
       - "./tmp/team1_service1_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
   
   team2_service1_server:
     image: freehackquest/example_py_service1:testing
@@ -18,7 +18,7 @@ services:
       - "./tmp/team2_service1_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team3_service1_server:
     image: freehackquest/example_py_service1:testing
@@ -26,7 +26,7 @@ services:
       - "./tmp/team3_service1_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
     
   # service 1 exploits
   team1_service1_exploit:
@@ -35,21 +35,21 @@ services:
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team1" "team2_service1_server:4101,team3_service1_server:4101"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team2_service1_exploit:
     image: freehackquest/example_py_service1_exploit:testing
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team1_service1_server:4101"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team3_service1_exploit:
     image: freehackquest/example_py_service1_exploit:testing
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team2_service1_server:4101"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # service 2
   team1_service2_db:
@@ -64,7 +64,7 @@ services:
       MYSQL_USER: service2usr
       MYSQL_PASSWORD: service2pass
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team1_service2_server:
     build: ./example_go_service2/service/
@@ -78,7 +78,7 @@ services:
       MYSQL_PASSWORD: service2pass
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # team2 - service2
   team2_service2_db:
@@ -93,7 +93,7 @@ services:
       MYSQL_USER: service2usr
       MYSQL_PASSWORD: service2pass
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team2_service2_server:
     image: freehackquest/example_go_service2:testing
@@ -106,7 +106,7 @@ services:
       MYSQL_PASSWORD: service2pass
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # team3 - service2
   team3_service2_db:
@@ -121,7 +121,7 @@ services:
       MYSQL_USER: service2usr
       MYSQL_PASSWORD: service2pass
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team3_service2_server:
     image: freehackquest/example_go_service2:testing
@@ -134,7 +134,7 @@ services:
       MYSQL_PASSWORD: service2pass
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # service 3 - port 4103
   team1_service3_server:
@@ -144,7 +144,7 @@ services:
       - "./tmp/team1_service3_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
   
   team2_service3_server:
     image: freehackquest/example_py_service3:testing
@@ -152,7 +152,7 @@ services:
       - "./tmp/team2_service3_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team3_service3_server:
     image: freehackquest/example_py_service3:testing
@@ -160,7 +160,7 @@ services:
       - "./tmp/team3_service3_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # service 4 - port 4104
   team1_service4_server:
@@ -170,7 +170,7 @@ services:
       - "./tmp/team1_service4_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
   
   team2_service4_server:
     image: freehackquest/example_py_service4:testing
@@ -178,7 +178,7 @@ services:
       - "./tmp/team2_service4_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   team3_service4_server:
     image: freehackquest/example_py_service4:testing
@@ -186,7 +186,7 @@ services:
       - "./tmp/team3_service4_server_flags:/root/flags"
     restart: always
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # team1
   team1_server:
@@ -206,7 +206,7 @@ services:
       - "4103:4103"
       - "4104:4104"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # team2
   team2_server:
@@ -246,7 +246,7 @@ services:
       - "4303:4103"
       - "4304:4104"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
   # jury
   fhqjuryad_db:
@@ -260,13 +260,13 @@ services:
       MYSQL_USER: fhqjuryad
       MYSQL_PASSWORD: fhqjuryad
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
-  fhqjuryad_jury:
+  ctf01d_game_simulation_jury:
     build: ../
     depends_on:
       - fhqjuryad_db
-    image: freehackquest/ctf01d:testing
+    image: sea5kg/ctf01d_game_simulation:latest
     volumes:
       - "./jury.d:/usr/share/ctf01d/data"
       - "./tmp/jury_logs:/usr/share/ctf01d/data/logs"
@@ -277,13 +277,14 @@ services:
     ports:
       - "8080:8080"
     restart: always
-    command: "ctf01d start"
     links:
       - "fhqjuryad_db"
     networks:
-      - fhqjuryad_net
+      - ctf01d_game_simulation_net
 
 networks:
-  fhqjuryad_net:
+  ctf01d_game_simulation_net:
     driver: bridge
-        
+    subnet: "10.10.6.0/24"
+    ip-range: "10.10.6.0/24"
+    gateway: "10.10.6.1"

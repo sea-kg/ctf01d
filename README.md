@@ -555,6 +555,87 @@ $ mkdir data_test
 $ ./ctf01d -work-dir ./data_test -db-host localhost start
 ```
 
+## Build in docker
+
+1. In first step we prepare docker network:
+
+```
+docker network create --driver=bridge ctf01d_net
+```
+
+2. Prepare mysql database
+In first step we just start container with mysql (like a daemon - in background)
+
+```
+docker run -d --rm \
+    --name ctf01d-mysql \
+    -e MYSQL_ROOT_PASSWORD=KzhyntJxwt \
+    -e MYSQL_DATABASE=ctf01d \
+    -e MYSQL_USER=ctf01d \
+    -e MYSQL_PASSWORD=ctf01d \
+    --network ctf01d_net \
+    mysql:8 \
+    mysqld --default-authentication-plugin=mysql_native_password
+```
+
+We can look docker status: `docker ps -a`
+
+3. Prepare docker for builds:
+
+*Notice: multistage build docker*
+
+Previously need download latest version ctf01d-stage-build / ctf01d-stage-release or build
+
+Download (docker pull):
+```
+$ docker pull sea5kg/ctf01d-stage-build
+$ docker pull sea5kg/ctf01d-stage-release
+```
+
+Or build fresh images for stages:
+```
+$ cd ~/ctf01d.git
+$ ./build-stages-images.sh
+```
+
+You can see in list:
+```
+$ docker images
+```
+
+4. Run dev docker-container, build and start
+
+Run:
+```
+$ cd ~/ctf01d.git 
+$ docker run -it --rm \
+  -p 8081:8080 \
+  -v `pwd`/:/root/ctf01d.dev \
+  -w /root/ctf01d.dev \
+  --name "ctf01d.dev" \
+  --network ctf01d_net \
+  sea5kg/ctf01d-stage-build:latest \
+  bash
+root@604feda3c718:~/ctf01d.dev#
+```
+
+Build:
+```
+root@604feda3c718:~/ctf01d.dev# ./clean.sh
+root@604feda3c718:~/ctf01d.dev# ./build_simple.sh
+```
+
+Start: 
+```
+root@604feda3c718:~/ctf01d.dev# ./ctf01d -work-dir ./data_sample/ -db-host ctf01d-mysql start
+```
+
+Now you can see scoreboard on http://localhost:8081
+
+# THANKS FOR
+
+* Danil Dudkin
+
 # Similar Systems && Helpful Links
 
 SibirCTF - Attack-Defence ctf system (python):

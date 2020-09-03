@@ -1,0 +1,25 @@
+FROM debian:10
+# stage release
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
+
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get install -y \
+    libcurl4 \
+    zlibc \
+    zlib1g \
+    libpng16-16 \
+    libmariadb3 \
+    libpthread-stubs0-dev \
+    libssl-dev \
+    python \
+    python-pip \
+    python3 \
+    python3-pip \
+    && pip install requests \
+    && pip3 install requests
+
+# COPY --from=0 /root/your-project/your-project.bin /usr/bin/your-project.bin
+
+# EXPOSE 8080
+# CMD ["your-project.bin","start"]

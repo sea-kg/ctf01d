@@ -76,8 +76,8 @@ bool UnitTestServiceCostsAndStatistics::run() {
     double d0 = test1.updateProportionalDefenceFlagsForService(0, 10);
     compareD(bTestSuccess, "proportional 10", d0, 10.0);
 
-    int nDefenceFlagsForService1 = 10;
-    int nDefenceFlagsForService2 = 10;
+    int nDefenceFlagsForService1 = 20;
+    int nDefenceFlagsForService2 = 20;
     int nAllDefenceFlags = nDefenceFlagsForService1 + nDefenceFlagsForService2;
     
     s0 = test1.updateProportionalDefenceFlagsForService(nDefenceFlagsForService2, nAllDefenceFlags);
@@ -92,6 +92,21 @@ bool UnitTestServiceCostsAndStatistics::run() {
     std::string sFirdtBloodTeamId = "team0";
     test1.setFirstBloodTeamId("team0");
     compareS(bTestSuccess, "first blood team id", test1.getFirstBloodTeamId(), sFirdtBloodTeamId);
+
+    nlohmann::json jsonCosts;
+    test1.updateJsonCosts(jsonCosts);
+
+    std::string sJsonFirstBlood = jsonCosts["first_blood"];
+    double nJsonCostAtt = jsonCosts["cost_att"];
+    double nJsonCostDef = jsonCosts["cost_def"];
+    int nJsonAfAtt = jsonCosts["af_att"];
+    int nJsonAfDef = jsonCosts["af_def"];
+
+    compareS(bTestSuccess, "first blood team id (2)", sJsonFirstBlood, sFirdtBloodTeamId);
+    compareD(bTestSuccess, "cost defence flag 1 (2)", nJsonCostDef, 10.0);
+    compareD(bTestSuccess, "cost stollen flag 1 (2)", nJsonCostAtt, 5.0);
+    compareN(bTestSuccess, "all flags stollen (2)", nJsonAfAtt, 10);
+    compareN(bTestSuccess, "all flags defence (2)", nJsonAfDef, 20);
 
     return bTestSuccess;
 }

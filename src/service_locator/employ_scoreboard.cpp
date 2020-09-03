@@ -30,7 +30,7 @@ Ctf01dServiceCostsAndStatistics::Ctf01dServiceCostsAndStatistics(
     m_nReverseProportionalDefenceFlags = 0.0;
     m_nCostStolenFlag = m_nBasicCostOfStolenFlag;
     m_nCostDefenceFlag = m_nBasicCostOfDefenceFlag;
-    m_sFirstBlood = "?";
+    m_sFirstBloodTeamId = "?";
 }
 
 // ----------------------------------------------------------------------
@@ -136,13 +136,23 @@ double Ctf01dServiceCostsAndStatistics::getCostDefenceFlag() {
 // ----------------------------------------------------------------------
 
 std::string Ctf01dServiceCostsAndStatistics::getFirstBloodTeamId() {
-    return m_sFirstBlood;
+    return m_sFirstBloodTeamId;
+}
+
+// ----------------------------------------------------------------------
+
+void Ctf01dServiceCostsAndStatistics::updateJsonCosts(nlohmann::json &jsonCosts) {
+    jsonCosts["cost_att"] = m_nCostStolenFlag;
+    jsonCosts["cost_def"] = m_nCostDefenceFlag;
+    jsonCosts["af_att"] = m_nAllStolenFlagsForService;
+    jsonCosts["af_def"] = m_nAllDefenceFlagsForService;
+    jsonCosts["first_blood"] = m_sFirstBloodTeamId;
 }
 
 // ----------------------------------------------------------------------
 
 void Ctf01dServiceCostsAndStatistics::setFirstBloodTeamId(const std::string &sFirstBlood) {
-    m_sFirstBlood = sFirstBlood;
+    m_sFirstBloodTeamId = sFirstBlood;
 }
 
 // ---------------------------------------------------------------------

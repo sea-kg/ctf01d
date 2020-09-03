@@ -88,11 +88,7 @@ void Scoreboard::initJsonScoreboard() {
     for (unsigned int iservice = 0; iservice < vServices.size(); iservice++) {
         Ctf01dServiceDef serviceConf = vServices[iservice];
         nlohmann::json serviceCosts;
-        serviceCosts["cost_att"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->getCostStolenFlag();
-        serviceCosts["cost_def"] = m_mapServiceCostsAndStatistics[serviceConf.id()]->getCostDefenceFlag();
-        serviceCosts["af_att"] = m_nAllStolenFlags;
-        serviceCosts["af_def"] = m_nAllDefenceFlags;
-        serviceCosts["first_blood"] = "?";
+        m_mapServiceCostsAndStatistics[serviceConf.id()]->updateJsonCosts(serviceCosts);
         jsonCosts[serviceConf.id()] = serviceCosts;
     }
     m_jsonScoreboard["s_sta"] = jsonCosts;
@@ -470,16 +466,10 @@ void Scoreboard::updateCosts() {
         // WsjcppLog::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
     }
 
-    // TODO redesign
-    nlohmann::json jsonCosts;
-    
+    // nlohmann::json jsonCosts;
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
         std::string sId = it1->first;
-        m_jsonScoreboard["s_sta"][sId]["cost_att"] = it1->second->getCostStolenFlag();
-        m_jsonScoreboard["s_sta"][sId]["cost_def"] = it1->second->getCostDefenceFlag();
-        m_jsonScoreboard["s_sta"][sId]["af_att"] = it1->second->getAllStolenFlagsForService();
-        m_jsonScoreboard["s_sta"][sId]["af_def"] = it1->second->getAllDefenceFlagsForService();
-        m_jsonScoreboard["s_sta"][sId]["first_blood"] = it1->second->getFirstBloodTeamId();
+        it1->second->updateJsonCosts(m_jsonScoreboard["s_sta"][sId]);
     }
 }
 
@@ -547,7 +537,7 @@ void Scoreboard::removeFlagLive(const Ctf01dFlag &flag) {
 std::string Scoreboard::toString(){
     // TODO mutex
     std::string sResult = ""; 
-    std::map<std::string,TeamStatusRow *>::iterator it;
+    std::map<std::string, TeamStatusRow *>::iterator it;
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); ++it){
         sResult += it->first + ": \n"
             "\tpoints: " + std::to_string(it->second->getPoints()) + "\n"

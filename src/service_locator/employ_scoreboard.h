@@ -2,6 +2,7 @@
 #define EMPLOY_SCOREBOARD_H
 
 #include <wsjcpp_employees.h>
+#include <json.hpp>
 
 class Ctf01dServiceCostsAndStatistics {
     public:
@@ -28,11 +29,12 @@ class Ctf01dServiceCostsAndStatistics {
 
         std::string getFirstBloodTeamId();
         void setFirstBloodTeamId(const std::string &sFirstBlood);
+        void updateJsonCosts(nlohmann::json &jsonCosts);
 
     private:
         std::string TAG;
         std::string m_sServiceId;
-        std::string m_sFirstBlood;
+        std::string m_sFirstBloodTeamId;
         double m_nBasicCostOfStolenFlag;
         double m_nBasicCostOfDefenceFlag;
         int m_nServicesSize;

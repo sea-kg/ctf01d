@@ -231,8 +231,7 @@ void ServiceCheckerThread::run() {
             }
             // }
         }
-        
-        // TODO just update SLA ?
+
         end = std::chrono::system_clock::now();
 
         int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();

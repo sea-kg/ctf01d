@@ -5,6 +5,7 @@ import docker
 import sys
 import os
 import time 
+import datetime
 
 # https://docker-py.readthedocs.io/en/latest/
 client = docker.from_env()
@@ -56,6 +57,7 @@ def stopAndRemoveAllContainers():
         if c.name.startswith("ctf01d_"):
             print("Stopping container " + c.name)
             c.stop()
+            print("Removing container " + c.name)
             c.remove()
 
 def createNetwork(network_list, network_name, ip_prefix):
@@ -281,6 +283,94 @@ def runAllService2Go():
         watchdog_containers_list.append(container_name)
         print(container)
 
+def runCtf01dJuryDb():
+    print(" ===> Starting ctf01d-jury db")
+    dirname_mysql = os.getcwd() + "/./tmp/jury_db_mysql"
+    if not os.path.isdir(dirname_mysql):
+        os.mkdir(dirname_mysql)
+    network_name_team = ntwrk_name_prefix + "jury"
+    container_name = "ctf01d_jury_db"
+    cntrs = client.containers.list(all=True)
+    for c in cntrs:
+        if c.name == container_name:
+            print("Stopping container " + c.name)
+            c.stop()
+            print("Removing container " + c.name)
+            c.remove()
+
+    print("Starting " + container_name)
+    mount_mysql = docker.types.Mount(
+        target="/var/lib/mysql",
+        source=dirname_mysql,
+        type="bind"
+    )
+
+    container = client.containers.run(
+        "mysql:8",
+        mem_limit="128M",
+        memswap_limit="128M",
+        mounts=[mount_mysql],
+        environment={
+            "MYSQL_ROOT_PASSWORD": "KzhyntJxwt",
+            "MYSQL_DATABASE": "ctf01d",
+            "MYSQL_USER": "ctf01d",
+            "MYSQL_PASSWORD": "ctf01d",
+        },
+        network=network_name_team,
+        # ports={"4101/tcp": (t['ip_prefix'] + ".1", 4101) },
+        name=container_name,
+        detach=True,
+        command="mysqld --default-authentication-plugin=mysql_native_password"
+    )
+    """
+    simular command:
+        docker run -d \
+            --name ctf01d-mysql \
+            -e MYSQL_ROOT_PASSWORD=KzhyntJxwt \
+            -e MYSQL_DATABASE=ctf01d \
+            -e MYSQL_USER=ctf01d \
+            -e MYSQL_PASSWORD=ctf01d \
+            --network ctf01d_net \
+            mysql:8 \
+            mysqld --default-authentication-plugin=mysql_native_password
+    """
+    watchdog_containers_list.append(container_name)
+    print(container)
+    
+
+def runCtf01dJury():
+    print(" ===> Starting ctf01d-jury")
+
+    for t in teams:
+        dirname_data = os.getcwd() + "/data/"
+        network_name_jury = ntwrk_name_prefix + "jury"
+        container_name = "ctf01d_jury"
+        cntrs = client.containers.list(all=True)
+        for c in cntrs:
+            if c.name == container_name:
+                print("Stopping container " + c.name)
+                c.stop()
+                print("Removing container " + c.name)
+                c.remove()
+
+        print("Starting " + container_name)
+        mount_data = docker.types.Mount(
+            target="/root/data",
+            source=dirname_data,
+            type="bind"
+        )
+        container = client.containers.run(
+            "sea5kg/ctf01d:latest",
+            mem_limit="256M",
+            memswap_limit="256M",
+            mounts=[mount_data],
+            network=network_name_jury,
+            ports={"8080/tcp": ("localhost", 8080) },
+            name=container_name,
+            detach=True
+        )
+        watchdog_containers_list.append(container_name)
+        print(container)
 
 def startWatchDog():
     try:
@@ -290,31 +380,34 @@ def startWatchDog():
             for wc in watchdog_containers_list:
                 for c in cntrs:
                     if c.name == wc and c.status == "exited":
-                        print("Container " + wc + " is exited. Try start again")
-                        c.start()                       
+                        today = datetime.datetime.today()
+                        print(today.strftime("%Y%m%d-%H%M%S") + " Container " + wc + " is exited. Try start again")
+                        c.start()
             time.sleep(15)
     except KeyboardInterrupt:
         print('Bye! Write me letters!')
         stopAndRemoveAllContainers()
 
+if command == "stop":
+    stopAndRemoveAllContainers()
+
 if command == "clean":
     stopAndRemoveAllContainers()
     ntwrks = client.networks.list()
-    # print(ntwrks)
     for n in ntwrks:
         if n.name.startswith(ntwrk_name_prefix):
             print("Removing network " + n.name)
             n.remove()
 
     # find and remove images
-    # imgs = client.images.list()
-    # for i in imgs:
-    #     tag = ""
-    #     if len(i.tags) > 0:
-    #         tag = i.tags[0]
-    #     if tag.startswith(img_name_prefix):
-    #         print("Removing image " + tag)
-    #         client.images.remove(image=tag)
+    imgs = client.images.list()
+    for i in imgs:
+         tag = ""
+         if len(i.tags) > 0:
+             tag = i.tags[0]
+         if tag.startswith(img_name_prefix):
+             print("Removing image " + tag)
+             client.images.remove(image=tag)
     exit(0)
 
 if command == "start":
@@ -322,17 +415,11 @@ if command == "start":
         os.mkdir("./tmp")
     createTeamAndJuryNetworks()
     buildJuryAndServiceImages()
-    # runAllService1Py()
+    runAllService1Py()
     runAllService2GoDatabase()
     runAllService2Go()
-
+    
+    
+    runCtf01dJuryDb()
+    runCtf01dJury()
     startWatchDog()
-
-        # if n.name.startswith(ntwrk_name_prefix):
-        #     n.remove()
-# print(client.containers.list())
-
-
-# ctf01d-game-simulation/service4_cpp:latest
-
-# print(client.images.list())

@@ -648,7 +648,14 @@ $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py start
 ```
 
-look scoreboard on http://10.0.100.2:8080
+After this success you can look:
+    * Scoreboard - http://localhost:8080
+    * team1 - service1_py : `nc 10.10.11.1 4101`
+    * team2 - service1_py : `nc 10.10.12.1 4101`
+    * team3 - service1_py : `nc 10.10.13.1 4101`
+    * team1 - service2_go : http://10.10.11.1:4102
+    * team2 - service2_go : http://10.10.12.1:4102
+    * team3 - service2_go : http://10.10.13.1:4102
 
 For remove all images containers and networks:
 ```

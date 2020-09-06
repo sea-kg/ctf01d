@@ -1,3 +1,5 @@
 tmp/*
 data/logs/*.log
 vulnbox/service2_go/dckr_mysql/*
+data/html/*
+!data/html/images/teams0/*

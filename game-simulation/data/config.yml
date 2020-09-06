@@ -25,7 +25,7 @@ scoreboard:
   random: no # If yes - will be random values in scoreboard
 
 mysql_storage: # if server.use_storage is mysql
-  dbhost: "ctf01d_db"
+  dbhost: "ctf01d_jury_db"
   dbport: 3306
   dbname: "ctf01d"
   dbuser: "ctf01d"
@@ -61,15 +61,15 @@ teams:
   - id: "team1"
     name: "Team 1"
     active: yes
-    logo: "./html/images/teams0/team1.svg"
-    ip_address: "10.0.11.2" # address to vulnserver
+    logo: "./html/images/teams0/team1.png"
+    ip_address: "10.10.11.1" # address to vulnserver
   - id: "team2"
     name: "Team 2"
     active: yes
     logo: "./html/images/teams0/team2.png"
-    ip_address: "10.0.12.2" # address to vulnserver
+    ip_address: "10.10.12.1" # address to vulnserver
   - id: "team3"
     name: "Team 2"
     active: yes
     logo: "./html/images/teams0/team3.png"
-    ip_address: "10.0.13.2" # address to vulnserver
+    ip_address: "10.10.13.1" # address to vulnserver

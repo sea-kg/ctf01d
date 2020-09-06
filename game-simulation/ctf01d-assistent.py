@@ -3,11 +3,14 @@
 
 import docker
 import sys
+import os
 
 # https://docker-py.readthedocs.io/en/latest/
 client = docker.from_env()
 
 progname = sys.argv[0]
+
+# TODO read from data/config.yml
 
 teams = [
     {
@@ -22,9 +25,10 @@ teams = [
     }
 ]
 jury_net_prefix = "10.0.100"
-services = ["service1_py", "service1_go", "service1_php", "service1_cpp"]
-img_name_prefix = "ctf01d-game-simulation/"
 ntwrk_name_prefix = "ctf01d_net_"
+
+services_list = ["service1_py", "service2_go", "service3_php", "service4_cpp"]
+img_name_prefix = "ctf01d-game-simulation/"
 
 def printHelp():
     print("\n"
@@ -54,8 +58,8 @@ if command == "clean":
         tag = ""
         if len(i.tags) > 0:
             tag = i.tags[0]
-        print(tag)
-        
+        if tag.startswith(img_name_prefix):
+            client.images.remove(image=tag)
     exit(0)
 
 def createNetwork(network_list, network_name, ip_prefix):
@@ -76,7 +80,7 @@ def createNetwork(network_list, network_name, ip_prefix):
     print(" -> Done." + str(ret))
 
 def createTeamAndJuryNetworks():
-    print("Networks")
+    print("\n ===> Create networks")
     ntwrks = client.networks.list()
     createNetwork(ntwrks, ntwrk_name_prefix + "jury", jury_net_prefix)
     for t in teams:
@@ -84,8 +88,44 @@ def createTeamAndJuryNetworks():
         network_name_team = ntwrk_name_prefix + t['name']
         createNetwork(ntwrks, network_name_team, t['ip_prefix'])
 
+def buildImage(images_list, image_tag, pathWithDockerfile):
+    if not os.path.isdir(pathWithDockerfile):
+        print(pathWithDockerfile + " - not exists")
+        return
+
+    path_dockerfile = pathWithDockerfile + "/Dockerfile"
+    if not os.path.isfile(path_dockerfile):
+        print(path_dockerfile + " - not exists")
+        return
+
+    for i in images_list:
+        tag = ""
+        if len(i.tags) > 0:
+            tag = i.tags[0]
+        if tag == image_tag:
+            print(image_tag + "Skip. Image already exists.")
+            return
+    # TODO redesing to command line build
+    print("Building image " + image_tag + "...")
+    ret = client.images.build(
+        path=pathWithDockerfile,
+        tag=image_tag,
+        forcerm=True # Always remove intermediate containers, even after unsuccessful builds
+    )
+    print(" -> Done." + str(ret))
+
+def buildJuryAndServiceImages():
+    print("\n ===> Docker images for Services")
+    imgs = client.images.list()
+    # basic image with jury
+    buildImage(imgs, "sea5kg/ctf01d:latest", "..")
+    for service_name in services_list:
+        img_tag = img_name_prefix + service_name + ":latest"
+        buildImage(imgs, img_tag, "./vulnbox/" + service_name)
+
 if command == "start":
     createTeamAndJuryNetworks()
+    buildJuryAndServiceImages()
 
 
         # if n.name.startswith(ntwrk_name_prefix):

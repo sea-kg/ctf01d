@@ -639,31 +639,21 @@ It's need for testing close to real game
 - 4 services (on different languages)
 - 5 subnetworks (with masquerade - base on docker network)
 
+requirements:
+* `$ pip3 install docker`
 
-1. Build images
-
-Vuln images / images with exploits / ctf01d
-
+Start
 ```
 $ cd ~/ctf01d.git/game-simulation/
-$ ./build_images.sh 
+$ ./ctf01d-assistent.py start
 ```
 
-2. Start
-Need swarn init for docker services : `docker swarm init`
+look scoreboard on http://10.0.100.2:8080
 
-Start all containers:
-```
-$ cd ~/ctf01d.git/game-simulation/
-$ ./start.sh 
-```
-
-3. For stop and clean
-
-Use script 
+For remove all images containers and networks:
 ```
 $ cd ~/ctf01d.git/game-simulation/
-$ ./stop_and_clean.sh 
+$ ./ctf01d-assistent.py clean
 ```
 
 # THANKS FOR

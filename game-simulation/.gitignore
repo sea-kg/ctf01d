@@ -1,2 +1,2 @@
 tmp/*
-jury.d/logs/*.log
+data/logs/*.log

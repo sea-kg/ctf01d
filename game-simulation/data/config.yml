@@ -62,14 +62,14 @@ teams:
     name: "Team 1"
     active: yes
     logo: "./html/images/teams0/team1.svg"
-    ip_address: "10.0.1.2" # address to vulnserver
+    ip_address: "10.0.11.2" # address to vulnserver
   - id: "team2"
     name: "Team 2"
     active: yes
     logo: "./html/images/teams0/team2.png"
-    ip_address: "10.0.2.2" # address to vulnserver
+    ip_address: "10.0.12.2" # address to vulnserver
   - id: "team3"
     name: "Team 2"
     active: yes
     logo: "./html/images/teams0/team3.png"
-    ip_address: "10.0.3.2" # address to vulnserver
+    ip_address: "10.0.13.2" # address to vulnserver

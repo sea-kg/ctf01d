@@ -11,10 +11,15 @@ import (
   "os"
 )
 
-var (
-  // dbConnString = "example_service2:example_service2@tcp(localhost:3306)/example_service2"
-  dbConnString = os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + os.Getenv("MYSQL_HOST") + ":3306)/" + os.Getenv("MYSQL_DATABASE")
-)
+func getConnString() string {
+  var sRet string
+  sRet = os.Getenv("SERVICE2_GO_MYSQL_USER") + ":"
+  sRet = sRet + os.Getenv("SERVICE2_GO_MYSQL_PASSWORD")
+  sRet = sRet + "@tcp(" + os.Getenv("SERVICE2_GO_MYSQL_HOST") + ":3306)/"
+  sRet = sRet + os.Getenv("SERVICE2_GO_MYSQL_DBNAME")
+  // fmt.Printf("getConnString sRet=%s\n", sRet)
+  return sRet
+}
       
 type Flag struct {
   Flag_id string `db:"flag_id"`
@@ -47,7 +52,7 @@ func put_flag(w http.ResponseWriter, r *http.Request) {
   flag_id := params["flag_id"]
   flag := params["flag"]
 
-  db, err := sqlx.Connect("mysql", dbConnString)
+  db, err := sqlx.Connect("mysql", getConnString())
   if err != nil {
     fmt.Printf("FAILED connect to database %s\n", err.Error())
     err_json(w, err.Error())
@@ -81,7 +86,7 @@ func get_flag(w http.ResponseWriter, r *http.Request) {
   params := mux.Vars(r)
   flag_id := params["flag_id"]
   
-  db, err := sqlx.Connect("mysql", dbConnString)
+  db, err := sqlx.Connect("mysql", getConnString())
   if err != nil {
     fmt.Printf("FAILED connect to database %s\n", err.Error())
     err_json(w, err.Error())
@@ -115,7 +120,7 @@ type FlagIDs struct {
 }
 
 func list_flag(w http.ResponseWriter, r *http.Request) {
-  db, err := sqlx.Connect("mysql", dbConnString)
+  db, err := sqlx.Connect("mysql", getConnString())
   if err != nil {
     fmt.Printf("FAILED connect to database %s\n", err.Error())
     err_json(w, err.Error())

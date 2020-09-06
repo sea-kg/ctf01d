@@ -4,6 +4,7 @@
 import docker
 import sys
 import os
+import time 
 
 # https://docker-py.readthedocs.io/en/latest/
 client = docker.from_env()
@@ -47,7 +48,7 @@ if len(sys.argv) < 2:
 
 command = sys.argv[1]
 
-if command == "clean":
+def stopAndRemoveAllContainers():
     cntrs = client.containers.list(all=True)
     # print(cntrs)
 
@@ -56,24 +57,6 @@ if command == "clean":
             print("Stopping container " + c.name)
             c.stop()
             c.remove()
-
-    ntwrks = client.networks.list()
-    # print(ntwrks)
-    for n in ntwrks:
-        if n.name.startswith(ntwrk_name_prefix):
-            print("Removing network " + n.name)
-            n.remove()
-
-    # find and remove images
-    # imgs = client.images.list()
-    # for i in imgs:
-    #     tag = ""
-    #     if len(i.tags) > 0:
-    #         tag = i.tags[0]
-    #     if tag.startswith(img_name_prefix):
-    #         print("Removing image " + tag)
-    #         client.images.remove(image=tag)
-    exit(0)
 
 def createNetwork(network_list, network_name, ip_prefix):
     for n in network_list:
@@ -97,6 +80,15 @@ def createNetwork(network_list, network_name, ip_prefix):
         check_duplicate=True,
         ipam=ipam_config
     )
+    """
+    simular command:
+        $ docker network create \
+        --driver bridge \
+        --gateway 10.10.11.1 \
+        --subnet=10.10.11.0/24 \
+        --ip-range=10.10.11.3/24 \
+        "ctf01d_net_team1"
+    """
     print(" -> Done." + str(ret))
 
 def createTeamAndJuryNetworks():
@@ -128,6 +120,10 @@ def buildImage(images_list, image_tag, pathWithDockerfile):
             print(image_tag + " - Skip. Image already exists.")
             return
     # TODO redesing to command line build
+    """
+        simular command:
+        docker build -t ctf01d-game-simulation/service2_go:latest ./vulnbox/service2_go/
+    """
     print("Building image " + image_tag + "...")
     ret = client.images.build(
         path=pathWithDockerfile,
@@ -146,11 +142,14 @@ def buildJuryAndServiceImages():
         buildImage(imgs, img_tag, "./vulnbox/" + service_name)
 
 def runAllService1Py():
+    print(" ===> Starting all service1_py")
+
     service_name = "service1_py"
     img_name = img_name_prefix + service_name + ":latest"
     for t in teams:
         dirname_flags = os.getcwd() + "/./tmp/" + t['name'] + "_" + service_name + "_flags"
-        os.mkdir(dirname_flags)
+        if not os.path.isdir(dirname_flags):
+            os.mkdir(dirname_flags)
         network_name_team = ntwrk_name_prefix + t['name']
         container_name = "ctf01d_" + t['name'] + "_" + service_name
         cntrs = client.containers.list(all=True)
@@ -177,16 +176,157 @@ def runAllService1Py():
             name=container_name,
             detach=True
         )
+        """
+        simular command:
+          docker run \
+            -d \
+            --memory 128MB \
+            --memory-swap 128MB \
+            -p "10.10.11.1:4101":4101 \
+            -v `pwd`/vulnbox/service1_py/flags:/root/flags \
+            --net "ctf01d_net_team1" \
+            --name "ctf01d_team1_service1_py" \
+            ctf01d-game-simulation/service1_py:latest
+        """
+
+        watchdog_containers_list.append(container_name)
+        print(container)
+    
+
+def runAllService2GoDatabase():
+    print(" ===> Starting all service2_go_db")
+    service_name = "service2_go_db"
+
+    # img_name = img_name_prefix + service_name + ":latest"
+    for t in teams:
+        dirname_mysql = os.getcwd() + "/./tmp/" + t['name'] + "_" + service_name + "_mysql"
+        if not os.path.isdir(dirname_mysql):
+            os.mkdir(dirname_mysql)
+        network_name_team = ntwrk_name_prefix + t['name']
+        container_name = "ctf01d_" + t['name'] + "_" + service_name
+        cntrs = client.containers.list(all=True)
+        for c in cntrs:
+            if c.name == container_name:
+                print("Stopping container " + c.name)
+                c.stop()
+                print("Removing container " + c.name)
+                c.remove()
+
+        print("Starting " + container_name)
+        mount_mysql = docker.types.Mount(
+            target="/var/lib/mysql",
+            source=dirname_mysql,
+            type="bind"
+        )
+        mount_sql = docker.types.Mount(
+            target="/docker-entrypoint-initdb.d",
+            source=os.getcwd() + "/./vulnbox/service2_go/sql",
+            type="bind"
+        )
+
+        container = client.containers.run(
+            "mysql:5.7",
+            mem_limit="128M",
+            memswap_limit="128M",
+            mounts=[mount_mysql, mount_sql],
+            environment={
+                "MYSQL_ROOT_PASSWORD": "service2_go",
+                "MYSQL_DATABASE": "service2_go",
+                "MYSQL_USER": "service2_go",
+                "MYSQL_PASSWORD": "service2_go",
+            },
+            network=network_name_team,
+            # ports={"4101/tcp": (t['ip_prefix'] + ".1", 4101) },
+            name=container_name,
+            detach=True
+        )
         watchdog_containers_list.append(container_name)
         print(container)
 
-# if command == "clean":
+def runAllService2Go():
+    print(" ===> Starting all service2_go")
+
+    service_name = "service2_go"
+    img_name = img_name_prefix + service_name + ":latest"
+    for t in teams:
+        dirname_flags = os.getcwd() + "/./tmp/" + t['name'] + "_" + service_name + "_flags"
+        if not os.path.isdir(dirname_flags):
+            os.mkdir(dirname_flags)
+        network_name_team = ntwrk_name_prefix + t['name']
+        container_name = "ctf01d_" + t['name'] + "_" + service_name
+        cntrs = client.containers.list(all=True)
+        for c in cntrs:
+            if c.name == container_name:
+                print("Stopping container " + c.name)
+                c.stop()
+                print("Removing container " + c.name)
+                c.remove()
+
+        print("Starting " + container_name)
+        container = client.containers.run(
+            img_name,
+            mem_limit="128M",
+            memswap_limit="128M",
+            network=network_name_team,
+            environment={
+                "SERVICE2_GO_MYSQL_HOST": container_name + "_db",
+                "SERVICE2_GO_MYSQL_DBNAME": "service2_go",
+                "SERVICE2_GO_MYSQL_USER": "service2_go",
+                "SERVICE2_GO_MYSQL_PASSWORD": "service2_go",
+            },
+            ports={"4102/tcp": (t['ip_prefix'] + ".1", 4102) },
+            name=container_name,
+            detach=True
+        )
+        watchdog_containers_list.append(container_name)
+        print(container)
+
+
+def startWatchDog():
+    try:
+        print(" ===> Starting watch dog")
+        while True:
+            cntrs = client.containers.list(all=True)
+            for wc in watchdog_containers_list:
+                for c in cntrs:
+                    if c.name == wc and c.status == "exited":
+                        print("Container " + wc + " is exited. Try start again")
+                        c.start()                       
+            time.sleep(15)
+    except KeyboardInterrupt:
+        print('Bye! Write me letters!')
+        stopAndRemoveAllContainers()
+
+if command == "clean":
+    stopAndRemoveAllContainers()
+    ntwrks = client.networks.list()
+    # print(ntwrks)
+    for n in ntwrks:
+        if n.name.startswith(ntwrk_name_prefix):
+            print("Removing network " + n.name)
+            n.remove()
+
+    # find and remove images
+    # imgs = client.images.list()
+    # for i in imgs:
+    #     tag = ""
+    #     if len(i.tags) > 0:
+    #         tag = i.tags[0]
+    #     if tag.startswith(img_name_prefix):
+    #         print("Removing image " + tag)
+    #         client.images.remove(image=tag)
+    exit(0)
 
 if command == "start":
-    os.mkdir("tmp")
+    if not os.path.isdir("./tmp"):
+        os.mkdir("./tmp")
     createTeamAndJuryNetworks()
     buildJuryAndServiceImages()
-    runAllService1Py()
+    # runAllService1Py()
+    runAllService2GoDatabase()
+    runAllService2Go()
+
+    startWatchDog()
 
         # if n.name.startswith(ntwrk_name_prefix):
         #     n.remove()

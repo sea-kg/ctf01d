@@ -7,6 +7,61 @@ Or you can use it for training.
 
 ![scoreboard](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/screens/screen1.png)
 
+## Easy way to start/init (based on docker-compose)
+
+docker-compose.yml
+```
+version: '3'
+
+services:
+  ctf01d_db:
+    image: mysql:5.7
+    volumes:
+      - "./tmp/mysql_database:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: ctf01d
+      MYSQL_USER: ctf01d
+      MYSQL_PASSWORD: ctf01d
+    networks:
+      - ctf01d_net
+
+  ctf01d_jury:
+    depends_on:
+      - ctf01d_db
+    image: sea5kg/ctf01d:latest
+    volumes:
+      - "./data_game:/usr/share/ctf01d"
+    environment:
+      CTF01D_WORKDIR: "/usr/share/ctf01d"
+      CTF01D_MYSQL_HOST: "ctf01d_db"
+      CTF01D_MYSQL_DATABASE: "ctf01d"
+      CTF01D_MYSQL_USER: "ctf01d"
+      CTF01D_MYSQL_PASSWORD: "ctf01d"
+    ports:
+      - "8080:8080"
+    restart: always
+    links:
+      - "ctf01d_db"
+    networks:
+      - ctf01d_net
+
+networks:
+  ctf01d_net:
+    driver: bridge
+```
+
+And than:
+
+```
+$ docker-compose up
+```
+
+After first start look in './data_game' folder:
+- You will find basic configuration
+- After change of the configuration you need to restart 'docker-compose'
+
 ## Rules
 
 ### 1. Basic
@@ -135,60 +190,6 @@ for s in services:
     i = i + 1
 ```
 
-## Easy way to start (and init) docker-compose
-
-docker-compose.yml
-```
-version: '3'
-
-services:
-  ctf01d_db:
-    image: mysql:5.7
-    volumes:
-      - "./tmp/mysql_database:/var/lib/mysql"
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: KzhyntJxwt
-      MYSQL_DATABASE: ctf01d
-      MYSQL_USER: ctf01d
-      MYSQL_PASSWORD: ctf01d
-    networks:
-      - ctf01d_net
-
-  ctf01d_jury:
-    depends_on:
-      - ctf01d_db
-    image: sea5kg/ctf01d:latest
-    volumes:
-      - "./data_sample:/usr/share/ctf01d"
-    environment:
-      CTF01D_WORKDIR: "/usr/share/ctf01d"
-      CTF01D_MYSQL_HOST: "ctf01d_db"
-      CTF01D_MYSQL_DATABASE: "ctf01d"
-      CTF01D_MYSQL_USER: "ctf01d"
-      CTF01D_MYSQL_PASSWORD: "ctf01d"
-    ports:
-      - "8080:8080"
-    restart: always
-    links:
-      - "ctf01d_db"
-    networks:
-      - ctf01d_net
-
-networks:
-  ctf01d_net:
-    driver: bridge
-```
-
-And than:
-
-```
-$ docker-compose up
-```
-
-After first start look in './data' folder:
-- You will find basic configuration
-- After change of the configuration you need to restart 'docker-compose'
 
 ### Download and basic configuration
 
@@ -196,28 +197,33 @@ After first start look in './data' folder:
 $ sudo apt install git-core
 $ cd ~
 $ git clone http://github.com/freehackquest/ctf01d.git ctf01d.git
-$ nano ~/ctf01d.git/jury.d/config.yml
+$ nano ~/ctf01d.git/data_sample/config.yml
 ```
 Config files (see comments in file):
-* `~/ctf01d.git/jury.d/config.yml` - main config
+* `~/ctf01d.git/data_sample/config.yml` - one config
 
+### Build docker image
 
-* [BUILD: Ubuntu/Debian](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_UBUNTU.md)
-* [BUILD: Docker](https://github.com/freehackquest/ctf01d/blob/master/docs/BUILD_DOCKER.md)
+```
+$ git clone https://github.com/freehackquest/ctf01d ~/ctf01d.git
+$ cd ~/ctf01d.git
+$ docker build --rm=true -t "sea5kg/ctf01d:my-version" .
+```
 
 ### Prepare to start with clearing all previous data
 
 Previously created data-flags will be clean
 
 ```
-$ cd ~/ctf01d.git/ctf01d
-$ ./ctf01d clean
+$ cd ~/ctf01d.git/
+$ ./ctf01d -work-dir ./data_sample/ clean
 ```
 
 ### Run ctf01d
 
 ```
-$ ./ctf01d -wd ../jury.d/ start
+$ cd ~/ctf01d.git/
+$ ./ctf01d -work-dir ./data_sample/ start
 ```
 
 ## Scoreboard
@@ -262,7 +268,6 @@ http-code responses:
  * 403 - flag is not accepted (probable reasons: old, already accepted, not found)
 
 
-
 # Checker script description
 
 ### Checker console interface
@@ -296,13 +301,12 @@ Call-examples:
 
 
  # Jury API requests list
-
  
  * `http://{HOST}:{PORT}/api/v1/game` - info about game
  * `http://{HOST}:{PORT}/api/v1/teams` - list of teams
  * `http://{HOST}:{PORT}/api/v1/services` - list of services
  * `http://{HOST}:{PORT}/api/v1/scoreboard` - scoreboard table teams-services
- * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - list of teams
+ * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - logo's teams
 
 
 # How to prepare vuln service
@@ -328,7 +332,7 @@ $ docker save "somegame/your_server:0.0.1" > somegame-your_server-0.0.1.tar
 $ docker load -i ./somegame-your_server-0.0.1.tar
 ```
 
-## Preapre checker
+## Prepare checker
 
 ### 1. Firstly you need to add `config.yml` file to the 'checkers' section for a jury system
 
@@ -336,7 +340,7 @@ For example:
 
 ```
 checkers:
-  - id: "service_ZxjQMahnoK" # work directory will be checker_example_service4
+  - id: "service_ZxjQMahnoK" # work directory will be checker_service_ZxjQMahnoK
     service_name: "Service1"
     enabled: yes
     script_path: "./checker.py"
@@ -360,11 +364,12 @@ You can write checker in any language, but you need to install expected requirem
 For example Dockerfile.jury with a jury:
 
 ```
-FROM freehackquest/ctf01d:latest
+FROM sea5kg/ctf01d:latest
 
 # TODO add some packages if needs
 
-CMD ["ctf01d","-ef","start"]
+# CMD already defined in sea5kg/ctf01d image
+# CMD ["ctf01d","-work-dir","/root/data","start"]
 ```
 
 Jury will be call your checker script like `./checker.py <ip_address> <command> <flag_id> <flag> `
@@ -547,6 +552,9 @@ Build
 $ cd ~/ctf01d.git
 $ ./build_simple.sh
 ```
+
+*Maybe fix: `$ sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc`*
+*More info: (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340)[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340]*
 
 Start
 ```

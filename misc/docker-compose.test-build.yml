@@ -16,13 +16,13 @@ services:
 
   ctf01d_jury:
     build: ../
+    image: sea5kg/ctf01d:debug
     depends_on:
       - ctf01d_db
-    image: sea5kg/ctf01d:debug
     environment:
-      CTF01D_WORKDIR: "/usr/share/ctfd01d/data"
+      CTF01D_WORKDIR: "/usr/share/ctf01d"
     volumes:
-      - "./data_sample:/usr/share/ctfd01d/data"
+      - "./data_sample:/usr/share/ctf01d"
     ports:
       - "8080:8080"
     restart: always

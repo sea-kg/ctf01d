@@ -675,6 +675,12 @@ $ ./ctf01d-assistent.py clean
 
 * Danil Dudkin
 
+# Online Attack-Defence
+
+I have only one schmea now:
+
+![schema1](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/schemas/basic_schema_masquerade_openvpn.png)
+
 # Similar Systems && Helpful Links
 
 SibirCTF - Attack-Defence ctf system (python):

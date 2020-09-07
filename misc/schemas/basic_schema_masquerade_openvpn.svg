@@ -14,8 +14,11 @@
    viewBox="0 0 661.4583 661.45837"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   sodipodi:docname="basic_schema_maska.svg">
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="basic_schema_masquerade_openvpn.svg"
+   inkscape:export-filename="basic_schema_masquerade_openvpn.png"
+   inkscape:export-xdpi="38.400002"
+   inkscape:export-ydpi="38.400002">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -25,18 +28,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="1467.9323"
-     inkscape:cy="620.10771"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="1170.119"
+     inkscape:cy="1892.8544"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
      inkscape:snap-global="false"
-     inkscape:window-width="1853"
-     inkscape:window-height="1025"
-     inkscape:window-x="67"
-     inkscape:window-y="27"
+     inkscape:window-width="1848"
+     inkscape:window-height="1017"
+     inkscape:window-x="72"
+     inkscape:window-y="26"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
@@ -46,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -468,7 +471,7 @@
            height="51.51778"
            x="562.65497"
            y="274.74109" /></flowRegion><flowPara
-         id="flowPara988"></flowPara></flowRoot>    <g
+         id="flowPara988" /></flowRoot>    <g
        id="g1391"
        transform="translate(5.0859887,-289.63689)">
       <rect
@@ -720,7 +723,7 @@
            height="97.85714"
            x="236.42857"
            y="993.57141" /></flowRegion><flowPara
-         id="flowPara1096"></flowPara></flowRoot>    <path
+         id="flowPara1096" /></flowRoot>    <path
        style="fill:#95cc4d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458335px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 153.25266,-70.122006 -6.73935,-13.0053 4.76193,1.00944 0.37476,-7.06404 -97.192822,-1.4366 -0.271833,-60.102764 -3.357025,1.46401 4.960204,-10.06713 6.21531,10.06847 -3.64988,-1.9924 1.279886,55.811374 97.02317,2.37435 0.45866,11.3437 5.11393,-1.30155 z"
        id="path1559"

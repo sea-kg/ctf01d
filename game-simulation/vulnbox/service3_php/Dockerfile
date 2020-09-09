@@ -1,13 +1,10 @@
-FROM python:latest
-LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/ctf01d"
+FROM php:7.4-cli
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
 
-WORKDIR /root
-RUN mkdir ./flags && chmod 777 /root/flags
-COPY service.py /root/service.py
+COPY ./src /usr/src/service3_php
+WORKDIR /usr/src/service3_php
+EXPOSE 4103
 
-EXPOSE 4101
-
-CMD cd /root/ && python3 service.py
-
+CMD [ "php", "-S", "0.0.0.0:4103"]
 

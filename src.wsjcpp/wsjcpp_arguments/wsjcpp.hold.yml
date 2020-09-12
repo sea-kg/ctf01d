@@ -1,0 +1,49 @@
+wsjcpp_version: v0.0.1
+cmake_cxx_standard: 11
+cmake_minimum_required: 3.0
+
+name: wsjcpp-arguments
+version: v0.2.0
+description: Helpful parser for parsing application arguments
+issues: https://github.com/wsjcpp/wsjcpp-arguments/issues
+
+repositories:
+  - type: main
+    url: "https://github.com/wsjcpp/wsjcpp-arguments"
+
+keywords:
+  - c++
+  - wsjcpp
+  - parser application arguments
+
+authors:
+  - name: Evgenii Sopov
+    email: mrseakg@gmail.com
+
+required-libraries:
+  - pthread
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.1.0"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+
+distribution:
+  - source-file: src/wsjcpp_arguments.cpp
+    target-file: wsjcpp_arguments.cpp
+    type: "source-code"
+  - source-file: src/wsjcpp_arguments.h
+    target-file: wsjcpp_arguments.h
+    type: "source-code"
+  - source-file: "scripts.wsjcpp/generate.WsjcppArgumentProcessor"
+    target-file: "generate.WsjcppArgumentProcessor"
+    type: "safe-scripting-generate"
+
+unit-tests:
+  cases:
+    - name: "ArgumentsWithParams"
+      description: "Arguments With Params"
+    - name: "SimpleArguments"
+      description: "Simple Arguments"

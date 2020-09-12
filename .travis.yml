@@ -22,6 +22,8 @@ addons:
 
 # Build steps
 script:
-  - cd fhq-jury-ad
   - ./clean.sh
   - ./build_simple.sh
+  - cd unit-tests.wsjcpp
+  - ./build_simple.sh
+  - ./unit-tests

@@ -16,7 +16,7 @@ import shutil
 logs_path = './logs'
 
 def _cleanup():
-    os.system('killall fhq-jury-ad > /dev/null')
+    os.system('killall ctf01d > /dev/null')
 
     os.system('python2 ../service1_test/service1_test.py stop')
     os.system('python2 ../service1_test/service1_test.py clean')
@@ -31,8 +31,8 @@ def _start_service():
     os.system('python2 ../service1_test/service1_test.py start')
 
 def _start_jury():
-    os.system('../../fhq-jury-ad/fhq-jury-ad clean -wd ./ > jury_clean.log')
-    os.system('../../fhq-jury-ad/fhq-jury-ad start -wd ./ > jury_start.log &')
+    os.system('../../ctf01d/ctf01d clean -wd ./ > jury_clean.log')
+    os.system('../../ctf01d/ctf01d start -wd ./ > jury_start.log &')
 
 # clean folder with logs
 _cleanup()

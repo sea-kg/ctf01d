@@ -1,0 +1,70 @@
+## Combined config for ctf01d
+# use 2 spaces for tab
+
+game:
+  id: "test" # uniq gameid must be regexp [a-z0-9]+
+  name: "Test First Game" # visible game name in scoreboard
+  start: "2019-10-04 10:30:00" # start time of game (UTC)
+  end: "2030-09-06 13:00:00" # end time of game (UTC)
+  coffee_break_start: "2020-10-04 10:30:00" # start time of game coffee break (UTC), but it will be ignored if period more (or less) then start and end
+  coffee_break_end: "2021-01-04 10:30:00" # end time of game coffee break (UTC), but it will be ignored if period more (or less) then start and end
+  flag_timelive_in_min: 1 # you can change flag time live (in minutes)
+  basic_costs_stolen_flag_in_points: 10 # basic costs stolen (attack) flag in points for adaptive scoreboard
+
+server:
+  # use storage which storage will be used, now possible values:
+  # mysql - use mysql database
+  # ram - (!not implemented yet) use just memory
+  # local - (!not implemented yet) use just memory
+  # postgres - (!not implemented yet) will be used postgre database
+  use_storage: mysql
+
+scoreboard:
+  port: 8080 # http port for scoreboard
+  htmlfolder: "./html" # web page for scoreboard see index-template.html
+  random: no # If yes - will be random values in scoreboard
+
+mysql_storage: # if server.use_storage is mysql
+  dbhost: "ctf01d_db"
+  dbport: 3306
+  dbname: "ctf01d"
+  dbuser: "ctf01d"
+  dbpass: "ctf01d"
+
+checkers:
+  - id: "example_service1" # work directory will be checker_example_service4
+    service_name: "Service1"
+    enabled: yes
+    script_path: "./checker.py"
+    script_wait_in_sec: 5 # max time for running script
+    time_sleep_between_run_scripts_in_sec: 15 # like a round for service
+  - id: "example_service2" # work directory will be checker_example_service4
+    service_name: "Service2"
+    enabled: yes
+    script_path: "./checker.py"
+    script_wait_in_sec: 5
+    time_sleep_between_run_scripts_in_sec: 15
+  - id: "example_service3" # work directory will be checker_example_service4
+    service_name: "Service3"
+    enabled: yes
+    script_path: "./checker.py"
+    script_wait_in_sec: 5
+    time_sleep_between_run_scripts_in_sec: 15
+  - id: "example_service4" # work directory will be checker_example_service4
+    service_name: "Service4"
+    enabled: yes
+    script_path: "./checker.py"
+    script_wait_in_sec: 5
+    time_sleep_between_run_scripts_in_sec: 15
+
+teams:
+  - id: "another_some" # must be uniq
+    name: "Another Some"
+    active: yes
+    logo: "./html/images/teams/unknown.svg"
+    ip_address: "127.0.1.1" # address to vulnserver
+  - id: "so_some" # must be uniq
+    name: "So Some"
+    active: yes
+    logo: "./html/images/logo.png"
+    ip_address: "127.0.0.1" # address to vulnserver

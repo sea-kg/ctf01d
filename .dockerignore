@@ -1,1 +1,11 @@
 .git
+dckr_mysql
+tmp/*
+.wsjcpp/*
+docs/*
+misc/*
+data_test/*
+game-simulation/*
+dockers/*
+vulnbox/*
+tests/*

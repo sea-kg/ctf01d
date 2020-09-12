@@ -1,18 +1,21 @@
-# LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
-# LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
-
 # stage 0: build binary
-FROM freehackquest/debian-10-for-cpp-build:latest
+FROM sea5kg/ctf01d-stage-build:v20200903
 
-COPY ./fhq-jury-ad /root/sources
-WORKDIR /root/sources
+COPY ./ /root/
+WORKDIR /root/
 RUN ./clean.sh && ./build_simple.sh
 
-# stage 1: finish
-FROM freehackquest/debian-10-for-cpp-common:latest
+WORKDIR /root/unit-tests.wsjcpp
+RUN ./build_simple.sh
+RUN ./unit-tests
 
-COPY --from=0 /root/sources/fhq-jury-ad /usr/bin/fhq-jury-ad
-COPY ./jury.d /usr/share/fhq-jury-ad/jury.d
+# stage 1: release
+FROM sea5kg/ctf01d-stage-release:v20200903
+LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
+
+RUN mkdir /root/data
+COPY --from=0 /root/ctf01d /usr/bin/ctf01d
 
 EXPOSE 8080
-CMD ["fhq-jury-ad","-ef","start"]
+CMD ["ctf01d","-work-dir","/root/data","start"]

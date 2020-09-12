@@ -1,0 +1,416 @@
+body{
+    background-color: #000;
+    font: 12pt/10pt Arial;
+    color: #999;
+    padding: 0px;
+    margin: 0px;
+    background-color: #202020;
+    color: #aaa;
+}
+
+body,html{
+    height: 100%;
+    text-align: center;
+}
+
+.game-name{
+    font-size: 40px;
+    padding-top: 40px;
+    height: 40px;
+}
+
+.ctf01d-tabs {
+  display: block;
+  border-bottom: 1px solid #aaa;
+  padding-top: 20px;
+}
+
+.ctf01d-tab {
+  display: inline-block;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border: 1px solid #aaa;
+  padding: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-weight: bold;
+  background-color: #202020;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.ctf01d-tab.active {
+  margin-bottom: -1px;
+  border-bottom: 1px solid #202020;
+}
+
+.ctf01d-tab-content {
+  display: none;
+}
+
+input, select {
+  margin: 5px;
+  background-color: #000;
+  border: none;
+  color: #aaa;
+  padding: 5px;
+}
+
+
+button {
+    background-color: #202020;
+    color: #aaa;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+
+.d-icn {
+    width: 20px;
+    height: 20px;
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.d-icn.att {
+  background-image: url("../images/attack.svg");
+}
+
+.d-icn.def {
+  background-image: url("../images/defence.svg");
+}
+
+.d-icn.upt {
+  background-image: url("../images/uptime.svg");
+}
+
+.game-description{
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.game-time-range {
+    display: inline-block;
+}
+
+.team-name{
+  font-size: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.team-ip{
+	font-size: 10px;
+}
+
+#scoreboard_content {
+  display: block;
+  position: relative;
+}
+
+#table_scoreboard {
+  width: 100%;
+  position: relative;
+}
+
+.hdrs {
+  border-bottom: 1px solid #111;
+  height: 100px;
+  position: absolute;
+  padding-top: 15px;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.tm {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  height: 50px;
+  border-bottom: 1px solid #111;
+  padding-top: 15px;
+  position: absolute;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.place {
+  display: inline-block;
+  font-size: 25px;
+  width: 50px;
+  text-align: center;
+  height: 50px;
+  vertical-align: top;
+  line-height: 50px;
+}
+
+.team-logo {
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  vertical-align: top;
+}
+
+.text {
+  display: inline-block;
+}
+
+.text.red {
+  color: #cc5914;
+  font-weight: bold;
+}
+
+.text.green {
+  color: #00b100;
+  font-weight: bold;
+}
+
+img.team-logo {
+  width: 40px;
+	height: 40px;
+  padding-bottom: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.team {
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+  width: 150px;
+  line-height: 25px;
+  overflow: hidden;
+}
+
+.hdrs .team {
+  line-height: 50px;
+}
+
+.score {
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+  text-align: center;
+  width: 100px;
+  line-height: 50px;
+}
+
+.service {
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+  width: 150px;
+  line-height: 25px;
+  border-left: 1px solid #111;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: left;
+}
+
+.hdrs .service {
+  height: 100px;
+  line-height: 20px;
+  text-align: center;
+  width: 150px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.first-blood {
+  display: inline-block;
+  height: 20px;
+  background-image: url("../images/first-blood.svg");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+@keyframes blinker {  
+  from { visibility: visible }
+  to { visibility: hidden }
+
+  /* Alternatively you can do this:  
+  0% { visibility: visible; }
+  50% { visibility: hidden; }
+  100% { visibility: visible; }
+  if you don't want to use `alternate` */
+}
+
+.points {
+  display: inline-block;
+  height: 20px;
+  background-image: url("../images/points.svg");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 25px;
+  line-height: 20px;
+}
+
+.activity {
+  display: inline-block;
+  height: 50px;
+  vertical-align: top;
+  width: 150px;
+  line-height: 25px;
+  border-left: 1px solid #111;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.activity .activity-value {
+  display: inline-block;
+}
+
+@keyframes fastblinking {
+  0% {
+    transform: scale(1.0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.0);
+  }
+}
+
+@keyframes blinking {
+  0% {
+    transform: scale(1.0);
+  }
+  20% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.0);
+  }
+  75% {
+    transform: scale(0.7);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+.activity .activity-icon {
+  display: inline-block;
+  background-image: url(../images/activity.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
+
+.service-status {
+  display: inline-block;
+  height: 50px;
+  padding-left: 65px;
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  vertical-align: middle;
+}
+
+.service-status.down {
+	background-image: url("../images/states/down.svg");
+}
+
+.service-status.corrupt {
+	background-image: url("../images/states/corrupt.svg");
+}
+
+.service-status.mumble {
+	background-image: url("../images/states/mumble.svg");
+}
+
+.service-status.up {
+	background-image: url("../images/states/up.svg");
+}
+
+.service-status.shit {
+	background-image: url("../images/states/shit.svg");
+}
+
+.service-status.wait {
+	background-image: url("../images/states/wait.svg");
+}
+
+.service-status.coffeebreak {
+	background-image: url("../images/states/coffeebreak.svg");
+}
+
+.service-att-def, .service-sla {
+  height: 25px;
+  line-height: 25px;
+}
+
+.service-att-def .att {
+  color: #cc5914;
+  width: auto;
+  font-weight: bold;
+  padding-right: 20px;
+  background-position: right center;
+}
+
+.service-att-def .def {
+  width: auto;
+  color: #00b100;
+  font-weight: bold;
+  padding-left: 20px;
+}
+
+.service-sla {
+  padding-left: 25px;
+  width: 100%;
+  text-align: left;
+  color: white;
+  font-weight: bold;
+}
+
+/* loader */
+.lds-facebook {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-facebook div {
+  display: inline-block;
+  position: absolute;
+  left: 6px;
+  width: 13px;
+  background: #fff;
+  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+.lds-facebook div:nth-child(1) {
+  left: 6px;
+  animation-delay: -0.24s;
+}
+.lds-facebook div:nth-child(2) {
+  left: 26px;
+  animation-delay: -0.12s;
+}
+.lds-facebook div:nth-child(3) {
+  left: 45px;
+  animation-delay: 0;
+}
+@keyframes lds-facebook {
+  0% {
+    top: 6px;
+    height: 51px;
+  }
+  50%, 100% {
+    top: 19px;
+    height: 26px;
+  }
+}
+
+.legend {
+  width: 50px !important;
+  height: 50px !important;
+  border: 1px solid #aaa;
+  padding: 0px;
+}

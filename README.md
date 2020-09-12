@@ -671,7 +671,7 @@ $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py clean
 ```
 
-# THANKS FOR
+# THANKS TO
 
 * Danil Dudkin
 

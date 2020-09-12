@@ -5,7 +5,7 @@ services:
   # service 1 - port 4101
   team1_service1_server:
     build: ./example_py_service1/service/
-    image: freehackquest/example_py_service1:testing
+    image: sea5kg/example_py_service1:testing
     volumes:
       - "./tmp/team1_service1_server_flags:/root/flags"
     restart: always
@@ -13,7 +13,7 @@ services:
       - ctf01d_game_simulation_net
   
   team2_service1_server:
-    image: freehackquest/example_py_service1:testing
+    image: sea5kg/example_py_service1:testing
     volumes:
       - "./tmp/team2_service1_server_flags:/root/flags"
     restart: always
@@ -21,7 +21,7 @@ services:
       - ctf01d_game_simulation_net
 
   team3_service1_server:
-    image: freehackquest/example_py_service1:testing
+    image: sea5kg/example_py_service1:testing
     volumes:
       - "./tmp/team3_service1_server_flags:/root/flags"
     restart: always
@@ -31,21 +31,21 @@ services:
   # service 1 exploits
   team1_service1_exploit:
     build: ./example_py_service1/exploit/
-    image: freehackquest/example_py_service1_exploit:testing
+    image: sea5kg/example_py_service1_exploit:testing
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team1" "team2_service1_server:4101,team3_service1_server:4101"
     networks:
       - ctf01d_game_simulation_net
 
   team2_service1_exploit:
-    image: freehackquest/example_py_service1_exploit:testing
+    image: sea5kg/example_py_service1_exploit:testing
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team1_service1_server:4101"
     networks:
       - ctf01d_game_simulation_net
 
   team3_service1_exploit:
-    image: freehackquest/example_py_service1_exploit:testing
+    image: sea5kg/example_py_service1_exploit:testing
     restart: always
     command: python3 attack.py "fhqjuryad_jury:8080" "team2" "team2_service1_server:4101"
     networks:
@@ -68,7 +68,7 @@ services:
 
   team1_service2_server:
     build: ./example_go_service2/service/
-    image: freehackquest/example_go_service2:testing
+    image: sea5kg/example_go_service2:testing
     depends_on:
       - team1_service2_db
     environment:
@@ -96,7 +96,7 @@ services:
       - ctf01d_game_simulation_net
 
   team2_service2_server:
-    image: freehackquest/example_go_service2:testing
+    image: sea5kg/example_go_service2:testing
     depends_on:
       - team2_service2_db
     environment:
@@ -124,7 +124,7 @@ services:
       - ctf01d_game_simulation_net
 
   team3_service2_server:
-    image: freehackquest/example_go_service2:testing
+    image: sea5kg/example_go_service2:testing
     depends_on:
       - team3_service2_db
     environment:
@@ -139,7 +139,7 @@ services:
   # service 3 - port 4103
   team1_service3_server:
     build: ./example_py_service3/service/
-    image: freehackquest/example_py_service3:testing
+    image: sea5kg/example_py_service3:testing
     volumes:
       - "./tmp/team1_service3_server_flags:/root/flags"
     restart: always
@@ -147,7 +147,7 @@ services:
       - ctf01d_game_simulation_net
   
   team2_service3_server:
-    image: freehackquest/example_py_service3:testing
+    image: sea5kg/example_py_service3:testing
     volumes:
       - "./tmp/team2_service3_server_flags:/root/flags"
     restart: always
@@ -155,7 +155,7 @@ services:
       - ctf01d_game_simulation_net
 
   team3_service3_server:
-    image: freehackquest/example_py_service3:testing
+    image: sea5kg/example_py_service3:testing
     volumes:
       - "./tmp/team3_service3_server_flags:/root/flags"
     restart: always
@@ -165,7 +165,7 @@ services:
   # service 4 - port 4104
   team1_service4_server:
     build: ./example_py_service4/service/
-    image: freehackquest/example_py_service4:testing
+    image: sea5kg/example_py_service4:testing
     volumes:
       - "./tmp/team1_service4_server_flags:/root/flags"
     restart: always
@@ -173,7 +173,7 @@ services:
       - ctf01d_game_simulation_net
   
   team2_service4_server:
-    image: freehackquest/example_py_service4:testing
+    image: sea5kg/example_py_service4:testing
     volumes:
       - "./tmp/team2_service4_server_flags:/root/flags"
     restart: always
@@ -181,7 +181,7 @@ services:
       - ctf01d_game_simulation_net
 
   team3_service4_server:
-    image: freehackquest/example_py_service4:testing
+    image: sea5kg/example_py_service4:testing
     volumes:
       - "./tmp/team3_service4_server_flags:/root/flags"
     restart: always

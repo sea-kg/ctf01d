@@ -12,7 +12,7 @@ RUN ./unit-tests
 # stage 1: release
 FROM sea5kg/ctf01d-stage-release:v20200903
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/ctf01d"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
 
 RUN mkdir /root/data
 COPY --from=0 /root/ctf01d /usr/bin/ctf01d

@@ -1,11 +1,11 @@
 # ctf01d
 
-[![Build Status](https://travis-ci.org/freehackquest/ctf01d.svg?branch=master)](https://travis-ci.org/freehackquest/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctf01d.svg)](https://hub.docker.com/r/sea5kg/ctf01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctf01d.svg)](https://microbadger.com/images/freehackquest/ctf01d) [![Github Stars](https://img.shields.io/github/stars/freehackquest/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/freehackquest/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/freehackquest/ctf01d.svg)](https://github.com/freehackquest/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/freehackquest/ctf01d.svg?label=github%20forks)](https://github.com/freehackquest/ctf01d/)
+[![Build Status](https://travis-ci.org/sea-kg/ctf01d.svg?branch=master)](https://travis-ci.org/sea-kg/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctf01d.svg)](https://hub.docker.com/r/sea5kg/ctf01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctf01d.svg)](https://microbadger.com/images/sea5kg/ctf01d) [![Github Stars](https://img.shields.io/github/stars/sea-kg/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/sea-kg/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/sea-kg/ctf01d.svg)](https://github.com/sea-kg/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/sea-kg/ctf01d.svg?label=github%20forks)](https://github.com/sea-kg/ctf01d/)
 
 Jury System for attack-defence ctf game  (ctf-scoreboard).
 Or you can use it for training.
 
-![scoreboard](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/screens/screen1.png)
+![scoreboard](https://raw.githubusercontent.com/sea-kg/ctf01d/master/misc/screens/screen1.png)
 
 ## Easy way to start/init (based on docker-compose)
 
@@ -196,7 +196,7 @@ for s in services:
 ```
 $ sudo apt install git-core
 $ cd ~
-$ git clone http://github.com/freehackquest/ctf01d.git ctf01d.git
+$ git clone http://github.com/sea-kg/ctf01d.git ctf01d.git
 $ nano ~/ctf01d.git/data_sample/config.yml
 ```
 Config files (see comments in file):
@@ -205,7 +205,7 @@ Config files (see comments in file):
 ### Build docker image
 
 ```
-$ git clone https://github.com/freehackquest/ctf01d ~/ctf01d.git
+$ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
 $ cd ~/ctf01d.git
 $ docker build --rm=true -t "sea5kg/ctf01d:my-version" .
 ```
@@ -544,7 +544,7 @@ sudo apt install git git-core\
 
 Clone source code of the project:
 ```
-$ git clone https://github.com/freehackquest/fhq-jury-ad ~/ctf01d.git
+$ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
 ```
 
 Build
@@ -679,7 +679,7 @@ $ ./ctf01d-assistent.py clean
 
 I have only one schmea now:
 
-![schema1](https://raw.githubusercontent.com/freehackquest/ctf01d/master/misc/schemas/basic_schema_masquerade_openvpn.png)
+![schema1](https://raw.githubusercontent.com/sea-kg/ctf01d/master/misc/schemas/basic_schema_masquerade_openvpn.png)
 
 # Similar Systems && Helpful Links
 

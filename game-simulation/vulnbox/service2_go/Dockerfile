@@ -1,6 +1,6 @@
 FROM golang:1.15-buster
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/ctf01d"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
 
 WORKDIR /go/src/app
 

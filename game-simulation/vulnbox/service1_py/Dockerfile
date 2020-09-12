@@ -1,6 +1,6 @@
 FROM python:latest
-LABEL "maintainer"="FreeHackQuest Team <freehackquest@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/ctf01d"
+LABEL "maintainer"="Evgenii Sopoov <mrseakg@gmail.com>"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
 
 WORKDIR /root
 RUN mkdir ./flags && chmod 777 /root/flags

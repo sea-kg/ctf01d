@@ -1,7 +1,7 @@
 FROM debian:10
 # stage release
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
-LABEL "repository"="https://github.com/freehackquest/fhq-jury-ad"
+LABEL "repository"="https://github.com/sea-kg/ctf01d"
 
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y \

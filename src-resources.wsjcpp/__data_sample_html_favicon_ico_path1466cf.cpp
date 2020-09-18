@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_favicon_ico_path1466cf)
 
-const std::string &RES___data_sample_html_favicon_ico_path1466cf::getFilename() {
+const std::string &RES___data_sample_html_favicon_ico_path1466cf::getFilename() const {
     static const std::string s = "./data_sample/html/favicon.ico";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_favicon_ico_path1466cf::getPackAs() {
+const std::string &RES___data_sample_html_favicon_ico_path1466cf::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_favicon_ico_path1466cf::getBufferSize() {
+int RES___data_sample_html_favicon_ico_path1466cf::getBufferSize() const {
     return 16958;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_favicon_ico_path1466cf::getBuffer() {
+const char *RES___data_sample_html_favicon_ico_path1466cf::getBuffer() const {
     static const unsigned char b[16958] = {
         0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x40, 0x40, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00, 0x28, 0x42, 
         0x00, 0x00, 0x16, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x80, 0x00, 

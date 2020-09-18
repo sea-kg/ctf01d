@@ -1,10 +1,18 @@
 language: cpp
 
+os:
+  - linux
+
 branches:
   only:
     - master
 
-dist: bionic
+matrix:
+  include:
+    - dist: bionic
+
+services:
+  - mysql
 
 addons:
   apt:
@@ -19,11 +27,14 @@ addons:
     - zlib1g
     - zlib1g-dev
     - libpng-dev
+    - python3-pip
+
+# Install dependencies
+before_install:
+  - sudo apt-get update -qq
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS `ctf01d` CHARACTER SET utf8 COLLATE utf8_general_ci;'
 
 # Build steps
 script:
-  - ./clean.sh
-  - ./build_simple.sh
-  - cd unit-tests.wsjcpp
-  - ./build_simple.sh
-  - ./unit-tests
+  - ./run_travis.sh
+  

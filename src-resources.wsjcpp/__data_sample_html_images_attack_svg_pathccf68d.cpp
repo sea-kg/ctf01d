@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_images_attack_svg_pathccf68d)
 
-const std::string &RES___data_sample_html_images_attack_svg_pathccf68d::getFilename() {
+const std::string &RES___data_sample_html_images_attack_svg_pathccf68d::getFilename() const {
     static const std::string s = "./data_sample/html/images/attack.svg";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_images_attack_svg_pathccf68d::getPackAs() {
+const std::string &RES___data_sample_html_images_attack_svg_pathccf68d::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_images_attack_svg_pathccf68d::getBufferSize() {
+int RES___data_sample_html_images_attack_svg_pathccf68d::getBufferSize() const {
     return 2887;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_images_attack_svg_pathccf68d::getBuffer() {
+const char *RES___data_sample_html_images_attack_svg_pathccf68d::getBuffer() const {
     static const unsigned char b[2887] = {
         0x3c, 0x3f, 0x78, 0x6d, 0x6c, 0x20, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x3d, 0x22, 0x31, 
         0x2e, 0x30, 0x22, 0x20, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x3d, 0x22, 0x55, 0x54, 

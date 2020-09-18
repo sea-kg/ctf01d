@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_favicon_16x16_png_path9c3bde)
 
-const std::string &RES___data_sample_html_favicon_16x16_png_path9c3bde::getFilename() {
+const std::string &RES___data_sample_html_favicon_16x16_png_path9c3bde::getFilename() const {
     static const std::string s = "./data_sample/html/favicon-16x16.png";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_favicon_16x16_png_path9c3bde::getPackAs() {
+const std::string &RES___data_sample_html_favicon_16x16_png_path9c3bde::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_favicon_16x16_png_path9c3bde::getBufferSize() {
+int RES___data_sample_html_favicon_16x16_png_path9c3bde::getBufferSize() const {
     return 749;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_favicon_16x16_png_path9c3bde::getBuffer() {
+const char *RES___data_sample_html_favicon_16x16_png_path9c3bde::getBuffer() const {
     static const unsigned char b[749] = {
         0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, 
         0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0xf3, 0xff, 

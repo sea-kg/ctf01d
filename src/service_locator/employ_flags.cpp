@@ -22,7 +22,7 @@ void Ctf01dFlag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &s
     generateValue();
 
     // __int64
-    long nTimeStartInMs = WsjcppCore::currentTime_milliseconds();
+    long nTimeStartInMs = WsjcppCore::getCurrentTimeInMilliseconds();
     // std::cout << "nTimeStart: " << nTimeStart << "\n";
     long nTimeEndInMs = nTimeStartInMs + nTimeFlagLifeInMin*60*1000;
     setTimeStartInMs(nTimeStartInMs);

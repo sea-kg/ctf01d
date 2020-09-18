@@ -1,9 +1,6 @@
 #!/usr/bin/python2
 import sys
-import math 
 import socket
-import random
-import time
 import errno
 
 # put-get flag to service success
@@ -49,14 +46,13 @@ def put_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
-        # print(result)
+        s.recv(1024)
         s.send("put" + "\n")
-        result = s.recv(1024)
+        s.recv(1024)
         s.send(f_id + "\n")
-        result = s.recv(1024)
+        s.recv(1024)
         s.send(flag + "\n")
-        result = s.recv(1024)
+        s.recv(1024)
         s.close()
     except socket.timeout:
         service_down()
@@ -79,10 +75,9 @@ def check_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
-        # print(result)
+        s.recv(1024)
         s.send("get\n")
-        result = s.recv(1024)
+        s.recv(1024)
         s.send(f_id + "\n")
         result = s.recv(1024)
         flag2 = result.strip()

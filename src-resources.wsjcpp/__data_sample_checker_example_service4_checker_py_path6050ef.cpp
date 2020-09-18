@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_checker_example_service4_checker_py_path6050ef)
 
-const std::string &RES___data_sample_checker_example_service4_checker_py_path6050ef::getFilename() {
+const std::string &RES___data_sample_checker_example_service4_checker_py_path6050ef::getFilename() const {
     static const std::string s = "./data_sample/checker_example_service4/checker.py";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_checker_example_service4_checker_py_path6050ef::getPackAs() {
+const std::string &RES___data_sample_checker_example_service4_checker_py_path6050ef::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_checker_example_service4_checker_py_path6050ef::getBufferSize() {
+int RES___data_sample_checker_example_service4_checker_py_path6050ef::getBufferSize() const {
     return 2954;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_checker_example_service4_checker_py_path6050ef::getBuffer() {
+const char *RES___data_sample_checker_example_service4_checker_py_path6050ef::getBuffer() const {
     static const unsigned char b[2954] = {
         0x23, 0x21, 0x2f, 0x75, 0x73, 0x72, 0x2f, 0x62, 0x69, 0x6e, 0x2f, 0x70, 0x79, 0x74, 0x68, 0x6f, 
         0x6e, 0x32, 0x0a, 0x69, 0x6d, 0x70, 0x6f, 0x72, 0x74, 0x20, 0x73, 0x79, 0x73, 0x0a, 0x69, 0x6d, 

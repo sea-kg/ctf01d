@@ -369,7 +369,7 @@ void MySqlStorage::clean() {
 // ----------------------------------------------------------------------
 
 MYSQL *MySqlStorage::getDatabaseConnection() {
-    std::string sThreadId = WsjcppCore::threadId();
+    std::string sThreadId = WsjcppCore::getThreadId();
     MYSQL *pDatabase = NULL;
     std::map<std::string,MYSQL *>::iterator it;
     it = m_mapConnections.find(sThreadId);
@@ -510,7 +510,7 @@ void MySqlStorage::insertFlagAttempt(const std::string &sTeamId, const std::stri
     // TODO check connection with NULL
 
     std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
-        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::currentTime_milliseconds()) + ");";
+        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
         WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
@@ -898,7 +898,7 @@ void MySqlStorage::insertToFlagsStolen(const Ctf01dFlag &flag, const std::string
         + "'" + flag.getValue() + "', "
         + std::to_string(flag.getTimeStartInMs()) + ", "
         + std::to_string(flag.getTimeEndInMs()) + ", "
-        + std::to_string(WsjcppCore::currentTime_milliseconds()) + ", "
+        + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ", "
         + std::to_string(nPoints) + " "
         + ");";
 

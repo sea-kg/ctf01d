@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_images_states_down_svg_path121c87)
 
-const std::string &RES___data_sample_html_images_states_down_svg_path121c87::getFilename() {
+const std::string &RES___data_sample_html_images_states_down_svg_path121c87::getFilename() const {
     static const std::string s = "./data_sample/html/images/states/down.svg";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_images_states_down_svg_path121c87::getPackAs() {
+const std::string &RES___data_sample_html_images_states_down_svg_path121c87::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_images_states_down_svg_path121c87::getBufferSize() {
+int RES___data_sample_html_images_states_down_svg_path121c87::getBufferSize() const {
     return 2864;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_images_states_down_svg_path121c87::getBuffer() {
+const char *RES___data_sample_html_images_states_down_svg_path121c87::getBuffer() const {
     static const unsigned char b[2864] = {
         0x3c, 0x3f, 0x78, 0x6d, 0x6c, 0x20, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x3d, 0x22, 0x31, 
         0x2e, 0x30, 0x22, 0x20, 0x65, 0x6e, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x3d, 0x22, 0x55, 0x54, 

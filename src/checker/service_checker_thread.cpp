@@ -132,7 +132,7 @@ void ServiceCheckerThread::run() {
     }*/
 
     while(1) {
-        int nCurrentTime = WsjcppCore::currentTime_seconds();
+        int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
         if (
             m_pConfig->gameHasCoffeeBreak()
             && nCurrentTime > m_pConfig->gameCoffeeBreakStartUTCInSec()

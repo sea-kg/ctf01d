@@ -21,7 +21,7 @@ for (var i in tabs) {
 // post request to server Async
 function getAjax (url, callback) {
     callback = callback || function(){};
-	var tmpXMLhttp = null;
+    var tmpXMLhttp = null;
 	if (window.XMLHttpRequest) {
 		// code for IE7+, Firefox, Chrome, Opera, Safari
 		tmpXMLhttp = tmpXMLhttp || new window.XMLHttpRequest();
@@ -29,17 +29,17 @@ function getAjax (url, callback) {
 	tmpXMLhttp.onreadystatechange=function() {
 		if (tmpXMLhttp.readyState==4) {
 			if (tmpXMLhttp.responseText == '') {
-                obj = { 'result' : 'fail' };
+                // obj = { 'result' : 'fail' };
                 callback('fail', null);
             } else {
 				try {
 					var obj = JSON.parse(tmpXMLhttp.responseText);
                     callback(null, obj);
-                    delete obj;
+                    // delete obj;
 				} catch(e) {
 					console.error(e.name + ':' + e.message + '\n stack:' + e.stack + '\n' + tmpXMLhttp.responseText);
 				}
-				delete tmpXMLhttp;
+				// delete tmpXMLhttp;
 			}
 		}
 	}
@@ -163,7 +163,6 @@ function updateScoreboard() {
                 var newDefenceFlags = t.ts_sta[sService]['def'];
                 var newAttackPoints = t.ts_sta[sService]['pt_att'];
                 var newDefencePoints = t.ts_sta[sService]['pt_def'];
-                var newSLA = t.ts_sta[sService]['upt'];
                 var elId = 'status-' + teamID + '-' + sService;
                 var el = document.getElementById(elId);
                 if (el != null) {

@@ -1,11 +1,7 @@
 #!/usr/bin/python2
 import sys
-import math 
 import socket
-import random
-import time
 import errno
-import traceback
 
 # put-get flag to service success
 def service_up():
@@ -57,14 +53,13 @@ def put_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
-        # print(result)
+        s.recv(1024)
         s.send(("put" + "\n").encode("utf-8"))
-        result = s.recv(1024)
+        s.recv(1024)
         s.send((f_id + "\n").encode("utf-8"))
-        result = s.recv(1024)
+        s.recv(1024)
         s.send((flag + "\n").encode("utf-8"))
-        result = s.recv(1024)
+        s.recv(1024)
         s.close()
     except socket.timeout:
         service_down()
@@ -87,12 +82,9 @@ def check_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
-        result = result.decode("utf-8", "ignore")
-        # print(result)
+        s.recv(1024)
         s.send(("get\n").encode("utf-8"))
-        result = s.recv(1024)
-        result = result.decode("utf-8", "ignore")
+        s.recv(1024)
         s.send((f_id + "\n").encode("utf-8"))
         result = s.recv(1024)
         result = result.decode("utf-8", "ignore")

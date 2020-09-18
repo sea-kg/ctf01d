@@ -255,6 +255,10 @@ bool EmployConfig::init() {
 
 bool EmployConfig::deinit() {
     WsjcppLog::info(TAG, "deinit");
+    if (m_pScoreboard != nullptr) {
+        delete m_pScoreboard;
+    }
+
     return true;
 }
 

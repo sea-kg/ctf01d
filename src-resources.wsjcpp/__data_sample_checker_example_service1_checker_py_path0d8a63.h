@@ -4,10 +4,10 @@
 
 class RES___data_sample_checker_example_service1_checker_py_path0d8a63 : public WsjcppResourceFile { 
     public:
-        virtual const std::string &getFilename();
-        virtual const std::string &getPackAs();
-        virtual const int getBufferSize();
-        virtual const char *getBuffer();
+        virtual const std::string &getFilename() const override;
+        virtual const std::string &getPackAs() const override;
+        virtual int getBufferSize() const override;
+        virtual const char *getBuffer() const override;
 };
 
 

@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_images_logo_png_path8b6a45)
 
-const std::string &RES___data_sample_html_images_logo_png_path8b6a45::getFilename() {
+const std::string &RES___data_sample_html_images_logo_png_path8b6a45::getFilename() const {
     static const std::string s = "./data_sample/html/images/logo.png";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_images_logo_png_path8b6a45::getPackAs() {
+const std::string &RES___data_sample_html_images_logo_png_path8b6a45::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_images_logo_png_path8b6a45::getBufferSize() {
+int RES___data_sample_html_images_logo_png_path8b6a45::getBufferSize() const {
     return 22909;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_images_logo_png_path8b6a45::getBuffer() {
+const char *RES___data_sample_html_images_logo_png_path8b6a45::getBuffer() const {
     static const unsigned char b[22909] = {
         0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, 
         0x00, 0x00, 0x01, 0xa6, 0x00, 0x00, 0x01, 0xa6, 0x08, 0x06, 0x00, 0x00, 0x00, 0x37, 0x71, 0x20, 

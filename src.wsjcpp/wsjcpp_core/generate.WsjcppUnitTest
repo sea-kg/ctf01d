@@ -1,0 +1,103 @@
+#!/usr/bin/wsjcpp-safe-scripting
+
+# log_info rootdir
+# log_info script_filename
+
+make_dir "./unit-tests.wsjcpp"
+make_dir "./unit-tests.wsjcpp/src"
+
+var user_class_name
+set_value user_class_name arg1
+normalize_class_name user_class_name
+var class_name
+set_value class_name "UnitTest"
+concat class_name user_class_name
+
+var base_filename
+convert_CamelCase_to_snake_case class_name base_filename
+# log_info base_filename
+
+var filename_cpp
+concat filename_cpp "./unit-tests.wsjcpp/src/" base_filename ".cpp"
+
+var filename_h
+concat filename_h "./unit-tests.wsjcpp/src/" base_filename ".h"
+
+var ifndef_header
+set_value ifndef_header base_filename
+concat ifndef_header "_H"
+
+to_upper_case ifndef_header
+
+var content_header
+concat content_header "#ifndef " ifndef_header "
+#define " ifndef_header "
+
+#include <wsjcpp_unit_tests.h>
+
+class " class_name " : public WsjcppUnitTestBase {
+    public:
+        " class_name "();
+        virtual bool doBeforeTest() override;
+        virtual void executeTest() override;
+        virtual bool doAfterTest() override;
+};
+
+#endif // " ifndef_header
+
+ 
+var content_source
+concat content_source  "
+#include \"" base_filename ".h\"
+#include <wsjcpp_core.h>
+
+// ---------------------------------------------------------------------
+// " class_name "
+
+REGISTRY_WSJCPP_UNIT_TEST(" class_name ")
+
+" class_name "::" class_name "()
+    : WsjcppUnitTestBase(\"" class_name "\") {
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::doBeforeTest() {
+    // nothing
+    return true;
+}
+
+// ---------------------------------------------------------------------
+
+void " class_name "::executeTest() {
+    compare(\"Not implemented\", true, false);
+    // TODO unit test source code here
+}
+
+// ---------------------------------------------------------------------
+
+bool " class_name "::doAfterTest() {
+    // nothing
+    return true;
+}
+
+"
+
+var file_source
+concat file_source "src/" filename_cpp
+
+write_file filename_h content_header
+write_file filename_cpp content_source
+
+log_info "
+======
+Generated class:
+    - " class_name "
+Generated files:
+    - " filename_h "
+    - " filename_cpp "
+======
+"
+
+wsjcpp_yml_unit_test_add user_class_name filename_h
+wsjcpp_yml_unit_test_add user_class_name filename_cpp

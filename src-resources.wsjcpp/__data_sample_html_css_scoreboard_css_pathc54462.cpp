@@ -4,25 +4,25 @@
 
 REGISTRY_WSJCPP_RESOURCE_FILE(RES___data_sample_html_css_scoreboard_css_pathc54462)
 
-const std::string &RES___data_sample_html_css_scoreboard_css_pathc54462::getFilename() {
+const std::string &RES___data_sample_html_css_scoreboard_css_pathc54462::getFilename() const {
     static const std::string s = "./data_sample/html/css/scoreboard.css";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const std::string &RES___data_sample_html_css_scoreboard_css_pathc54462::getPackAs() {
+const std::string &RES___data_sample_html_css_scoreboard_css_pathc54462::getPackAs() const {
     static const std::string s = "binary";
     return s;
 }
 // ---------------------------------------------------------------------
 
-const int RES___data_sample_html_css_scoreboard_css_pathc54462::getBufferSize() {
+int RES___data_sample_html_css_scoreboard_css_pathc54462::getBufferSize() const {
     return 6787;
 }
 
 // ---------------------------------------------------------------------
 
-const char *RES___data_sample_html_css_scoreboard_css_pathc54462::getBuffer() {
+const char *RES___data_sample_html_css_scoreboard_css_pathc54462::getBuffer() const {
     static const unsigned char b[6787] = {
         0x62, 0x6f, 0x64, 0x79, 0x7b, 0x0a, 0x20, 0x20, 0x20, 0x20, 0x62, 0x61, 0x63, 0x6b, 0x67, 0x72, 
         0x6f, 0x75, 0x6e, 0x64, 0x2d, 0x63, 0x6f, 0x6c, 0x6f, 0x72, 0x3a, 0x20, 0x23, 0x30, 0x30, 0x30, 

@@ -492,7 +492,7 @@ void Scoreboard::updateCosts() {
 std::vector<Ctf01dFlag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
     std::vector<Ctf01dFlag> vResult;
-    long nCurrentTime = WsjcppCore::currentTime_milliseconds() - m_nFlagTimeLiveInSec*1000;
+    long nCurrentTime = WsjcppCore::getCurrentTimeInMilliseconds() - m_nFlagTimeLiveInSec*1000;
     std::map<std::string,Ctf01dFlag>::iterator it;
     for (it = m_mapFlagsLive.begin(); it != m_mapFlagsLive.end(); it++) {
         Ctf01dFlag flag = it->second;

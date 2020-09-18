@@ -171,7 +171,7 @@ std::string ServiceStatusCell::SERVICE_COFFEEBREAK = "coffeebreak";
 // ----------------------------------------------------------------------
 
 ServiceStatusCell::ServiceStatusCell(const std::string &sServiceId) {
-    m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
+    m_nUpPointTimeInSec = WsjcppCore::getCurrentTimeInSeconds();
     TAG = "ServiceStatusCell-" + sServiceId;
     m_sServiceId = sServiceId;
     m_sStatus = ServiceStatusCell::SERVICE_DOWN;
@@ -283,19 +283,6 @@ int ServiceStatusCell::flagsPutted() {
 
 // ----------------------------------------------------------------------
 
-/*
-double ServiceStatusCell::uptime() {
-    return m_nUptime;
-}*/
-
-// ----------------------------------------------------------------------
-
-int ServiceStatusCell::getUptimeInSec() {
-     return WsjcppCore::currentTime_seconds() - m_nUpPointTimeInSec;
-}
-
-// ----------------------------------------------------------------------
-
 void ServiceStatusCell::setUpPointTime(int nUpPointTimeInSec) {
     m_nUpPointTimeInSec = nUpPointTimeInSec;
 }
@@ -306,7 +293,7 @@ void ServiceStatusCell::setStatus(const std::string &sStatus) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
     m_sStatus = sStatus;
     if (sStatus != ServiceStatusCell::SERVICE_UP) {
-        m_nUpPointTimeInSec = WsjcppCore::currentTime_seconds();
+        m_nUpPointTimeInSec = WsjcppCore::getCurrentTimeInSeconds();
     }
 }
 

@@ -163,7 +163,6 @@ function updateScoreboard() {
                 var newDefenceFlags = t.ts_sta[sService]['def'];
                 var newAttackPoints = t.ts_sta[sService]['pt_att'];
                 var newDefencePoints = t.ts_sta[sService]['pt_def'];
-                var newSLA = t.ts_sta[sService]['upt'];
                 var elId = 'status-' + teamID + '-' + sService;
                 var el = document.getElementById(elId);
                 if (el != null) {

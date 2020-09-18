@@ -1,9 +1,6 @@
 #!/usr/bin/python2
 import sys
-import math 
 import socket
-import random
-import time
 import errno
 import requests
 

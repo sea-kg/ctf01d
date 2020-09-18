@@ -3,11 +3,8 @@
  
 import socket
 import threading
-import sys
-import math
 import re
 import os
-import errno
 
 port = 4101
 thrs = []

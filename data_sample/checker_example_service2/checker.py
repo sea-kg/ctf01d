@@ -1,11 +1,7 @@
 #!/usr/bin/python2
 import sys
-import math 
 import socket
-import random
-import time
 import errno
-import traceback
 
 # put-get flag to service success
 def service_up():

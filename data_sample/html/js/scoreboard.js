@@ -21,7 +21,7 @@ for (var i in tabs) {
 // post request to server Async
 function getAjax (url, callback) {
     callback = callback || function(){};
-	var tmpXMLhttp = null;
+    var tmpXMLhttp = null;
 	if (window.XMLHttpRequest) {
 		// code for IE7+, Firefox, Chrome, Opera, Safari
 		tmpXMLhttp = tmpXMLhttp || new window.XMLHttpRequest();
@@ -29,17 +29,17 @@ function getAjax (url, callback) {
 	tmpXMLhttp.onreadystatechange=function() {
 		if (tmpXMLhttp.readyState==4) {
 			if (tmpXMLhttp.responseText == '') {
-                obj = { 'result' : 'fail' };
+                // obj = { 'result' : 'fail' };
                 callback('fail', null);
             } else {
 				try {
 					var obj = JSON.parse(tmpXMLhttp.responseText);
                     callback(null, obj);
-                    delete obj;
+                    // delete obj;
 				} catch(e) {
 					console.error(e.name + ':' + e.message + '\n stack:' + e.stack + '\n' + tmpXMLhttp.responseText);
 				}
-				delete tmpXMLhttp;
+				// delete tmpXMLhttp;
 			}
 		}
 	}

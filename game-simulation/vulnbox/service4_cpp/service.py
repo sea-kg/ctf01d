@@ -9,7 +9,6 @@ import re
 import os
 import errno
 
-host = ""
 port = 4104
 thrs = []
 
@@ -131,7 +130,7 @@ Commands: put, get, delete, list, close
  
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((host, port))
+s.bind(('0.0.0.0', port))
 s.listen(10)
 
 if not os.path.exists("flags"):

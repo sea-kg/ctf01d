@@ -340,37 +340,36 @@ def runCtf01dJuryDb():
 
 def runCtf01dJury():
     print(" ===> Starting ctf01d-jury")
+    
+    dirname_data = os.getcwd() + "/data/"
+    network_name_jury = ntwrk_name_prefix + "jury"
+    container_name = "ctf01d_jury"
+    cntrs = client.containers.list(all=True)
+    for c in cntrs:
+        if c.name == container_name:
+            print("Stopping container " + c.name)
+            c.stop()
+            print("Removing container " + c.name)
+            c.remove()
 
-    for t in teams:
-        dirname_data = os.getcwd() + "/data/"
-        network_name_jury = ntwrk_name_prefix + "jury"
-        container_name = "ctf01d_jury"
-        cntrs = client.containers.list(all=True)
-        for c in cntrs:
-            if c.name == container_name:
-                print("Stopping container " + c.name)
-                c.stop()
-                print("Removing container " + c.name)
-                c.remove()
-
-        print("Starting " + container_name)
-        mount_data = docker.types.Mount(
-            target="/root/data",
-            source=dirname_data,
-            type="bind"
-        )
-        container = client.containers.run(
-            "sea5kg/ctf01d:latest",
-            mem_limit="256M",
-            memswap_limit="256M",
-            mounts=[mount_data],
-            network=network_name_jury,
-            ports={"8080/tcp": ("localhost", 8080) },
-            name=container_name,
-            detach=True
-        )
-        watchdog_containers_list.append(container_name)
-        print(container)
+    print("Starting " + container_name)
+    mount_data = docker.types.Mount(
+        target="/root/data",
+        source=dirname_data,
+        type="bind"
+    )
+    container = client.containers.run(
+        "sea5kg/ctf01d:latest",
+        mem_limit="256M",
+        memswap_limit="256M",
+        mounts=[mount_data],
+        network=network_name_jury,
+        ports={"8080/tcp": ("localhost", 8080) },
+        name=container_name,
+        detach=True
+    )
+    watchdog_containers_list.append(container_name)
+    print(container)
 
 def startWatchDog():
     try:

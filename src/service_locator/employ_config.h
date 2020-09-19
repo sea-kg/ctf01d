@@ -78,6 +78,7 @@ class Ctf01dTeamDef {
 class EmployConfig : public WsjcppEmployBase {
     public:
         EmployConfig();
+        ~EmployConfig();
         static std::string name() { return "EmployConfig"; }
         virtual bool init() override;
         virtual bool deinit() override;

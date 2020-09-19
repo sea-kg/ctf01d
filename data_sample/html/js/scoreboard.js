@@ -255,7 +255,7 @@ getAjax('/api/v1/game', function(err, resp){
     + "        <div class='team'>Team</div>"
     + "        <div class='score'>Points</div>";
     for (var i = 0; i < resp.services.length; i++) {
-        var serviceId = resp.services[i].id
+        var serviceId = resp.services[i].id;
         sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
         + "<small>[r:" + resp.services[i].round_time_in_sec + "s]</small>"
         + "<div>"

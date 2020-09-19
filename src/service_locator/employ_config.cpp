@@ -212,6 +212,14 @@ EmployConfig::EmployConfig()
 
 // ---------------------------------------------------------------------
 
+EmployConfig::~EmployConfig() {
+    if (m_pScoreboard != nullptr) {
+        delete m_pScoreboard;
+    }
+}
+
+// ---------------------------------------------------------------------
+
 bool EmployConfig::init() {
 
     tryLoadFromEnv("CTF01D_WORKDIR", m_sWorkDir, "Work Directory from enviroment");

@@ -272,6 +272,9 @@ bool EmployConfig::deinit() {
 // ---------------------------------------------------------------------
 
 void EmployConfig::setWorkDir(const std::string &sWorkDir) {
+    if (m_sWorkDir != "" && m_sWorkDir != sWorkDir) {
+        std::cout << "Changed work-dir to '" + sWorkDir + "'" << std::endl;
+    }
     m_sWorkDir = sWorkDir;
     m_sScoreboardHtmlFolder = m_sWorkDir + "/html"; // default value
 }

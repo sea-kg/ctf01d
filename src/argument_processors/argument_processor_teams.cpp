@@ -8,7 +8,7 @@
 // ArgumentProcessorTeams
 
 ArgumentProcessorTeams::ArgumentProcessorTeams() 
-: WsjcppArgumentProcessor({"teams"}, "Clean all flags from storage", "Clean all flags from storage") {
+: WsjcppArgumentProcessor({"teams"}, "Teams in config.yml", "Teams in config.yml") {
     TAG = "ArgumentProcessorTeams";
     registryProcessor(new ArgumentProcessorTeamsList());
 }

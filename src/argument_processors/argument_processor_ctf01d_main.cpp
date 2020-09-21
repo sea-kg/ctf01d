@@ -29,13 +29,6 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
 
 // ---------------------------------------------------------------------
 
-bool ArgumentProcessorCtf01dMain::applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
-}
-
-// ---------------------------------------------------------------------
-
 bool ArgumentProcessorCtf01dMain::applyParameterArgument(
     const std::string &sProgramName, 
     const std::string &sArgumentName, 
@@ -54,14 +47,5 @@ bool ArgumentProcessorCtf01dMain::applyParameterArgument(
         pConfig->setDatabaseHost(sValue);
         return true;
     }
-
-    WsjcppLog::err(TAG, "Not implemented");
     return false;
-}
-
-// ---------------------------------------------------------------------
-
-int ArgumentProcessorCtf01dMain::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return -1; 
 }

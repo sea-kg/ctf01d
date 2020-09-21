@@ -49,10 +49,10 @@ int ArgumentProcessorTeamsList::exec(const std::vector<std::string> &vRoutes, co
             Ctf01dTeamDef team = vTeams[i];
             if (team.isActive()) {
                 std::cout
-                    << " - " << vTeams[i].getId() << " " << std::endl
-                    << "     name: " << vTeams[i].getName() << std::endl
-                    << "     ip-address: " << vTeams[i].ipAddress() << std::endl
-                    << "     logo: " << vTeams[i].logo() << std::endl
+                    << " - " << team.getId() << " " << std::endl
+                    << "     name: " << team.getName() << std::endl
+                    << "     ip-address: " << team.ipAddress() << std::endl
+                    << "     logo: " << team.logo() << std::endl
                     << std::endl;
             }
         }

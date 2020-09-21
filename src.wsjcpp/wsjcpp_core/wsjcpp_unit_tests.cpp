@@ -63,40 +63,9 @@ bool WsjcppUnitTestBase::runTest() {
 
 // ---------------------------------------------------------------------
 
-bool WsjcppUnitTestBase::compareS(const std::string &sMark,
-    const std::string &sValue, const std::string &sExpected) {
-    if (sValue != sExpected) {
-        fail(" {" + sMark + "} Expected '" + sExpected + "', but got '" + sValue + "'");
-        return false;
-    }
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool WsjcppUnitTestBase::compareN(const std::string &sMark, int nValue, int nExpected) {
-    if (nValue != nExpected) {
-        fail(" {" + sMark + "} Expected '" + std::to_string(nExpected) + "', but got '" + std::to_string(nValue) + "'");
-        return false;
-    }
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
 bool WsjcppUnitTestBase::compareD(const std::string &sMark, double nValue, double nExpected) {
     if (abs(nValue - nExpected) > std::numeric_limits<double>::epsilon()) {
         fail(" {" + sMark + "} Expected '" + std::to_string(nExpected) + "', but got '" + std::to_string(nValue) + "'");
-        return false;
-    }
-    return true;
-}
-
-// ---------------------------------------------------------------------
-
-bool WsjcppUnitTestBase::compareB(const std::string &sMark, bool bValue, bool bExpected) {
-    if (bValue != bExpected) {
-        fail(" {" + sMark + "} Expected '" + (bExpected ? "true" : "false") + "', but got '" + (bValue ? "true" : "false") + "'");
         return false;
     }
     return true;

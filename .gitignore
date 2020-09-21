@@ -10,6 +10,7 @@ ctf01d
 tmp/*
 .wsjcpp/*
 *.log
+.ctf01d/*
 
 # Prerequisites
 # *.d

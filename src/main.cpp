@@ -1,31 +1,43 @@
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <signal.h>
-// #include <iostream>
-// #include <sys/stat.h>
-// #include <sys/types.h>
-// #include <sys/time.h>
-// #include <unistd.h>
-// #include <errno.h>
-// #include <fcntl.h>
-// #include <syslog.h>
-// #include <chrono>
-// #include <thread>
-// #include <algorithm>
-// #include <service_checker_thread.h>
-// #include <light_web_http_handler_team_logo.h>
-// #include <http_handler_web_folder.h>
-// #include <http_handler_api_v1.h>
-// #include <storages.h>
-// #include <unistd.h>
-// #include <limits.h>
-// #include <wsjcpp_core.h>
 #include <argument_processor_ctf01d_main.h>
+#include <wsjcpp_core.h>
+#include <employ_config.h>
 
 // ---------------------------------------------------------------------
 
 int main(int argc, const char* argv[]) {
+    std::string TAG = "MAIN";
+    std::string appName = std::string(WSJCPP_APP_NAME);
+    std::string appVersion = std::string(WSJCPP_APP_VERSION);
+
+    // previous logs in current directory
+    if (!WsjcppCore::dirExists(".ctf01d")) {
+        WsjcppCore::makeDir(".ctf01d");
+    }
+    WsjcppLog::setPrefixLogFile("ctf01d");
+    WsjcppLog::setLogDirectory(".ctf01d");
+
+    // try find config.yml
+    
+    std::vector<std::string> vPossibleFolders = {
+        "./",
+        "./data_sample/",
+        "/root/data/"
+    };
+
+    for (int i = 0; i < vPossibleFolders.size(); i++) {
+        std::string sWorkDir = vPossibleFolders[i];
+        if (sWorkDir[0] != '/') {
+            sWorkDir = WsjcppCore::getCurrentDirectory() + "/" + sWorkDir;    
+        }
+        sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
+        if (WsjcppCore::fileExists(sWorkDir + "/config.yml")) {
+            std::cout << "Found automaticly workdir: " << sWorkDir << std::endl;
+            EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
+            pConfig->setWorkDir(sWorkDir);
+            break;
+        }
+    }
+
     ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
     WsjcppArguments prog(argc, argv, pMain);
     return prog.exec();

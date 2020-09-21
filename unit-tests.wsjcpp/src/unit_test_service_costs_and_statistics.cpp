@@ -34,10 +34,10 @@ void UnitTestServiceCostsAndStatistics::executeTest() {
     compareD("cost stollen flag", test1.getCostStolenFlag(), 10.0);
 
     test1.doIncrementStolenFlagsForService(1);
-    compareN("all stollen flags 1", test1.getAllStolenFlagsForService(), 1);
+    compare("all stollen flags 1", test1.getAllStolenFlagsForService(), 1);
 
     test1.updateProportionalStolenFlagsForService(nStolenFlagsForService1, nAllStolenFlags);
-    compareN("all stollen flags 10", test1.getAllStolenFlagsForService(), 10);
+    compare("all stollen flags 10", test1.getAllStolenFlagsForService(), 10);
 
     double s0 = test1.updateProportionalStolenFlagsForService(0, 10);
     compareD("proportional 10", s0, 10.0);
@@ -63,14 +63,14 @@ void UnitTestServiceCostsAndStatistics::executeTest() {
     compareD("cost stollen flag", test2.getCostStolenFlag(), cost2);
 
     // defence flags
-    compareN("all defence flags 0", test1.getAllDefenceFlagsForService(), 0);
+    compare("all defence flags 0", test1.getAllDefenceFlagsForService(), 0);
     compareD("cost stollen flag", test1.getCostDefenceFlag(), 20.0);
 
     test1.doIncrementDefenceFlagsForService(1);
-    compareN("all defence flags 1", test1.getAllDefenceFlagsForService(), 1);
+    compare("all defence flags 1", test1.getAllDefenceFlagsForService(), 1);
 
     test1.updateProportionalDefenceFlagsForService(10, 10);
-    compareN("all defence flags 10", test1.getAllDefenceFlagsForService(), 10);
+    compare("all defence flags 10", test1.getAllDefenceFlagsForService(), 10);
 
     double d0 = test1.updateProportionalDefenceFlagsForService(0, 10);
     compareD("proportional 10", d0, 10.0);

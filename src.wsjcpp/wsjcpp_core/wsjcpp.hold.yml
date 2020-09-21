@@ -3,7 +3,7 @@ cmake_cxx_standard: 11
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.2.0
+version: v0.2.1
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -21,30 +21,31 @@ distribution:
   - source-file: src/wsjcpp_core.cpp
     target-file: wsjcpp_core.cpp
     type: "source-code"
+    sha1: "09ef821bbc090fc1cd8a15bc4a57a9a2ce8ae00d"
   - source-file: src/wsjcpp_core.h
     target-file: wsjcpp_core.h
     type: "source-code" # todo must be header-file
+    sha1: "e6e4ab2067d3c942db08e3b79862486eaf851e4b"
   - source-file: "src/wsjcpp_unit_tests.cpp"
     target-file: "wsjcpp_unit_tests.cpp"
     type: "unit-tests"
+    sha1: "fd5989d1a83c8b90bdc4d5e9bc9c3051eaa1e6d2"
   - source-file: "src/wsjcpp_unit_tests.h"
     target-file: "wsjcpp_unit_tests.h"
     type: "unit-tests"
+    sha1: "83d4b6e046b6b58c42882ccae4be413e03c401c1"
   - source-file: "src/wsjcpp_unit_tests_main.cpp"
     target-file: "wsjcpp_unit_tests_main.cpp"
     type: "unit-tests"
-  - source-file: "scripts.wsjcpp/generate.WsjcppUnitTest"
-    target-file: "generate.WsjcppUnitTest"
+    sha1: "388ae269b325c5e161f6c3a5c598575714a4bffc"
+  - source-file: "scripts.wsjcpp/generate.WsjcppUnitTest.wsjcpp-script"
+    target-file: "generate.WsjcppUnitTest.wsjcpp-script"
     type: "safe-scripting-generate"
-  - source-file: "scripts.wsjcpp/generate.Class"
-    target-file: "generate.Class"
+    sha1: "a7c9c2d19bf81c5b00e659384b0b92a99319a4c1"
+  - source-file: "scripts.wsjcpp/generate.Class.wsjcpp-script"
+    target-file: "generate.Class.wsjcpp-script"
     type: "safe-scripting-generate"
-  - source-file: "src/wsjcpp_resources_manager.h"
-    target-file: "wsjcpp_resources_manager.h"
-    type: "source-code"
-  - source-file: "src/wsjcpp_resources_manager.cpp"
-    target-file: "wsjcpp_resources_manager.cpp"
-    type: "source-code"
+    sha1: "de1799907c685d606b93e08b821b540c2faa2db1"
 
 unit-tests:
   cases:

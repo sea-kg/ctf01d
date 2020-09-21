@@ -1,5 +1,4 @@
 #include "http_handler_web_folder.h"
-#include <wsjcpp_resources_manager.h>
 #include <wsjcpp_light_web_server.h>
 #include <wsjcpp_core.h>
 

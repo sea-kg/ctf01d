@@ -7,7 +7,8 @@
 #include <argument_processor_check.h>
 #include <argument_processor_version.h>
 #include <argument_processor_web_test.h>
-
+#include "argument_processor_teams.h"
+#include "argument_processor_services.h"
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorCtf01dMain
@@ -24,13 +25,8 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
     registryProcessor(new ArgumentProcessorClean());
     registryProcessor(new ArgumentProcessorWebTest());
     registryProcessor(new ArgumentProcessorStart());
-}
-
-// ---------------------------------------------------------------------
-
-bool ArgumentProcessorCtf01dMain::applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return false;
+    registryProcessor(new ArgumentProcessorTeams());
+    registryProcessor(new ArgumentProcessorServices());
 }
 
 // ---------------------------------------------------------------------
@@ -53,14 +49,5 @@ bool ArgumentProcessorCtf01dMain::applyParameterArgument(
         pConfig->setDatabaseHost(sValue);
         return true;
     }
-
-    WsjcppLog::err(TAG, "Not implemented");
     return false;
-}
-
-// ---------------------------------------------------------------------
-
-int ArgumentProcessorCtf01dMain::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
-    WsjcppLog::err(TAG, "Not implemented");
-    return -1; 
 }

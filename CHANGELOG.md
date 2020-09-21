@@ -5,6 +5,22 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.4.4] - 2020-09-22 (2020 Sep 22)
+
+### Added
+
+* Copied script fhqjad-store from fhq-server
+* Fixed #52 added 'ctf01d teams list'
+* Added to main find workdir authomaticly
+* Fixed #53 added services list 
+
+### Changed
+
+* Updated README.md
+* Updated wsjcpp-core to v0.2.1
+* Updated wsjcpp-arguments to v0.2.1
+
+
 ## [v0.4.3] - 2020-09-12 (2020 Sep 12)
 
 ### Added

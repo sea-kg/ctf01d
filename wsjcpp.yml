@@ -17,7 +17,7 @@ keywords:
 
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.2.0"
+    version: "v0.2.1"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"

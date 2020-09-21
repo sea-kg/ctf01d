@@ -13,7 +13,6 @@
 #include <wsjcpp_yaml.h>
 #include <wsjcpp_validators.h>
 #include <employ_team_logos.h>
-#include <wsjcpp_resources_manager.h>
 #include <sys/stat.h>
 #include <stdio.h>
 

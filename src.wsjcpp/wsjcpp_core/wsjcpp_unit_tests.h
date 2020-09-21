@@ -17,11 +17,8 @@ class WsjcppUnitTestBase {
         virtual bool doAfterTest() = 0;
     protected:
         std::string TAG;
-
-        bool compareS(const std::string &sMark, const std::string &sValue, const std::string &sExpected);
-        bool compareN(const std::string &sMark, int nValue, int nExpected);
+        
         bool compareD(const std::string &sMark, double nValue, double nExpected);
-        bool compareB(const std::string &sMark, bool bValue, bool bExpected);
         template<typename T1, typename T2> bool compare(const std::string &sMark, T1 tGotValue, T2 tExpectedValue) {
             if (tGotValue != tExpectedValue) {
                 std::stringstream ss;

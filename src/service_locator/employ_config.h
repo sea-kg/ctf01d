@@ -51,10 +51,10 @@ class Ctf01dTeamDef {
         Ctf01dTeamDef();
         
         void setId(const std::string &sId);
-        std::string id() const;
+        std::string getId() const;
 
         void setName(const std::string &sName);
-        std::string name() const;
+        std::string getName() const;
 
         void setIpAddress(const std::string &sIpAddress);
         std::string ipAddress() const;

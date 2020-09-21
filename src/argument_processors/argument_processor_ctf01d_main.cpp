@@ -7,7 +7,7 @@
 #include <argument_processor_check.h>
 #include <argument_processor_version.h>
 #include <argument_processor_web_test.h>
-
+#include "argument_processor_teams.h"
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorCtf01dMain
@@ -24,6 +24,7 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
     registryProcessor(new ArgumentProcessorClean());
     registryProcessor(new ArgumentProcessorWebTest());
     registryProcessor(new ArgumentProcessorStart());
+    registryProcessor(new ArgumentProcessorTeams());
 }
 
 // ---------------------------------------------------------------------

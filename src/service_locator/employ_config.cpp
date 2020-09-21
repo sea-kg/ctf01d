@@ -130,7 +130,7 @@ void Ctf01dTeamDef::setId(const std::string &sTeamId){
 
 // ---------------------------------------------------------------------
 
-std::string Ctf01dTeamDef::id() const {
+std::string Ctf01dTeamDef::getId() const {
     return m_sTeamID;
 }
 
@@ -142,7 +142,7 @@ void Ctf01dTeamDef::setName(const std::string &sName){
 
 // ---------------------------------------------------------------------
 
-std::string Ctf01dTeamDef::name() const {
+std::string Ctf01dTeamDef::getName() const {
     return m_sName;
 }
 
@@ -851,7 +851,7 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
         }
 
         for (unsigned int i = 0; i < m_vTeamsConf.size(); i++) {
-            if (m_vTeamsConf[i].id() == sTeamId) {
+            if (m_vTeamsConf[i].getId() == sTeamId) {
                 WsjcppLog::err(TAG, "Already registered team with id " + sTeamId);
                 return false;
             }

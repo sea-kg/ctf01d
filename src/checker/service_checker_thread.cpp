@@ -35,7 +35,7 @@ ServiceCheckerThread::ServiceCheckerThread(
     m_serviceConf = service;
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
-    TAG = "Checker: " + m_teamConf.id() + std::string( 15 - m_teamConf.id().length(), ' ')
+    TAG = "Checker: " + m_teamConf.getId() + std::string( 15 - m_teamConf.getId().length(), ' ')
          + m_serviceConf.id() + " ";
     WsjcppLog::info(TAG, "Created thread");
 }
@@ -139,7 +139,7 @@ void ServiceCheckerThread::run() {
             && nCurrentTime < m_pConfig->gameCoffeeBreakEndUTCInSec()
         ) {
             WsjcppLog::info(TAG, "Game on coffeebreak");
-            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_COFFEEBREAK);
+            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.getId(), m_serviceConf.id(), ServiceStatusCell::SERVICE_COFFEEBREAK);
             return;
         }
 
@@ -150,7 +150,7 @@ void ServiceCheckerThread::run() {
 
         if (nCurrentTime < m_pConfig->gameStartUTCInSec()) {
             WsjcppLog::warn(TAG, "Game started after: " + std::to_string(m_pConfig->gameStartUTCInSec() - nCurrentTime) + " seconds");
-            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_WAIT);
+            m_pConfig->scoreboard()->setServiceStatus(m_teamConf.getId(), m_serviceConf.id(), ServiceStatusCell::SERVICE_WAIT);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             continue;
         };
@@ -162,7 +162,7 @@ void ServiceCheckerThread::run() {
         // then we establish a flag
         if (nCurrentTime < (m_pConfig->gameEndUTCInSec() - m_pConfig->flagTimeliveInMin()*60)) {
             Ctf01dFlag flag;
-            flag.generateRandomFlag(m_pConfig->flagTimeliveInMin(), m_teamConf.id(), m_serviceConf.id());
+            flag.generateRandomFlag(m_pConfig->flagTimeliveInMin(), m_teamConf.getId(), m_serviceConf.id());
 
             // int nExitCode2 = 
             // WsjcppLog::ok(TAG, " runChecker: " + std::to_string(nExitCode));
@@ -208,7 +208,7 @@ void ServiceCheckerThread::run() {
             // check some service status or just update to UP (Ha-Ha I'm the real evil!)
         }
 
-        std::vector<Ctf01dFlag> vEndedFlags = m_pConfig->scoreboard()->outdatedFlagsLive(m_teamConf.id(), m_serviceConf.id());
+        std::vector<Ctf01dFlag> vEndedFlags = m_pConfig->scoreboard()->outdatedFlagsLive(m_teamConf.getId(), m_serviceConf.id());
 
         for (unsigned int i = 0; i < vEndedFlags.size(); i++) {
             Ctf01dFlag outdatedFlag = vEndedFlags[i];

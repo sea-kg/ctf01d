@@ -32,6 +32,8 @@ list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.cpp")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_teams.h")
+list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_teams.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.cpp")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.h")

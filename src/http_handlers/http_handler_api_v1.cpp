@@ -39,12 +39,11 @@ HttpHandlerApiV1::HttpHandlerApiV1()
 
     for (unsigned int i = 0; i < m_pConfig->teamsConf().size(); i++) {
         Ctf01dTeamDef teamConf = m_pConfig->teamsConf()[i];
-        std::string sTeamId = teamConf.id();
         nlohmann::json teamInfo;
-        teamInfo["id"] = teamConf.id();
-        teamInfo["name"] = teamConf.name();
+        teamInfo["id"] = teamConf.getId();
+        teamInfo["name"] = teamConf.getName();
         teamInfo["ip_address"] = teamConf.ipAddress();
-        teamInfo["logo"] = "./team-logo/" + teamConf.id();
+        teamInfo["logo"] = "./team-logo/" + teamConf.getId();
         m_jsonGame["teams"].push_back(teamInfo);
         m_jsonTeams["teams"].push_back(teamInfo);
     }
@@ -158,7 +157,7 @@ bool HttpHandlerApiV1::handle(const std::string &sWorkerId, WsjcppLightWebHttpRe
         bool bTeamFound = false;
         for (unsigned int iteam = 0; iteam < m_pConfig->teamsConf().size(); iteam++) {
             Ctf01dTeamDef teamConf = m_pConfig->teamsConf()[iteam];
-            if (teamConf.id() == sTeamId) {
+            if (teamConf.getId() == sTeamId) {
                 bTeamFound = true;
             }
         }

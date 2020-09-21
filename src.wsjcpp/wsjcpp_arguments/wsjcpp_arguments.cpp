@@ -1,6 +1,9 @@
 #include "wsjcpp_arguments.h"
 #include <wsjcpp_core.h>
 
+// ---------------------------------------------------------------------
+// WsjcppArgumentSingle
+
 WsjcppArgumentSingle::WsjcppArgumentSingle(const std::string &sName, const std::string &sDescription) {
     TAG = "WsjcppArgumentSingle-" + sName;
     m_sName = sName;
@@ -20,6 +23,7 @@ std::string WsjcppArgumentSingle::getDescription() {
 }
 
 // ---------------------------------------------------------------------
+// WsjcppArgumentParameter
 
 WsjcppArgumentParameter::WsjcppArgumentParameter(
     const std::string &sName,
@@ -63,6 +67,7 @@ void WsjcppArgumentParameter::setValue(const std::string &sValue) {
 }
 
 // ---------------------------------------------------------------------
+// WsjcppArgumentProcessor
 
 WsjcppArgumentProcessor::WsjcppArgumentProcessor(
     const std::vector<std::string> &vNames, 
@@ -293,16 +298,34 @@ int WsjcppArgumentProcessor::help(
 
         for (int i = 0; i < m_vProcessors.size(); i++) {
             WsjcppArgumentProcessor *pProc = m_vProcessors[i];
+            std::cout << "     " << pProc->getNamesAsString();
 
-            std::cout 
-                << "     " << pProc->getNamesAsString() << " [<options>...]"
-                << std::endl
-                << "          Subcommand. Try help for more. " << pProc->getDescription()
-                << std::endl
-                << std::endl;
+            if (pProc->hasMoreOptions()) {
+                std::cout 
+                    << " [<options>...]"
+                    << std::endl
+                    << "          Subcommand. Try help for more. " << pProc->getDescription()
+                    << std::endl
+                ;
+            } else {
+                std::cout 
+                    << std::endl
+                    << "          " << pProc->getDescription()
+                    << std::endl
+                ;
+            }
+            std::cout << std::endl;            
         }
     }
     return 0;
+}
+
+// ---------------------------------------------------------------------
+
+bool WsjcppArgumentProcessor::hasMoreOptions() {
+    return m_vProcessors.size() > 0
+        || m_vSingleArguments.size() > 0
+        || m_vParameterArguments.size() > 0;
 }
 
 // ---------------------------------------------------------------------
@@ -315,18 +338,19 @@ bool WsjcppArgumentProcessor::applySingleArgument(const std::string &sProgramNam
 // ---------------------------------------------------------------------
 
 bool WsjcppArgumentProcessor::applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue) {
-    WsjcppLog::throw_err(TAG, "No support parameter argument '" + sArgumentName + "' for '" + getNamesAsString() + "'");
+    WsjcppLog::err(TAG, "No support parameter argument '" + sArgumentName + "' for '" + getNamesAsString() + "'");
     return false;
 }
 
 // ---------------------------------------------------------------------
 
 int WsjcppArgumentProcessor::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
-    WsjcppLog::throw_err(TAG, "Processor '" + getNamesAsString() + "' has not implementation");
-    return -1;
+    WsjcppLog::err(TAG, "Processor '" + getNamesAsString() + "' has not implementation");
+    return -10;
 }
 
 // ---------------------------------------------------------------------
+// WsjcppArguments
 
 WsjcppArguments::WsjcppArguments(int argc, const char* argv[], WsjcppArgumentProcessor *pRoot) {
     TAG = "WsjcppArguments";
@@ -336,12 +360,21 @@ WsjcppArguments::WsjcppArguments(int argc, const char* argv[], WsjcppArgumentPro
     m_sProgramName = m_vArguments[0];
     m_vArguments.erase(m_vArguments.begin());
     m_pRoot = pRoot;
+    m_bEnablePrintAutoHelp = true;
 }
 
 // ---------------------------------------------------------------------
 
 WsjcppArguments::~WsjcppArguments() {
-    // TODO
+    for (int i = 0; i < m_vProcessors.size(); i++) {
+        delete m_vProcessors[i];
+    }
+}
+
+// ---------------------------------------------------------------------
+
+void WsjcppArguments::enablePrintAutoHelp(bool bEnablePrintAutoHelp) {
+    m_bEnablePrintAutoHelp = bEnablePrintAutoHelp;
 }
 
 // ---------------------------------------------------------------------
@@ -398,8 +431,12 @@ int WsjcppArguments::recursiveExec(
     if (vSubArguments.size() > 0 && vSubArguments[0] == "help") {
         return pArgumentProcessor->help(vRoutes, vSubArguments);
     }
-
-    return pArgumentProcessor->exec(vRoutes, vSubArguments);
+    
+    int nResult = pArgumentProcessor->exec(vRoutes, vSubArguments);
+    if (nResult == -10 && m_bEnablePrintAutoHelp) {
+        pArgumentProcessor->help(vRoutes, vSubArguments);
+    }
+    return nResult;
 }
 
 // ---------------------------------------------------------------------

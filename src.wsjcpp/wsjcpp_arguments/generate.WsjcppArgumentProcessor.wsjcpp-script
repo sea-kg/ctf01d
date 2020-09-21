@@ -40,9 +40,9 @@ class " class_name " : public WsjcppArgumentProcessor {
     public:
         " class_name "();
 
-        virtual bool applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue);
-        virtual bool applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName);
-        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams);
+        virtual bool applyParameterArgument(const std::string &sProgramName, const std::string &sArgumentName, const std::string &sValue) override;
+        virtual bool applySingleArgument(const std::string &sProgramName, const std::string &sArgumentName) override;
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
 #endif // " ifndef_header
@@ -87,7 +87,7 @@ bool " class_name "::applyParameterArgument(
 
 int " class_name "::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     WsjcppLog::err(TAG, \"Not implemented\");
-    return -1; 
+    return -10;
 }
 "
 

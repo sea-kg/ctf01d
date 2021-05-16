@@ -1,9 +1,11 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyrights sea-kg (c) 2021
+
 import sys
 import os
 import re
 import json
-import StringIO
 import zipfile
 import shutil
 import stat
@@ -63,7 +65,7 @@ name = ''
 if len(sys.argv) > 2:
     name = sys.argv[2]
 
-urls = ["https://sea-kg.com/ctf01d-store/"]
+urls = ["https://sea-kg.com/files/ctf01d-store/"]
 
 if os.path.isfile("./.ctf01d-store/urls"):
     with open("./.ctf01d-store/urls") as f:

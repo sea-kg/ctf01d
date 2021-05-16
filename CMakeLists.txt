@@ -22,6 +22,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
 
 # argument processors
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.h")
@@ -76,6 +77,12 @@ list (APPEND WSJCPP_SOURCES "src/storages/storages.cpp")
 # file storage
 # list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.h")
 # list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.cpp")
+
+# store
+list (APPEND WSJCPP_SOURCES "src/store/ctf01d_store.h")
+list (APPEND WSJCPP_SOURCES "src/store/ctf01d_store.cpp")
+list (APPEND WSJCPP_SOURCES "src/store/http_downloader.h")
+list (APPEND WSJCPP_SOURCES "src/store/http_downloader.cpp")
 
 # main
 list (APPEND WSJCPP_SOURCES "src/main.cpp")

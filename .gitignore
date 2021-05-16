@@ -10,8 +10,8 @@ ctf01d
 tmp/*
 .wsjcpp/*
 *.log
-.ctf01d/*
-
+/.ctf01d
+/.ctf01d-store-cache
 # Prerequisites
 # *.d
 

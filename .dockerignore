@@ -9,3 +9,5 @@ game-simulation
 dockers
 tests
 ctf01d-store
+.ctf01d
+.ctf01d-store-cache

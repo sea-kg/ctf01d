@@ -1,5 +1,5 @@
 name: "ctf01d"
-version: "v0.4.3"
+version: v0.4.5
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "Jury System for a attack-defence ctf games"
@@ -7,7 +7,6 @@ description: "Jury System for a attack-defence ctf games"
 authors:
   - name: "Evgenii Sopov"
     email: "mrseakg@gmail.com"
-
 origins:
   - address: "https://wsjcpp.org/packages/"
     type: "package-registry"

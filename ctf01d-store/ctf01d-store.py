@@ -1,10 +1,5 @@
 #!/usr/bin/python2
 import sys
-import math
-import socket
-import random
-import time
-import errno
 import os
 import requests
 import re
@@ -406,7 +401,7 @@ def cmd_info():
         team_id = t.split(".")[0]
         team_info = findTeamById(team_id)
         cnf = parseConf("./jury.d/teams/" + t)
-        if team_info == None:
+        if team_info is None:
             team_info = {}
             team_info['id'] = team_id
         frm = ''

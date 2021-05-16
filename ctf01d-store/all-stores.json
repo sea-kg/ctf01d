@@ -1,0 +1,6 @@
+{
+    "all-team-stores": [
+        "https://raw.githubusercontent.com/sea-kg/ctf01d/version-0.4.5/ctf01d-store/teams-example.json",
+        "https://sea-kg.com/files/ctf01d-store/teams.json"
+    ]
+}

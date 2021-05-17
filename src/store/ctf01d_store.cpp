@@ -46,8 +46,8 @@ bool Ctf01dStoreTeamInfo::contains(std::vector<std::string> vTerms) {
     int nContains = 0;
     for (int i = 0; i < nSize; i++) {
         if (
-            findStringIC(vTerms[i], m_sName)
-            || findStringIC(vTerms[i], m_sId)
+            findStringIC(m_sName, vTerms[i])
+            || findStringIC(m_sId, vTerms[i])
         ) {
             nContains++;
         }
@@ -59,7 +59,7 @@ bool Ctf01dStoreTeamInfo::contains(std::vector<std::string> vTerms) {
 bool Ctf01dStoreTeamInfo::findStringIC(const std::string & strHaystack, const std::string & strNeedle) {
   auto it = std::search(
     strHaystack.begin(), strHaystack.end(),
-    strNeedle.begin(),   strNeedle.end(),
+    strNeedle.begin(), strNeedle.end(),
     [](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }
   );
   return (it != strHaystack.end() );

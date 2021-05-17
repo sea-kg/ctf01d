@@ -9,7 +9,16 @@ Or you can use it for training.
 
 ## Easy way to start/init (based on docker-compose)
 
-docker-compose.yml
+Requirements:
+- docker 
+- docker-compose
+
+Download or upgrade to latest version
+```
+docker pull sea5kg/ctf01d:latest
+```
+
+docker-compose.yml:
 ```
 version: '3'
 
@@ -201,14 +210,6 @@ $ nano ~/ctf01d.git/data_sample/config.yml
 ```
 Config files (see comments in file):
 * `~/ctf01d.git/data_sample/config.yml` - one config
-
-### Build docker image
-
-```
-$ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
-$ cd ~/ctf01d.git
-$ docker build --rm=true -t "sea5kg/ctf01d:my-version" .
-```
 
 ### Prepare to start with clearing all previous data
 
@@ -602,13 +603,20 @@ $ docker pull sea5kg/ctf01d-stage-release
 
 Or build fresh images for stages:
 ```
-$ cd ~/ctf01d.git
+$ cd ~/ctf01d.git/contrib/docker-build-stages/
 $ ./build-stages-images.sh
 ```
 
 You can see in list:
 ```
 $ docker images
+```
+
+And now you can build image:
+
+```
+$ cd ~/ctf01d.git
+$ docker build --rm=true -t "sea5kg/ctf01d:latest" .
 ```
 
 4. Run dev docker-container, build and start

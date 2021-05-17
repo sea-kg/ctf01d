@@ -31,7 +31,7 @@ int main(int argc, const char* argv[]) {
         }
         sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
         if (WsjcppCore::fileExists(sWorkDir + "/config.yml")) {
-            std::cout << "Found automaticly workdir: " << sWorkDir << std::endl;
+            std::cout << "Automatically detected workdir: " << sWorkDir << std::endl;
             EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
             pConfig->setWorkDir(sWorkDir);
             break;
@@ -40,5 +40,6 @@ int main(int argc, const char* argv[]) {
 
     ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
     WsjcppArguments prog(argc, argv, pMain);
-    return prog.exec();
+    int nRet = prog.exec();
+    return nRet;
 }

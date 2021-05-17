@@ -39,7 +39,7 @@ services:
   ctf01d_db:
     image: mysql:5.7
     volumes:
-      - "./tmp/mysql_database:/var/lib/mysql"
+      - "./mysql_database:/var/lib/mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: KzhyntJxwt
@@ -109,8 +109,9 @@ In the new terminal/console we can change default configuration to what we want.
 
 Attach to running container with a bash command line:
 ```
-$ $ docker exec -it -w /root ctf01d_jury_my_game bash
-root@df281aedde7d:~#
+$ docker exec -it -w /root ctf01d_jury_my_game bash
+root@df281aedde7d:~# ctf01d version
+ctf01d v0.4.5
 ```
 
 Now we can use some commands from `ctf01d`

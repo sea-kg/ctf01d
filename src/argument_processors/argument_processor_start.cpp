@@ -46,7 +46,7 @@ bool ArgumentProcessorStart::applyParameterArgument(
 int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) {
     WsjcppLog::info(TAG, "Starting...");
     if (!WsjcppEmployees::init({})) {
-        WsjcppLog::err(TAG, "Failed.");
+        WsjcppLog::err(TAG, "Start failed on step init configs.");
         return -1;
     }
 

@@ -237,7 +237,10 @@ bool EmployConfig::init() {
     // init logger
     std::string sLogDir = sWorkDir + "/logs";
     if (!WsjcppCore::dirExists(sLogDir)) {
-        std::cout << "Error: Folder " << sLogDir << " does not exists \n";
+        WsjcppCore::makeDir(sLogDir);
+    }
+    if (!WsjcppCore::dirExists(sLogDir)) {
+        std::cout << "Error: Folder '" << sLogDir << "' does not exists and could not created, please check access rights to parent folder.\n";
         return false;
     }
 

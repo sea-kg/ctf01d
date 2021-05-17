@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [v0.4.5] - ??
 
+* Removed python2 from ctf01d docker image
+* Added `nano` and `vim` to ctf01d docker image
 * Fixed init default configs on first-start container
 * Implemented command `ctf01d teams search <keys>`
 * Added file `ctf01d-store/all-stores.json`

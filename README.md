@@ -18,7 +18,13 @@ Download or upgrade to latest version
 docker pull sea5kg/ctf01d:latest
 ```
 
-docker-compose.yml:
+Create the folder with your game:
+```
+$ mkdir ~/my-first-game
+$ cd ~/my-first-game
+```
+
+Create the file `~/my-first-game/docker-compose.yml` with content:
 ```
 version: '3'
 
@@ -67,9 +73,37 @@ And than:
 $ docker-compose up
 ```
 
-After first start look in './data_game' folder:
+After success start, you can see in logs something like this:
+```
+ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [WARN] Checker: another_some   example_service2 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [INFO] Checker: another_some   example_service2 : Elapsed milliseconds: 106ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.684, 0x00007f10ce69d700 [WARN] Checker: another_some   example_service1 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.684, 0x00007f10cde9c700 [WARN] Checker: so_some        example_service1 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cde9c700 [INFO] Checker: so_some        example_service1 : Elapsed milliseconds: 105ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cce9a700 [WARN] Checker: so_some        example_service2 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cce9a700 [INFO] Checker: so_some        example_service2 : Elapsed milliseconds: 109ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10ce69d700 [INFO] Checker: another_some   example_service1 : Elapsed milliseconds: 110ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10bf7fe700 [WARN] Checker: another_some   example_service3 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.686, 0x00007f10bf7fe700 [INFO] Checker: another_some   example_service3 : Elapsed milliseconds: 110ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.690, 0x00007f10bdffb700 [WARN] Checker: so_some        example_service3 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.690, 0x00007f10bdffb700 [INFO] Checker: so_some        example_service3 : Elapsed milliseconds: 111ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10bcff9700 [WARN] Checker: another_some   example_service4 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10bcff9700 [INFO] Checker: another_some   example_service4 : Elapsed milliseconds: 108ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10affff700 [WARN] Checker: so_some        example_service4 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.695, 0x00007f10affff700 [INFO] Checker: so_some        example_service4 : Elapsed milliseconds: 107ms
+```
+*And you can see dashboard on http://localhost:8080/*
+
+So now `Ctrl+C` for stop docker-compose.
+
+In './ctf01d_data_game' folder 
 - You will find basic configuration
-- After change of the configuration you need to restart 'docker-compose'
+
+And now you can change this, when configuration will complete you start again:
+
+```
+docker-compose up
+```
 
 ## Rules
 

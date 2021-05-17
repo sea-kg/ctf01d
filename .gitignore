@@ -12,6 +12,7 @@ tmp/*
 *.log
 /.ctf01d
 /.ctf01d-store-cache
+/test-first-start
 # Prerequisites
 # *.d
 

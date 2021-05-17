@@ -5,6 +5,14 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.4.5] - ??
+
+* Fixed init default configs on first-start container
+* Implemented command `ctf01d teams search <keys>`
+* Added file `ctf01d-store/all-stores.json`
+* Added file `ctf01d-store/teams-examples.json`
+* Fixed read all from pipe of checker
+
 ## [v0.4.4] - 2020-09-22 (2020 Sep 22)
 
 ### Added
@@ -12,7 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Copied script fhqjad-store from fhq-server
 * Fixed #52 added 'ctf01d teams list'
 * Added to main find workdir authomaticly
-* Fixed #53 added services list 
+* Fixed #53 added 'ctf01d services list' 
 
 ### Changed
 

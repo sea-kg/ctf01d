@@ -13,6 +13,13 @@ Requirements:
 - docker 
 - docker-compose
 
+And two terminals (command lines):
+- `terminal0` - will be run docker-compose
+- `terminal1` - will configure our game
+
+
+### terminal0
+
 Download or upgrade to latest version
 ```
 docker pull sea5kg/ctf01d:latest
@@ -45,6 +52,7 @@ services:
   ctf01d_jury:
     depends_on:
       - ctf01d_db
+    container_name: ctf01d_jury_my_game
     image: sea5kg/ctf01d:latest
     volumes:
       - "./data_game:/usr/share/ctf01d"
@@ -94,15 +102,56 @@ ctf01d_jury_1  | 2021-05-17 03:05:29.695, 0x00007f10affff700 [INFO] Checker: so_
 ```
 *And you can see dashboard on http://localhost:8080/*
 
-So now `Ctrl+C` for stop docker-compose.
 
-In './ctf01d_data_game' folder 
-- You will find basic configuration
+### terminal1
 
-And now you can change this, when configuration will complete you start again:
+In the new terminal/console we can change default configuration to what we want.
+
+Attach to running container with a bash command line:
+```
+$ $ docker exec -it -w /root ctf01d_jury_my_game bash
+root@df281aedde7d:~#
+```
+
+Now we can use some commands from `ctf01d`
+
+For example, list of commands in default config:
+```
+root@df281aedde7d:~# ctf01d teams ls
+...
+Teams:
+ - another_some 
+     name: Another Some
+     ip-address: 127.0.1.1
+     logo: /usr/share/ctf01d/html/images/teams/unknown.svg
+
+ - so_some 
+     name: So Some
+     ip-address: 127.0.0.1
+     logo: /usr/share/ctf01d/html/images/logo.png
 
 ```
-docker-compose up
+
+Search predefined team in teams-store (in first will be downloads control files from different sources):
+```
+root@df281aedde7d:~# ctf01d teams search neos
+Found teams: 
+team id='neosfun'; name: 'NeosFun'
+```
+
+In future... I suppose will implement command like `ctf01d teams install neosfun` for easy way configuration team-list
+
+TODO
+
+### comeback to `terminal0`
+
+We need restart docker-compose for rereading configuration.
+
+So now `Ctrl+C` for stop docker-compose.
+
+And again start:
+```
+$ docker-compose up
 ```
 
 ## Rules

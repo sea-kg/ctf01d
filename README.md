@@ -105,7 +105,7 @@ ctf01d_jury_1  | 2021-05-17 03:05:29.695, 0x00007f10affff700 [INFO] Checker: so_
 
 ### terminal1
 
-In the new terminal/console we can change default configuration to the one you need.
+In the new terminal/console we can change default configuration to the one we need.
 
 Attach to a running container with a bash command line:
 ```

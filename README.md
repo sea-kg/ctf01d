@@ -193,7 +193,7 @@ EN:
 The attack flag counts if:
 - the flag has the correct format
 - the flag does not belong to your team (not from your service)
-- the flag from the same type of service as yours, but your service must be in UP state
+- the flag from the same type of the service as yours, but your service must be in UP state
 - the flag is dealt by your team for the first time (the same flag can be dealt by different teams)
 - the flag is still alive (the flag has not expired)
 - only during the game (flags are not accepted during coffee breaks)

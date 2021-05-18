@@ -378,7 +378,7 @@ Call-examples:
 
 ### Possible return codes
 
- * 101 - service is up (work fine)
+ * 101 - service is up (works fine)
  * 102 - service is corrupt
  * 103 - service is mumbled (or the checker falls into an endless loop)
  * 104 - service is down
@@ -478,7 +478,7 @@ Call-examples:
 
 Allowed return codes:
 
- * 101 - "service is up" (work fine)
+ * 101 - "service is up" (works fine)
  * 102 - "service is corrupt" (something wrong with the service)
  * 103 - "service is mumbled" (or the checker falls into an endless loop)
  * 104 - "service is down"

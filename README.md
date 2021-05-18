@@ -444,7 +444,7 @@ $ chmod +x checker_service_ZxjQMahnoK/checker.py
 
 ### 2. Prepare checker script
 
-You can write checker in any language, but you need to install expected requirements to Dockerfile with jury system
+You can write checker in any language, but you need to add requirements installation into Dockerfile with jury system
 
 For example Dockerfile.jury with a jury:
 

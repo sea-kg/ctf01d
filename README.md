@@ -2,12 +2,12 @@
 
 [![Build Status](https://travis-ci.org/sea-kg/ctf01d.svg?branch=master)](https://travis-ci.org/sea-kg/ctf01d) [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctf01d.svg)](https://hub.docker.com/r/sea5kg/ctf01d/) [![Docker layers](https://images.microbadger.com/badges/image/sea5kg/ctf01d.svg)](https://microbadger.com/images/sea5kg/ctf01d) [![Github Stars](https://img.shields.io/github/stars/sea-kg/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/sea-kg/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/sea-kg/ctf01d.svg)](https://github.com/sea-kg/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/sea-kg/ctf01d.svg?label=github%20forks)](https://github.com/sea-kg/ctf01d/) [![Total alerts](https://img.shields.io/lgtm/alerts/g/sea-kg/ctf01d.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sea-kg/ctf01d/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/sea-kg/ctf01d.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sea-kg/ctf01d/context:javascript) [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/sea-kg/ctf01d.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sea-kg/ctf01d/context:python) [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/sea-kg/ctf01d.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/sea-kg/ctf01d/context:cpp)
 
-Jury System for attack-defence ctf game  (ctf-scoreboard).
-Or you can use it for training.
+Jury System for attack-defence ctf game (ctf-scoreboard).
+Also you can use it for training.
 
 ![scoreboard](https://raw.githubusercontent.com/sea-kg/ctf01d/master/misc/screens/screen1.png)
 
-## Easy way to start/init (based on docker-compose)
+## Easy way to start/init it (based on docker-compose)
 
 Requirements:
 - docker 
@@ -20,18 +20,18 @@ And two terminals (command lines):
 
 ### terminal0
 
-Download or upgrade to latest version
+Download or upgrade to the latest version
 ```
 docker pull sea5kg/ctf01d:latest
 ```
 
-Create the folder with your game:
+Create a folder with your game:
 ```
 $ mkdir ~/my-first-game
 $ cd ~/my-first-game
 ```
 
-Create the file `~/my-first-game/docker-compose.yml` with content:
+Create a `~/my-first-game/docker-compose.yml` file with the following content:
 ```
 version: '3'
 
@@ -75,13 +75,13 @@ networks:
     driver: bridge
 ```
 
-And than:
+And then:
 
 ```
 $ docker-compose up
 ```
 
-After success start, you can see in logs something like this:
+After successful start, you will see logs similar to the following:
 ```
 ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [WARN] Checker: another_some   example_service2 :  => service is down 
 ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [INFO] Checker: another_some   example_service2 : Elapsed milliseconds: 106ms
@@ -100,14 +100,14 @@ ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10bcff9700 [INFO] Checker: ano
 ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10affff700 [WARN] Checker: so_some        example_service4 :  => service is down 
 ctf01d_jury_1  | 2021-05-17 03:05:29.695, 0x00007f10affff700 [INFO] Checker: so_some        example_service4 : Elapsed milliseconds: 107ms
 ```
-*And you can see dashboard on http://localhost:8080/*
+*And you can also find dashboard on http://localhost:8080/*
 
 
 ### terminal1
 
-In the new terminal/console we can change default configuration to what we want.
+In the new terminal/console we can change default configuration to the one you need.
 
-Attach to running container with a bash command line:
+Attach to a running container with a bash command line:
 ```
 $ docker exec -it -w /root ctf01d_jury_my_game bash
 root@df281aedde7d:~# ctf01d version
@@ -116,7 +116,7 @@ ctf01d v0.4.5
 
 Now we can use some commands from `ctf01d`
 
-For example, list of commands in default config:
+For example, list of commands in the default config:
 ```
 root@df281aedde7d:~# ctf01d teams ls
 ...
@@ -133,24 +133,24 @@ Teams:
 
 ```
 
-Search predefined team in teams-store (in first will be downloads control files from different sources):
+Search for a predefined team in the teams-store (will download control files from different sources first):
 ```
 root@df281aedde7d:~# ctf01d teams search neos
 Found teams: 
 team id='neosfun'; name: 'NeosFun'
 ```
 
-In future... I suppose will implement command like `ctf01d teams install neosfun` for easy way configuration team-list
+In the future... I suppose that I will implement a command (something like `ctf01d teams install neosfun`) to simplify the configuration of the team-list
 
 TODO
 
-### comeback to `terminal0`
+### Go back to `terminal0`
 
-We need restart docker-compose for rereading configuration.
+We need to restart docker-compose to re-read configuration.
 
-So now `Ctrl+C` for stop docker-compose.
+So now press `Ctrl+C` to stop docker-compose.
 
-And again start:
+And then start it again:
 ```
 $ docker-compose up
 ```
@@ -172,10 +172,10 @@ basic_costs_stolen_flag_in_points:
 EN:
 
 Only the defence flag from the service is counted if:
-- the flag was successfully putted into the service
-- the flag has existed on the service all the time of it's life
-- the flag was not stolen by another team(s)
-- and the service was in UP state throughout the life of the flag
+- the flag was successfully put into the service
+- the flag existed in the service throughout its lifetime 
+- the flag was not stolen by other team(s)
+- and the service was in UP state throughout the flag lifetime
 
 RU:
 
@@ -208,7 +208,7 @@ RU:
 - флаг еще жив (не закончилось время жизни флага)
 - только во время объявленной игры (во время кофебрейка флаги не принимаются)
 
-### 4. How to calculate costs of the flags
+### 4. How the flag cost is calculated
 
 EN:
 - The cost is different for the defended flag and the stolen flag (difference in the number of teams)

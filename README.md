@@ -32,7 +32,7 @@ $ cd ~/my-first-game
 ```
 
 Create a `~/my-first-game/docker-compose.yml` file with the following content:
-```
+```yml
 version: '3'
 
 services:
@@ -226,7 +226,7 @@ RU:
 
 Example on python:
 
-``` python
+```python
 basic_costs_stolen_flag_in_points = 10
 services = [
     { "stolen_flags": 100, "defended_flags": 9 }, # service0 
@@ -423,7 +423,7 @@ $ docker load -i ./somegame-your_server-0.0.1.tar
 
 For example:
 
-```
+```yml
 checkers:
   - id: "service_ZxjQMahnoK" # work directory will be checker_service_ZxjQMahnoK
     service_name: "Service1"
@@ -487,7 +487,7 @@ Allowed return codes:
 
 For example checker script (in python):
 
-```
+```python
 #!/usr/bin/python
 import sys
 import math
@@ -632,7 +632,7 @@ Clone source code of the project:
 $ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
 ```
 
-Build
+Build:
 ```
 $ cd ~/ctf01d.git
 $ ./build_simple.sh
@@ -641,7 +641,7 @@ $ ./build_simple.sh
 *Maybe fix: `$ sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc`*
 *More info: (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340)[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340]*
 
-Start
+Start:
 ```
 $ cd ~/ctf01d.git
 $ mkdir data_test
@@ -656,7 +656,8 @@ $ ./ctf01d -work-dir ./data_test -db-host localhost start
 docker network create --driver=bridge ctf01d_net
 ```
 
-2. Prepare mysql database
+2. Prepare mysql database:
+
 In the next step we just start the container with mysql (like a daemon - in background)
 
 ```
@@ -739,25 +740,26 @@ It's necessary for testing in conditions close to real game
 - 4 services (written in different languages)
 - 5 subnetworks (with masquerade - base on docker network)
 
-requirements:
+Requirements:
 * `$ pip3 install docker`
 
-Start
+Start:
 ```
 $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py start
 ```
 
 After this command has run successfully, you can look for:
-    * Scoreboard - http://localhost:8080
-    * team1 - service1_py : `nc 10.10.11.1 4101`
-    * team2 - service1_py : `nc 10.10.12.1 4101`
-    * team3 - service1_py : `nc 10.10.13.1 4101`
-    * team1 - service2_go : http://10.10.11.1:4102
-    * team2 - service2_go : http://10.10.12.1:4102
-    * team3 - service2_go : http://10.10.13.1:4102
 
-To remove all images containers and networks:
+  * Scoreboard - http://localhost:8080
+  * team1 - service1_py : `nc 10.10.11.1 4101`
+  * team2 - service1_py : `nc 10.10.12.1 4101`
+  * team3 - service1_py : `nc 10.10.13.1 4101`
+  * team1 - service2_go : http://10.10.11.1:4102
+  * team2 - service2_go : http://10.10.12.1:4102
+  * team3 - service2_go : http://10.10.13.1:4102
+
+To remove all images, containers and networks:
 ```
 $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py clean

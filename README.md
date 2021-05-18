@@ -194,9 +194,9 @@ The attack flag counts if:
 - the flag has the correct format
 - the flag does not belong to your team (not from your service)
 - the flag from the same type of service as yours, but your service must be in UP state
-- the flag is dealt for the first time by your team (the same flag may be dealt by different teams)
+- the flag is dealt by your team for the first time (the same flag can be dealt by different teams)
 - the flag is still alive (the flag has not expired)
-- only during the announced game (flags are not accepted during coffee breaks)
+- only during the game (flags are not accepted during coffee breaks)
 
 RU:
 
@@ -297,7 +297,7 @@ Config files (see comments in file):
 
 ### Prepare to start with clearing all previous data
 
-Previously created data-flags will be clean
+Previously created data-flags will be cleared
 
 ```
 $ cd ~/ctf01d.git/
@@ -326,7 +326,7 @@ Where
 * up - the flag putting/checking into the service is successful
 * down - service is not available (maybe blocked port or service is down)
 * corrupt - service is available (available tcp connection) but it's impossible to put/get the flag
-* mumble - waited for a time (for example: for 5 sec), but service hasn't replied
+* mumble - wait for a while(for example: for 5 sec), but the service doesn't reply
 * shit - checker does not return correct response code
 
 ## Acceptance of the flag
@@ -335,7 +335,7 @@ Where
 
 Where
 
-* {HOST} - host or ip, where jury system started
+* {HOST} - host or ip at which the jury is available 
 * {PORT} - configured scoreboard/flag port of the jury system
 * {TEAMID} - number, your unique teamid (see scoreboard)
 * {FLAG} - uuid, so that the jury knows that this is a flag from an enemy server
@@ -378,20 +378,20 @@ Call-examples:
 
 ### Possible return codes
 
- * 101 - service is up  (worked fine)
+ * 101 - service is up (work fine)
  * 102 - service is corrupt
- * 103 - service is mumbled (or checker works endlessly)
+ * 103 - service is mumbled (or the checker falls into an endless loop)
  * 104 - service is down
  * other - checker is shit
 
 
  # Jury API requests list
  
- * `http://{HOST}:{PORT}/api/v1/game` - info about game
+ * `http://{HOST}:{PORT}/api/v1/game` - info about the game
  * `http://{HOST}:{PORT}/api/v1/teams` - list of teams
  * `http://{HOST}:{PORT}/api/v1/services` - list of services
  * `http://{HOST}:{PORT}/api/v1/scoreboard` - scoreboard table teams-services
- * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - logo's teams
+ * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - team logos
 
 
 # How to prepare vuln service
@@ -478,9 +478,9 @@ Call-examples:
 
 Allowed return codes:
 
- * 101 - "service is up" (worked fine)
+ * 101 - "service is up" (worke fine)
  * 102 - "service is corrupt" (something wrong with the service)
- * 103 - "service is mumbled" (or checker works endlessly)
+ * 103 - "service is mumbled" (or the checker falls into an endless loop)
  * 104 - "service is down"
  * any - "checker is shit"
 
@@ -650,14 +650,14 @@ $ ./ctf01d -work-dir ./data_test -db-host localhost start
 
 ## Build in docker
 
-1. In first step we prepare docker network:
+1. In the first step we prepare docker network:
 
 ```
 docker network create --driver=bridge ctf01d_net
 ```
 
 2. Prepare mysql database
-In first step we just start container with mysql (like a daemon - in background)
+In the next step we just start the container with mysql (like a daemon - in background)
 
 ```
 docker run -d --rm \
@@ -671,13 +671,13 @@ docker run -d --rm \
     mysqld --default-authentication-plugin=mysql_native_password
 ```
 
-We can look docker status: `docker ps -a`
+We can look for docker status: `docker ps -a`
 
 3. Prepare docker for builds:
 
 *Notice: multistage build docker*
 
-Previously need download latest version ctf01d-stage-build / ctf01d-stage-release or build
+You need to download latest version of ctf01d-stage-build / ctf01d-stage-release or build it first
 
 Download (docker pull):
 ```
@@ -691,7 +691,7 @@ $ cd ~/ctf01d.git/contrib/docker-build-stages/
 $ ./build-stages-images.sh
 ```
 
-You can see in list:
+You can see them in a list:
 ```
 $ docker images
 ```
@@ -734,9 +734,9 @@ Now you can see scoreboard on http://localhost:8081
 
 # GAME SIMULATION
 
-It's need for testing close to real game
+It's necessary for testing in conditions close to real game 
 - 3 teams
-- 4 services (on different languages)
+- 4 services (written in different languages)
 - 5 subnetworks (with masquerade - base on docker network)
 
 requirements:
@@ -748,7 +748,7 @@ $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py start
 ```
 
-After this success you can look:
+After this command has run successfully, you can look for:
     * Scoreboard - http://localhost:8080
     * team1 - service1_py : `nc 10.10.11.1 4101`
     * team2 - service1_py : `nc 10.10.12.1 4101`
@@ -757,13 +757,13 @@ After this success you can look:
     * team2 - service2_go : http://10.10.12.1:4102
     * team3 - service2_go : http://10.10.13.1:4102
 
-For remove all images containers and networks:
+To remove all images containers and networks:
 ```
 $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py clean
 ```
 
-# THANKS TO
+# SPECIAL THANKS
 
 * Danil Dudkin
 

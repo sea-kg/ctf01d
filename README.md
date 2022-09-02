@@ -718,3 +718,7 @@ https://github.com/google/ctfscoreboard
 hackthearch (ruby) - Attack-Defence ctf system:
 
 https://github.com/mcpa-stlouis/hack-the-arch
+
+ForcAD - Pure-python distributable Attack-Defence CTF platform, created to be easily set up.
+
+https://github.com/pomo-mondreganto/ForcAD

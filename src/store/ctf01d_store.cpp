@@ -78,7 +78,7 @@ bool Ctf01dStore::init() {
         WsjcppCore::makeDir(m_sCtf01dStoreCacheDir);
     }
 
-    std::string sAllStoriesUrl = "https://raw.githubusercontent.com/sea-kg/ctf01d/version-0.4.5/ctf01d-store/all-stores.json";
+    std::string sAllStoriesUrl = "https://raw.githubusercontent.com/sea-kg/ctf01d/master/ctf01d-store/all-stores.json";
     std::string sPath = m_sCtf01dStoreCacheDir + "/all-stores.json";
     if (!WsjcppCore::fileExists(sPath)) {
         std::cout << "\n Downloading... \n from url " << sAllStoriesUrl << "\n to file " << sPath << std::endl;

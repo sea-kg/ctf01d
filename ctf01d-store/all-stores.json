@@ -2,7 +2,7 @@
   "all-team-stores": [
     {
       "uuid": "f2a7bb1d-c255-40dd-8cd4-a585b0d35696",
-      "url": "https://raw.githubusercontent.com/sea-kg/ctf01d/version-0.4.5/ctf01d-store/teams-examples.json",
+      "url": "https://raw.githubusercontent.com/sea-kg/ctf01d/master/ctf01d-store/teams-examples.json",
       "description": "Example teams definition"
     }, 
     {

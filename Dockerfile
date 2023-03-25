@@ -18,4 +18,4 @@ RUN mkdir /root/data
 COPY --from=0 /root/ctf01d /usr/bin/ctf01d
 
 EXPOSE 8080
-CMD ["ctf01d","-work-dir","/root/data","start"]
+CMD ["ctf01d","start"]

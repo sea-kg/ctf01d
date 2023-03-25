@@ -2,22 +2,44 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/ctf01d.svg)](https://hub.docker.com/r/sea5kg/ctf01d/) [![Github Stars](https://img.shields.io/github/stars/sea-kg/ctf01d.svg?label=github%20%E2%98%85)](https://github.com/sea-kg/ctf01d/) [![Github Stars](https://img.shields.io/github/contributors/sea-kg/ctf01d.svg)](https://github.com/sea-kg/ctf01d/) [![Github Forks](https://img.shields.io/github/forks/sea-kg/ctf01d.svg?label=github%20forks)](https://github.com/sea-kg/ctf01d/) 
 
-Jury System for attack-defence ctf game  (ctf-scoreboard).
-Or you can use it for training.
+Jury System for attack-defence ctf game (ctf-scoreboard).
+Also you can use it for training.
 
 ![scoreboard](https://raw.githubusercontent.com/sea-kg/ctf01d/master/misc/screens/screen1.png)
 
-## Easy way to start/init (based on docker-compose)
+## Easy way to start/init it (based on docker-compose)
 
-docker-compose.yml
+Requirements:
+- docker 
+- docker-compose
+
+And two terminals (command lines):
+- `terminal0` - will be run docker-compose
+- `terminal1` - will configure our game
+
+
+### terminal0
+
+Download or upgrade to the latest version
 ```
+docker pull sea5kg/ctf01d:latest
+```
+
+Create a folder with your game:
+```
+$ mkdir ~/my-first-game
+$ cd ~/my-first-game
+```
+
+Create a `~/my-first-game/docker-compose.yml` file with the following content:
+```yml
 version: '3'
 
 services:
   ctf01d_db:
     image: mysql:5.7
     volumes:
-      - "./tmp/mysql_database:/var/lib/mysql"
+      - "./mysql_database:/var/lib/mysql"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: KzhyntJxwt
@@ -30,6 +52,7 @@ services:
   ctf01d_jury:
     depends_on:
       - ctf01d_db
+    container_name: ctf01d_jury_my_game
     image: sea5kg/ctf01d:latest
     volumes:
       - "./data_game:/usr/share/ctf01d"
@@ -52,15 +75,85 @@ networks:
     driver: bridge
 ```
 
-And than:
+And then:
 
 ```
 $ docker-compose up
 ```
 
-After first start look in './data_game' folder:
-- You will find basic configuration
-- After change of the configuration you need to restart 'docker-compose'
+After successful start, you will see logs similar to the following:
+```
+ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [WARN] Checker: another_some   example_service2 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.680, 0x00007f10cd69b700 [INFO] Checker: another_some   example_service2 : Elapsed milliseconds: 106ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.684, 0x00007f10ce69d700 [WARN] Checker: another_some   example_service1 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.684, 0x00007f10cde9c700 [WARN] Checker: so_some        example_service1 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cde9c700 [INFO] Checker: so_some        example_service1 : Elapsed milliseconds: 105ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cce9a700 [WARN] Checker: so_some        example_service2 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10cce9a700 [INFO] Checker: so_some        example_service2 : Elapsed milliseconds: 109ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10ce69d700 [INFO] Checker: another_some   example_service1 : Elapsed milliseconds: 110ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.685, 0x00007f10bf7fe700 [WARN] Checker: another_some   example_service3 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.686, 0x00007f10bf7fe700 [INFO] Checker: another_some   example_service3 : Elapsed milliseconds: 110ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.690, 0x00007f10bdffb700 [WARN] Checker: so_some        example_service3 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.690, 0x00007f10bdffb700 [INFO] Checker: so_some        example_service3 : Elapsed milliseconds: 111ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10bcff9700 [WARN] Checker: another_some   example_service4 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10bcff9700 [INFO] Checker: another_some   example_service4 : Elapsed milliseconds: 108ms
+ctf01d_jury_1  | 2021-05-17 03:05:29.694, 0x00007f10affff700 [WARN] Checker: so_some        example_service4 :  => service is down 
+ctf01d_jury_1  | 2021-05-17 03:05:29.695, 0x00007f10affff700 [INFO] Checker: so_some        example_service4 : Elapsed milliseconds: 107ms
+```
+*And you can also find dashboard on http://localhost:8080/*
+
+
+### terminal1
+
+In the new terminal/console we can change default configuration to the one we need.
+
+Attach to a running container with a bash command line:
+```
+$ docker exec -it -w /root ctf01d_jury_my_game bash
+root@df281aedde7d:~# ctf01d version
+ctf01d v0.4.5
+```
+
+Now we can use some commands from `ctf01d`
+
+For example, list of commands in the default config:
+```
+root@df281aedde7d:~# ctf01d teams ls
+...
+Teams:
+ - another_some 
+     name: Another Some
+     ip-address: 127.0.1.1
+     logo: /usr/share/ctf01d/html/images/teams/unknown.svg
+
+ - so_some 
+     name: So Some
+     ip-address: 127.0.0.1
+     logo: /usr/share/ctf01d/html/images/logo.png
+
+```
+
+Search for a predefined team in the teams-store (will download control files from different sources first):
+```
+root@df281aedde7d:~# ctf01d teams search neos
+Found teams: 
+team id='neosfun'; name: 'NeosFun'
+```
+
+In the future... I suppose that I will implement a command (something like `ctf01d teams install neosfun`) to simplify the configuration of the team-list
+
+TODO
+
+### Go back to `terminal0`
+
+We need to restart docker-compose to re-read configuration.
+
+So now press `Ctrl+C` to stop docker-compose.
+
+And then start it again:
+```
+$ docker-compose up
+```
 
 ## Rules
 
@@ -79,10 +172,10 @@ basic_costs_stolen_flag_in_points:
 EN:
 
 Only the defence flag from the service is counted if:
-- the flag was successfully putted into the service
-- the flag has existed on the service all the time of it's life
-- the flag was not stolen by another team(s)
-- and the service was in UP state throughout the life of the flag
+- the flag was successfully put into the service
+- the flag existed in the service throughout its lifetime 
+- the flag was not stolen by other team(s)
+- and the service was in UP state throughout the flag lifetime
 
 RU:
 
@@ -100,10 +193,10 @@ EN:
 The attack flag counts if:
 - the flag has the correct format
 - the flag does not belong to your team (not from your service)
-- the flag from the same type of service as yours, but your service must be in UP state
-- the flag is dealt for the first time by your team (the same flag may be dealt by different teams)
+- the flag from the same type of the service as yours, but your service must be in UP state
+- the flag is dealt by your team for the first time (the same flag can be dealt by different teams)
 - the flag is still alive (the flag has not expired)
-- only during the announced game (flags are not accepted during coffee breaks)
+- only during the game (flags are not accepted during coffee breaks)
 
 RU:
 
@@ -115,7 +208,7 @@ RU:
 - флаг еще жив (не закончилось время жизни флага)
 - только во время объявленной игры (во время кофебрейка флаги не принимаются)
 
-### 4. How to calculate costs of the flags
+### 4. How the flag cost is calculated
 
 EN:
 - The cost is different for the defended flag and the stolen flag (difference in the number of teams)
@@ -133,7 +226,7 @@ RU:
 
 Example on python:
 
-``` python
+```python
 basic_costs_stolen_flag_in_points = 10
 services = [
     { "stolen_flags": 100, "defended_flags": 9 }, # service0 
@@ -202,17 +295,9 @@ $ nano ~/ctf01d.git/data_sample/config.yml
 Config files (see comments in file):
 * `~/ctf01d.git/data_sample/config.yml` - one config
 
-### Build docker image
-
-```
-$ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
-$ cd ~/ctf01d.git
-$ docker build --rm=true -t "sea5kg/ctf01d:my-version" .
-```
-
 ### Prepare to start with clearing all previous data
 
-Previously created data-flags will be clean
+Previously created data-flags will be cleared
 
 ```
 $ cd ~/ctf01d.git/
@@ -241,7 +326,7 @@ Where
 * up - the flag putting/checking into the service is successful
 * down - service is not available (maybe blocked port or service is down)
 * corrupt - service is available (available tcp connection) but it's impossible to put/get the flag
-* mumble - waited for a time (for example: for 5 sec), but service hasn't replied
+* mumble - wait for a while(for example: for 5 sec), but the service doesn't reply
 * shit - checker does not return correct response code
 
 ## Acceptance of the flag
@@ -250,7 +335,7 @@ Where
 
 Where
 
-* {HOST} - host or ip, where jury system started
+* {HOST} - host or ip at which the jury is available 
 * {PORT} - configured scoreboard/flag port of the jury system
 * {TEAMID} - number, your unique teamid (see scoreboard)
 * {FLAG} - uuid, so that the jury knows that this is a flag from an enemy server
@@ -293,20 +378,20 @@ Call-examples:
 
 ### Possible return codes
 
- * 101 - service is up  (worked fine)
+ * 101 - service is up (works fine)
  * 102 - service is corrupt
- * 103 - service is mumbled (or checker works endlessly)
+ * 103 - service is mumbled (or the checker falls into an endless loop)
  * 104 - service is down
  * other - checker is shit
 
 
  # Jury API requests list
  
- * `http://{HOST}:{PORT}/api/v1/game` - info about game
+ * `http://{HOST}:{PORT}/api/v1/game` - info about the game
  * `http://{HOST}:{PORT}/api/v1/teams` - list of teams
  * `http://{HOST}:{PORT}/api/v1/services` - list of services
  * `http://{HOST}:{PORT}/api/v1/scoreboard` - scoreboard table teams-services
- * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - logo's teams
+ * `http://{HOST}:{PORT}/team-logo/{TEAMID}` - team logos
 
 
 # How to prepare vuln service
@@ -338,7 +423,7 @@ $ docker load -i ./somegame-your_server-0.0.1.tar
 
 For example:
 
-```
+```yml
 checkers:
   - id: "service_ZxjQMahnoK" # work directory will be checker_service_ZxjQMahnoK
     service_name: "Service1"
@@ -359,7 +444,7 @@ $ chmod +x checker_service_ZxjQMahnoK/checker.py
 
 ### 2. Prepare checker script
 
-You can write checker in any language, but you need to install expected requirements to Dockerfile with jury system
+You can write checker in any language, but you need to add requirements installation into Dockerfile with jury system
 
 For example Dockerfile.jury with a jury:
 
@@ -393,16 +478,16 @@ Call-examples:
 
 Allowed return codes:
 
- * 101 - "service is up" (worked fine)
+ * 101 - "service is up" (works fine)
  * 102 - "service is corrupt" (something wrong with the service)
- * 103 - "service is mumbled" (or checker works endlessly)
+ * 103 - "service is mumbled" (or the checker falls into an endless loop)
  * 104 - "service is down"
  * any - "checker is shit"
 
 
 For example checker script (in python):
 
-```
+```python
 #!/usr/bin/python
 import sys
 import math
@@ -531,6 +616,33 @@ mysql> exit;
 Bye
 ```
 
+or like a mariadb:
+```
+# mariadb
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 49
+Server version: 10.3.27-MariaDB-0+deb10u1 Debian 10
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE ctf01d CHARACTER SET utf8 COLLATE utf8_general_ci;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> CREATE USER 'ctf01d'@'localhost' IDENTIFIED BY 'ctf01d';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON ctf01d.* TO 'ctf01d'@'localhost' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> exit;
+Bye
+```
+
 Install package-requirements
 
 ```
@@ -547,7 +659,7 @@ Clone source code of the project:
 $ git clone https://github.com/sea-kg/ctf01d ~/ctf01d.git
 ```
 
-Build
+Build:
 ```
 $ cd ~/ctf01d.git
 $ ./build_simple.sh
@@ -556,7 +668,7 @@ $ ./build_simple.sh
 *Maybe fix: `$ sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc`*
 *More info: (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340)[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340]*
 
-Start
+Start:
 ```
 $ cd ~/ctf01d.git
 $ mkdir data_test
@@ -565,14 +677,15 @@ $ ./ctf01d -work-dir ./data_test -db-host localhost start
 
 ## Build in docker
 
-1. In first step we prepare docker network:
+1. In the first step we prepare docker network:
 
 ```
 docker network create --driver=bridge ctf01d_net
 ```
 
-2. Prepare mysql database
-In first step we just start container with mysql (like a daemon - in background)
+2. Prepare mysql database:
+
+In the next step we just start the container with mysql (like a daemon - in background)
 
 ```
 docker run -d --rm \
@@ -586,13 +699,13 @@ docker run -d --rm \
     mysqld --default-authentication-plugin=mysql_native_password
 ```
 
-We can look docker status: `docker ps -a`
+We can look for docker status: `docker ps -a`
 
 3. Prepare docker for builds:
 
 *Notice: multistage build docker*
 
-Previously need download latest version ctf01d-stage-build / ctf01d-stage-release or build
+You need to download latest version of ctf01d-stage-build / ctf01d-stage-release or build it first
 
 Download (docker pull):
 ```
@@ -602,13 +715,20 @@ $ docker pull sea5kg/ctf01d-stage-release
 
 Or build fresh images for stages:
 ```
-$ cd ~/ctf01d.git
+$ cd ~/ctf01d.git/contrib/docker-build-stages/
 $ ./build-stages-images.sh
 ```
 
-You can see in list:
+You can see them in a list:
 ```
 $ docker images
+```
+
+And now you can build image:
+
+```
+$ cd ~/ctf01d.git
+$ docker build --rm=true -t "sea5kg/ctf01d:latest" .
 ```
 
 4. Run dev docker-container, build and start
@@ -642,36 +762,67 @@ Now you can see scoreboard on http://localhost:8081
 
 # GAME SIMULATION
 
-It's need for testing close to real game
+It's necessary for testing in conditions close to real game 
 - 3 teams
-- 4 services (on different languages)
+- 4 services (written in different languages)
 - 5 subnetworks (with masquerade - base on docker network)
 
-requirements:
+Requirements:
 * `$ pip3 install docker`
 
-Start
+Start:
 ```
 $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py start
 ```
 
-After this success you can look:
-    * Scoreboard - http://localhost:8080
-    * team1 - service1_py : `nc 10.10.11.1 4101`
-    * team2 - service1_py : `nc 10.10.12.1 4101`
-    * team3 - service1_py : `nc 10.10.13.1 4101`
-    * team1 - service2_go : http://10.10.11.1:4102
-    * team2 - service2_go : http://10.10.12.1:4102
-    * team3 - service2_go : http://10.10.13.1:4102
+After this command has run successfully, you can look for:
 
-For remove all images containers and networks:
+  * Scoreboard - http://localhost:8080
+  * team1 - service1_py : `nc 10.10.11.1 4101`
+  * team2 - service1_py : `nc 10.10.12.1 4101`
+  * team3 - service1_py : `nc 10.10.13.1 4101`
+  * team1 - service2_go : http://10.10.11.1:4102
+  * team2 - service2_go : http://10.10.12.1:4102
+  * team3 - service2_go : http://10.10.13.1:4102
+
+To remove all images, containers and networks:
 ```
 $ cd ~/ctf01d.git/game-simulation/
 $ ./ctf01d-assistent.py clean
 ```
 
-# THANKS TO
+# FOR MAINTAINERS
+
+/etc/systemd/system/ctf01d.service
+```
+[Unit]
+Description=CTF01D
+After=syslog.target
+After=network.target
+After=mysql.service
+Requires=mysql.service
+
+[Service]
+WorkingDirectory=/root
+User=root
+Group=root
+ExecStart=/bin/sh -c '/usr/bin/ctf01d start -s > /var/log/ctf01d/access.log 2> /var/log/ctf01d/error.log'
+
+TimeoutSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+Alias=ctf01d.service
+```
+and start it:
+```
+$ sudo chmod 644 /etc/systemd/system/ctf01d.service
+$ sudo systemctl restart myservice
+```
+
+# SPECIAL THANKS
 
 * Danil Dudkin
 

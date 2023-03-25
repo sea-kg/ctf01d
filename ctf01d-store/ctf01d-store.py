@@ -1,19 +1,15 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyrights sea-kg (c) 2021
+
 import sys
-import math
-import socket
-import random
-import time
-import errno
 import os
-import requests
 import re
 import json
-import stat
-import StringIO
 import zipfile
 import shutil
-import re
+import stat
+import requests
 
 version = '0.0.1'
 fhq_jury_ad_use_version = 'latest'
@@ -69,7 +65,7 @@ name = ''
 if len(sys.argv) > 2:
     name = sys.argv[2]
 
-urls = ["https://sea-kg.com/ctf01d-store/"]
+urls = ["https://sea-kg.com/files/ctf01d-store/"]
 
 if os.path.isfile("./.ctf01d-store/urls"):
     with open("./.ctf01d-store/urls") as f:
@@ -283,8 +279,8 @@ def findTeamById(team_id):
 def cmd_search():
     print("Searching.... '" + name.lower() + "'")
     nFound = 0
-    for u in urls:
-        u2 = preapareCacheUrl(u, 'services')
+    for _url in urls:
+        u2 = preapareCacheUrl(_url, 'services')
         with open(u2) as f:
             services_json = json.load(f)
         for s in services_json:
@@ -398,15 +394,15 @@ def cmd_info():
         "\n (!) and then try install 'vbs install [name]'" + bcolors.ENDC)
 
     print("\nTeams:\n")
-    n = 0
+    number_of_teams = 0
     teams = os.listdir("./jury.d/teams/")
     teams.sort()
     for t in teams:
-        n = n + 1
+        number_of_teams = number_of_teams + 1
         team_id = t.split(".")[0]
         team_info = findTeamById(team_id)
         cnf = parseConf("./jury.d/teams/" + t)
-        if team_info == None:
+        if team_info is None:
             team_info = {}
             team_info['id'] = team_id
         frm = ''
@@ -418,7 +414,7 @@ def cmd_info():
             frm = bcolors.DARKGRAY + " (from: " + team_info['from'] + ")" + bcolors.ENDC
         print(bcolors.OKGREEN + ' * defined team ' + team_info['id'] + bcolors.ENDC + " - " + team_info['name'] + ', logo: ./jury.d/html/' + team_info['logo'] + frm)
 
-    if n == 0:
+    if number_of_teams == 0:
         print(bcolors.WARNING
             + " (!) Add new team: 'vbs team-add [name]'"
             + "\n (!) Alse you can look preconfigured list of teams: 'vbs teams'"
@@ -477,7 +473,10 @@ def cmd_init():
     game_conf['game.flag_timelive_in_min'] = '10'
 
     if os.path.isfile('./jury.d/game.conf'):
-        print("Your already inited game here. Please remove all or create a init new in another place")
+        print(
+            "Your already inited game here. "
+            + "Please remove all or create a init new in another place"
+        )
         game_conf = parseConf('./jury.d/game.conf')
         #return
 
@@ -487,7 +486,7 @@ def cmd_init():
     pattern = re.compile("^([a-z0-9_]+)$")
     if not pattern.match(game_id):
         print("Game ID invalid")
-        exit(0)
+        sys.exit(0)
 
     game_conf['game.name'] = raw_input('Game - Name [' + game_conf['game.name'] + ']: ') or game_conf['game.name']
 
@@ -571,8 +570,8 @@ def cmd_init():
         f.write("CMD ctf01d start\n")
 
     print("Prepare ./docker-compose.yml")
-    with open('./docker-compose.yml', 'w') as f:
-        f.write("""version: '2'
+    with open('./docker-compose.yml', 'w') as file_docker_compose:
+        file_docker_compose.write("""version: '2'
 
 services:
   """ + mysql_dbhost + """:
@@ -606,8 +605,6 @@ networks:
   ctfgame_""" + game_id + """_net:
     driver: bridge
         """)
-        f.close()
-
     updateDockerfileJury()
 
 if command == "init":
@@ -622,28 +619,26 @@ if command == "urls":
         print(str(i) + ": " + u)
         i = i + 1
     print("")
-    exit(0)
+    sys.exit(0)
 
 if command == "urls-add":
     urls.append(name)
-    f = open("./.ctf01d-store/urls", "w")
-    for u in urls:
-        f.write(u + "\r\n")
-    f.close()
+    with open("./.ctf01d-store/urls", "w") as file_urls:
+        for u in urls:
+            file_urls.write(u + "\r\n")
     downloadServicesJSON(name)
-    exit(0)
+    sys.exit(0)
 
 if command == "urls-rm":
-    new_urls = []
+    NEW_URLS = []
     for u in urls:
         if u != name:
-            new_urls.append(u)
-    f = open("./.ctf01d-store/urls", "w")
-    for u in new_urls:
-        f.write(u + "\r\n")
-    f.close()
+            NEW_URLS.append(u)
+    with open("./.ctf01d-store/urls", "w") as furls:
+        for u in NEW_URLS:
+            furls.write(u + "\r\n")
     removeServicesJSON(name)
-    exit(0)
+    sys.exit(0)
 
 if command == "version":
     print("Version script: " + version)
@@ -651,38 +646,38 @@ if command == "version":
 
 if command == "update":
     cmd_update()
-    exit(0)
+    sys.exit(0)
 
 if command == "info":
     cmd_info()
-    exit(0)
+    sys.exit(0)
 
 if command == "search":
     cmd_search()
-    exit(0)
+    sys.exit(0)
 
 if command == "download":
     cmd_download()
-    exit(0)
+    sys.exit(0)
 
 if command == "install":
     cmd_install()
-    exit(0)
+    sys.exit(0)
 
 if command == "remove":
     cmd_remove()
-    exit(0)
+    sys.exit(0)
 
 if command == "teams-search":
     cmd_teams_search()
-    exit(0)
+    sys.exit(0)
 
 if command == "team-add":
     cmd_team_add()
-    exit(0)
+    sys.exit(0)
 
 if command == "team-rm":
     cmd_team_remove()
-    exit(0)
+    sys.exit(0)
 
 usage()

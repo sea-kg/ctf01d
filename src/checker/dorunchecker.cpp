@@ -135,22 +135,29 @@ void DoRunChecker::run() {
         return;
     } else if (nChildPid == 0) {
         // child process
-        dup2 (fd[1], STDOUT_FILENO);
-        dup2(1, 2); // redirects stderr to stdout below this line.
+        if (dup2(fd[1], STDOUT_FILENO) < 0) { // redirect from pipe to stdout
+            perror("dup2");
+            return;
+        }
+        if (dup2(STDOUT_FILENO, STDERR_FILENO) < 0) { // redirects stderr to stdout below this line.
+            perror("dup2");
+            return;
+        }
         close(fd[0]);
         close(fd[1]);
         chdir(m_sDir.c_str());
+        printf("fork: Child process id=%d\n", getpid());
+        printf("fork: Change dir '%s'\n", m_sDir.c_str());
         // setpgid(nChildPid, nChildPid); //Needed so negative PIDs can kill children of /bin/sh
         execlp(
             m_sScript.c_str(), // 
             m_sScript.c_str(), // first argument must be same like executable file
             m_sIp.c_str(), m_sCommand.c_str(), m_sFlagId.c_str(), m_sFlag.c_str(), (char *) 0
         );
-        
         perror("execl");
         exit(-1);
     }
-    
+
     // parent process;
     // setpgid(nChildPid, ::getpid());
     close(fd[1]);
@@ -163,15 +170,17 @@ void DoRunChecker::run() {
     char buffer[nSizeBuffer];
     std::memset(&buffer, 0, nSizeBuffer);
     try {
-        int nbytes = read(nPipeOut, buffer, nSizeBuffer-1);
-        m_sOutput += std::string(buffer);
+        while (read(nPipeOut, buffer, nSizeBuffer-1) > 0) {
+            m_sOutput += std::string(buffer);
+            std::memset(&buffer, 0, nSizeBuffer);
+        }
         int status;
-        if ( waitpid(m_nPid, &status, 0) == -1 ) {
+        if (waitpid(m_nPid, &status, 0) == -1) {
             perror("waitpid() failed");
             exit(EXIT_FAILURE);
         }
 
-        if ( WIFEXITED(status) ) {
+        if (WIFEXITED(status)) {
             m_bHasError = false;
             m_nExitCode = WEXITSTATUS(status);
         }
@@ -182,7 +191,7 @@ void DoRunChecker::run() {
         WsjcppLog::err("DoRunProcess", "bad alloc");
         return;
     }
-    
+
     close(nPipeOut);
 
     // Log::info(TAG, "Process exit code: " + std::to_string(m_nExitCode));

@@ -223,6 +223,8 @@ bool EmployConfig::init() {
 
     tryLoadFromEnv("CTF01D_WORKDIR", m_sWorkDir, "Work Directory from enviroment");
     tryLoadFromEnv("CTF01D_DB_HOST", m_sDatabaseHost, "Database Host from enviroment");
+    
+    WsjcppLog::info(TAG, "Work Directory is " + m_sWorkDir);
 
     std::string sWorkDir = this->getWorkDir();
     if (sWorkDir == "") {
@@ -237,10 +239,12 @@ bool EmployConfig::init() {
     // init logger
     std::string sLogDir = sWorkDir + "/logs";
     if (!WsjcppCore::dirExists(sLogDir)) {
-        std::cout << "Error: Folder " << sLogDir << " does not exists \n";
+        WsjcppCore::makeDir(sLogDir);
+    }
+    if (!WsjcppCore::dirExists(sLogDir)) {
+        std::cout << "Error: Folder '" << sLogDir << "' does not exists and could not created, please check access rights to parent folder.\n";
         return false;
     }
-
     WsjcppLog::setPrefixLogFile("ctf01d");
     WsjcppLog::setLogDirectory(sLogDir);
     WsjcppLog::setRotationPeriodInSec(600); // every 10 min  // TODO rotation period must be in config.yml
@@ -483,9 +487,9 @@ void EmployConfig::doExtractFilesIfNotExists() {
     if (!WsjcppCore::dirExists(m_sWorkDir + "/logs")) {
         WsjcppCore::makeDir(m_sWorkDir + "/logs");
     }
+
     if (!WsjcppCore::fileExists(m_sWorkDir + "/config.yml")) {
         WsjcppLog::warn(TAG, "Extracting config.yml and files");
-        
         WsjcppLog::warn(TAG, "Extracting checker_example_*");
         const std::vector<WsjcppResourceFile*> &vFiles = WsjcppResourcesManager::list();
         std::vector<std::string> vExecutableFiles;

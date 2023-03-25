@@ -15,4 +15,11 @@ class ArgumentProcessorTeamsList : public WsjcppArgumentProcessor {
         virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
 };
 
+class ArgumentProcessorTeamsSearch : public WsjcppArgumentProcessor {
+    public:
+        ArgumentProcessorTeamsSearch();
+
+        virtual int exec(const std::vector<std::string> &vRoutes, const std::vector<std::string> &vSubParams) override;
+};
+
 #endif // ARGUMENT_PROCESSOR_TEAMS_H

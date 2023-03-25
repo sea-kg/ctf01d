@@ -10,7 +10,10 @@ ctf01d
 tmp/*
 .wsjcpp/*
 *.log
-.ctf01d/*
+/.ctf01d
+/.ctf01d-store-cache
+/test-first-start
+/ctfight-test-jury
 
 # Prerequisites
 # *.d

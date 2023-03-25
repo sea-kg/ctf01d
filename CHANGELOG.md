@@ -5,7 +5,7 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.4.5] - ??
+## [v0.4.5] - (2023 Mar 25)
 
 * Removed python2 from ctf01d docker image
 * Added `nano` and `vim` to ctf01d docker image

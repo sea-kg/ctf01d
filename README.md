@@ -10,7 +10,7 @@ Also you can use it for training.
 ## Easy way to start/init it (based on docker-compose)
 
 Requirements:
-- docker 
+- docker
 - docker-compose
 
 And two terminals (command lines):
@@ -155,6 +155,11 @@ And then start it again:
 $ docker-compose up
 ```
 
+## License
+
+* CTF01D - MIT. Copyright (c) 2018-2023 Evgenii Sopov
+* libhv - BSD 3-Clause License. Copyright (c) 2020, ithewei
+
 ## Rules
 
 ### 1. Basic
@@ -167,7 +172,7 @@ basic_costs_stolen_flag_in_points:
   - EN: Basic cost of stolen flag (default: 10 points)
   - RU: Базовая стоимость украденного флага (по умолчанию: 10 поинтов)
 
-### 2. Acception of the defence flag / Принятие флага защиты 
+### 2. Acception of the defence flag / Принятие флага защиты
 
 EN:
 

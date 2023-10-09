@@ -56,67 +56,44 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/http_handlers")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/http_server")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
 
 # argument processors
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_clean.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_clean.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_ctf01d_main.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_services.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_services.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_start.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_teams.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_teams.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_version.cpp")
-list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.h")
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.cpp")
 
 # employees
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.h")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.cpp")
 
 # checker
-list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.h")
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.cpp")
-list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.h")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 
-# http_handlers
-list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.h")
-list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_api_v1.cpp")
-list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.h")
-list (APPEND WSJCPP_SOURCES "src/http_handlers/http_handler_web_folder.cpp")
-list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.h")
-list (APPEND WSJCPP_SOURCES "./src/http_handlers/light_web_http_handler_team_logo.cpp")
+# http_server
+list (APPEND WSJCPP_SOURCES "src/http_server/ctf01d_http_server.cpp")
+
 
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")
-list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.h")
 
 # storages
-list (APPEND WSJCPP_SOURCES "src/storages/storages.h")
 list (APPEND WSJCPP_SOURCES "src/storages/storages.cpp")
 
 # file storage
-# list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.h")
 # list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.cpp")
 
 # store
-list (APPEND WSJCPP_SOURCES "src/store/ctf01d_store.h")
 list (APPEND WSJCPP_SOURCES "src/store/ctf01d_store.cpp")
-list (APPEND WSJCPP_SOURCES "src/store/http_downloader.h")
 list (APPEND WSJCPP_SOURCES "src/store/http_downloader.cpp")
 
 # main
@@ -126,7 +103,6 @@ list (APPEND WSJCPP_SOURCES "src/main.cpp")
 ############################
 ##### mysql storage
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/mysql")
-list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.h")
 list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.cpp")
 
 # Find and make sure the system have the header file
@@ -175,12 +151,12 @@ ELSE(CURL_FOUND)
 ENDIF(CURL_FOUND)
 
 # libhv
-set(WITH_OPENSSL ON CACHE BOOL "")
+set(WITH_OPENSSL OFF CACHE BOOL "")
 set(WITH_CURL OFF CACHE BOOL "")
-set(WITH_MQTT OFF CACHE BOOL "")
-set(WITH_EVPP OFF CACHE BOOL "")
+# set(WITH_MQTT OFF CACHE BOOL "")
+# set(WITH_EVPP OFF CACHE BOOL "")
 set(BUILD_EXAMPLES OFF CACHE BOOL "")
-set(WITH_HTTP_CLIENT OFF CACHE BOOL "")
+# set(WITH_HTTP_CLIENT OFF CACHE BOOL "")
 set(BUILD_SHARED OFF CACHE BOOL "")
 
 add_subdirectory(src-libhv)

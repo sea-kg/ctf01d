@@ -21,11 +21,6 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-  - name: "wsjcpp-light-web-server"
-    version: "v0.1.0"
-    url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
-    origin: "https://github.com/"
-    installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
   - name: "HowardHinnant/date"
     version: "v2.4.1"
     url: "https://github.com/wsjcpp/HowardHinnant_date:master"
@@ -235,3 +230,4 @@ resources:
     pack-as: "binary"
     modified: 1599898841
     sha1: ""
+

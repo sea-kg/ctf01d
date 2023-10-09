@@ -35,14 +35,13 @@
 #include "argument_processor_web_test.h"
 #include <wsjcpp_core.h>
 #include <employ_config.h>
-#include <light_web_http_handler_team_logo.h>
-#include <http_handler_web_folder.h>
-#include <http_handler_api_v1.h>
+#include <ctf01d_http_server.h>
+#include "WebSocketServer.h" // libhv
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorWebTest
 
-ArgumentProcessorWebTest::ArgumentProcessorWebTest() 
+ArgumentProcessorWebTest::ArgumentProcessorWebTest()
 : WsjcppArgumentProcessor({"web-test"}, "Start alone http server for test", "Start alone http server for test") {
     TAG = "ArgumentProcessorWebTest";
     // registrySingleArgument("--single", "What exactly do this single param?");
@@ -61,8 +60,8 @@ bool ArgumentProcessorWebTest::applySingleArgument(const std::string &sProgramNa
 // ---------------------------------------------------------------------
 
 bool ArgumentProcessorWebTest::applyParameterArgument(
-    const std::string &sProgramName, 
-    const std::string &sArgumentName, 
+    const std::string &sProgramName,
+    const std::string &sArgumentName,
     const std::string &sValue
 ) {
     WsjcppLog::err(TAG, "Not implemented");
@@ -80,15 +79,16 @@ int ArgumentProcessorWebTest::exec(const std::vector<std::string> &vRoutes, cons
 
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
 
-    WsjcppLightWebServer httpServer;
-    httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
-    httpServer.addHandler(new HttpHandlerWebFolder(pEmployConfig->scoreboardHtmlFolder()));
-    httpServer.addHandler(new HttpHandlerApiV1());
-    httpServer.setPort(pEmployConfig->scoreboardPort());
-    httpServer.setMaxWorkers(5);
-    httpServer.startSync(); // will be block thread
+    WsjcppLog::ok(TAG, "Starting scoreboard on http://localhost:" + std::to_string(pEmployConfig->scoreboardPort()) + "/");
+
+    Ctf01dHttpServer httpServer;
+    hv::HttpService *pRouter = httpServer.getService();
+    hv::HttpServer server(pRouter);
+    server.setPort(pEmployConfig->scoreboardPort());
+    server.setThreadNum(4);
+    server.run();
 
     WsjcppLog::err(TAG, "Not implemented");
-    return -1; 
+    return -1;
 }
 

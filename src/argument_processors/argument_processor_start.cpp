@@ -35,14 +35,13 @@
 #include "argument_processor_start.h"
 #include <wsjcpp_core.h>
 #include <employ_config.h>
-#include <light_web_http_handler_team_logo.h>
-#include <http_handler_web_folder.h>
-#include <http_handler_api_v1.h>
+#include <ctf01d_http_server.h>
+#include "WebSocketServer.h"  // libhv
 
 // ---------------------------------------------------------------------
 // ArgumentProcessorStart
 
-ArgumentProcessorStart::ArgumentProcessorStart() 
+ArgumentProcessorStart::ArgumentProcessorStart()
 : WsjcppArgumentProcessor({"start"}, "TODO short description", "TODO long description") {
     TAG = "ArgumentProcessorStart";
     // registrySingleArgument("--single", "What exactly do this single param?");
@@ -60,8 +59,8 @@ bool ArgumentProcessorStart::applySingleArgument(const std::string &sProgramName
 // ---------------------------------------------------------------------
 
 bool ArgumentProcessorStart::applyParameterArgument(
-    const std::string &sProgramName, 
-    const std::string &sArgumentName, 
+    const std::string &sProgramName,
+    const std::string &sArgumentName,
     const std::string &sValue
 ) {
     WsjcppLog::err(TAG, "Not implemented");
@@ -107,15 +106,13 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
     }
 
     WsjcppLog::ok(TAG, "Starting scoreboard on http://localhost:" + std::to_string(pEmployConfig->scoreboardPort()) + "/");
-    
-    WsjcppLightWebServer httpServer;
-    
-    httpServer.addHandler(new LightWebHttpHandlerTeamLogo());
-    httpServer.addHandler(new HttpHandlerWebFolder(pEmployConfig->scoreboardHtmlFolder()));
-    httpServer.addHandler(new HttpHandlerApiV1());
-    httpServer.setPort(pEmployConfig->scoreboardPort());
-    httpServer.setMaxWorkers(10);
-    httpServer.startSync(); // will be block thread
+
+    Ctf01dHttpServer httpServer;
+    hv::HttpService *pRouter = httpServer.getService();
+    hv::HttpServer server(pRouter);
+    server.setPort(pEmployConfig->scoreboardPort());
+    server.setThreadNum(4);
+    server.run();
 
     // TODO: stop all threads
 
@@ -125,6 +122,6 @@ int ArgumentProcessorStart::exec(const std::vector<std::string> &vRoutes, const 
         Log::info(TAG, "wait ended");
     }*/
 
-    return -1; 
+    return -1;
 }
 

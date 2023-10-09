@@ -36,8 +36,6 @@
 #include <wsjcpp_core.h>
 #include <employ_config.h>
 
-// ---------------------------------------------------------------------
-
 int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
     std::string appName = std::string(WSJCPP_APP_NAME);
@@ -51,7 +49,6 @@ int main(int argc, const char* argv[]) {
     WsjcppLog::setLogDirectory(".ctf01d");
 
     // try find config.yml
-    
     std::vector<std::string> vPossibleFolders = {
         "./",
         "./data_sample/",
@@ -61,7 +58,7 @@ int main(int argc, const char* argv[]) {
     for (int i = 0; i < vPossibleFolders.size(); i++) {
         std::string sWorkDir = vPossibleFolders[i];
         if (sWorkDir[0] != '/') {
-            sWorkDir = WsjcppCore::getCurrentDirectory() + "/" + sWorkDir;    
+            sWorkDir = WsjcppCore::getCurrentDirectory() + "/" + sWorkDir;
         }
         sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);
         if (WsjcppCore::fileExists(sWorkDir + "/config.yml")) {
@@ -71,6 +68,12 @@ int main(int argc, const char* argv[]) {
             break;
         }
     }
+
+    // websocket_server_t server;
+    // server.service = pRouter;
+    // server.port = 12345;
+    // // server.ws = pWs;
+    // websocket_server_run(&server);
 
     ArgumentProcessorCtf01dMain *pMain = new ArgumentProcessorCtf01dMain();
     WsjcppArguments prog(argc, argv, pMain);

@@ -32,21 +32,43 @@
  *
  ***********************************************************************************/
 
-#ifndef LIGHT_WEB_HTTP_HANDLER_TEAM_LOGO_H
-#define LIGHT_WEB_HTTP_HANDLER_TEAM_LOGO_H
+#ifndef CTF01D_HTTP_SERVER_H
+#define CTF01D_HTTP_SERVER_H
 
-#include <wsjcpp_light_web_server.h>
+#include <string>
+#include <json.hpp>
+#include "HttpService.h"
+#include <employ_config.h>
+#include <employ_team_logos.h>
+#include <employ_flags.h>
 
-class LightWebHttpHandlerTeamLogo : public WsjcppLightWebHttpHandlerBase {
+class Ctf01dHttpServer {
     public:
-        LightWebHttpHandlerTeamLogo();
-        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest);
+        Ctf01dHttpServer();
+        hv::HttpService *getService();
+        int httpApiV1GetPaths(HttpRequest* req, HttpResponse* resp);
+        int httpAdmin(HttpRequest* req, HttpResponse* resp);
+        int httpWebFolder(HttpRequest* req, HttpResponse* resp);
+        int httpApiV1Flag(HttpRequest* req, HttpResponse* resp);
 
     private:
         std::string TAG;
-        std::string m_sPrefix;
-        int m_nPrefixLength;
+        std::string m_sApiPathPrefix;
+        std::string m_sTeamLogoPrefix;
+        int m_nTeamLogoPrefixLength;
+        hv::HttpService *m_pHttpService;
+
+        EmployConfig *m_pConfig;
+        EmployFlags *m_pEmployFlags;
+        EmployTeamLogos *m_pTeamLogos;
+
+        std::string m_sIndexHtml;
+        std::string m_sScoreboardHtmlFolder;
+
+        nlohmann::json m_jsonGame;
+        std::string m_sCacheResponseGameJson;
+        nlohmann::json m_jsonTeams; // prepare data for list of teams
+        std::string m_sCacheResponseTeamsJson;
 };
 
-#endif // LIGHT_WEB_HTTP_HANDLER_TEAM_LOGO_H
+#endif // CTF01D_HTTP_SERVER_H

@@ -46,7 +46,7 @@
 // ---------------------------------------------------------------------
 // ArgumentProcessorCtf01dMain
 
-ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain() 
+ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
 : WsjcppArgumentProcessor({"ctf01d_main"}, "Jury System for ctf-attack-defence", "Jury System for ctf-attack-defence") {
     TAG = "ArgumentProcessorCtf01dMain";
     // registrySingleArgument("--single", "What exactly do this single param?");
@@ -65,12 +65,12 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
 // ---------------------------------------------------------------------
 
 bool ArgumentProcessorCtf01dMain::applyParameterArgument(
-    const std::string &sProgramName, 
-    const std::string &sArgumentName, 
+    const std::string &sProgramName,
+    const std::string &sArgumentName,
     const std::string &sValue
 ) {
     EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
-    
+
     if (sArgumentName == "-work-dir") {
         std::string sWorkDir = WsjcppCore::getCurrentDirectory() + sValue;
         sWorkDir = WsjcppCore::doNormalizePath(sWorkDir);

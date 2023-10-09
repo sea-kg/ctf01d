@@ -1,3 +1,37 @@
+/**********************************************************************************
+ *          Project
+ *  _______ _________ _______  _______  __    ______
+ * (  ____ \\__   __/(  ____ \(  __   )/  \  (  __  \
+ * | (    \/   ) (   | (    \/| (  )  |\/) ) | (  \  )
+ * | |         | |   | (__    | | /   |  | | | |   ) |
+ * | |         | |   |  __)   | (/ /) |  | | | |   | |
+ * | |         | |   | (      |   / | |  | | | |   ) |
+ * | (____/\   | |   | )      |  (__) |__) (_| (__/  )
+ * (_______/   )_(   |/       (_______)\____/(______/
+ *
+ * MIT License
+ * Copyright (c) 2018-2023 Evgenii Sopov
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ ***********************************************************************************/
+
 
 #include "employ_config.h"
 #include <wsjcpp_core.h>
@@ -25,67 +59,45 @@ Ctf01dServiceDef::Ctf01dServiceDef(){
     m_nTimeSleepBetweenRunScriptsInSec = 10;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceDef::setId(const std::string &sServiceID){
     m_sID = sServiceID;
 }
-
-// ----------------------------------------------------------------------
 
 std::string Ctf01dServiceDef::id() const {
     return m_sID;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceDef::setName(const std::string &sName){
     m_sName = sName;
 }
-
-// ----------------------------------------------------------------------
 
 std::string Ctf01dServiceDef::name() const {
     return m_sName;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceDef::setScriptPath(const std::string &sScriptPath){
     m_sScriptPath = sScriptPath;
 }
-
-// ----------------------------------------------------------------------
 
 std::string Ctf01dServiceDef::scriptPath() const {
     return m_sScriptPath;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceDef::setScriptDir(const std::string &sScriptDir) {
     m_sScriptDir = sScriptDir;
 }
-
-// ----------------------------------------------------------------------
 
 std::string Ctf01dServiceDef::scriptDir() const {
     return m_sScriptDir;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceDef::setEnabled(bool bEnabled){
     m_bEnabled = bEnabled;
 }
 
-// ----------------------------------------------------------------------
-
 bool Ctf01dServiceDef::isEnabled() const {
     return m_bEnabled;
 }
-
-// ----------------------------------------------------------------------
 
 void Ctf01dServiceDef::setScriptWaitInSec(int nSec){
     m_nScriptWaitInSec = nSec;
@@ -94,13 +106,9 @@ void Ctf01dServiceDef::setScriptWaitInSec(int nSec){
     }
 }
 
-// ----------------------------------------------------------------------
-
 int Ctf01dServiceDef::scriptWaitInSec() const {
     return m_nScriptWaitInSec;
 }
-
-// ----------------------------------------------------------------------
 
 void Ctf01dServiceDef::setTimeSleepBetweenRunScriptsInSec(int nSec){
     m_nTimeSleepBetweenRunScriptsInSec = nSec;
@@ -108,8 +116,6 @@ void Ctf01dServiceDef::setTimeSleepBetweenRunScriptsInSec(int nSec){
         m_nTimeSleepBetweenRunScriptsInSec = 10;
     }
 }
-
-// ----------------------------------------------------------------------
 
 int Ctf01dServiceDef::timeSleepBetweenRunScriptsInSec() const {
     return m_nTimeSleepBetweenRunScriptsInSec;
@@ -122,61 +128,41 @@ Ctf01dTeamDef::Ctf01dTeamDef() {
     // nothing
 }
 
-// ---------------------------------------------------------------------
-
 void Ctf01dTeamDef::setId(const std::string &sTeamId){
     m_sTeamID = sTeamId;
 }
-
-// ---------------------------------------------------------------------
 
 std::string Ctf01dTeamDef::getId() const {
     return m_sTeamID;
 }
 
-// ---------------------------------------------------------------------
-
 void Ctf01dTeamDef::setName(const std::string &sName){
     m_sName = sName;
 }
-
-// ---------------------------------------------------------------------
 
 std::string Ctf01dTeamDef::getName() const {
     return m_sName;
 }
 
-// ---------------------------------------------------------------------
-
 void Ctf01dTeamDef::setIpAddress(const std::string &sIpAddress){
     m_sIpAddress = sIpAddress;
 }
-
-// ---------------------------------------------------------------------
 
 std::string Ctf01dTeamDef::ipAddress() const {
     return m_sIpAddress;
 }
 
-// ---------------------------------------------------------------------
-
 void Ctf01dTeamDef::setActive(bool bActive){
     m_bActive = bActive;
 }
-
-// ---------------------------------------------------------------------
 
 bool Ctf01dTeamDef::isActive() const {
     return m_bActive;
 }
 
-// ---------------------------------------------------------------------
-
 void Ctf01dTeamDef::setLogo(const std::string &sLogo){
     m_sLogo = sLogo;
 }
-
-// ---------------------------------------------------------------------
 
 std::string Ctf01dTeamDef::logo() const {
     return m_sLogo;
@@ -196,7 +182,7 @@ EmployConfig::EmployConfig()
     m_bScoreboardRandom = false;
     m_pStorage = nullptr;
     m_pScoreboard = nullptr;
-    
+
     m_sUseStorage = ""; // default value
     m_nGameStartUTCInSec = 0;
     m_nGameEndUTCInSec = 0;
@@ -209,21 +195,17 @@ EmployConfig::EmployConfig()
     m_sDatabaseHost = "";
 }
 
-// ---------------------------------------------------------------------
-
 EmployConfig::~EmployConfig() {
     if (m_pScoreboard != nullptr) {
         delete m_pScoreboard;
     }
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::init() {
 
     tryLoadFromEnv("CTF01D_WORKDIR", m_sWorkDir, "Work Directory from enviroment");
     tryLoadFromEnv("CTF01D_DB_HOST", m_sDatabaseHost, "Database Host from enviroment");
-    
+
     WsjcppLog::info(TAG, "Work Directory is " + m_sWorkDir);
 
     std::string sWorkDir = this->getWorkDir();
@@ -262,8 +244,6 @@ bool EmployConfig::init() {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::deinit() {
     WsjcppLog::info(TAG, "deinit");
     if (m_pScoreboard != nullptr) {
@@ -273,8 +253,6 @@ bool EmployConfig::deinit() {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 void EmployConfig::setWorkDir(const std::string &sWorkDir) {
     if (m_sWorkDir != "" && m_sWorkDir != sWorkDir) {
         std::cout << "Changed work-dir to '" + sWorkDir + "'" << std::endl;
@@ -283,25 +261,17 @@ void EmployConfig::setWorkDir(const std::string &sWorkDir) {
     m_sScoreboardHtmlFolder = m_sWorkDir + "/html"; // default value
 }
 
-// ---------------------------------------------------------------------
-
 std::string EmployConfig::getWorkDir() {
     return m_sWorkDir;
 }
-
-// ---------------------------------------------------------------------
 
 void EmployConfig::setDatabaseHost(std::string sDatabaseHost) {
     m_sDatabaseHost = sDatabaseHost;
 }
 
-// ---------------------------------------------------------------------
-
 std::string EmployConfig::getDatabaseHost() {
     return m_sDatabaseHost;
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployConfig::applyConfig() {
     if (m_bApplyedConfig) {
@@ -318,7 +288,7 @@ bool EmployConfig::applyConfig() {
         WsjcppLog::err(TAG, "File " + sConfigFile + " does not exists ");
         return false;
     }
-    
+
     WsjcppYaml yamlConfig;
     if (!yamlConfig.loadFromFile(sConfigFile)) {
         WsjcppLog::err(TAG, "Could not parse " + sConfigFile);
@@ -378,110 +348,73 @@ bool EmployConfig::applyConfig() {
     return m_bApplyedConfig;
 }
 
-// ---------------------------------------------------------------------
-
 std::vector<Ctf01dTeamDef> &EmployConfig::teamsConf() {
     return m_vTeamsConf;
 }
-
-// ---------------------------------------------------------------------
 
 std::vector<Ctf01dServiceDef> &EmployConfig::servicesConf() {
     return m_vServicesConf;
 }
 
-// ---------------------------------------------------------------------
-
 int EmployConfig::scoreboardPort() const {
     return m_nScoreboardPort;
 }
-
-// ---------------------------------------------------------------------
 
 std::string EmployConfig::scoreboardHtmlFolder() const {
     return m_sScoreboardHtmlFolder;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::scoreboardRandom() const {
     return m_bScoreboardRandom;
 }
-
-// ---------------------------------------------------------------------
 
 std::string EmployConfig::gameId() const {
     return m_sGameId;
 }
 
-// ---------------------------------------------------------------------
-
 std::string EmployConfig::gameName() const  {
     return m_sGameName;
 }
-
-// ---------------------------------------------------------------------
 
 int EmployConfig::flagTimeliveInMin() const  {
     return m_nFlagTimeliveInMin;
 }
 
-// ---------------------------------------------------------------------
-
 int EmployConfig::getBasicCostsStolenFlagInPoints() const {
     return m_nBasicCostsStolenFlagInPoints;
 }
-
-
-// ---------------------------------------------------------------------
 
 int EmployConfig::gameStartUTCInSec() const {
     return m_nGameStartUTCInSec;
 }
 
-// ---------------------------------------------------------------------
-
 int EmployConfig::gameEndUTCInSec() const {
     return m_nGameEndUTCInSec;
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployConfig::gameHasCoffeeBreak() {
     return m_bHasCoffeeBreak;
 }
 
-// ---------------------------------------------------------------------
-
 int EmployConfig::gameCoffeeBreakStartUTCInSec() {
     return m_nGameCoffeeBreakStartUTCInSec;
 }
-
-// ---------------------------------------------------------------------
 
 int EmployConfig::gameCoffeeBreakEndUTCInSec() {
     return m_nGameCoffeeBreakEndUTCInSec;
 }
 
-// ---------------------------------------------------------------------
-
 Storage *EmployConfig::storage(){
     return m_pStorage;
 }
-
-// ---------------------------------------------------------------------
 
 void EmployConfig::setStorage(Storage *pStorage){
     m_pStorage = pStorage;
 }
 
-// ---------------------------------------------------------------------
-
 Scoreboard *EmployConfig::scoreboard(){
     return m_pScoreboard;
 }
-
-// ---------------------------------------------------------------------
 
 void EmployConfig::doExtractFilesIfNotExists() {
     if (!WsjcppCore::dirExists(m_sWorkDir + "/logs")) {
@@ -581,15 +514,13 @@ void EmployConfig::doExtractFilesIfNotExists() {
     }
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
 
     m_sGameId = yamlConfig["game"]["id"].getValue();
     WsjcppLog::info(TAG, "game.id: " + m_sGameId);
     m_sGameName = yamlConfig["game"]["name"].getValue();
     WsjcppLog::info(TAG, "game.name: " + m_sGameName);
-    
+
     m_sGameStart = yamlConfig["game"]["start"].getValue();
     WsjcppLog::info(TAG, "game.start: " + m_sGameStart);
     {
@@ -598,9 +529,9 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
         in >> date::parse("%Y-%m-%d %T", tp);
         m_nGameStartUTCInSec = std::chrono::duration_cast<std::chrono::seconds>(tp.time_since_epoch()).count();
     }
-    
+
     WsjcppLog::info(TAG, "Game start (UNIX timestamp): " + std::to_string(m_nGameStartUTCInSec));
-    
+
     m_sGameEnd = yamlConfig["game"]["end"].getValue();
     WsjcppLog::info(TAG, "game.end: " + m_sGameEnd);
     {
@@ -684,11 +615,7 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
-
 bool EmployConfig::applyServerConf(WsjcppYaml &yamlConfig) {
-    
     m_sUseStorage = yamlConfig["server"]["use_storage"].getValue();
 
     if (!Storages::support(m_sUseStorage)) {
@@ -707,8 +634,6 @@ bool EmployConfig::applyServerConf(WsjcppYaml &yamlConfig) {
 
     return true;
 }
-
-// ---------------------------------------------------------------------
 
 bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 
@@ -742,11 +667,9 @@ bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
     m_vServicesConf.clear();
-    
+
     WsjcppYamlItem yamlCheckers = yamlConfig["checkers"];
 
     if (yamlCheckers.getLength() == 0) {
@@ -758,9 +681,9 @@ bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
         WsjcppYamlItem yamlChecker = yamlCheckers[i];
         std::string sServiceId = yamlChecker["id"].getValue();
 
-        
+
         // std::string sServiceConfPath = m_sWorkspaceDir + "/checker_" + sServiceId + "/service.conf";
-       
+
         std::string sServiceName = yamlChecker["service_name"].getValue();
         WsjcppLog::info(TAG, "service_name = " + sServiceName);
 
@@ -801,7 +724,7 @@ bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
             WsjcppLog::warn(TAG, "Checker for service " + sServiceId + " - disabled ");
             continue;
         }
-        
+
         for (unsigned int i = 0; i < m_vServicesConf.size(); i++) {
             if (m_vServicesConf[i].id() == sServiceId) {
                 WsjcppLog::err(TAG, "Already registered checker for service " + sServiceId);
@@ -831,8 +754,6 @@ bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
     return true;
 }
 
-// ---------------------------------------------------------------------
-
 bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
     m_vTeamsConf.clear();
     EmployTeamLogos *pTeamLogos = findWsjcppEmploy<EmployTeamLogos>();
@@ -843,7 +764,7 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
         WsjcppLog::err(TAG, "Teams does not defined");
         return false;
     }
-    
+
     for (int i = 0; i < yamlTeams.getLength(); i++) {
         WsjcppYamlItem yamlTeam = yamlTeams[i];
         std::string sTeamId = yamlTeam["id"].getValue();
@@ -882,7 +803,6 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
         }
         WsjcppLog::info(TAG, "logo = " + sTeamLogo);
 
-        
         // default values of service config
         Ctf01dTeamDef _teamConf;
         _teamConf.setId(sTeamId);
@@ -894,7 +814,7 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
         m_vTeamsConf.push_back(_teamConf);
         WsjcppLog::ok(TAG, "Registered team " + sTeamId);
     }
-    
+
     if (m_vTeamsConf.size() == 0) {
         WsjcppLog::err(TAG, "No one defined team in config");
         return false;
@@ -902,8 +822,6 @@ bool EmployConfig::readTeamsConf(WsjcppYaml &yamlConfig) {
 
     return true;
 }
-
-// ---------------------------------------------------------------------
 
 void EmployConfig::tryLoadFromEnv(const std::string &sEnvName, std::string &sValue, const std::string &sDescription) {
     if (sValue == "") { // only if not define previously (from command line param)

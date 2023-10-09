@@ -136,7 +136,7 @@ Teams:
 Search for a predefined team in the teams-store (will download control files from different sources first):
 ```
 root@df281aedde7d:~# ctf01d teams search neos
-Found teams: 
+Found teams:
 team id='neosfun'; name: 'NeosFun'
 ```
 
@@ -826,6 +826,7 @@ $ sudo systemctl restart myservice
 # SPECIAL THANKS
 
 * Danil Dudkin
+* [ithewei/libhv](https://github.com/ithewei/libhv) - for a c++ webserver (v1.3.1)
 
 # Online Attack-Defence
 

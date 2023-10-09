@@ -1,9 +1,14 @@
 # Changelog
 
 All notable changes to ctf01d project will be documented in this file.
- 
+
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [v0.5.0] - (2023 ?? ??)
+
+* Added src libhv v1.3.1 (https://github.com/ithewei/libhv)
+* Added Copyrights
 
 ## [v0.4.5] - (2023 Mar 25)
 
@@ -22,7 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Copied script fhqjad-store from fhq-server
 * Fixed #52 added 'ctf01d teams list'
 * Added to main find workdir authomaticly
-* Fixed #53 added 'ctf01d services list' 
+* Fixed #53 added 'ctf01d services list'
 
 ### Changed
 

@@ -111,7 +111,7 @@ Attach to a running container with a bash command line:
 ```
 $ docker exec -it -w /root ctf01d_jury_my_game bash
 root@df281aedde7d:~# ctf01d version
-ctf01d v0.4.5
+ctf01d v0.5.0
 ```
 
 Now we can use some commands from `ctf01d`
@@ -121,12 +121,12 @@ For example, list of commands in the default config:
 root@df281aedde7d:~# ctf01d teams ls
 ...
 Teams:
- - another_some 
+ - another_some
      name: Another Some
      ip-address: 127.0.1.1
      logo: /usr/share/ctf01d/html/images/teams/unknown.svg
 
- - so_some 
+ - so_some
      name: So Some
      ip-address: 127.0.0.1
      logo: /usr/share/ctf01d/html/images/logo.png

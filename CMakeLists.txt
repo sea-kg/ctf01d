@@ -163,6 +163,10 @@ add_subdirectory(src-libhv)
 list (APPEND WSJCPP_LIBRARIES hv_static)
 list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src-libhv/include/hv")
 
+add_subdirectory(src/sqlite3)
+list (APPEND WSJCPP_LIBRARIES sqlite3-static)
+list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/sqlite3/src")
+
 include_directories(${WSJCPP_INCLUDE_DIRS})
 
 add_executable (ctf01d ${WSJCPP_SOURCES})

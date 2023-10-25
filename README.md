@@ -159,6 +159,7 @@ $ docker-compose up
 
 * CTF01D - MIT. Copyright (c) 2018-2023 Evgenii Sopov
 * libhv - BSD 3-Clause License. Copyright (c) 2020, ithewei
+* SQLITE - SQLite is in the Public Domain
 
 ## Rules
 
@@ -278,7 +279,6 @@ for s in services:
         cost_attack_flag = sp4d
     else:
         cost_attack_flag = sp4d * (s["rpsf"] / sf_rsum)
-        
     cost_defence_flag = 0
     if df_rsum == 0:
         cost_defence_flag = dp4d
@@ -340,7 +340,7 @@ Where
 
 Where
 
-* {HOST} - host or ip at which the jury is available 
+* {HOST} - host or ip at which the jury is available
 * {PORT} - configured scoreboard/flag port of the jury system
 * {TEAMID} - number, your unique teamid (see scoreboard)
 * {FLAG} - uuid, so that the jury knows that this is a flag from an enemy server
@@ -391,7 +391,7 @@ Call-examples:
 
 
  # Jury API requests list
- 
+
  * `http://{HOST}:{PORT}/api/v1/game` - info about the game
  * `http://{HOST}:{PORT}/api/v1/teams` - list of teams
  * `http://{HOST}:{PORT}/api/v1/services` - list of services
@@ -741,7 +741,7 @@ $ docker tag "sea5kg/ctf01d:latest" "sea5kg/ctf01d:v0.4.x"
 
 Run:
 ```
-$ cd ~/ctf01d.git 
+$ cd ~/ctf01d.git
 $ docker run -it --rm \
   -p 8081:8080 \
   -v `pwd`/:/root/ctf01d.dev \
@@ -759,7 +759,7 @@ root@604feda3c718:~/ctf01d.dev# ./clean.sh
 root@604feda3c718:~/ctf01d.dev# ./build_simple.sh
 ```
 
-Start: 
+Start:
 ```
 root@604feda3c718:~/ctf01d.dev# ./ctf01d -work-dir ./data_sample/ -db-host ctf01d-mysql start
 ```
@@ -768,7 +768,7 @@ Now you can see scoreboard on http://localhost:8081
 
 # GAME SIMULATION
 
-It's necessary for testing in conditions close to real game 
+It's necessary for testing in conditions close to real game
 - 3 teams
 - 4 services (written in different languages)
 - 5 subnetworks (with masquerade - base on docker network)
@@ -832,6 +832,7 @@ $ sudo systemctl restart myservice
 
 * Danil Dudkin
 * [ithewei/libhv](https://github.com/ithewei/libhv) - for a c++ webserver (v1.3.1)
+* [sqlite](https://www.sqlite.org/download.html) - C source code as an amalgamation, version 3.43.2
 
 # Online Attack-Defence
 
@@ -880,3 +881,14 @@ https://github.com/mcpa-stlouis/hack-the-arch
 ForcAD - Pure-python distributable Attack-Defence CTF platform, created to be easily set up.
 
 https://github.com/pomo-mondreganto/ForcAD
+
+
+# Scoring Systems (different)
+
+Calculate points in ForceAD:
+
+https://github.com/pomo-mondreganto/ForcAD/blob/master/backend/scripts/create_functions.sql#L1
+
+HITB SECCONF CTF 2023 for participants:
+
+https://2023.ctf.hitb.org/hitb-ctf-phuket-2023/rules

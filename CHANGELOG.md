@@ -8,7 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [v0.5.0] - (2023 ?? ??)
 
 * Added src libhv v1.3.1 (https://github.com/ithewei/libhv)
-* Added Copyrights
+* Removed wsjcpp-light-web-server
+* Redesign code http server to libhv
+* Updated wsjcpp-core to v0.2.3
+* Up c++ to 17
+* Added src sqlite3 v3.43.2 (https://www.sqlite.org/)
+* Added Copyrights to source files
 
 ## [v0.4.5] - (2023 Mar 25)
 

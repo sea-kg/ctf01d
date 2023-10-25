@@ -38,6 +38,7 @@
 #include "EventLoop.h"
 #include "htime.h"
 #include "hssl.h"
+#include "hlog.h"
 #include <regex>
 #include <wsjcpp_core.h>
 
@@ -50,6 +51,18 @@ Ctf01dHttpServer::Ctf01dHttpServer() {
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
     m_pTeamLogos = findWsjcppEmploy<EmployTeamLogos>();
     m_sScoreboardHtmlFolder = m_pConfig->scoreboardHtmlFolder();
+
+    {
+        logger_t* pLogger = hv_default_logger();
+        // logger_set_max_filesize(pLogger, 102400);
+        std::string sLogDirPath = m_pConfig->getWorkDir() + "/hv_logs";
+        if (!WsjcppCore::dirExists(sLogDirPath)) {
+            WsjcppCore::makeDir(sLogDirPath);
+        }
+        std::string sLogFilePath = sLogDirPath + "/http_" + WsjcppCore::getCurrentTimeForFilename() + ".log";
+        logger_set_file(pLogger, sLogFilePath.c_str());
+    }
+
     m_sApiPathPrefix = "/api/v1/";
     m_sTeamLogoPrefix = "/team-logo/";
     m_nTeamLogoPrefixLength = m_sTeamLogoPrefix.size();

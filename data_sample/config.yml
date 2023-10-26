@@ -58,13 +58,103 @@ checkers:
     time_sleep_between_run_scripts_in_sec: 15
 
 teams:
-  - id: "another_some" # must be uniq
-    name: "Another Some"
+  - id: "t01" # must be uniq
+    name: "Team #1"
     active: yes
-    logo: "./html/images/teams/unknown.svg"
+    logo: "./html/images/teams/team01.png"
     ip_address: "127.0.1.1" # address to vulnserver
-  - id: "so_some" # must be uniq
-    name: "So Some"
+  - id: "t02" # must be uniq
+    name: "Team #2"
     active: yes
-    logo: "./html/images/logo.png"
-    ip_address: "127.0.0.1" # address to vulnserver
+    logo: "./html/images/teams/team02.png"
+    ip_address: "127.0.2.1" # address to vulnserver
+  - id: "t03" # must be uniq
+    name: "Team #3"
+    active: yes
+    logo: "./html/images/teams/team03.png"
+    ip_address: "127.0.3.1" # address to vulnserver
+  - id: "t04" # must be uniq
+    name: "Team #4"
+    active: yes
+    logo: "./html/images/teams/team04.png"
+    ip_address: "127.0.3.1" # address to vulnserver
+  - id: "t05" # must be uniq
+    name: "Team #5"
+    active: yes
+    logo: "./html/images/teams/team05.png"
+    ip_address: "127.0.5.1" # address to vulnserver
+  - id: "t06" # must be uniq
+    name: "Team #6"
+    active: yes
+    logo: "./html/images/teams/team06.png"
+    ip_address: "127.0.6.1" # address to vulnserver
+  - id: "t07" # must be uniq
+    name: "Team #7"
+    active: yes
+    logo: "./html/images/teams/team07.png"
+    ip_address: "127.0.7.1" # address to vulnserver
+  - id: "t08" # must be uniq
+    name: "Team #8"
+    active: yes
+    logo: "./html/images/teams/team08.png"
+    ip_address: "127.0.8.1" # address to vulnserver
+  - id: "t09" # must be uniq
+    name: "Team #9"
+    active: yes
+    logo: "./html/images/teams/team09.png"
+    ip_address: "127.0.9.1" # address to vulnserver
+  - id: "t10" # must be uniq
+    name: "Team #10"
+    active: yes
+    logo: "./html/images/teams/team10.png"
+    ip_address: "127.0.10.1" # address to vulnserver
+  - id: "t11" # must be uniq
+    name: "Team #11"
+    active: yes
+    logo: "./html/images/teams/team11.png"
+    ip_address: "127.0.11.1" # address to vulnserver
+  - id: "t12" # must be uniq
+    name: "Team #12"
+    active: yes
+    logo: "./html/images/teams/team12.png"
+    ip_address: "127.0.12.1" # address to vulnserver
+  - id: "t13" # must be uniq
+    name: "Team #13"
+    active: yes
+    logo: "./html/images/teams/team13.png"
+    ip_address: "127.0.13.1" # address to vulnserver
+  - id: "t14" # must be uniq
+    name: "Team #14"
+    active: yes
+    logo: "./html/images/teams/team14.png"
+    ip_address: "127.0.14.1" # address to vulnserver
+  - id: "t15" # must be uniq
+    name: "Team #15"
+    active: yes
+    logo: "./html/images/teams/team15.png"
+    ip_address: "127.0.15.1" # address to vulnserver
+  - id: "t16" # must be uniq
+    name: "Team #16"
+    active: yes
+    logo: "./html/images/teams/team16.png"
+    ip_address: "127.0.16.1" # address to vulnserver
+  - id: "t17" # must be uniq
+    name: "Team #17"
+    active: yes
+    logo: "./html/images/teams/team17.png"
+    ip_address: "127.0.17.1" # address to vulnserver
+  - id: "t18" # must be uniq
+    name: "Team #18"
+    active: yes
+    logo: "./html/images/teams/team18.png"
+    ip_address: "127.0.18.1" # address to vulnserver
+  - id: "t19" # must be uniq
+    name: "Team #19"
+    active: yes
+    logo: "./html/images/teams/team19.png"
+    ip_address: "127.0.19.1" # address to vulnserver
+  - id: "t20" # must be uniq
+    name: "Team #20"
+    active: yes
+    logo: "./html/images/teams/team20.png"
+    ip_address: "127.0.20.1" # address to vulnserver

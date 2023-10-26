@@ -252,7 +252,7 @@ img.team-logo {
 .activity {
   display: inline-block;
   height: 50px;
-  vertical-align: top;
+  vertical-align: middle;
   width: 150px;
   line-height: 25px;
   border-left: 1px solid #111;

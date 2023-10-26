@@ -63,7 +63,6 @@ ServiceCheckerThread::ServiceCheckerThread(
     const Ctf01dTeamDef &teamConf,
     const Ctf01dServiceDef &service
 ) {
-    
     m_pConfig = findWsjcppEmploy<EmployConfig>();
     m_teamConf = teamConf;
     m_serviceConf = service;

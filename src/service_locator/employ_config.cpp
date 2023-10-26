@@ -327,12 +327,12 @@ bool EmployConfig::applyConfig() {
         WsjcppLog::err(TAG, "server/use_storage: '" + m_sUseStorage + "' is unknown type of storage");
         return false;
     }
-    
+
     // scoreboard
     m_pScoreboard = new Scoreboard(
-        m_bScoreboardRandom, 
+        m_bScoreboardRandom,
         m_nGameStartUTCInSec,
-        m_nGameEndUTCInSec, 
+        m_nGameEndUTCInSec,
         m_nGameCoffeeBreakStartUTCInSec,
         m_nGameCoffeeBreakEndUTCInSec,
         m_nFlagTimeliveInMin*60,
@@ -644,7 +644,7 @@ bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
     }
     WsjcppLog::info(TAG, "scoreboard.port: " + std::to_string(m_nScoreboardPort));
 
-    m_bScoreboardRandom = yamlConfig["scoreboard"]["port"].getValue() == "yes";
+    m_bScoreboardRandom = yamlConfig["scoreboard"]["random"].getValue() == "yes";
     WsjcppLog::info(TAG, "scoreboard.random: " + std::string(m_bScoreboardRandom == true ? "yes" : "no"));
 
     m_sScoreboardHtmlFolder = yamlConfig["scoreboard"]["htmlfolder"].getValue();

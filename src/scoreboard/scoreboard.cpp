@@ -58,6 +58,9 @@ Scoreboard::Scoreboard(
 
     TAG = "Scoreboard";
     m_bRandom = bRandom;
+    std::string sScroreboardRandom = "Scoreboard random: ";
+    sScroreboardRandom = sScroreboardRandom + (m_bRandom ? "yes" : "no");
+    WsjcppLog::warn(TAG, sScroreboardRandom);
     m_pStorage = pStorage;
     std::srand(unsigned(std::time(0)));
     m_nGameStartInSec = nGameStartInSec;
@@ -87,9 +90,9 @@ Scoreboard::Scoreboard(
             Ctf01dServiceDef service = vServicesConf[iservice];
             m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), ServiceStatusCell::SERVICE_DOWN);
 
-            // random states of service for testing 
+            // random states of service for testing
             if (m_bRandom) {
-                m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), randomServiceStatus()); 
+                m_mapTeamsStatuses[sTeamId]->setServiceStatus(service.id(), randomServiceStatus());
                 m_mapTeamsStatuses[sTeamId]->setTries(std::rand() % 1000);
             }
         }
@@ -100,7 +103,7 @@ Scoreboard::Scoreboard(
         std::string sServiceId = vServicesConf[i].id();
         m_mapServiceCostsAndStatistics[sServiceId] = new Ctf01dServiceCostsAndStatistics(
             sServiceId,
-            pEmployConfig->getBasicCostsStolenFlagInPoints(), 
+            pEmployConfig->getBasicCostsStolenFlagInPoints(),
             vServicesConf.size(),
             vTeamsConf.size()
         );
@@ -255,7 +258,7 @@ void Scoreboard::initStateFromStorage() {
 
         for (unsigned int i = 0; i < vServices.size(); i++) {
             std::string sServiceID = vServices[i].id();
-            
+
             // calculate defence
             int nDefenceFlags = m_pStorage->getDefenceFlags(pRow->teamId(), sServiceID);
             int nDefencePoints = m_pStorage->getDefencePoints(pRow->teamId(), sServiceID);
@@ -286,7 +289,6 @@ void Scoreboard::initStateFromStorage() {
         sortPlaces();
         updateCosts();
     }
-    
 }
 
 // ----------------------------------------------------------------------

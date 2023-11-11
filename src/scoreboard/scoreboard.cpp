@@ -393,12 +393,20 @@ void Scoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) {
 // ----------------------------------------------------------------------
 
 void Scoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
+    std::lock_guard<std::mutex> lock(m_mutexJson);
+
     std::string sServiceId = flag.getServiceId();
     std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail 1");
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail sServiceId " + sServiceId);
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail sTeamId " + sTeamId);
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail sNewStatus " + sNewStatus);
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail sDescrStatus " + sDescrStatus);
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail flag.getId() " + flag.getId());
+    // WsjcppLog::info(TAG, "Scoreboard::insertFlagPutFail flag.getValue() " + flag.getValue());
     m_pStorage->insertFlagPutFail(flag, sDescrStatus);
 
-    std::lock_guard<std::mutex> lock(m_mutexJson);
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(flag.getTeamId());
     if (it != m_mapTeamsStatuses.end()) {

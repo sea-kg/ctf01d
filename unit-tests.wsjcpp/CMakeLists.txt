@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.5.0")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.5.1")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-ctf01d")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -55,7 +55,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# ctf01d:v0.5.0
+# ctf01d:v0.5.1
 list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../src")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_flags.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_flags.h")
@@ -67,11 +67,11 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_c
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_config.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_team_logos.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/ctf01d_scoreboard.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/ctf01d_scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/storages/storages.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.h")
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/")

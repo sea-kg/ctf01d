@@ -183,7 +183,7 @@ void DoRunChecker::run() {
         printf("fork: Change dir '%s'\n", m_sDir.c_str());
         // setpgid(nChildPid, nChildPid); //Needed so negative PIDs can kill children of /bin/sh
         execlp(
-            m_sScript.c_str(), // 
+            m_sScript.c_str(), //
             m_sScript.c_str(), // first argument must be same like executable file
             m_sIp.c_str(), m_sCommand.c_str(), m_sFlagId.c_str(), m_sFlag.c_str(), (char *) 0
         );

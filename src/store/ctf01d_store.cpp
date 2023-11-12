@@ -47,7 +47,7 @@ Ctf01dStoreTeamInfo::Ctf01dStoreTeamInfo() {
 };
 
 bool Ctf01dStoreTeamInfo::load(
-    const nlohmann::json &jsonTeamInfo, 
+    const nlohmann::json &jsonTeamInfo,
     const std::string &sBaseUrl
 ) {
     m_sUuid = jsonTeamInfo["uuid"];
@@ -121,7 +121,7 @@ bool Ctf01dStore::init() {
             return false;
         }
     }
-    
+
     if (!WsjcppCore::fileExists(sPath)) {
         std::cerr << "File '" << sPath << "' not found" << std::endl;
         return false;

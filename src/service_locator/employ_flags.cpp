@@ -41,8 +41,10 @@
 // ---------------------------------------------------------------------
 // Ctf01dFlag
 Ctf01dFlag::Ctf01dFlag() {
-    m_sId = "";
-    m_sValue = "";
+    // flag id
+    m_sId = "qweRT12345";
+    // flag format
+    m_sValue = "c01d0000-0000-0000-0000-000000000000";
     m_sTeamId = "";
     m_sServiceId = "";
     m_nTimeStartInMs = 0;
@@ -51,16 +53,15 @@ Ctf01dFlag::Ctf01dFlag() {
 
 // ---------------------------------------------------------------------
 
-void Ctf01dFlag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId) {
-    generateId();
-    generateValue();
-
+void Ctf01dFlag::generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId, int nGameStartUTCInSec) {
     // __int64
     long nTimeStartInMs = WsjcppCore::getCurrentTimeInMilliseconds();
-    // std::cout << "nTimeStart: " << nTimeStart << "\n";
     long nTimeEndInMs = nTimeStartInMs + nTimeFlagLifeInMin*60*1000;
     setTimeStartInMs(nTimeStartInMs);
     setTimeEndInMs(nTimeEndInMs);
+
+    generateId();
+    generateValue(nGameStartUTCInSec);
     m_sTeamId = sTeamId;
     m_sServiceId = sServiceId;
 }
@@ -74,10 +75,10 @@ void Ctf01dFlag::generateId() {
             "abcdefghijklmnopqrstuvwxyz";
 
     std::string sFlagId = "";
+    int nLenId = m_sId.size();
     for (int i = 0; i < 10; ++i) {
-        sFlagId += sAlphabet[rand() % sAlphabet.length()];
+        m_sId[i] = sAlphabet[rand() % sAlphabet.length()];
     }
-    setId(sFlagId);
 }
 
 // ---------------------------------------------------------------------
@@ -94,9 +95,8 @@ std::string Ctf01dFlag::getId() const {
 
 // ---------------------------------------------------------------------
 
-void Ctf01dFlag::generateValue() {
+void Ctf01dFlag::generateValue(int nGameStartUTCInSec) {
     // TODO redesign more freeble format
-
     static const std::string sAlphabet = "0123456789abcdef";
     char sUuid[37];
     memset(&sUuid, '\0', 37);
@@ -105,12 +105,28 @@ void Ctf01dFlag::generateValue() {
     sUuid[18] = '-';
     sUuid[23] = '-';
 
-    for(int i = 0; i < 36; i++){
+    for(int i = 4; i < 28; i++){
         if (i != 8 && i != 13 && i != 18 && i != 23) {
-            sUuid[i] = sAlphabet[rand() % sAlphabet.length()];
+            m_sValue[i] = sAlphabet[rand() % sAlphabet.length()];
         }
     }
-    setValue(std::string(sUuid));
+
+    // set timepoint
+    int dt = m_nTimeStartInMs / 1000 - nGameStartUTCInSec;
+    std::string sTimePoint = std::to_string(dt);
+    int nTimePointLen = sTimePoint.size();
+    if (nTimePointLen > 8) {
+        WsjcppLog::throw_err("Ctf01dFlag::generateValue", "Really game was started more then 3 years ago ???");
+    }
+    int nPos = m_sValue.size() - 1;
+    for (int i = nTimePointLen - 1; i >= 0; i--) {
+        m_sValue[nPos] = sTimePoint[i];
+        nPos--;
+    }
+    // 03268167
+
+    // std::cout << "sTimePoint: " << sTimePoint << "\n";
+    // this->setValue(std::string(sUuid) + sTimePoint);
 }
 
 // ---------------------------------------------------------------------

@@ -102,39 +102,44 @@ unit-tests:
       description: ""
 resources:
   - filepath: "./data_sample/config.yml"
-    filesize: 2701
+    filesize: 5593
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1699775010
     sha1: ""
   - filepath: "./data_sample/logs/.placeholder"
     filesize: 0
     pack-as: "binary"
     modified: 1599898841
     sha1: ""
+  - filepath: "./data_sample/hv_logs/.placeholder"
+    filesize: 0
+    pack-as: "binary"
+    modified: 1699775195
+    sha1: ""
   - filepath: "./data_sample/html/favicon.ico"
     filesize: 16958
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698334396
     sha1: ""
   - filepath: "./data_sample/html/index.html"
-    filesize: 4677
+    filesize: 5740
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1699774910
     sha1: ""
   - filepath: "./data_sample/html/favicon-32x32.png"
-    filesize: 1632
+    filesize: 8650
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698334295
     sha1: ""
   - filepath: "./data_sample/html/favicon-16x16.png"
-    filesize: 749
+    filesize: 6187
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698334278
     sha1: ""
   - filepath: "./data_sample/html/js/scoreboard.js"
-    filesize: 11978
+    filesize: 11935
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1600699619
     sha1: ""
   - filepath: "./data_sample/html/images/first-blood.svg"
     filesize: 3799
@@ -154,22 +159,122 @@ resources:
   - filepath: "./data_sample/html/images/activity.svg"
     filesize: 4918
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698331255
     sha1: ""
   - filepath: "./data_sample/html/images/logo.png"
-    filesize: 22909
+    filesize: 38137
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698334220
     sha1: ""
   - filepath: "./data_sample/html/images/defence.svg"
     filesize: 2922
     pack-as: "binary"
     modified: 1599898841
     sha1: ""
+  - filepath: "./data_sample/html/images/teams/team11.png"
+    filesize: 6509
+    pack-as: "binary"
+    modified: 1698332056
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team13.png"
+    filesize: 6326
+    pack-as: "binary"
+    modified: 1698332112
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team18.png"
+    filesize: 4683
+    pack-as: "binary"
+    modified: 1698332208
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team15.png"
+    filesize: 6429
+    pack-as: "binary"
+    modified: 1698332163
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team01.png"
+    filesize: 6651
+    pack-as: "binary"
+    modified: 1698331396
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team08.png"
+    filesize: 6097
+    pack-as: "binary"
+    modified: 1698331967
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team17.png"
+    filesize: 4146
+    pack-as: "binary"
+    modified: 1698332200
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team02.png"
+    filesize: 6591
+    pack-as: "binary"
+    modified: 1698331391
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team20.png"
+    filesize: 9930
+    pack-as: "binary"
+    modified: 1698332281
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team10.png"
+    filesize: 5997
+    pack-as: "binary"
+    modified: 1698332015
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team09.png"
+    filesize: 6238
+    pack-as: "binary"
+    modified: 1698331995
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team14.png"
+    filesize: 5996
+    pack-as: "binary"
+    modified: 1698332147
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team05.png"
+    filesize: 6459
+    pack-as: "binary"
+    modified: 1698331806
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team16.png"
+    filesize: 4662
+    pack-as: "binary"
+    modified: 1698332177
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team06.png"
+    filesize: 6606
+    pack-as: "binary"
+    modified: 1698331922
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team19.png"
+    filesize: 12282
+    pack-as: "binary"
+    modified: 1698332234
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team12.png"
+    filesize: 6465
+    pack-as: "binary"
+    modified: 1698332089
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team03.png"
+    filesize: 6364
+    pack-as: "binary"
+    modified: 1698331853
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team04.png"
+    filesize: 5423
+    pack-as: "binary"
+    modified: 1698331880
+    sha1: ""
   - filepath: "./data_sample/html/images/teams/unknown.svg"
     filesize: 5633
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698331240
+    sha1: ""
+  - filepath: "./data_sample/html/images/teams/team07.png"
+    filesize: 5300
+    pack-as: "binary"
+    modified: 1698331946
     sha1: ""
   - filepath: "./data_sample/html/images/states/coffeebreak.svg"
     filesize: 16698
@@ -197,9 +302,9 @@ resources:
     modified: 1599898841
     sha1: ""
   - filepath: "./data_sample/html/images/states/mumble.svg"
-    filesize: 3205
+    filesize: 3513
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1698334181
     sha1: ""
   - filepath: "./data_sample/html/images/states/up.svg"
     filesize: 2647
@@ -207,28 +312,28 @@ resources:
     modified: 1599898841
     sha1: ""
   - filepath: "./data_sample/html/css/scoreboard.css"
-    filesize: 6787
+    filesize: 6849
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1699774751
     sha1: ""
   - filepath: "./data_sample/checker_example_service4/checker.py"
-    filesize: 2954
+    filesize: 2813
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1600699619
     sha1: ""
   - filepath: "./data_sample/checker_example_service3/checker.py"
-    filesize: 2954
+    filesize: 2813
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1600699619
     sha1: ""
   - filepath: "./data_sample/checker_example_service2/checker.py"
-    filesize: 3409
+    filesize: 3151
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1600699619
     sha1: ""
   - filepath: "./data_sample/checker_example_service1/checker.py"
-    filesize: 3409
+    filesize: 3151
     pack-as: "binary"
-    modified: 1599898841
+    modified: 1600699619
     sha1: ""
 

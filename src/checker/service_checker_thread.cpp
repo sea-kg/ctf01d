@@ -129,7 +129,7 @@ int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sComma
     }
 
     int nExitCode = process.exitCode();
-    if (nExitCode != ServiceCheckerThread::CHECKER_CODE_UP 
+    if (nExitCode != ServiceCheckerThread::CHECKER_CODE_UP
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_MUMBLE
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_CORRUPT
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_DOWN) {
@@ -163,6 +163,7 @@ void ServiceCheckerThread::run() {
         // TODO shit status
         return;
     }*/
+    int nGameStartUTCInSec = m_pConfig->gameStartUTCInSec();
 
     while(1) {
         int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
@@ -181,8 +182,8 @@ void ServiceCheckerThread::run() {
             return;
         };
 
-        if (nCurrentTime < m_pConfig->gameStartUTCInSec()) {
-            WsjcppLog::warn(TAG, "Game started after: " + std::to_string(m_pConfig->gameStartUTCInSec() - nCurrentTime) + " seconds");
+        if (nCurrentTime < nGameStartUTCInSec) {
+            WsjcppLog::warn(TAG, "Game started after: " + std::to_string(nGameStartUTCInSec - nCurrentTime) + " seconds");
             m_pConfig->scoreboard()->setServiceStatus(m_teamConf.getId(), m_serviceConf.id(), ServiceStatusCell::SERVICE_WAIT);
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             continue;
@@ -195,12 +196,17 @@ void ServiceCheckerThread::run() {
         // then we establish a flag
         if (nCurrentTime < (m_pConfig->gameEndUTCInSec() - m_pConfig->flagTimeliveInMin()*60)) {
             Ctf01dFlag flag;
-            flag.generateRandomFlag(m_pConfig->flagTimeliveInMin(), m_teamConf.getId(), m_serviceConf.id());
+            flag.generateRandomFlag(
+                m_pConfig->flagTimeliveInMin(),
+                m_teamConf.getId(),
+                m_serviceConf.id(),
+                nGameStartUTCInSec
+            );
 
-            // int nExitCode2 = 
             // WsjcppLog::ok(TAG, " runChecker: " + std::to_string(nExitCode));
 
             int nExitCode = this->runChecker(flag, "put");
+
             if (nExitCode == ServiceCheckerThread::CHECKER_CODE_UP) {
                 // >>>>>>>>>>> service is UP <<<<<<<<<<<<<<
                 WsjcppLog::ok(TAG, " => service is up");
@@ -264,7 +270,6 @@ void ServiceCheckerThread::run() {
             }
             // }
         }
-
         end = std::chrono::system_clock::now();
 
         int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();

@@ -43,13 +43,13 @@
 class Ctf01dFlag {
     public:
         Ctf01dFlag();
-        void generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId);
+        void generateRandomFlag(int nTimeFlagLifeInMin, const std::string &sTeamId, const std::string &sServiceId, int nGameStartUTCInSec);
 
         void generateId();
         void setId(const std::string &sId);
         std::string getId() const;
 
-        void generateValue();
+        void generateValue(int nGameStartUTCInSec);
         void setValue(const std::string &sValue);
         std::string getValue() const;
 

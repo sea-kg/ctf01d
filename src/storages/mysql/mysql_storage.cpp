@@ -388,7 +388,7 @@ void MySqlStorage::clean() {
     vTables.push_back("flags_stolen");
     vTables.push_back("flags_defence");
     vTables.push_back("services_flags_costs");
-    
+
     for (int i = 0; i < vTables.size(); i++) {
         std::string sQuery = "DELETE FROM " + vTables[i] + ";";
         if (mysql_query(pConn, sQuery.c_str())) {
@@ -409,7 +409,7 @@ MYSQL *MySqlStorage::getDatabaseConnection() {
     it = m_mapConnections.find(sThreadId);
     if (it == m_mapConnections.end()) {
         pDatabase = mysql_init(NULL);
-        if (!mysql_real_connect(pDatabase, 
+        if (!mysql_real_connect(pDatabase,
                 this->m_sDatabaseHost.c_str(),
                 this->m_sDatabaseUser.c_str(),
                 this->m_sDatabasePass.c_str(),

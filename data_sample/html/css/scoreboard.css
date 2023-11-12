@@ -414,3 +414,8 @@ img.team-logo {
   border: 1px solid #aaa;
   padding: 0px;
 }
+
+.pre-flag-format {
+  display: block;
+  text-align: left;
+}

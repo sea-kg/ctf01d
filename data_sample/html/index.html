@@ -1,110 +1,120 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    
     <title>ctf01d</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="stylesheet" href="css/scoreboard.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="css/scoreboard.css">
 </head>
 <body>
-	
-	<div class="ctf01d-tabs">
-		<div class="ctf01d-tab" tabcontentid="game_details">Details</div>
-		<div class="ctf01d-tab active" tabcontentid="game_scoreboard">Scoreboard</div>
-		<!-- div class="ctf01d-tab" tabcontentid="game_activities">Activities</div -->
-		<div class="ctf01d-tab" tabcontentid="game_rules">Rules</div>
-	</div>
-	<div class="ctf01d-tab-content" id="game_details">
-		<div class="game-name" id="game_name"></div>
-		<div class="game-time-range" id="game_time_range"></div>
-		<hr>
-		<h3>Scoreboard Legend</h3>
-		
-		<p><div class="legend service-status down"></div> - service is down (dead)</p>
-		<p><div class="legend service-status up"></div> - service is work (up)</p>
-		<p><div class="legend service-status mumble"></div> - service is mumble (so slow)</p>
-		<p><div class="legend service-status corrupt"></div> - service is corrupt</p>
-		<p><div class="legend service-status shit"></div> - checker is shit (developer of checker for service must fix this)</p>
-		<p><div class="legend activity"><div class="activity-icon"></div></div> - activities (how much try send flags by team)</p>
 
-		<hr>
-		<h3>Flag send</h3>
-		<p>The flag format must match the regular expression:</p>
-		<p>"^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$"</p>
+    <div class="ctf01d-tabs">
+        <div class="ctf01d-tab" tabcontentid="game_details">Details</div>
+        <div class="ctf01d-tab active" tabcontentid="game_scoreboard">Scoreboard</div>
+        <!-- div class="ctf01d-tab" tabcontentid="game_activities">Activities</div -->
+        <div class="ctf01d-tab" tabcontentid="game_rules">Rules</div>
+    </div>
+    <div class="ctf01d-tab-content" id="game_details">
+        <div class="game-name" id="game_name"></div>
+        <div class="game-time-range" id="game_time_range"></div>
+        <hr>
+        <h3>Scoreboard Legend</h3>
 
-		<p>Form for send flag:</p>
-		<form target="_blank" method="GET" action="/flag">
-			By Team<select name="teamid" id="team_list"></select>
-			<input type="text" size="36" placeholder="Flag value" name="flag"> 
-			<button>Send</button><br>
-		</form>
+        <p><div class="legend service-status down"></div> - service is down (dead)</p>
+        <p><div class="legend service-status up"></div> - service is work (up)</p>
+        <p><div class="legend service-status mumble"></div> - service is mumble (so slow)</p>
+        <p><div class="legend service-status corrupt"></div> - service is corrupt</p>
+        <p><div class="legend service-status shit"></div> - checker is shit (developer of checker for service must fix this)</p>
+        <p><div class="legend activity"><div class="activity-icon"></div></div> - activities (how much try send flags by team)</p>
 
-	</div>
-	<div class="ctf01d-tab-content" id="game_rules">
-		<h3>1. Basic</h3>
-		<p>Every flag have a lifetime (default: 1 minute)</p> <!-- TODO get from server -->
-		<p>Basic cost of stolen flag (default: 10 points)</p> <!-- TODO get from server -->
+        <hr>
+        <h3>Flag send</h3>
+        <p>The flag format must match the regular expression (uuid):</p>
+        <pre>"^c01d[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}[0-9]{8}$"</pre>
+        <div style="display: inline-block;">
+            <pre class="pre-flag-format">
+Flag example: c01d1fd2-133a-4713-9587-1f6a00000001
+              c01d...random-data-flag.....time
+              ^ prefix                    ^ timestamp is the last 8 digits
+              always c01d                   (how many seconds have passed
+                                            since the start of the game)
+            </pre>
+        </div>
 
-		<h3>2. Acception of flag defence</h3>
-		<p>Only that flag defence from the service is counted if:</p>
-		<ul>
-			<li> the flag was successfully putted to the service</li>
-			<li>- the flag has existed on the service all the time of it's life</li>
-			<li>- the flag was not stolen by another team (s)</li>
-			<li>- And throughout the life of the flag - the service was in UP state</li>
-		</ul>
 
-		<h3>3. Acception of flag attack</h3>
+        <p>Form for send flag:</p>
+        <form target="_blank" method="GET" action="/flag">
+            By Team<select name="teamid" id="team_list"></select>
+            <input type="text" size="36" placeholder="Flag value" name="flag"> 
+            <button>Send</button><br>
+        </form>
 
-		<p>The attack flag counts if:</p>
-		<ul>
-			<li>- the flag has the correct format</li>
-			<li>- the flag does not belong to your team (not from your service)</li>
-			<li>- a flag from the same type of service as yours, but your service must be in UP state</li>
-			<li>- the flag is dealt the first time by your team (the same flag may be dealt by different teams)</li>
-			<li>- the flag is still alive (the flag has not expired)</li>
-			<li>- only during the announced game (flags are not accepted during coffeebreaking)</li>
-		</ul>
+    </div>
+    <div class="ctf01d-tab-content" id="game_rules">
+        <h3>1. Basic</h3>
+        <p>Every flag have a lifetime (default: 1 minute)</p> <!-- TODO get from server -->
+        <p>Basic cost of stolen flag (default: 10 points)</p> <!-- TODO get from server -->
 
-		<h3>4. How to calculate costs of the flags</h3>
-		<ul>
-			<li>- The cost is different for the defended flag and the stolen flag (difference in the number of teams)</li>
-			<li>- Redistribute the cost for flags between services - depending on the number of passed and defended flags</li>
-			<li>- The cost of flags should not depend on the "place" in the scoreboard table</li>
-			<li>- The cost of the flags should be different as services may have different times between flag throws</li>
-			<li>- The cost of flags should be different since the complexity of the services is different</li>
-		</ul>
+        <h3>2. Acception of flag defence</h3>
+        <p>Only that flag defence from the service is counted if:</p>
+        <ul>
+            <li> the flag was successfully putted to the service</li>
+            <li>- the flag has existed on the service all the time of it's life</li>
+            <li>- the flag was not stolen by another team (s)</li>
+            <li>- And throughout the life of the flag - the service was in UP state</li>
+        </ul>
 
-		<h3>5. How to calculate of team score</h3>
-		<p>Sum by score services, for each:</p>
-		<p>(<div class="d-icn att"></div> + <div class="d-icn def"></div>), </p>
-		<p>where:</p>
-		
-		<ul style="display: inline-block; text-align: left">
-			<li>
-				<div class="d-icn def"></div> - the number of defended flags
-			</li>
-			<li>
-				<div class="d-icn att"></div> - the number of stolen flags
-			</li>
-		</ul>
-		<div class="game-rule-header">4. Issues for a jury system</div>
-		<div class="game-rule">
-			<a target="_blank" href="https://github.com/sea-kg/ctf01d/issues">https://github.com/sea-kg/ctf01d/issues</a>
-		</div>
-	</div>
-	<div class="ctf01d-tab-content" id="game_scoreboard" style="display: block">
-		<div id="scoreboard_content" style="display: none">
-		
-		</div>
-		<div id="loader_content" style="display: block">
-			<div class="lds-facebook">
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-		</div>
-	</div>
+        <h3>3. Acception of flag attack</h3>
+
+        <p>The attack flag counts if:</p>
+        <ul>
+            <li>- the flag has the correct format</li>
+            <li>- the flag does not belong to your team (not from your service)</li>
+            <li>- a flag from the same type of service as yours, but your service must be in UP state</li>
+            <li>- the flag is dealt the first time by your team (the same flag may be dealt by different teams)</li>
+            <li>- the flag is still alive (the flag has not expired)</li>
+            <li>- only during the announced game (flags are not accepted during coffeebreaking)</li>
+        </ul>
+
+        <h3>4. How to calculate costs of the flags</h3>
+        <ul>
+            <li>- The cost is different for the defended flag and the stolen flag (difference in the number of teams)</li>
+            <li>- Redistribute the cost for flags between services - depending on the number of passed and defended flags</li>
+            <li>- The cost of flags should not depend on the "place" in the scoreboard table</li>
+            <li>- The cost of the flags should be different as services may have different times between flag throws</li>
+            <li>- The cost of flags should be different since the complexity of the services is different</li>
+        </ul>
+
+        <h3>5. How to calculate of team score</h3>
+        <p>Sum by score services, for each:</p>
+        <p>(<div class="d-icn att"></div> + <div class="d-icn def"></div>), </p>
+        <p>where:</p>
+
+        <ul style="display: inline-block; text-align: left">
+            <li>
+                <div class="d-icn def"></div> - the number of defended flags
+            </li>
+            <li>
+                <div class="d-icn att"></div> - the number of stolen flags
+            </li>
+        </ul>
+        <div class="game-rule-header">4. Issues for a jury system</div>
+        <div class="game-rule">
+            <a target="_blank" href="https://github.com/sea-kg/ctf01d/issues">https://github.com/sea-kg/ctf01d/issues</a>
+        </div>
+    </div>
+    <div class="ctf01d-tab-content" id="game_scoreboard" style="display: block">
+        <div id="scoreboard_content" style="display: none">
+
+        </div>
+        <div id="loader_content" style="display: block">
+            <div class="lds-facebook">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
 <script src="js/scoreboard.js" defer="defer"></script>
 </body>
 </html>

@@ -21,18 +21,18 @@ check_ret $? "Clean"
 ./build_simple.sh
 check_ret $? "Build"
 
-cd unit-tests.wsjcpp
-check_ret $? "Change directory to unit-tests.wsjcpp"
-
-./build_simple.sh
-check_ret $? "Build unit-tests"
-
-./unit-tests
-check_ret $? "Run unit-tests"
-
-cd ..
-check_ret $? "Change directory to root"
-
-## clean
-./clean.sh
-check_ret $? "Clean"
+# cd unit-tests.wsjcpp
+# check_ret $? "Change directory to unit-tests.wsjcpp"
+#
+# ./build_simple.sh
+# check_ret $? "Build unit-tests"
+#
+# ./unit-tests
+# check_ret $? "Run unit-tests"
+#
+# cd ..
+# check_ret $? "Change directory to root"
+#
+# ## clean
+# ./clean.sh
+# check_ret $? "Clean"

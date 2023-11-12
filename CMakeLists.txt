@@ -80,8 +80,7 @@ list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.cpp")
 list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 
 # http_server
-list (APPEND WSJCPP_SOURCES "src/http_server/ctf01d_http_server.cpp")
-
+list (APPEND WSJCPP_SOURCES "src/ctf01d_http_server.cpp")
 
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")

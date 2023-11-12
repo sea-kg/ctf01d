@@ -35,6 +35,8 @@ checkers:
   - id: "example_service1" # work directory will be checker_example_service4
     service_name: "Service1"
     enabled: yes
+    # host: 127.0.0.1
+    # port: 10001
     script_path: "./checker.py"
     script_wait_in_sec: 5 # max time for running script
     time_sleep_between_run_scripts_in_sec: 15 # like a round for service

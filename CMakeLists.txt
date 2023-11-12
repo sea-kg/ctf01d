@@ -56,7 +56,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/http_server")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
 
 # argument processors
@@ -74,6 +74,7 @@ list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.cpp")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.cpp")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_database.cpp")
 
 # checker
 list (APPEND WSJCPP_SOURCES "src/checker/dorunchecker.cpp")
@@ -163,6 +164,11 @@ list (APPEND WSJCPP_LIBRARIES hv_static)
 list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/3rdparty/libhv/include/hv")
 
 add_subdirectory(src/3rdparty/sqlite3)
+# https://www.sqlite.org/threadsafe.html
+# target_compile_definitions(sqlite3-static
+#   PRIVATE
+#     SQLITE_THREADSAFE=0
+# )
 list (APPEND WSJCPP_LIBRARIES sqlite3-static)
 list (APPEND WSJCPP_INCLUDE_DIRS "${PROJECT_BINARY_DIR}/src/3rdparty/sqlite3/src")
 

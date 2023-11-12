@@ -57,9 +57,6 @@ public:
 
     virtual std::vector<Ctf01dFlag> listOfLiveFlags() = 0;
 
-    // when flag put fail
-    virtual void insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) = 0;
-
     // when flag check fail
     virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) = 0;
 

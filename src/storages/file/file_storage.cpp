@@ -94,12 +94,6 @@ std::vector<Flag> FileStorage::listOfLiveFlags() {
 
 // ----------------------------------------------------------------------
 
-void FileStorage::insertFlagPutFail(const Flag &flag, const std::string &sReason) {
-    Log::warn(TAG, "TODO insertFlagPutFail");
-}
-
-// ----------------------------------------------------------------------
-
 void FileStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
     Log::warn(TAG, "TODO insertFlagCheckFail");
 }

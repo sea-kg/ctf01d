@@ -54,6 +54,7 @@ Ctf01dScoreboard::Ctf01dScoreboard(
     Storage *pStorage
 ) {
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
+    m_pDatabase = findWsjcppEmploy<EmployDatabase>();
     const std::vector<Ctf01dTeamDef> &vTeamsConf = pEmployConfig->teamsConf();
     const std::vector<Ctf01dServiceDef> &vServicesConf = pEmployConfig->servicesConf();
 
@@ -381,19 +382,20 @@ void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) 
 }
 
 void Ctf01dScoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
+    m_pDatabase->insertToFlagPutFail(flag, sDescrStatus);
+
     std::lock_guard<std::mutex> lock(m_mutexJson);
 
     std::string sServiceId = flag.getServiceId();
     std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail 1");
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail sServiceId " + sServiceId);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail sTeamId " + sTeamId);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail sNewStatus " + sNewStatus);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail sDescrStatus " + sDescrStatus);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail flag.getId() " + flag.getId());
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insertFlagPutFail flag.getValue() " + flag.getValue());
-    m_pStorage->insertFlagPutFail(flag, sDescrStatus);
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail 1");
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sServiceId " + sServiceId);
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sTeamId " + sTeamId);
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sNewStatus " + sNewStatus);
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sDescrStatus " + sDescrStatus);
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail flag.getId() " + flag.getId());
+    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail flag.getValue() " + flag.getValue());
 
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(flag.getTeamId());

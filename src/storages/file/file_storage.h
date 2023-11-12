@@ -51,7 +51,6 @@ class FileStorage : public Storage {
         virtual void clean();
         virtual void insertFlagLive(const Flag &flag);
         virtual std::vector<Flag> listOfLiveFlags();
-        virtual void insertFlagPutFail(const Flag &flag, const std::string &sReason);
         virtual void insertFlagCheckFail(const Flag &flag, const std::string &sReason);
         virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag);
         virtual int numberOfFlagAttempts(const std::string &sTeamId);

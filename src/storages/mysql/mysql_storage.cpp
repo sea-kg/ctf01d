@@ -332,11 +332,15 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
     ));
 
     vUpdates.push_back(MySQLDBUpdate(26, // don't change if after commit
-        "ALTER TABLE `flags` DROP COLUMN team_stole;" 
+        "ALTER TABLE `flags` DROP COLUMN team_stole;"
     ));
 
     vUpdates.push_back(MySQLDBUpdate(27, // don't change if after commit
-        "ALTER TABLE `flags_live` DROP COLUMN team_stole;" 
+        "ALTER TABLE `flags_live` DROP COLUMN team_stole;"
+    ));
+
+    vUpdates.push_back(MySQLDBUpdate(28, // don't change if after commit
+        "DROP TABLE `flags_put_fails`;"
     ));
 
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
@@ -484,31 +488,6 @@ std::vector<Ctf01dFlag> MySqlStorage::listOfLiveFlags() {
         mysql_free_result(pRes);
     }
     return vResult;
-}
-
-// ----------------------------------------------------------------------
-
-void MySqlStorage::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) {
-    MYSQL *pConn = getDatabaseConnection();
-
-    std::string sQuery = "INSERT INTO flags_put_fails(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, reason) VALUES("
-        "'" + flag.getServiceId() + "', "
-        + "'" + flag.getId() + "', "
-        + "'" + flag.getValue() + "', "
-        + "'" + flag.getTeamId() + "', "
-        + std::to_string(flag.getTimeStartInMs()) + ", "
-        + std::to_string(flag.getTimeEndInMs()) + ", "
-        + "'" + sReason + "'"
-        + ");";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
-        return;
-    }
-
-    MYSQL_RES *pRes = mysql_use_result(pConn);
-    mysql_free_result(pRes);
 }
 
 // ----------------------------------------------------------------------

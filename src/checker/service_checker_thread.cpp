@@ -221,7 +221,7 @@ void ServiceCheckerThread::run() {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
                 // m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
                 WsjcppLog::warn(TAG, " => service is mumble (1) ");
-                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble_1");
+                m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble");
                 // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_MUMBLE);
                 // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {

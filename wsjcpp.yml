@@ -1,7 +1,7 @@
 name: "ctf01d"
 version: v0.5.0
 cmake_minimum_required: "3.0"
-cmake_cxx_standard: "11"
+cmake_cxx_standard: "17"
 description: "Jury System for a attack-defence ctf games"
 
 authors:
@@ -84,14 +84,20 @@ distribution:
   - source-file: "src/service_locator/employ_team_logos.cpp"
     target-file: "employ_team_logos.cpp"
     type: "source-code"
-  - source-file: "src/scoreboard/scoreboard.h"
+  - source-file: "src/scoreboard/ctf01d_scoreboard.h"
     target-file: "scoreboard.h"
     type: "source-code"
-  - source-file: "src/scoreboard/scoreboard.cpp"
+  - source-file: "src/scoreboard/ctf01d_scoreboard.cpp"
     target-file: "scoreboard.cpp"
     type: "source-code"
   - source-file: "src/storages/storages.cpp"
     target-file: "storages.cpp"
+    type: "source-code"
+  - source-file: "src/employees/employ_database.cpp"
+    target-file: "employ_database.cpp"
+    type: "source-code"
+  - source-file: "src/employees/employ_database.h"
+    target-file: "employ_database.h"
     type: "source-code"
 
 unit-tests:
@@ -100,6 +106,7 @@ unit-tests:
       description: ""
     - name: "ServiceCostsAndStatistics"
       description: ""
+
 resources:
   - filepath: "./data_sample/logs/.placeholder"
     filesize: 0
@@ -321,22 +328,18 @@ resources:
     pack-as: "binary"
     modified: 1600699619
     sha1: ""
-
   - filepath: "./data_sample/html/js/scoreboard.js"
     filesize: 15500
     pack-as: "binary"
     modified: 1699808446
     sha1: ""
-
   - filepath: "./data_sample/html/css/scoreboard.css"
     filesize: 8035
     pack-as: "binary"
     modified: 1699807867
     sha1: ""
-
   - filepath: "./data_sample/config.yml"
     filesize: 5633
     pack-as: "binary"
     modified: 1699809351
     sha1: ""
-

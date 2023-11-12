@@ -107,7 +107,7 @@ endif()
 #     # no static or dynamic option selected
 #     message(FATAL_ERROR "either static or dynamic option should be selected")
 # endif()
-#
+
 # # installation
 # list(APPEND TO_INSTALL shell)
 # if(SQLITE_BUILD_SHARED)

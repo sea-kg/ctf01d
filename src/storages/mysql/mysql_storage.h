@@ -52,14 +52,13 @@ class MySqlStorage : public Storage {
         virtual void clean() override;
         virtual void insertFlagLive(const Ctf01dFlag &flag) override;
         virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;
-        virtual void insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) override;
         virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) override;
         virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) override;
         virtual int numberOfFlagAttempts(const std::string &sTeamId) override;
         virtual void insertToArchive(Ctf01dFlag &flag) override;
         virtual void insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) override;
         virtual void insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) override;
-        
+
         virtual bool isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) override;
         virtual bool isSomebodyStole(const Ctf01dFlag &flag) override;
 
@@ -69,7 +68,7 @@ class MySqlStorage : public Storage {
 
         virtual std::vector<Ctf01dFlag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) override;
         virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag) override;
-        
+
         virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) override;
         virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) override;
 

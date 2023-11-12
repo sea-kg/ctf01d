@@ -67,8 +67,10 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_c
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_config.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_team_logos.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_team_logos.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/scoreboard.h")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/employees/employ_database.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/ctf01d_scoreboard.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/scoreboard/ctf01d_scoreboard.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/storages/storages.cpp")
 
 # resources.wsjcpp

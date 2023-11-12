@@ -37,6 +37,7 @@
 
 #include <employ_flags.h>
 #include <employ_scoreboard.h>
+#include <employ_database.h>
 #include <string>
 #include <json.hpp>
 #include <storage.h>
@@ -77,6 +78,7 @@ class Ctf01dScoreboard {
         std::string TAG;
         Storage *m_pStorage;
         EmployFlags *m_pEmployFlags;
+        EmployDatabase *m_pDatabase;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
         int m_nGameCoffeeBreakStartInSec;

@@ -1,5 +1,5 @@
 # stage 0: build binary
-FROM sea5kg/ctf01d-stage-build:v20200903
+FROM sea5kg/ctf01d-stage-build:v20231112
 
 COPY ./ /root/
 WORKDIR /root/
@@ -10,7 +10,7 @@ RUN ./build_simple.sh
 RUN ./unit-tests
 
 # stage 1: release
-FROM sea5kg/ctf01d-stage-release:v20200903
+FROM sea5kg/ctf01d-stage-release:v20231112
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/sea-kg/ctf01d"
 

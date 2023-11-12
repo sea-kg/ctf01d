@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:11
 # stage build
 LABEL "maintainer"="Evgenii Sopov <mrseakg@gmail.com>"
 LABEL "repository"="https://github.com/sea-kg/ctf01d"
@@ -9,7 +9,7 @@ RUN apt-get install -y \
     g++ \
     pkg-config \
     libcurl4-openssl-dev \
-    zlibc zlib1g zlib1g-dev \
+    zlib1g zlib1g-dev \
     libpng-dev \
     default-libmysqlclient-dev \
     python3 \

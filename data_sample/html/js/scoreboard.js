@@ -83,6 +83,18 @@ function silentUpdate(elid, newValue) {
     }
 }
 
+function silentUpdateWithoutAnimation(elid, newValue) {
+    var el = document.getElementById(elid)
+    if (!el) {
+        console.error("Not found element with id " + elid);
+        return;
+    }
+    if (el.innerHTML != newValue) {
+        el.innerHTML = newValue;
+        // _animateElementOneTime(el);
+        // TODO make simple anim
+    }
+}
 
 function updateUIValue(t, teamID, paramName){
     var newValue = '';
@@ -149,6 +161,51 @@ function updateScoreboard() {
             silentUpdate(serviceId + '-all-flags-att', s.af_att)
             silentUpdate(serviceId + '-all-flags-def', s.af_def)
         }
+
+        // game time
+        var game_len_time = resp.game.t3 - resp.game.t0;
+        var game_passed_time = resp.game.tc - resp.game.t0;
+        // console.log("game_len_time", game_len_time);
+        if (resp.game.tc < resp.game.t0) {
+            silentUpdateWithoutAnimation(
+                'game_current_time',
+                'game started after: ' + (resp.game.t0 - resp.game.tc) + ' seconds'
+            );
+            document.getElementById('game_progress_time').style.display = 'none';
+        } else if (resp.game.tc >= resp.game.t1 && resp.game.tc <= resp.game.t2) { // coffee break
+            silentUpdateWithoutAnimation(
+                'game_current_time',
+                'the game will continue after the coffee break in ' + (resp.game.t2 - resp.game.tc) + ' seconds'
+            );
+        } else if (resp.game.tc > resp.game.t3) {
+            silentUpdateWithoutAnimation('game_current_time', 'game ended');
+            document.getElementById('game_progress_time').style.display = 'block';
+            document.getElementById('game_progress_time').style.width = '100%';
+        } else if (
+            resp.game.t1 > resp.game.t0 && resp.game.t1 < resp.game.t3
+            && resp.game.t2 > resp.game.t0 && resp.game.t2 < resp.game.t3
+        ) { // coffee break enabled
+            // console.log("game passed_time", (game_passed_time / game_len_time)*100);
+            document.getElementById('game_progress_time').style.display = 'block';
+            document.getElementById('game_progress_time').style.width = Math.ceil((game_passed_time / game_len_time)*100) + '%';
+            if (resp.game.tc > resp.game.t0 && resp.game.tc < resp.game.t1) { // before coffee break
+                silentUpdateWithoutAnimation(
+                    'game_current_time',
+                    'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds and coffee break will start in ' + (resp.game.t1 - resp.game.tc) + ' seconds'
+                );
+                document.getElementById('game_progress_time').style.display = 'block';
+            } else if (resp.game.tc > resp.game.t2 && resp.game.tc < resp.game.t3) { // after coffee break
+                silentUpdateWithoutAnimation(
+                    'game_current_time',
+                    'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds and game will end in ' + (resp.game.t3 - resp.game.tc) + ' seconds'
+                );
+            }
+        } else if (resp.game.tc > resp.game.t0 && resp.game.tc < resp.game.t3) { // before coffe break
+            silentUpdateWithoutAnimation('game_current_time', 'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds, and game will end in ' + (resp.game.t3 - resp.game.tc) + ' seconds');
+            document.getElementById('game_progress_time').style.display = 'block';
+            document.getElementById('game_progress_time').style.width = Math.ceil((game_passed_time / game_len_time)*100) + '%';
+        }
+
         var teamIDs = [];
         for(var teamID in resp.scoreboard){
             var t = resp.scoreboard[teamID];
@@ -182,7 +239,7 @@ function updateScoreboard() {
                     console.error(elId + '- not found');
                 }
                 var sCell = teamID + '-' + sService;
-                console.log(sCell);
+                // console.log(sCell);
                 silentUpdate('att-' + sCell, newAttackFlags)
                 silentUpdate('def-' + sCell, newDefenceFlags)
                 silentUpdate('pt_att-' + sCell, newAttackPoints)
@@ -205,7 +262,7 @@ function updateScoreboard() {
             return a.p - b.p;
         });
         for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = (50 + (i+1)*70) + 'px';
+            elms2[i].e.style.top = (60 + (i+1)*70) + 'px';
         }
         var bSorted = false;
 
@@ -247,13 +304,13 @@ getAjax('/api/v1/game', function(err, resp){
     console.log(resp);
 
     // generate teams-services table
-    var sContent = 
-    "<div class='scoreboard' id='table_scoreboard'>"
-    + "    <div class='hdrs'>"
-    + "        <div class='place'>#</div>"
-    + "        <div class='team-logo'></div>"
-    + "        <div class='team'>Team</div>"
-    + "        <div class='score'>Points</div>";
+    var sContent = ""
+        + "<div class='scoreboard' id='table_scoreboard'>"
+        + "    <div class='hdrs'>"
+        + "        <div class='place'>#</div>"
+        + "        <div class='team-logo'></div>"
+        + "        <div class='team'>Team</div>"
+        + "        <div class='score'><div class='hdr-text'>points</div></div>";
     for (var i = 0; i < resp.services.length; i++) {
         var serviceId = resp.services[i].id;
         sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
@@ -273,7 +330,11 @@ getAjax('/api/v1/game', function(err, resp){
     }
     sContent += ''
         + '        <div class="activity">Activity</div>'
-        + '  </div>';
+        + '  </div>'
+        + "  <div class='hdrs-time'>"
+        + "    <div class='hdrs-time-fill' id='game_progress_time'></div>"
+        + "    <div class='hdrs-time-game-current-time' id='game_current_time'>0</div>"
+        + "  </div>";
 
     var sTeamListSelect = '';
 
@@ -288,7 +349,7 @@ getAjax('/api/v1/game', function(err, resp){
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"
             + "  </div>"
-            + "  <div class='score'><div class='points' id='" + sTeamId + "-points'>0</div></div>";
+            + "  <div class='score'><div class='points-sum' id='" + sTeamId + "-points'>0</div></div>";
 
         for (var i = 0; i < resp.services.length; i++) {
             var sServiceID = resp.services[i].id;

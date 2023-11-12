@@ -154,6 +154,13 @@ void Scoreboard::initJsonScoreboard() {
         jsonScoreboard[teamConf.getId()] = teamData;
     }
     m_jsonScoreboard["scoreboard"] = jsonScoreboard;
+    nlohmann::json jsonGame;
+    jsonGame["t0"] = pConfig->gameStartUTCInSec();
+    jsonGame["t1"] = pConfig->gameCoffeeBreakStartUTCInSec();
+    jsonGame["t2"] = pConfig->gameCoffeeBreakEndUTCInSec();
+    jsonGame["t3"] = pConfig->gameEndUTCInSec();
+    jsonGame["tc"] = WsjcppCore::getCurrentTimeInSeconds();
+    m_jsonScoreboard["game"] = jsonGame;
 }
 
 // ----------------------------------------------------------------------
@@ -540,7 +547,7 @@ std::vector<Ctf01dFlag> Scoreboard::outdatedFlagsLive(const std::string &sTeamId
     std::map<std::string,Ctf01dFlag>::iterator it;
     for (it = m_mapFlagsLive.begin(); it != m_mapFlagsLive.end(); it++) {
         Ctf01dFlag flag = it->second;
-        if (flag.getTeamId() == sTeamId 
+        if (flag.getTeamId() == sTeamId
             && flag.getServiceId() == sServiceId
             && flag.getTimeEndInMs() < nCurrentTime
         ) {
@@ -594,6 +601,7 @@ std::string Scoreboard::toString(){
 
 const nlohmann::json &Scoreboard::toJson(){
     std::lock_guard<std::mutex> lock(m_mutexJson);
+    m_jsonScoreboard["game"]["tc"] = WsjcppCore::getCurrentTimeInSeconds();
     return m_jsonScoreboard;
 }
 

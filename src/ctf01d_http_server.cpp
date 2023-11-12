@@ -180,14 +180,7 @@ int Ctf01dHttpServer::httpWebFolder(HttpRequest* req, HttpResponse* resp) {
                 resp->content_type
             );
         } else if (sRequestPath == "/api/v1/scoreboard") {
-            std::string sScoreboardJson = m_pConfig->scoreboard()->toJson().dump();
-            resp->SetContentTypeByFilename("scoreboard.json");
-            return resp->Data(
-                (void *)(sScoreboardJson.c_str()),
-                sScoreboardJson.length(),
-                false, // nocopy
-                resp->content_type
-            );
+            return this->httpApiV1Scoreboard(req, resp);
         } else if (sRequestPath == "/api/v1/teams") {
             resp->SetContentTypeByFilename("teams.json");
             return resp->Data(
@@ -376,4 +369,16 @@ int Ctf01dHttpServer::httpApiV1Flag(HttpRequest* req, HttpResponse* resp) {
     std::string sResponse = "Accepted: Recieved flag {" + sFlag + "} from {" + sTeamId + "} (Accepted + " + sPoints + ")";
     WsjcppLog::ok(TAG, sResponse);
     return resp->Data((void *)(sResponse.c_str()), sResponse.size(), false, TEXT_PLAIN);
+}
+
+int Ctf01dHttpServer::httpApiV1Scoreboard(HttpRequest* req, HttpResponse* resp) {
+    nlohmann::json jsonScoreboard = m_pConfig->scoreboard()->toJson();
+    std::string sScoreboardJson = jsonScoreboard.dump();
+    resp->SetContentTypeByFilename("scoreboard.json");
+    return resp->Data(
+        (void *)(sScoreboardJson.c_str()),
+        sScoreboardJson.length(),
+        false, // nocopy - force copy
+        resp->content_type
+    );
 }

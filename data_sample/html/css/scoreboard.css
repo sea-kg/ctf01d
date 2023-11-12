@@ -117,8 +117,8 @@ button {
 }
 
 .hdrs {
-  border-bottom: 1px solid #111;
-  height: 100px;
+  border-bottom: 1px solid #444;
+  height: 105px;
   position: absolute;
   padding-top: 15px;
   width: 100%;
@@ -129,7 +129,7 @@ button {
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   height: 50px;
-  border-bottom: 1px solid #111;
+  border-bottom: 1px solid #444;
   padding-top: 15px;
   position: absolute;
   width: 100%;
@@ -190,32 +190,39 @@ img.team-logo {
 
 .score {
   display: inline-block;
-  height: 50px;
+  height: 100%;
   vertical-align: top;
   text-align: center;
   width: 100px;
   line-height: 50px;
+  border-left: 1px solid #444;
+}
+
+.score .hdr-text {
+  display: inline-block;
+  height: 50px;
+  background-image: url("../images/points.svg");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  line-height: 20px;
 }
 
 .service {
   display: inline-block;
   height: 50px;
   vertical-align: top;
-  width: 150px;
+  width: 180px;
   line-height: 25px;
-  border-left: 1px solid #111;
-  padding-left: 15px;
-  padding-right: 15px;
-  text-align: left;
+  border-left: 1px solid #444;
+  padding-left: 2px;
+  padding-right: 18px;
+  text-align: center;
 }
 
 .hdrs .service {
   height: 100px;
   line-height: 20px;
-  text-align: center;
-  width: 150px;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
 .first-blood {
@@ -231,11 +238,16 @@ img.team-logo {
   from { visibility: visible }
   to { visibility: hidden }
 
-  /* Alternatively you can do this:  
+  /* Alternatively you can do this:
   0% { visibility: visible; }
   50% { visibility: hidden; }
   100% { visibility: visible; }
   if you don't want to use `alternate` */
+}
+
+.points-sum {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .points {
@@ -251,17 +263,57 @@ img.team-logo {
 
 .activity {
   display: inline-block;
-  height: 50px;
+  height: 100%;
   vertical-align: middle;
   width: 150px;
   line-height: 25px;
-  border-left: 1px solid #111;
+  border-left: 1px solid #444;
   padding-left: 15px;
   padding-right: 15px;
 }
 
 .activity .activity-value {
   display: inline-block;
+}
+
+.hdrs-time {
+  height: 24px;
+  background-color: #333;
+  line-height: 20px;
+  top: 108px;
+  border-radius: 20px;
+  position: absolute;
+  width: calc(100% - 200px);
+  margin-left: 100px;
+  margin-right: 100px;
+  border-top: 2px solid #444;
+  border-bottom: 2px solid #0c1d07;
+  /*background-image: url( "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath d='M10 10h123v123H10z'/%3E%3C/svg%3E");
+  background-size: 70% 70px;
+  background-repeat: no-repeat;
+  background-position: 0px -10px;*/
+}
+
+.hdrs-time-fill {
+  display: block;
+  background-color: #193112;
+  height: 20px;
+  border-radius: 20px;
+  position: absolute;
+  width: 50%;
+  z-index: 100;
+  border-top: 2px solid #2a3d24;
+  border-bottom: 2px solid #112909;
+  border-right: 5px solid #706518;
+}
+
+.hdrs-time-game-current-time {
+  position: absolute;
+  text-align: center;
+  display: block;
+  width: 100%;
+  z-index: 2000;
+  color: #b7b076;
 }
 
 @keyframes fastblinking {
@@ -308,7 +360,7 @@ img.team-logo {
 .service-status {
   display: inline-block;
   height: 50px;
-  padding-left: 65px;
+  padding-left: 52px;
   background-repeat: no-repeat;
   background-size: 50px 50px;
   vertical-align: middle;

@@ -50,6 +50,7 @@ class Ctf01dHttpServer {
         int httpAdmin(HttpRequest* req, HttpResponse* resp);
         int httpWebFolder(HttpRequest* req, HttpResponse* resp);
         int httpApiV1Flag(HttpRequest* req, HttpResponse* resp);
+        int httpApiV1Scoreboard(HttpRequest* req, HttpResponse* resp);
 
     private:
         std::string TAG;

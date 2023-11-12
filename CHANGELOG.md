@@ -5,6 +5,10 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.5.1] - (2023 Nov ??)
+
+* Added show time left in scoreboard in seconds #65
+
 ## [v0.5.0] - (2023 Nov 12)
 
 * Added src libhv v1.3.1 (https://github.com/ithewei/libhv)

@@ -52,8 +52,6 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_arguments/w
 
 # resources.wsjcpp
 list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_config_yml_path37a5c6.h")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_config_yml_path37a5c6.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_logs__placeholder_path8997d4.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_logs__placeholder_path8997d4.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_hv_logs__placeholder_path0689c4.h")
@@ -66,8 +64,6 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sam
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_favicon_32x32_png_patha96361.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_favicon_16x16_png_path9c3bde.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_favicon_16x16_png_path9c3bde.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.h")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_first_blood_svg_pathd14a70.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_first_blood_svg_pathd14a70.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_attack_svg_pathccf68d.h")
@@ -136,8 +132,6 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sam
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_mumble_svg_pathade7e3.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_up_svg_path57e5bd.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_up_svg_path57e5bd.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.h")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service4_checker_py_path6050ef.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service4_checker_py_path6050ef.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service3_checker_py_path81c5c9.h")
@@ -146,6 +140,12 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sam
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service2_checker_py_pathc19a23.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service1_checker_py_path0d8a63.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_checker_example_service1_checker_py_path0d8a63.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_config_yml_path37a5c6.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_config_yml_path37a5c6.cpp")
 
 # required-libraries
 list (APPEND WSJCPP_LIBRARIES "-lpthread")

@@ -116,7 +116,7 @@ void Ctf01dFlag::generateValue(int nGameStartUTCInSec) {
     std::string sTimePoint = std::to_string(dt);
     int nTimePointLen = sTimePoint.size();
     if (nTimePointLen > 8) {
-        WsjcppLog::throw_err("Ctf01dFlag::generateValue", "Really game was started more then 3 years ago ???");
+        WsjcppLog::throw_err("Ctf01dFlag::generateValue", "Really game was started more then 3 years ago ??? got value: " + sTimePoint);
     }
     int nPos = m_sValue.size() - 1;
     for (int i = nTimePointLen - 1; i >= 0; i--) {
@@ -132,6 +132,8 @@ void Ctf01dFlag::generateValue(int nGameStartUTCInSec) {
 // ---------------------------------------------------------------------
 
 void Ctf01dFlag::setValue(const std::string &sValue) {
+    // TODO validate format
+    // c01d...00000000 - prefix and time
     m_sValue = sValue;
 }
 
@@ -205,7 +207,7 @@ void Ctf01dFlag::copyFrom(const Ctf01dFlag &flag) {
 
 REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployFlags)
 
-EmployFlags::EmployFlags() 
+EmployFlags::EmployFlags()
 : WsjcppEmployBase(EmployFlags::name(), { EmployConfig::name() }) {
     TAG = EmployFlags::name();
 }

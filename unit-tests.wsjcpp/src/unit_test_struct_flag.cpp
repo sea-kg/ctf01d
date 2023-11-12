@@ -24,8 +24,14 @@ void UnitTestStructFlag::executeTest() {
     std::string sTeamId = "team1";
     std::string sServiceId = "service1";
 
+    int nCurrentTime = WsjcppCore::getCurrentTimeInSeconds();
+    std::cout << "nCurrentTime=" << nCurrentTime << std::endl;
+
+    int nGameStartUTCInSec = nCurrentTime - 86400; // Game started 24 hours ago
+    std::cout << "nGameStartUTCInSec=" << nGameStartUTCInSec << std::endl;
+
     Ctf01dFlag flag;
-    flag.generateRandomFlag(nTimeFlagLifeInMin, sTeamId, sServiceId);
+    flag.generateRandomFlag(nTimeFlagLifeInMin, sTeamId, sServiceId, nGameStartUTCInSec);
 
     compare("teamid 1", flag.getTeamId(), sTeamId);
     compare("serviceid 1", flag.getServiceId(), sServiceId);
@@ -55,12 +61,14 @@ void UnitTestStructFlag::executeTest() {
     std::string sFlagId = "QWHzYEKuTX";
     flag.setId(sFlagId);
     compare("flag id 2", flag.getId(), sFlagId);
-    
-    std::string sOldValue = flag.getValue();
-    flag.generateValue();
-    compare("generateValue 2", flag.getValue() == sOldValue, false);
 
-    std::string sFlagValue = "239ebbac-bb0f-a8b7-02fe-92887a064bf6";
+    std::string sOldValue = flag.getValue();
+    nStartTimeInMs = WsjcppCore::getCurrentTimeInMilliseconds();
+    flag.setTimeStartInMs(nStartTimeInMs);
+    flag.generateValue(nGameStartUTCInSec);
+    compare("generateValue 2", flag.getValue() != sOldValue, true);
+
+    std::string sFlagValue = "c01dbbac-bb0f-a8b7-02fe-928800000010";
     flag.setValue(sFlagValue);
     compare("flag value 2", flag.getValue() , sFlagValue);
 

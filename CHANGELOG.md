@@ -5,7 +5,7 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.0] - (2023 ?? ??)
+## [v0.5.0] - (2023 Nov 12)
 
 * Added src libhv v1.3.1 (https://github.com/ithewei/libhv)
 * Removed wsjcpp-light-web-server
@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Up c++ to 17
 * Added src sqlite3 v3.43.2 (https://www.sqlite.org/)
 * Added Copyrights to source files
+* Added 20 icon for teams
+* Fixed random scroreboard
+* Minor fixed legend activity
+* Fix #64 changed mumble icon to Zzz
+* Fix crash on start (sometimes was crash on start)
+* Changed format of flag and updated resources
+
 
 ## [v0.4.5] - (2023 Mar 25)
 

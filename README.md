@@ -348,7 +348,7 @@ Where
 Example of sending a flag (via curl):
 
 ```
-$ curl http://192.168.1.10:8080/flag?teamid=keva&flag=123e4567-e89b-12d3-a456-426655440000
+$ curl http://192.168.1.10:8080/flag?teamid=keva&flag=c01d4567-e89b-12d3-a456-426600000010
 ```
 
 http-code responses:
@@ -369,7 +369,7 @@ Where:
   * ip_address - address of a machine with this service
   * command - command, can be "put" or "check"
   * flag_id - string (10), id of the flag [a-zA-Z0-9]{10}
-  * flag - uuid, value of the flag [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}
+  * flag - uuid, value of the flag c01d[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}[0-9]{8}
 
 Commands:
 
@@ -378,8 +378,8 @@ Commands:
 
 Call-examples:
 
- * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
- * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
+ * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "c01d1fd2-133a-4713-9587-126500000010"```
+ * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "c01d1fd2-133a-4713-9587-126500000010"```
 
 ### Possible return codes
 
@@ -469,7 +469,7 @@ Where:
   * ip_address - address of a machine with this service
   * command - command, can be "put" or "check"
   * flag_id - string (10), id of the flag [a-zA-Z0-9]{10}
-  * flag - uuid, value of the flag [a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}
+  * flag - uuid, value of the flag c01d[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}[0-9]{8}
 
 Commands:
 
@@ -478,8 +478,8 @@ Commands:
 
 Call-examples:
 
- * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
- * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "6a331fd2-133a-4713-9587-12652d34666d"```
+ * ```./checker.py 127.0.0.1 put "1q2w3e4r5t" "c01d1fd2-133a-4713-9587-126500000010"```
+ * ```./checker.py 127.0.0.1 check "1q2w3e4r5t" "c01d1fd2-133a-4713-9587-126500000010"```
 
 Allowed return codes:
 
@@ -524,7 +524,7 @@ def service_down():
 
 if len(sys.argv) != 5:
     print("\nUsage:\n\t" + sys.argv[0] + " <host> (put|check) <flag_id> <flag>\n")
-    print("Example:\n\t" + sys.argv[0] + " \"127.0.0.1\" put \"abcdifghr\" \"123e4567-e89b-12d3-a456-426655440000\" \n")
+    print("Example:\n\t" + sys.argv[0] + " \"127.0.0.1\" put \"abcdifghr\" \"c01d4567-e89b-12d3-a456-426600000010\" \n")
     print("\n")
     exit(0)
 

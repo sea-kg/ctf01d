@@ -32,8 +32,8 @@
  *
  ***********************************************************************************/
 
-#ifndef SCOREBOARD_H
-#define SCOREBOARD_H
+#ifndef CTF01D_SCOREBOARD_H
+#define CTF01D_SCOREBOARD_H
 
 #include <employ_flags.h>
 #include <employ_scoreboard.h>
@@ -42,10 +42,10 @@
 #include <storage.h>
 
 
-class Scoreboard {
+class Ctf01dScoreboard {
     public:
 
-        Scoreboard(
+        Ctf01dScoreboard(
             bool bRandom,
             int nGameStartInSec,
             int nGameEndInSec,
@@ -99,10 +99,10 @@ class Scoreboard {
         void initJsonScoreboard();
         void updateJsonScoreboard();
         // nlohmann::json m_jsonGF; // prepare data for flags costs
-        
+
         // flags live for fast check
         std::mutex m_mutexFlagsLive;
         std::map<std::string, Ctf01dFlag> m_mapFlagsLive; // Must be in samewhere in storage
 };
 
-#endif // SCOREBOARD_H
+#endif // CTF01D_SCOREBOARD_H

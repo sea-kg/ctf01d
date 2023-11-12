@@ -38,7 +38,7 @@
 #include <wsjcpp_employees.h>
 #include <wsjcpp_yaml.h>
 #include <storages.h>
-#include <scoreboard.h>
+#include <ctf01d_scoreboard.h>
 
 // ----------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ class EmployConfig : public WsjcppEmployBase {
         // storage configuration
         Storage *storage();
         void setStorage(Storage *pStorage);
-        Scoreboard *scoreboard();
+        Ctf01dScoreboard *scoreboard();
 
         void doExtractFilesIfNotExists();
 
@@ -167,7 +167,7 @@ class EmployConfig : public WsjcppEmployBase {
         std::string m_sDatabaseHost;
 
         Storage *m_pStorage;
-        Scoreboard *m_pScoreboard;
+        Ctf01dScoreboard *m_pScoreboard;
         int m_nScoreboardPort;
         std::string m_sScoreboardHtmlFolder;
         bool m_bScoreboardRandom;

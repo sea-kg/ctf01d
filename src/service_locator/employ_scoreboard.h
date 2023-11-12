@@ -55,7 +55,7 @@ class Ctf01dServiceCostsAndStatistics {
 
         int getAllDefenceFlagsForService();
         void doIncrementDefenceFlagsForService(int nAllDefenceFlags);
-        
+
         double updateProportionalDefenceFlagsForService(int nDefenceFlags, int nAllDefenceFlags);
         double updateProportionalDefenceFlagsForService(int nAllDefenceFlags);
         double updateCostDefenceFlag(double nSumOfReverseProportionalDefenceFlags);
@@ -102,7 +102,7 @@ class ServiceStatusCell {
         void setDefenceFlags(int nDefenceFlags);
         int getDefenceFlags();
         void incrementDefenceFlags();
-        
+
         void setDefencePoints(int nDefencePoints);
         int getDefencePoints();
         void addDefencePoints(int nDefencePoints);

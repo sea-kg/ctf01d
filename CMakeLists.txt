@@ -83,7 +83,7 @@ list (APPEND WSJCPP_SOURCES "src/checker/service_checker_thread.cpp")
 list (APPEND WSJCPP_SOURCES "src/ctf01d_http_server.cpp")
 
 # scoreboard
-list (APPEND WSJCPP_SOURCES "src/scoreboard/scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "src/scoreboard/ctf01d_scoreboard.cpp")
 
 # storages
 list (APPEND WSJCPP_SOURCES "src/storages/storages.cpp")

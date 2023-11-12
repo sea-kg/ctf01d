@@ -329,7 +329,7 @@ bool EmployConfig::applyConfig() {
     }
 
     // scoreboard
-    m_pScoreboard = new Scoreboard(
+    m_pScoreboard = new Ctf01dScoreboard(
         m_bScoreboardRandom,
         m_nGameStartUTCInSec,
         m_nGameEndUTCInSec,
@@ -412,7 +412,7 @@ void EmployConfig::setStorage(Storage *pStorage){
     m_pStorage = pStorage;
 }
 
-Scoreboard *EmployConfig::scoreboard(){
+Ctf01dScoreboard *EmployConfig::scoreboard(){
     return m_pScoreboard;
 }
 

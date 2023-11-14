@@ -54,21 +54,16 @@ class MySqlStorage : public Storage {
         virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;
         virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) override;
         virtual void insertToArchive(Ctf01dFlag &flag) override;
-        virtual void insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) override;
         virtual void insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) override;
 
         virtual bool isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) override;
         virtual bool isSomebodyStole(const Ctf01dFlag &flag) override;
 
         virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) override; // TODO remove
-        virtual int numberOfDefenceFlagForService(const std::string &sServiceId) override;
         virtual int numberOfStolenFlagsForService(const std::string &sServiceId) override;
 
         virtual std::vector<Ctf01dFlag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) override;
         virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag) override;
-
-        virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) override;
-        virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) override;
 
         virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) override;
         virtual int getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) override;

@@ -98,7 +98,7 @@ bool Ctf01dDatabaseFile::insert(std::string sSqlInsert) {
     return true;
 }
 
-int Ctf01dDatabaseFile::selectCount(std::string sSqlSelectCount) {
+int Ctf01dDatabaseFile::selectSumOrCount(std::string sSqlSelectCount) {
     sqlite3_stmt* pQuery = nullptr;
     int ret = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectCount.c_str(), -1, &pQuery, NULL);
     // prepare the statement
@@ -125,6 +125,7 @@ EmployDatabase::EmployDatabase()
     TAG = EmployDatabase::name();
     m_pFlagsPutFails = nullptr;
     m_pFlagsAttempts = nullptr;
+    m_pFlagsDefense = nullptr;
 }
 
 bool EmployDatabase::init() {
@@ -163,12 +164,30 @@ bool EmployDatabase::init() {
         return false;
     }
 
+    m_pFlagsDefense = new Ctf01dDatabaseFile("flags_defense.db",
+        "CREATE TABLE IF NOT EXISTS flags_defense ( "
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "  serviceid VARCHAR(50) NOT NULL, "
+        "  teamid VARCHAR(50) NOT NULL, "
+        "  flag_id VARCHAR(50) NOT NULL, "
+        "  flag VARCHAR(36) NOT NULL, "
+        "  date_start INTEGER NOT NULL, "
+        "  date_end INTEGER NOT NULL, "
+        "  flag_cost INTEGER NOT NULL"
+        ");"
+    );
+    if (!m_pFlagsDefense->open()) {
+        return false;
+    }
+
     return true;
 }
 
 bool EmployDatabase::deinit() {
     WsjcppLog::info(TAG, "deinit");
     delete m_pFlagsPutFails;
+    delete m_pFlagsAttempts;
+    delete m_pFlagsDefense;
     sqlite3_shutdown();
     return true;
 }
@@ -199,7 +218,48 @@ void EmployDatabase::insertFlagAttempt(std::string sTeamId, std::string sFlag) {
 }
 
 int EmployDatabase::numberOfFlagAttempts(std::string sTeamId) {
-    return m_pFlagsAttempts->selectCount(
+    return m_pFlagsAttempts->selectSumOrCount(
         "SELECT COUNT(*) FROM flags_attempts WHERE teamid = '" + sTeamId + "';"
+    );
+}
+
+void EmployDatabase::insertToFlagsDefence(Ctf01dFlag flag, int nPoints) {
+    std::string sQuery = "INSERT INTO flags_defense(serviceid, teamid, flag_id, flag, "
+        "   date_start, date_end, flag_cost) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
+        + std::to_string(nPoints) + " "
+        + ");";
+
+    if (!m_pFlagsDefense->insert(sQuery)) {
+        WsjcppLog::err(TAG, "Error insert");
+    }
+}
+
+int EmployDatabase::numberOfFlagsDefense(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsDefense->selectSumOrCount(
+        "SELECT COUNT(*) as defence FROM flags_defense "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
+        ";"
+    );
+}
+
+int EmployDatabase::sumPointsOfFlagsDefense(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsDefense->selectSumOrCount(
+        "SELECT SUM(flag_cost) as points FROM flags_defense "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
+        ";"
+    );
+}
+
+int EmployDatabase::numberOfDefenceFlagForService(std::string sServiceId) {
+    return m_pFlagsDefense->selectSumOrCount(
+        "SELECT COUNT(*) as cnt FROM flags_defense WHERE serviceid = '" + sServiceId + "'"
     );
 }

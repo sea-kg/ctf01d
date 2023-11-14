@@ -46,7 +46,7 @@ class Ctf01dDatabaseFile {
         ~Ctf01dDatabaseFile();
         bool open();
         bool insert(std::string sSqlInsert);
-        int selectCount(std::string sSqlSelectCount);
+        int selectSumOrCount(std::string sSqlSelectCount);
 
     private:
         std::string TAG;
@@ -69,10 +69,16 @@ class EmployDatabase : public WsjcppEmployBase {
         void insertFlagAttempt(std::string sTeamId, std::string sFlag);
         int numberOfFlagAttempts(std::string sTeamId);
 
+        void insertToFlagsDefence(Ctf01dFlag flag, int nPoints);
+        int numberOfFlagsDefense(std::string sTeamId, std::string sServiceId);
+        int sumPointsOfFlagsDefense(std::string sTeamId, std::string sServiceId);
+        int numberOfDefenceFlagForService(std::string sServiceId);
+
     private:
         std::string TAG;
         Ctf01dDatabaseFile *m_pFlagsPutFails;
         Ctf01dDatabaseFile *m_pFlagsAttempts;
+        Ctf01dDatabaseFile *m_pFlagsDefense;
 };
 
 #endif // EMPLOY_DATABASE_H

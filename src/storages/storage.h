@@ -62,9 +62,6 @@ public:
 
     virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
-    // how much defence flags from specify service
-    virtual int numberOfDefenceFlagForService(const std::string &sServiceId) = 0;
-
     // how much stolen flags from specify service
     virtual int numberOfStolenFlagsForService(const std::string &sServiceId) = 0;
 
@@ -72,8 +69,6 @@ public:
     virtual void insertToArchive(Ctf01dFlag &flag) = 0;
 
     // copy flag to defence
-    virtual void insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) = 0;
-
     virtual void insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) = 0;
 
     virtual bool isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) = 0;
@@ -84,10 +79,6 @@ public:
 
     // update flag status and update scoreboard table for team 
     virtual void updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag) = 0;
-
-    // return defence value by team and by service
-    virtual int getDefenceFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;
-    virtual int getDefencePoints(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // return defence value by team and by service
     virtual int getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;

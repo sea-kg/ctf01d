@@ -106,28 +106,10 @@ void FileStorage::insertToArchive(Flag &flag) {
     // TODO
 }
 
-// ----------------------------------------------------------------------
-
-void FileStorage::insertToFlagsDefence(const Flag &flag, int nPoints) {
-    std::lock_guard<std::mutex> lock(m_mutexFlags);
-    Log::warn(TAG, "TODO insertToFlagsDefence");
-}
-
-// ----------------------------------------------------------------------
-
 int FileStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) {
     Log::warn(TAG, "TODO numberOfFlagSuccessPutted");
     return 0;
 }
-
-// ----------------------------------------------------------------------
-
-int FileStorage::numberOfDefenceFlagForService(const std::string &sServiceId) {
-    Log::warn(TAG, "TODO numberOfDefenceFlagForService");
-    return 0;
-}
-
-// ----------------------------------------------------------------------
 
 int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
     Log::warn(TAG, "TODO numberOfStolenFlagsForService");

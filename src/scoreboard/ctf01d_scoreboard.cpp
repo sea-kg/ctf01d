@@ -232,7 +232,7 @@ void Ctf01dScoreboard::initStateFromStorage() {
         FlagsForService f;
         f.sServiceID = sServiceID;
         f.nStolenFlags = m_pStorage->numberOfStolenFlagsForService(sServiceID);
-        f.nDefenceFlags = m_pStorage->numberOfDefenceFlagForService(sServiceID);
+        f.nDefenceFlags = m_pDatabase->numberOfDefenceFlagForService(sServiceID);
 
         m_nAllStolenFlags += f.nStolenFlags;
         m_nAllDefenceFlags += f.nDefenceFlags;
@@ -257,8 +257,8 @@ void Ctf01dScoreboard::initStateFromStorage() {
             std::string sServiceID = vServices[i].id();
 
             // calculate defence
-            int nDefenceFlags = m_pStorage->getDefenceFlags(pRow->teamId(), sServiceID);
-            int nDefencePoints = m_pStorage->getDefencePoints(pRow->teamId(), sServiceID);
+            int nDefenceFlags = m_pDatabase->numberOfFlagsDefense(pRow->teamId(), sServiceID);
+            int nDefencePoints = m_pDatabase->sumPointsOfFlagsDefense(pRow->teamId(), sServiceID);
             pRow->setServiceDefenceFlagsAndPoints(sServiceID, nDefenceFlags, nDefencePoints);
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["def"] = nDefenceFlags;
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_def"] = double(nDefencePoints) / 10.0;
@@ -322,7 +322,7 @@ void Ctf01dScoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
     std::string sTeamId = flag.getTeamId();
     std::string sServiceId = flag.getServiceId();
     int nFlagPoints = m_mapServiceCostsAndStatistics[sServiceId]->getCostDefenceFlag()*10; // one number after dot
-    m_pStorage->insertToFlagsDefence(flag, nFlagPoints);
+    m_pDatabase->insertToFlagsDefence(flag, nFlagPoints);
 
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);

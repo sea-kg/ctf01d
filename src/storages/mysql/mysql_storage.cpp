@@ -347,7 +347,7 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "DROP TABLE `flags_attempts`;"
     ));
 
-    vUpdates.push_back(MySQLDBUpdate(29, // don't change if after commit
+    vUpdates.push_back(MySQLDBUpdate(30, // don't change if after commit
         "DROP TABLE `flags_defence`;"
     ));
 

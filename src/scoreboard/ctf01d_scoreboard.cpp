@@ -249,7 +249,7 @@ void Ctf01dScoreboard::initStateFromStorage() {
     for (it = m_mapTeamsStatuses.begin(); it != m_mapTeamsStatuses.end(); it++) {
         TeamStatusRow *pRow = it->second;
 
-        int nTries = m_pStorage->numberOfFlagAttempts(pRow->teamId());
+        int nTries = m_pDatabase->numberOfFlagAttempts(pRow->teamId());
         pRow->setTries(nTries);
         m_jsonScoreboard["scoreboard"][pRow->teamId()]["tries"] = nTries;
 

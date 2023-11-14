@@ -53,8 +53,6 @@ class MySqlStorage : public Storage {
         virtual void insertFlagLive(const Ctf01dFlag &flag) override;
         virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;
         virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) override;
-        virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) override;
-        virtual int numberOfFlagAttempts(const std::string &sTeamId) override;
         virtual void insertToArchive(Ctf01dFlag &flag) override;
         virtual void insertToFlagsDefence(const Ctf01dFlag &flag, int nPoints) override;
         virtual void insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) override;

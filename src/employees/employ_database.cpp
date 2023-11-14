@@ -87,7 +87,7 @@ bool Ctf01dDatabaseFile::open() {
     return true;
 }
 
-bool Ctf01dDatabaseFile::insert(const std::string &sSqlInsert) {
+bool Ctf01dDatabaseFile::insert(std::string sSqlInsert) {
     // TODO mutex
     char *zErrMsg = 0;
     int nRet = sqlite3_exec(m_pDatabaseFile, sSqlInsert.c_str(), 0, 0, &zErrMsg);
@@ -98,6 +98,23 @@ bool Ctf01dDatabaseFile::insert(const std::string &sSqlInsert) {
     return true;
 }
 
+int Ctf01dDatabaseFile::selectCount(std::string sSqlSelectCount) {
+    sqlite3_stmt* pQuery = nullptr;
+    int ret = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectCount.c_str(), -1, &pQuery, NULL);
+    // prepare the statement
+    if (ret != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Failed to prepare select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
+    }
+    // step to 1st row of data
+    ret = sqlite3_step(pQuery);
+    if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
+        WsjcppLog::throw_err(TAG, "Failed to step for select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
+    }
+    int nRet = sqlite3_column_int(pQuery, 0);
+    if (pQuery != nullptr) sqlite3_finalize(pQuery);
+    return nRet;
+}
+
 // ---------------------------------------------------------------------
 // EmployDatabase
 
@@ -106,7 +123,8 @@ REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployDatabase)
 EmployDatabase::EmployDatabase()
 : WsjcppEmployBase(EmployDatabase::name(), {"EmployConfig"}) {
     TAG = EmployDatabase::name();
-    m_pDbFlagsPutFails = nullptr;
+    m_pFlagsPutFails = nullptr;
+    m_pFlagsAttempts = nullptr;
 }
 
 bool EmployDatabase::init() {
@@ -133,44 +151,17 @@ bool EmployDatabase::init() {
         return false;
     }
 
-    // sqlite3* m_pDbFlagsAttemps = NULL;
-    // sqlite3_stmt* query = NULL;
-    // int ret = 0;
-    // do // avoid nested if's
-    // {
-    //     // initialize engine
-    //     if (SQLITE_OK != (ret = sqlite3_initialize()))
-    //     {
-    //         printf("Failed to initialize library: %d\n", ret);
-    //         break;
-    //     }
-    //     // open connection to a DB
-    //     if (SQLITE_OK != (ret = sqlite3_open_v2("test.db", &pDb, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL)))
-    //     {
-    //         printf("Failed to open conn: %d\n", ret);
-    //         break;
-    //     }
-    //     // prepare the statement
-    //     if (SQLITE_OK != (ret = sqlite3_prepare_v2(pDb, "SELECT 2012", -1, &query, NULL)))
-    //     {
-    //         printf("Failed to prepare insert: %d, %s\n", ret, sqlite3_errmsg(pDb));
-    //         break;
-    //     }
-    //     // step to 1st row of data
-    //     if (SQLITE_ROW != (ret = sqlite3_step(query))) // see documentation, this can return more values as success
-    //     {
-    //         printf("Failed to step: %d, %s\n", ret, sqlite3_errmsg(pDb));
-    //         break;
-    //     }
-    //     // ... and print the value of column 0 (expect 2012 here)
-    //     printf("Value from sqlite: %s", sqlite3_column_text(query, 0));
-
-    // } while (false);
-    // // cleanup
-    // if (NULL != query) sqlite3_finalize(query);
-    // if (NULL != pDb) sqlite3_close(pDb);
-    // sqlite3_shutdown();
-    // return ret;
+    m_pFlagsAttempts = new Ctf01dDatabaseFile("flags_attempts.db",
+        "CREATE TABLE IF NOT EXISTS flags_attempts ( "
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "  flag VARCHAR(36) NOT NULL, "
+        "  teamid VARCHAR(50) NOT NULL, "
+        "  dt INTEGER NOT NULL"
+        ");"
+    );
+    if (!m_pFlagsAttempts->open()) {
+        return false;
+    }
 
     return true;
 }
@@ -194,6 +185,21 @@ void EmployDatabase::insertToFlagPutFail(const Ctf01dFlag &flag, const std::stri
         + "'" + sReason + "'"
         + ");";
     if (!m_pFlagsPutFails->insert(sQuery)) {
+        WsjcppLog::err(TAG, "Error insert " + sQuery);
+    }
+}
+
+void EmployDatabase::insertFlagAttempt(std::string sTeamId, std::string sFlag) {
+    std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
+        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
+
+    if (!m_pFlagsAttempts->insert(sQuery)) {
         WsjcppLog::err(TAG, "Error insert");
     }
+}
+
+int EmployDatabase::numberOfFlagAttempts(std::string sTeamId) {
+    return m_pFlagsAttempts->selectCount(
+        "SELECT COUNT(*) FROM flags_attempts WHERE teamid = '" + sTeamId + "';"
+    );
 }

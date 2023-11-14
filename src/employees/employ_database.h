@@ -45,7 +45,8 @@ class Ctf01dDatabaseFile {
         Ctf01dDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable);
         ~Ctf01dDatabaseFile();
         bool open();
-        bool insert(const std::string &sSqlInsert);
+        bool insert(std::string sSqlInsert);
+        int selectCount(std::string sSqlSelectCount);
 
     private:
         std::string TAG;
@@ -65,10 +66,13 @@ class EmployDatabase : public WsjcppEmployBase {
 
         void insertToFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason);
 
+        void insertFlagAttempt(std::string sTeamId, std::string sFlag);
+        int numberOfFlagAttempts(std::string sTeamId);
+
     private:
         std::string TAG;
         Ctf01dDatabaseFile *m_pFlagsPutFails;
-        sqlite3* m_pDbFlagsPutFails;
+        Ctf01dDatabaseFile *m_pFlagsAttempts;
 };
 
 #endif // EMPLOY_DATABASE_H

@@ -49,6 +49,7 @@ Ctf01dHttpServer::Ctf01dHttpServer() {
     TAG = "Ctf01dHttpServer";
     m_pConfig = findWsjcppEmploy<EmployConfig>();
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
+    m_pEmployDatabase = findWsjcppEmploy<EmployDatabase>();
     m_pTeamLogos = findWsjcppEmploy<EmployTeamLogos>();
     m_sScoreboardHtmlFolder = m_pConfig->scoreboardHtmlFolder();
 
@@ -149,7 +150,7 @@ int Ctf01dHttpServer::httpWebFolder(HttpRequest* req, HttpResponse* resp) {
     }
     sRequestPath = WsjcppCore::doNormalizePath(sRequestPath);
 
-    WsjcppLog::info(TAG, "sRequestPath = " + sRequestPath);
+    // WsjcppLog::info(TAG, "sRequestPath = " + sRequestPath);
     if (sRequestPath == "/flag") {
         return this->httpApiV1Flag(req, resp);
     }
@@ -314,9 +315,10 @@ int Ctf01dHttpServer::httpApiV1Flag(HttpRequest* req, HttpResponse* resp) {
         return resp->String(sErrorMsg, 400);
     }
     m_pConfig->scoreboard()->incrementTries(sTeamId);
-    m_pConfig->storage()->insertFlagAttempt(sTeamId, sFlag);
-    // TODO m_pEmployFlags->insertFlagAttempt(sTeamId, sFlag);
 
+    m_pEmployDatabase->insertFlagAttempt(sTeamId, sFlag);
+
+    // TODO m_pEmployFlags->insertFlagAttempt(sTeamId, sFlag);
 
     Ctf01dFlag flag;
     if (!m_pConfig->scoreboard()->findFlagLive(sFlag, flag)) {
@@ -329,6 +331,7 @@ int Ctf01dHttpServer::httpApiV1Flag(HttpRequest* req, HttpResponse* resp) {
     nCurrentTimeMSec = nCurrentTimeMSec*1000;
 
     if (flag.getTimeEndInMs() < nCurrentTimeMSec) {
+        // TODO
         static const std::string sErrorMsg = "Error(-151): flag is too old";
         WsjcppLog::err(TAG, sErrorMsg + ". Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
         return resp->String(sErrorMsg, 403);

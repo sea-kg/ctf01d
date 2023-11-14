@@ -343,6 +343,10 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "DROP TABLE `flags_put_fails`;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(29, // don't change if after commit
+        "DROP TABLE `flags_attempts`;"
+    ));
+
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -386,8 +390,6 @@ void MySqlStorage::clean() {
     std::vector<std::string> vTables;
     vTables.push_back("flags_live");
     vTables.push_back("flags");
-    vTables.push_back("flags_attempts");
-    vTables.push_back("flags_put_fails");
     vTables.push_back("flags_check_fails");
     vTables.push_back("flags_stolen");
     vTables.push_back("flags_defence");
@@ -514,44 +516,6 @@ void MySqlStorage::insertFlagCheckFail(const Ctf01dFlag &flag, const std::string
 
     MYSQL_RES *pRes = mysql_use_result(pConn);
     mysql_free_result(pRes);
-}
-
-// ----------------------------------------------------------------------
-
-void MySqlStorage::insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) {
-    MYSQL *pConn = getDatabaseConnection();
-    // TODO check connection with NULL
-
-    std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
-        " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
-        return;
-    }
-
-    MYSQL_RES *pRes = mysql_use_result(pConn);
-    mysql_free_result(pRes);
-}
-
-// ----------------------------------------------------------------------
-
-int MySqlStorage::numberOfFlagAttempts(const std::string &sTeamId) {
-    std::string sQuery = "SELECT COUNT(*) FROM flags_attempts WHERE teamid = '" + sTeamId + "';";
-    MYSQL *pConn = getDatabaseConnection();
-    int nResult = 0;
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error select (flagAttempts): " + std::string(mysql_error(pConn)));
-    } else {
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        MYSQL_ROW row;
-        // output table name
-        if ((row = mysql_fetch_row(pRes)) != NULL) {
-            nResult = std::stol(std::string(row[0]));
-        }
-        mysql_free_result(pRes);
-    }
-    return nResult;
 }
 
 // ----------------------------------------------------------------------

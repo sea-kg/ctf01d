@@ -60,17 +60,11 @@ public:
     // when flag check fail
     virtual void insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) = 0;
 
-    // add flag attempt
-    virtual void insertFlagAttempt(const std::string &sTeamId, const std::string &sFlag) = 0;
-
-    // count of flag attempts for init scoreboard
-    virtual int numberOfFlagAttempts(const std::string &sTeamId) = 0;
-
     virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) = 0;
 
     // how much defence flags from specify service
     virtual int numberOfDefenceFlagForService(const std::string &sServiceId) = 0;
-    
+
     // how much stolen flags from specify service
     virtual int numberOfStolenFlagsForService(const std::string &sServiceId) = 0;
 

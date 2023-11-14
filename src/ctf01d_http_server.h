@@ -61,6 +61,7 @@ class Ctf01dHttpServer {
 
         EmployConfig *m_pConfig;
         EmployFlags *m_pEmployFlags;
+        EmployDatabase *m_pEmployDatabase;
         EmployTeamLogos *m_pTeamLogos;
 
         std::string m_sIndexHtml;

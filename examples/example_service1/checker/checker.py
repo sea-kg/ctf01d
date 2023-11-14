@@ -1,6 +1,6 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
 import sys
-import math 
+import math
 import socket
 import random
 import time
@@ -28,12 +28,12 @@ def service_down():
 
 if len(sys.argv) != 5:
     print("\nUsage:\n\t" + sys.argv[0] + " <host> (put|check) <flag_id> <flag>\n")
-    print("Example:\n\t" + sys.argv[0] + " \"127.0.0.1\" put \"abcdifghr\" \"123e4567-e89b-12d3-a456-426655440000\" \n")
+    print("Example:\n\t" + sys.argv[0] + " \"127.0.0.1\" put \"abcdifghr\" \"c01d4567-e89b-12d3-a456-426655440000\" \n")
     print("\n")
     exit(0)
 
 host = sys.argv[1]
-port = 4441
+port = 4101
 command = sys.argv[2]
 f_id = sys.argv[3]
 flag = sys.argv[4]
@@ -42,6 +42,7 @@ flag = sys.argv[4]
 # while True: time.sleep(10);
 
 def put_flag():
+    print("put_flag")
     global host, port, f_id, flag
     # try put
     try:
@@ -49,14 +50,14 @@ def put_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
+        _ = s.recv(1024).decode("utf-8")
         # print(result)
-        s.send("put" + "\n")
-        result = s.recv(1024)
-        s.send(f_id + "\n")
-        result = s.recv(1024)
-        s.send(flag + "\n")
-        result = s.recv(1024)
+        s.send("put\n".encode())
+        _ = s.recv(1024).decode("utf-8")
+        s.send(str(f_id + "\n").encode())
+        _ = s.recv(1024).decode("utf-8")
+        s.send(str(flag + "\n").encode())
+        _ = s.recv(1024).decode("utf-8")
         s.close()
     except socket.timeout:
         service_down()
@@ -71,6 +72,7 @@ def put_flag():
         service_corrupt()
 
 def check_flag():
+    print("check_flag")
     global host, port, f_id, flag
     # try get
     flag2 = ""
@@ -79,14 +81,14 @@ def check_flag():
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
         s.connect((host, port))
-        result = s.recv(1024)
+        result = s.recv(1024).decode("utf-8")
         # print(result)
-        s.send("get\n")
-        result = s.recv(1024)
-        s.send(f_id + "\n")
-        result = s.recv(1024)
+        s.send("get\n".encode())
+        result = s.recv(1024).decode("utf-8")
+        s.send(str(f_id + "\n").encode())
+        result = s.recv(1024).decode("utf-8")
         flag2 = result.strip()
-        flag2 = flag2.split("FOUND FLAG: ");
+        flag2 = flag2.split("FOUND FLAG: ")
         if len(flag2) == 2:
             flag2 = flag2[1]
         else:

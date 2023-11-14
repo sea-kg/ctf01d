@@ -504,14 +504,13 @@ void MySqlStorage::insertFlagCheckFail(const Ctf01dFlag &flag, const std::string
     MYSQL *pConn = getDatabaseConnection();
 
     std::string sQuery = "INSERT INTO flags_check_fails(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, team_stole, reason) VALUES("
+        "   date_start, date_end, reason) VALUES("
         "'" + flag.getServiceId() + "', "
         + "'" + flag.getId() + "', "
         + "'" + flag.getValue() + "', "
         + "'" + flag.getTeamId() + "', "
         + std::to_string(flag.getTimeStartInMs()) + ", "
         + std::to_string(flag.getTimeEndInMs()) + ", "
-        + "'', "
         + "'" + sReason + "'"
         + ");";
 

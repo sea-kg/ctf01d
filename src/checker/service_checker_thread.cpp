@@ -203,9 +203,9 @@ void ServiceCheckerThread::run() {
                 nGameStartUTCInSec
             );
 
-            // WsjcppLog::ok(TAG, " runChecker: " + std::to_string(nExitCode));
-
             int nExitCode = this->runChecker(flag, "put");
+
+            // WsjcppLog::ok(TAG, " runChecker: " + std::to_string(nExitCode));
 
             if (nExitCode == ServiceCheckerThread::CHECKER_CODE_UP) {
                 // >>>>>>>>>>> service is UP <<<<<<<<<<<<<<

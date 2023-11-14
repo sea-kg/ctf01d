@@ -351,6 +351,10 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "DROP TABLE `flags_defence`;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(31, // don't change if after commit
+        "DROP TABLE `services_flags_costs`;"
+    ));
+
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -396,13 +400,11 @@ void MySqlStorage::clean() {
     vTables.push_back("flags");
     vTables.push_back("flags_check_fails");
     vTables.push_back("flags_stolen");
-    vTables.push_back("flags_defence");
-    vTables.push_back("services_flags_costs");
 
     for (int i = 0; i < vTables.size(); i++) {
         std::string sQuery = "DELETE FROM " + vTables[i] + ";";
         if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+            WsjcppLog::err(TAG, "Error delete: " + std::string(mysql_error(pConn)));
             return;
         }
         MYSQL_RES *pRes = mysql_use_result(pConn);
@@ -514,7 +516,7 @@ void MySqlStorage::insertFlagCheckFail(const Ctf01dFlag &flag, const std::string
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        WsjcppLog::err(TAG, " insertFlagCheckFail, Error insert: " + std::string(mysql_error(pConn)));
         return;
     }
 
@@ -756,7 +758,7 @@ void MySqlStorage::insertToArchive(Ctf01dFlag &flag) {
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        WsjcppLog::err(TAG, "insertToArchive, Error insert: " + std::string(mysql_error(pConn)));
         return;
     }
 
@@ -780,7 +782,7 @@ void MySqlStorage::insertToFlagsStolen(const Ctf01dFlag &flag, const std::string
         + ");";
 
     if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error insert: " + std::string(mysql_error(pConn)));
+        WsjcppLog::err(TAG, "insertToFlagsStolen, Error insert: " + std::string(mysql_error(pConn)));
         return;
     }
 

@@ -342,7 +342,7 @@ void Ctf01dScoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
         it2->second->doIncrementDefenceFlagsForService(m_nAllDefenceFlags);
         updateCosts();  // TODO update only defence costs
     }
-    WsjcppLog::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
+    // WsjcppLog::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
 }
 
 void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) {

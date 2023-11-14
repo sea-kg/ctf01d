@@ -45,7 +45,7 @@ class FileStorage : public Storage {
         // Storage
         virtual bool applyConfigFromYaml(
             WsjcppYaml &yamlConfig,
-            std::vector<Ctf01dTeamDef> &vTeamsConf, 
+            std::vector<Ctf01dTeamDef> &vTeamsConf,
             std::vector<Ctf01dServiceDef> &vServicesConf
         );
         virtual void clean();

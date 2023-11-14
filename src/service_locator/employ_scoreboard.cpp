@@ -163,7 +163,8 @@ double Ctf01dServiceCostsAndStatistics::updateCostDefenceFlag(double nSumOfRever
 // ----------------------------------------------------------------------
 
 double Ctf01dServiceCostsAndStatistics::getCostDefenceFlag() {
-    return m_nCostDefenceFlag;
+    return 1.0;
+    // return m_nCostDefenceFlag;
 }
 
 // ----------------------------------------------------------------------

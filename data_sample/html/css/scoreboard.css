@@ -144,6 +144,22 @@ button {
   height: 50px;
   vertical-align: top;
   line-height: 50px;
+  padding-left: 50px;
+  background-position: 0px 0px;
+  background-size: 50px 50px;
+  background-repeat: no-repeat;
+}
+
+.place-1st {
+  background-image: url("../images/states/place-1st.svg");
+}
+
+.place-2st {
+  background-image: url("../images/states/place-2st.svg");
+}
+
+.place-3st {
+  background-image: url("../images/states/place-3st.svg");
 }
 
 .team-logo {

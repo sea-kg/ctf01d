@@ -159,8 +159,6 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_checker_example_service2_checker_py_pathc19a23.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_checker_example_service1_checker_py_path0d8a63.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_checker_example_service1_checker_py_path0d8a63.cpp")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.h")
-list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_css_scoreboard_css_pathc54462.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_config_yml_path37a5c6.h")
@@ -169,6 +167,14 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_up_svg_path57e5bd.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_down_svg_path121c87.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_down_svg_path121c87.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_2st_svg_pathd9ec54.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_2st_svg_pathd9ec54.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_3st_svg_path8bb9f2.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_3st_svg_path8bb9f2.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_1st_svg_pathe81cb6.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_images_states_place_1st_svg_pathe81cb6.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src-resources.wsjcpp/__data_sample_html_js_scoreboard_js_path36c4b6.cpp")
 
 # unit-tests
 list (APPEND WSJCPP_INCLUDE_DIRS "src")

@@ -14,7 +14,7 @@ function switchToTabContent() {
     document.getElementById(tabcontentid).style.display = 'block';
 }
 for (var i in tabs) {
-    console.log(tabs[i]);
+    // console.log(tabs[i]);
     tabs[i].onclick = switchToTabContent;
 }
 
@@ -103,11 +103,12 @@ function updateUIValue(t, teamID, paramName){
     } else {
         newValue = '' + t[paramName];
     }
-    var el = document.getElementById(paramName + '-' + teamID);
+    var elem_id = paramName + '-' + teamID;
+    var el = document.getElementById(elem_id);
     if (el) {
         var prevVal = el.innerHTML;
         if (prevVal != newValue) {
-            document.getElementById(paramName + '-' + teamID).innerHTML = newValue;
+            document.getElementById(elem_id).innerHTML = newValue;
             if (paramName == "tries") {
                 _animateElement(document.getElementById('tries-icon-' + teamID), true);
             }
@@ -116,8 +117,33 @@ function updateUIValue(t, teamID, paramName){
                 _animateElement(document.getElementById('tries-icon-' + teamID), false);
             }
         }
+        if (paramName == "place" && prevVal != newValue) {
+            if (newValue == "1") {
+                el.classList.remove('place-2st');
+                el.classList.remove('place-3st');
+                if (!el.classList.contains('place-1st')) {
+                    el.classList.add('place-1st');
+                }
+            } else if (newValue == "2") {
+                el.classList.remove('place-1st');
+                el.classList.remove('place-3st');
+                if (!el.classList.contains('place-2st')) {
+                    el.classList.add('place-2st');
+                }
+            } else if (newValue == "3") {
+                el.classList.remove('place-1st');
+                el.classList.remove('place-2st');
+                if (!el.classList.contains('place-3st')) {
+                    el.classList.add('place-3st');
+                }
+            } else {
+                el.classList.remove('place-1st');
+                el.classList.remove('place-2st');
+                el.classList.remove('place-3st');
+            }
+        }
     } else {
-        console.error('Not found element: ' + teamID + '_' + paramName);
+        console.error('Not found element: ' + elem_id);
     }
 };
 
@@ -152,7 +178,7 @@ function updateScoreboard() {
             loader_content.style.display = 'block';
             return;
         }
-        console.log(resp);
+        // console.log(resp);
         for (var serviceId in resp.s_sta) {
             var s = resp.s_sta[serviceId]
             silentUpdate(serviceId + '-first-blood', s.first_blood);
@@ -301,7 +327,7 @@ getAjax('/api/v1/game', function(err, resp){
         document.getElementById('game_time_range').innerHTML = resp.game_start + ' - ' + resp.game_end;
     }
 
-    console.log(resp);
+    // console.log(resp);
 
     // generate teams-services table
     var sContent = ""

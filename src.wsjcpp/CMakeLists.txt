@@ -146,6 +146,8 @@ list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sam
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_up_svg_path57e5bd.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_down_svg_path121c87.h")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_down_svg_path121c87.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_place_1st_svg_pathe81cb6.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/src-resources.wsjcpp/__data_sample_html_images_states_place_1st_svg_pathe81cb6.cpp")
 
 # required-libraries
 list (APPEND WSJCPP_LIBRARIES "-lpthread")

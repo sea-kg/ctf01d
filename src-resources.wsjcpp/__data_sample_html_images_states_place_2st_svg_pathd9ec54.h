@@ -2,7 +2,7 @@
 
 #include <wsjcpp_core.h>
 
-class RES___data_sample_html_js_scoreboard_js_path36c4b6 : public WsjcppResourceFile { 
+class RES___data_sample_html_images_states_place_2st_svg_pathd9ec54 : public WsjcppResourceFile { 
     public:
         virtual const std::string &getFilename() const override;
         virtual const std::string &getPackAs() const override;

@@ -60,7 +60,7 @@ def put_flag():
         _ = s.recv(1024).decode("utf-8")
         s.close()
     except socket.timeout:
-        service_down()
+        service_mumble()
     except socket.error as serr:
         if serr.errno == errno.ECONNREFUSED:
             service_down()

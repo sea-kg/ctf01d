@@ -173,7 +173,7 @@ bool EmployDatabase::deinit() {
     return true;
 }
 
-void EmployDatabase::insertToFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason) {
+void EmployDatabase::insertToFlagsPutFail(Ctf01dFlag flag, std::string sReason) {
     std::string sQuery = "INSERT INTO flags_put_fails(serviceid, flag_id, flag, teamid, "
         "   date_start, date_end, reason) VALUES("
         "'" + flag.getServiceId() + "', "

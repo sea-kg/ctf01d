@@ -262,7 +262,7 @@ void DoRunChecker::run() {
         // 130 - Script terminated by Control-C
         m_bHasError = true;
     }
-    
+
     if (m_bHasError) {
         m_nExitCode = -1;
         // Log::err(TAG, m_sOutput);

@@ -64,7 +64,7 @@ class EmployDatabase : public WsjcppEmployBase {
         virtual bool init() override;
         virtual bool deinit() override;
 
-        void insertToFlagPutFail(const Ctf01dFlag &flag, const std::string &sReason);
+        void insertToFlagsPutFail(Ctf01dFlag flag, std::string sReason);
 
         void insertFlagAttempt(std::string sTeamId, std::string sFlag);
         int numberOfFlagAttempts(std::string sTeamId);

@@ -382,7 +382,7 @@ void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) 
 }
 
 void Ctf01dScoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
-    m_pDatabase->insertToFlagPutFail(flag, sDescrStatus);
+    m_pDatabase->insertToFlagsPutFail(flag, sDescrStatus);
 
     std::lock_guard<std::mutex> lock(m_mutexJson);
 

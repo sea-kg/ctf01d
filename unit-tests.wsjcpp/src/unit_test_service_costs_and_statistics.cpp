@@ -64,29 +64,12 @@ void UnitTestServiceCostsAndStatistics::executeTest() {
 
     // defence flags
     compare("all defence flags 0", test1.getAllDefenceFlagsForService(), 0);
-    compareD("cost stollen flag", test1.getCostDefenceFlag(), 20.0);
-
-    test1.doIncrementDefenceFlagsForService(1);
-    compare("all defence flags 1", test1.getAllDefenceFlagsForService(), 1);
-
-    test1.updateProportionalDefenceFlagsForService(10, 10);
-    compare("all defence flags 10", test1.getAllDefenceFlagsForService(), 10);
-
-    double d0 = test1.updateProportionalDefenceFlagsForService(0, 10);
-    compareD("proportional 10", d0, 10.0);
 
     int nDefenceFlagsForService1 = 20;
     int nDefenceFlagsForService2 = 20;
     int nAllDefenceFlags = nDefenceFlagsForService1 + nDefenceFlagsForService2;
-    
-    s0 = test1.updateProportionalDefenceFlagsForService(nDefenceFlagsForService2, nAllDefenceFlags);
-    compareD("proportional 20 / 10", s0, 2.0);
-    
-    double nSumOfReverseProportionalDefenceFlags = nAllDefenceFlags / nDefenceFlagsForService1 + nAllDefenceFlags / nDefenceFlagsForService2; // 4 
 
-    cost0 = test1.updateCostDefenceFlag(nSumOfReverseProportionalDefenceFlags);
-    compareD("cost defence flag 1", cost0, 10.0);
-    compareD("cost defence flag 2 ", test1.getCostDefenceFlag(), cost0);
+    double nSumOfReverseProportionalDefenceFlags = nAllDefenceFlags / nDefenceFlagsForService1 + nAllDefenceFlags / nDefenceFlagsForService2; // 4 
 
     std::string sFirdtBloodTeamId = "team0";
     test1.setFirstBloodTeamId("team0");

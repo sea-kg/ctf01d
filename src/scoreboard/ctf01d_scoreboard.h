@@ -79,6 +79,7 @@ class Ctf01dScoreboard {
         Storage *m_pStorage;
         EmployFlags *m_pEmployFlags;
         EmployDatabase *m_pDatabase;
+        int m_nCostDefenceFlagInPoints10;
         int m_nGameStartInSec;
         int m_nGameEndInSec;
         int m_nGameCoffeeBreakStartInSec;

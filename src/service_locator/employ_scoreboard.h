@@ -54,12 +54,9 @@ class Ctf01dServiceCostsAndStatistics {
         double getCostStolenFlag();
 
         int getAllDefenceFlagsForService();
-        void doIncrementDefenceFlagsForService(int nAllDefenceFlags);
+        void doIncrementDefenceFlagsForService();
 
-        double updateProportionalDefenceFlagsForService(int nDefenceFlags, int nAllDefenceFlags);
-        double updateProportionalDefenceFlagsForService(int nAllDefenceFlags);
-        double updateCostDefenceFlag(double nSumOfReverseProportionalDefenceFlags);
-        double getCostDefenceFlag();
+        void updateProportionalDefenceFlagsForService(int nAllDefenceFlagsForService);
 
         std::string getFirstBloodTeamId();
         void setFirstBloodTeamId(const std::string &sFirstBlood);
@@ -79,7 +76,6 @@ class Ctf01dServiceCostsAndStatistics {
         double m_nCostStolenFlag;
 
         int m_nAllDefenceFlagsForService;
-        double m_nReverseProportionalDefenceFlags;
         double m_nCostDefenceFlag;
 };
 

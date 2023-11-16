@@ -60,7 +60,6 @@ Ctf01dServiceCostsAndStatistics::Ctf01dServiceCostsAndStatistics(
     m_nAllStolenFlagsForService = 0;
     m_nReverseProportionalStolenFlags = 0.0;
     m_nAllDefenceFlagsForService = 0;
-    m_nReverseProportionalDefenceFlags = 0.0;
     m_nCostStolenFlag = m_nBasicCostOfStolenFlag;
     m_nCostDefenceFlag = m_nBasicCostOfDefenceFlag;
     m_sFirstBloodTeamId = "?";
@@ -98,8 +97,6 @@ double Ctf01dServiceCostsAndStatistics::updateProportionalStolenFlagsForService(
     return m_nReverseProportionalStolenFlags;
 }
 
-// ----------------------------------------------------------------------
-
 double Ctf01dServiceCostsAndStatistics::updateCostStolenFlag(double nSumOfReverseProportionalStolenFlags) {
     if (nSumOfReverseProportionalStolenFlags == 0.0) {
         m_nCostStolenFlag = m_nBasicCostOfStolenFlag;
@@ -110,80 +107,33 @@ double Ctf01dServiceCostsAndStatistics::updateCostStolenFlag(double nSumOfRevers
     return m_nCostStolenFlag;
 }
 
-// ----------------------------------------------------------------------
-
 double Ctf01dServiceCostsAndStatistics::getCostStolenFlag() {
     return m_nCostStolenFlag;
 }
-
-// ----------------------------------------------------------------------
 
 int Ctf01dServiceCostsAndStatistics::getAllDefenceFlagsForService() {
     return m_nAllDefenceFlagsForService;
 }
 
-// ----------------------------------------------------------------------
-
-void Ctf01dServiceCostsAndStatistics::doIncrementDefenceFlagsForService(int nAllDefenceFlags) {
+void Ctf01dServiceCostsAndStatistics::doIncrementDefenceFlagsForService() {
     m_nAllDefenceFlagsForService++;
-    m_nReverseProportionalDefenceFlags = double(nAllDefenceFlags) / double(m_nAllDefenceFlagsForService);
 }
 
-// ----------------------------------------------------------------------
-
-double Ctf01dServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int nDefenceFlags, int nAllDefenceFlags) {
-    m_nAllDefenceFlagsForService = nDefenceFlags;
-    return updateProportionalDefenceFlagsForService(nAllDefenceFlags);
+void Ctf01dServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int nAllDefenceFlagsForService) {
+    m_nAllDefenceFlagsForService = nAllDefenceFlagsForService;
 }
-
-// ----------------------------------------------------------------------
-
-double Ctf01dServiceCostsAndStatistics::updateProportionalDefenceFlagsForService(int nAllDefenceFlags) {
-    if (m_nAllDefenceFlagsForService > 0) {
-        m_nReverseProportionalDefenceFlags = double(nAllDefenceFlags) / double(m_nAllDefenceFlagsForService);
-    } else {
-        m_nReverseProportionalDefenceFlags = double(nAllDefenceFlags) / 1.0;
-    }
-    return m_nReverseProportionalDefenceFlags;
-}
-
-// ----------------------------------------------------------------------
-
-double Ctf01dServiceCostsAndStatistics::updateCostDefenceFlag(double nSumOfReverseProportionalDefenceFlags) {
-    if (nSumOfReverseProportionalDefenceFlags == 0.0) {
-        m_nCostDefenceFlag = m_nBasicCostOfDefenceFlag;
-        return m_nCostDefenceFlag;
-    }
-    // 2 / 4  = 0.5
-    double k = m_nReverseProportionalDefenceFlags / nSumOfReverseProportionalDefenceFlags;
-    m_nCostDefenceFlag = double(m_nBasicCostOfDefenceFlag) * k;
-    return m_nCostDefenceFlag;
-}
-
-// ----------------------------------------------------------------------
-
-double Ctf01dServiceCostsAndStatistics::getCostDefenceFlag() {
-    return 1.0;
-    // return m_nCostDefenceFlag;
-}
-
-// ----------------------------------------------------------------------
 
 std::string Ctf01dServiceCostsAndStatistics::getFirstBloodTeamId() {
     return m_sFirstBloodTeamId;
 }
 
-// ----------------------------------------------------------------------
-
 void Ctf01dServiceCostsAndStatistics::updateJsonCosts(nlohmann::json &jsonCosts) {
     jsonCosts["cost_att"] = m_nCostStolenFlag;
-    jsonCosts["cost_def"] = m_nCostDefenceFlag;
+    jsonCosts["cost_def"] = 1.0; // m_nCostDefenceFlag;
     jsonCosts["af_att"] = m_nAllStolenFlagsForService;
     jsonCosts["af_def"] = m_nAllDefenceFlagsForService;
     jsonCosts["first_blood"] = m_sFirstBloodTeamId;
 }
-
-// ----------------------------------------------------------------------
 
 void Ctf01dServiceCostsAndStatistics::setFirstBloodTeamId(const std::string &sFirstBlood) {
     m_sFirstBloodTeamId = sFirstBlood;

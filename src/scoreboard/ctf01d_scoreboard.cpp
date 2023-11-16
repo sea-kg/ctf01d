@@ -72,6 +72,7 @@ Ctf01dScoreboard::Ctf01dScoreboard(
     m_nFlagTimeLiveInSec = nFlagTimeLiveInSec;
     m_nAllStolenFlags = 0;
     m_nAllDefenceFlags = 0;
+    m_nCostDefenceFlagInPoints10 = 10;
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     m_mapTeamsStatuses.clear(); // possible memory leak
@@ -210,6 +211,7 @@ void Ctf01dScoreboard::incrementTries(const std::string &sTeamId) {
 void Ctf01dScoreboard::initStateFromStorage() {
     EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
     const std::vector<Ctf01dServiceDef> &vServices = pConfig->servicesConf();
+    m_nCostDefenceFlagInPoints10 = pConfig->getCostDefenceFlagInPoints();
 
     // load flag lives
     std::vector<Ctf01dFlag> vFlagLives = m_pStorage->listOfLiveFlags();
@@ -242,7 +244,7 @@ void Ctf01dScoreboard::initStateFromStorage() {
     for (int i = 0; i < vFlags.size(); i++) {
         FlagsForService f = vFlags[i];
         m_mapServiceCostsAndStatistics[f.sServiceID]->updateProportionalStolenFlagsForService(f.nStolenFlags, m_nAllStolenFlags);
-        m_mapServiceCostsAndStatistics[f.sServiceID]->updateProportionalDefenceFlagsForService(f.nDefenceFlags, m_nAllDefenceFlags);
+        m_mapServiceCostsAndStatistics[f.sServiceID]->updateProportionalDefenceFlagsForService(f.nDefenceFlags);
     }
 
     std::map<std::string, TeamStatusRow *>::iterator it;
@@ -298,7 +300,7 @@ int Ctf01dScoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::st
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
-        TeamStatusRow *pRow = it->second; 
+        TeamStatusRow *pRow = it->second;
         pRow->incrementAttack(sServiceId, nFlagPoints);
         m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["att"] = pRow->getAttackFlags(sServiceId);
         m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["pt_att"] = double(pRow->getAttackPoints(sServiceId)) / 10.0;
@@ -321,7 +323,7 @@ void Ctf01dScoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
 
     std::string sTeamId = flag.getTeamId();
     std::string sServiceId = flag.getServiceId();
-    int nFlagPoints = m_mapServiceCostsAndStatistics[sServiceId]->getCostDefenceFlag()*10; // one number after dot
+    int nFlagPoints = m_nCostDefenceFlagInPoints10;
     m_pDatabase->insertToFlagsDefence(flag, nFlagPoints);
 
     std::map<std::string,TeamStatusRow *>::iterator it;
@@ -339,10 +341,9 @@ void Ctf01dScoreboard::incrementDefenceScore(const Ctf01dFlag &flag) {
     it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
     if (it2 != m_mapServiceCostsAndStatistics.end()) {
         m_nAllDefenceFlags++;
-        it2->second->doIncrementDefenceFlagsForService(m_nAllDefenceFlags);
-        updateCosts();  // TODO update only defence costs
+        it2->second->doIncrementDefenceFlagsForService();
+        updateCosts();
     }
-    // WsjcppLog::err(TAG, "CostDefenceFlagForService " + sServiceId + " m_nAllDefenceFlags = " + std::to_string(m_nAllDefenceFlags));
 }
 
 void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) {
@@ -474,19 +475,14 @@ void Ctf01dScoreboard::updateCosts() {
     // TODO update costs
     std::map<std::string, Ctf01dServiceCostsAndStatistics *>::iterator it1;
     double nSumOfReverseProportionalStolenFlags = 0.0;
-    double nSumOfReverseProportionalDefenceFlags = 0.0;
 
-    // calculate 
+    // calculate
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
         nSumOfReverseProportionalStolenFlags += it1->second->updateProportionalStolenFlagsForService(m_nAllStolenFlags);
-        nSumOfReverseProportionalDefenceFlags += it1->second->updateProportionalDefenceFlagsForService(m_nAllDefenceFlags);
     }
-
-    WsjcppLog::err(TAG, "CostDefenceFlagForService nSumOfReverseProportionalDefenceFlags = " + std::to_string(nSumOfReverseProportionalDefenceFlags));
 
     for (it1 = m_mapServiceCostsAndStatistics.begin(); it1 != m_mapServiceCostsAndStatistics.end(); it1++) {
         it1->second->updateCostStolenFlag(nSumOfReverseProportionalStolenFlags);
-        it1->second->updateCostDefenceFlag(nSumOfReverseProportionalDefenceFlags);
         // WsjcppLog::err(TAG, "CostDefenceFlagForService " + it1->first + " " + std::to_string(r));
     }
 

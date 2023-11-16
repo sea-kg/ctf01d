@@ -170,8 +170,8 @@ flag_timelive_in_min:
   - RU: время жизни флага (поумолчанию: 1 минут)
 
 basic_costs_stolen_flag_in_points:
-  - EN: Basic cost of stolen flag (default: 10 points)
-  - RU: Базовая стоимость украденного флага (по умолчанию: 10 поинтов)
+  - EN: Basic cost of stolen flag (default: 1 point)
+  - RU: Базовая стоимость украденного флага (по умолчанию: 1 поинт)
 
 ### 2. Acception of the defence flag / Принятие флага защиты
 
@@ -179,9 +179,9 @@ EN:
 
 Only the defence flag from the service is counted if:
 - the flag was successfully put into the service
-- the flag existed in the service throughout its lifetime 
+- the flag existed in the service throughout its lifetime
 - the flag was not stolen by other team(s)
-- and the service was in UP state throughout the flag lifetime
+- the cost of the defences flag is fixed and equal to 1.0 points
 
 RU:
 
@@ -189,8 +189,7 @@ RU:
 - флаг был успешно запулен на сервис
 - флаг просуществовал на сервисе все время своей жизни
 - флаг не был украден другой командой (командами)
-- и в течении всей жизни флага - сервис был в состоянии UP
-
+- стоимость флага защиты фиксирована и равна 1,0 очка
 
 ### 3. Acception of the attack flag / Принятия флага атаки
 
@@ -234,8 +233,9 @@ Example on python:
 
 ```python
 basic_costs_stolen_flag_in_points = 10
+cost_defence_flag_in_points = 1.0
 services = [
-    { "stolen_flags": 100, "defended_flags": 9 }, # service0 
+    { "stolen_flags": 100, "defended_flags": 9 }, # service0
     { "stolen_flags": 0, "defended_flags": 0 }, # service1
     { "stolen_flags": 12, "defended_flags": 50 }, # service2
     { "stolen_flags": 1, "defended_flags": 0 }, # service3
@@ -834,7 +834,7 @@ $ sudo systemctl restart myservice
 * [ithewei/libhv](https://github.com/ithewei/libhv) - for a c++ webserver (v1.3.1)
 * [sqlite](https://www.sqlite.org/download.html) - C source code as an amalgamation, version 3.43.2
 
-# Online Attack-Defence
+# Online Attack-Defense
 
 I have only one schmea now:
 

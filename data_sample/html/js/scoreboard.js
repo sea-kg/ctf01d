@@ -182,8 +182,6 @@ function updateScoreboard() {
         for (var serviceId in resp.s_sta) {
             var s = resp.s_sta[serviceId]
             silentUpdate(serviceId + '-first-blood', s.first_blood);
-            silentUpdate(serviceId + '-cost-att', s.cost_att.toFixed(1));
-            silentUpdate(serviceId + '-cost-def', s.cost_def.toFixed(1));
             silentUpdate(serviceId + '-all-flags-att', s.af_att)
             silentUpdate(serviceId + '-all-flags-def', s.af_def)
         }
@@ -341,10 +339,6 @@ getAjax('/api/v1/game', function(err, resp){
         var serviceId = resp.services[i].id;
         sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
         + "<small>[r:" + resp.services[i].round_time_in_sec + "s]</small>"
-        + "<div>"
-        + "     <div class='text green points' id='" + serviceId + "-cost-def'>0.0</div> "
-        + "     | <div class='text red points' id='" + serviceId + "-cost-att'>0.0</div> "
-        + "</div>"
         + "<div class='service-att-def'>"
         + "     <div class='d-icn def' id='" + serviceId + "-all-flags-def'>0</div> "
         + "     | <div class='d-icn att' id='" + serviceId + "-all-flags-att'>0</div>"

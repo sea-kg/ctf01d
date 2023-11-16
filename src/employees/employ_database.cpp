@@ -43,6 +43,35 @@
 #include <vector>
 
 // ---------------------------------------------------------------------
+// Ctf01dDatabaseSelectRows
+
+Ctf01dDatabaseSelectRows::Ctf01dDatabaseSelectRows() {
+    m_pQuery = nullptr;
+}
+
+Ctf01dDatabaseSelectRows::~Ctf01dDatabaseSelectRows() {
+    if (m_pQuery != nullptr) {
+        sqlite3_finalize(m_pQuery);
+    }
+}
+
+void Ctf01dDatabaseSelectRows::setQuery(sqlite3_stmt* pQuery) {
+    m_pQuery = pQuery;
+}
+
+bool Ctf01dDatabaseSelectRows::next() {
+    return  sqlite3_step(m_pQuery) == SQLITE_ROW;
+}
+
+std::string Ctf01dDatabaseSelectRows::getString(int nColumnNumber) {
+    return std::string((const char *)sqlite3_column_text(m_pQuery, nColumnNumber));
+}
+
+int Ctf01dDatabaseSelectRows::getInt(int nColumnNumber) {
+    return sqlite3_column_int(m_pQuery, nColumnNumber);
+}
+
+// ---------------------------------------------------------------------
 // Ctf01dDatabaseFile
 
 Ctf01dDatabaseFile::Ctf01dDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable) {
@@ -87,7 +116,7 @@ bool Ctf01dDatabaseFile::open() {
     return true;
 }
 
-bool Ctf01dDatabaseFile::insert(std::string sSqlInsert) {
+bool Ctf01dDatabaseFile::executeQuery(std::string sSqlInsert) {
     // TODO mutex
     char *zErrMsg = 0;
     int nRet = sqlite3_exec(m_pDatabaseFile, sSqlInsert.c_str(), 0, 0, &zErrMsg);
@@ -108,11 +137,23 @@ int Ctf01dDatabaseFile::selectSumOrCount(std::string sSqlSelectCount) {
     // step to 1st row of data
     ret = sqlite3_step(pQuery);
     if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
-        WsjcppLog::throw_err(TAG, "Failed to step for select count: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
+        WsjcppLog::throw_err(TAG, "Failed to step for select count or sum: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectCount);
     }
     int nRet = sqlite3_column_int(pQuery, 0);
     if (pQuery != nullptr) sqlite3_finalize(pQuery);
     return nRet;
+}
+
+bool Ctf01dDatabaseFile::selectRows(std::string sSqlSelectRows, Ctf01dDatabaseSelectRows &selectRows) {
+    sqlite3_stmt* pQuery = nullptr;
+    int nRet = sqlite3_prepare_v2(m_pDatabaseFile, sSqlSelectRows.c_str(), -1, &pQuery, NULL);
+    // prepare the statement
+    if (nRet != SQLITE_OK) {
+        WsjcppLog::throw_err(TAG, "Failed to prepare select rows: " + std::string(sqlite3_errmsg(m_pDatabaseFile)) + "\n SQL-query: " + sSqlSelectRows);
+        return false;
+    }
+    selectRows.setQuery(pQuery);
+    return true;
 }
 
 // ---------------------------------------------------------------------
@@ -123,11 +164,12 @@ REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployDatabase)
 EmployDatabase::EmployDatabase()
 : WsjcppEmployBase(EmployDatabase::name(), {"EmployConfig"}) {
     TAG = EmployDatabase::name();
-    m_pFlagsPutFails = nullptr;
     m_pFlagsAttempts = nullptr;
     m_pFlagsDefense = nullptr;
     m_pFlagsCheckFails = nullptr;
     m_pFlagsStolen = nullptr;
+    m_pFlagsLive = nullptr;
+    m_pFlagsCheckerPutsResults = nullptr;
 }
 
 bool EmployDatabase::init() {
@@ -138,8 +180,8 @@ bool EmployDatabase::init() {
     }
     WsjcppLog::ok(TAG, "Initialize build-in sqlite3 library");
 
-    m_pFlagsPutFails = new Ctf01dDatabaseFile("flags_put_fails.db",
-        "CREATE TABLE IF NOT EXISTS flags_put_fails ( "
+    m_pFlagsCheckerPutsResults = new Ctf01dDatabaseFile("flags_checker_put_results.db",
+        "CREATE TABLE IF NOT EXISTS flags_checker_put_results ( "
         "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
         "  serviceid VARCHAR(50) NOT NULL, "
         "  flag_id VARCHAR(50) NOT NULL, "
@@ -147,10 +189,10 @@ bool EmployDatabase::init() {
         "  teamid VARCHAR(50) NOT NULL, "
         "  date_start INTEGER NOT NULL,"
         "  date_end INTEGER NOT NULL,"
-        "  reason VARCHAR(50) NOT NULL"
+        "  result VARCHAR(50) NOT NULL"
         ");"
     );
-    if (!m_pFlagsPutFails->open()) {
+    if (!m_pFlagsCheckerPutsResults->open()) {
         return false;
     }
 
@@ -219,41 +261,76 @@ bool EmployDatabase::init() {
     if (!m_pFlagsStolen->open()) {
         return false;
     }
+
+    m_pFlagsLive = new Ctf01dDatabaseFile("flags_live.db",
+        "CREATE TABLE IF NOT EXISTS flags_live ( "
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "  serviceid VARCHAR(50) NOT NULL, "
+        "  flag_id VARCHAR(50) NOT NULL, "
+        "  flag VARCHAR(36) NOT NULL, "
+        "  teamid VARCHAR(50) NOT NULL, "
+        "  date_start INTEGER NOT NULL, "
+        "  date_end INTEGER NOT NULL "
+        ");"
+    );
+    if (!m_pFlagsLive->open()) {
+        return false;
+    }
     return true;
 }
 
 bool EmployDatabase::deinit() {
     WsjcppLog::info(TAG, "deinit");
-    delete m_pFlagsPutFails;
     delete m_pFlagsAttempts;
     delete m_pFlagsDefense;
     delete m_pFlagsCheckFails;
     delete m_pFlagsStolen;
+    delete m_pFlagsLive;
+    delete m_pFlagsCheckerPutsResults;
     sqlite3_shutdown();
     return true;
 }
 
-void EmployDatabase::insertToFlagsPutFail(Ctf01dFlag flag, std::string sReason) {
-    std::string sQuery = "INSERT INTO flags_put_fails(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, reason) VALUES("
+void EmployDatabase::insertToFlagsCheckerPutResult(Ctf01dFlag flag, std::string sResult) {
+    std::string sQuery = "INSERT INTO flags_checker_put_results(serviceid, flag_id, flag, teamid, "
+        "   date_start, date_end, result) VALUES("
         "'" + flag.getServiceId() + "', "
         + "'" + flag.getId() + "', "
         + "'" + flag.getValue() + "', "
         + "'" + flag.getTeamId() + "', "
         + std::to_string(flag.getTimeStartInMs()) + ", "
         + std::to_string(flag.getTimeEndInMs()) + ", "
-        + "'" + sReason + "'"
+        + "'" + sResult + "'"
         + ");";
-    if (!m_pFlagsPutFails->insert(sQuery)) {
+    if (!m_pFlagsCheckerPutsResults->executeQuery(sQuery)) {
         WsjcppLog::err(TAG, "Error insert " + sQuery);
     }
+}
+
+int EmployDatabase::numberOfFlagFlagsCheckerPutAllResults(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsCheckerPutsResults->selectSumOrCount(
+        "SELECT COUNT(*) as defence FROM flags_checker_put_results "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
+        ";"
+    );
+}
+
+int EmployDatabase::numberOfFlagFlagsCheckerPutSuccessResult(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsCheckerPutsResults->selectSumOrCount(
+        "SELECT COUNT(*) as defence FROM flags_checker_put_results "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND teamid = '" + sTeamId + "' "
+        "   AND result = 'up' "
+        ";"
+    );
 }
 
 void EmployDatabase::insertFlagAttempt(std::string sTeamId, std::string sFlag) {
     std::string sQuery = "INSERT INTO flags_attempts(flag, teamid, dt) "
         " VALUES('" + sFlag + "', '" + sTeamId + "', " + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
 
-    if (!m_pFlagsAttempts->insert(sQuery)) {
+    if (!m_pFlagsAttempts->executeQuery(sQuery)) {
         WsjcppLog::err(TAG, "Error insert");
     }
 }
@@ -276,7 +353,7 @@ void EmployDatabase::insertToFlagsDefence(Ctf01dFlag flag, int nPoints) {
         + std::to_string(nPoints) + " "
         + ");";
 
-    if (!m_pFlagsDefense->insert(sQuery)) {
+    if (!m_pFlagsDefense->executeQuery(sQuery)) {
         WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
     }
 }
@@ -317,7 +394,7 @@ void EmployDatabase::insertFlagCheckFail(Ctf01dFlag flag, std::string sReason) {
         + "'" + sReason + "'"
         + ");";
 
-    if (!m_pFlagsCheckFails->insert(sQuery)) {
+    if (!m_pFlagsCheckFails->executeQuery(sQuery)) {
         WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
     }
 }
@@ -361,7 +438,7 @@ void EmployDatabase::insertToFlagsStolen(Ctf01dFlag flag, std::string sTeamId, i
         + std::to_string(nPoints) + " "
         + ");";
 
-    if (!m_pFlagsStolen->insert(sQuery)) {
+    if (!m_pFlagsStolen->executeQuery(sQuery)) {
         WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
     }
 }
@@ -387,4 +464,63 @@ bool EmployDatabase::isSomebodyStole(Ctf01dFlag flag) {
             "   AND flag = '" + flag.getValue() + "'"
     );
     return nRet > 0;
+}
+
+
+void EmployDatabase::insertToFlagLive(Ctf01dFlag flag) {
+    std::string sQuery = "INSERT INTO flags_live(serviceid, flag_id, flag, teamid, "
+        "   date_start, date_end) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs())
+        + ");";
+    if (!m_pFlagsLive->executeQuery(sQuery)) {
+        WsjcppLog::err(TAG, "Error insert insertToFlagLive");
+    }
+}
+
+void EmployDatabase::deleteFlagLive(Ctf01dFlag flag) {
+    std::string sQuery = "DELETE FROM flags_live WHERE flag = '" + flag.getValue() + "';";
+    if (!m_pFlagsLive->executeQuery(sQuery)) {
+        WsjcppLog::err(TAG, "Error delete deleteFlagLive");
+    }
+}
+
+std::vector<Ctf01dFlag> EmployDatabase::listOfLiveFlags() {
+    // long nCurrentTime = WsjcppCore::getCurrentTimeInMilliseconds();
+    EmployConfig *pConfig = findWsjcppEmploy<EmployConfig>();
+
+    std::string sQuery =
+        "SELECT flag_id, serviceid, teamid, flag, date_start, date_end "
+        "FROM flags_live "
+        "WHERE "
+        "   date_start > " + std::to_string(long(pConfig->gameStartUTCInSec())*1000) + " "
+        "   AND date_end < " + std::to_string(long(pConfig->gameEndUTCInSec())*1000) + " "
+        ";";
+
+    std::vector<Ctf01dFlag> vResult;
+    Ctf01dDatabaseSelectRows selectRows;
+    if (!m_pFlagsLive->selectRows(sQuery, selectRows)) {
+        WsjcppLog::err(TAG, "Error select listOfLiveFlags " + sQuery);
+    }
+    int nCounter = 0;
+    while (selectRows.next()) {
+        nCounter++;
+        Ctf01dFlag flag;
+        std::string sFlagId = selectRows.getString(0);
+        flag.setId(sFlagId);
+        flag.setServiceId(selectRows.getString(1));
+        flag.setTeamId(selectRows.getString(2));
+        std::string sFlagValue = selectRows.getString(3);
+        flag.setValue(sFlagValue);
+        flag.setTimeStartInMs(selectRows.getInt(4));
+        flag.setTimeEndInMs(selectRows.getInt(5));
+        WsjcppLog::info(TAG, "Loaded flag from previous session flags_live: id = " + sFlagId + ", value = " + sFlagValue);
+        vResult.push_back(flag);
+    }
+    WsjcppLog::info(TAG, "Found rows listOfLiveFlags " + std::to_string(nCounter));
+    return vResult;
 }

@@ -40,13 +40,28 @@
 #include <employ_flags.h>
 #include <sqlite3.h>
 
+class Ctf01dDatabaseSelectRows {
+    public:
+        Ctf01dDatabaseSelectRows();
+        ~Ctf01dDatabaseSelectRows();
+        void setQuery(sqlite3_stmt* pQuery);
+        bool next();
+        std::string getString(int nColumnNumber);
+        int getInt(int nColumnNumber);
+
+    private:
+        sqlite3_stmt* m_pQuery;
+};
+
+
 class Ctf01dDatabaseFile {
     public:
         Ctf01dDatabaseFile(const std::string &sFilename, const std::string &sSqlCreateTable);
         ~Ctf01dDatabaseFile();
         bool open();
-        bool insert(std::string sSqlInsert);
+        bool executeQuery(std::string sSqlInsert);
         int selectSumOrCount(std::string sSqlSelectCount);
+        bool selectRows(std::string sSqlSelectRows, Ctf01dDatabaseSelectRows &selectRows);
 
     private:
         std::string TAG;
@@ -64,7 +79,10 @@ class EmployDatabase : public WsjcppEmployBase {
         virtual bool init() override;
         virtual bool deinit() override;
 
-        void insertToFlagsPutFail(Ctf01dFlag flag, std::string sReason);
+        // flags_checker_put_states
+        void insertToFlagsCheckerPutResult(Ctf01dFlag flag, std::string sResult);
+        int numberOfFlagFlagsCheckerPutAllResults(std::string sTeamId, std::string sServiceId);
+        int numberOfFlagFlagsCheckerPutSuccessResult(std::string sTeamId, std::string sServiceId);
 
         void insertFlagAttempt(std::string sTeamId, std::string sFlag);
         int numberOfFlagAttempts(std::string sTeamId);
@@ -83,13 +101,19 @@ class EmployDatabase : public WsjcppEmployBase {
         bool isAlreadyStole(Ctf01dFlag flag, std::string sTeamId);
         bool isSomebodyStole(Ctf01dFlag flag);
 
+        // flags live
+        void insertToFlagLive(Ctf01dFlag flag);
+        void deleteFlagLive(Ctf01dFlag flag);
+        std::vector<Ctf01dFlag> listOfLiveFlags();
+
     private:
         std::string TAG;
-        Ctf01dDatabaseFile *m_pFlagsPutFails;
         Ctf01dDatabaseFile *m_pFlagsAttempts;
         Ctf01dDatabaseFile *m_pFlagsDefense;
         Ctf01dDatabaseFile *m_pFlagsCheckFails;
         Ctf01dDatabaseFile *m_pFlagsStolen;
+        Ctf01dDatabaseFile *m_pFlagsLive;
+        Ctf01dDatabaseFile *m_pFlagsCheckerPutsResults;
 };
 
 #endif // EMPLOY_DATABASE_H

@@ -51,26 +51,6 @@ public:
     ) = 0;
 
     virtual void clean() = 0;
-
-    // add new live flag
-    virtual void insertFlagLive(const Ctf01dFlag &sFlag) = 0;
-
-    virtual std::vector<Ctf01dFlag> listOfLiveFlags() = 0;
-
-    virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) = 0;
-
-    // move flag to archive
-    virtual void insertToArchive(Ctf01dFlag &flag) = 0;
-
-    // list of flags with ended if server up and check another flag lost on down
-    virtual std::vector<Ctf01dFlag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) = 0;
-
-    // DEPRECATED
-    // find flag
-    virtual bool findFlagByValue(const std::string &sFlag, Ctf01dFlag &resultFlag) = 0;
-
-    // remove flag
-    virtual void deleteFlagLive(const Ctf01dFlag &flag) = 0;
 };
 
 #endif // STORAGE_H

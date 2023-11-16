@@ -147,7 +147,7 @@ void Ctf01dScoreboard::initJsonScoreboard() {
             serviceData["pt_def"] = 0;
             serviceData["att"] = 0;
             serviceData["pt_att"] = 0;
-            serviceData["upt"] = 100.0;
+            serviceData["upt"] = 100.0; // TODO calculate uptime
             serviceData["status"] = m_mapTeamsStatuses[sTeamId]->serviceStatus(serviceConf.id());
             jsonServices[serviceConf.id()] = serviceData;
         }
@@ -214,7 +214,7 @@ void Ctf01dScoreboard::initStateFromStorage() {
     m_nCostDefenceFlagInPoints10 = pConfig->getCostDefenceFlagInPoints();
 
     // load flag lives
-    std::vector<Ctf01dFlag> vFlagLives = m_pStorage->listOfLiveFlags();
+    std::vector<Ctf01dFlag> vFlagLives = m_pDatabase->listOfLiveFlags();
     for (unsigned int i = 0; i < vFlagLives.size(); i++) {
         Ctf01dFlag flag = vFlagLives[i];
         m_mapFlagsLive[flag.getValue()] = flag;
@@ -272,14 +272,10 @@ void Ctf01dScoreboard::initStateFromStorage() {
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["att"] = nAttackFlags;
             m_jsonScoreboard["scoreboard"][pRow->teamId()]["ts_sta"][sServiceID]["pt_att"] = double(nAttackPoints) / 10.0;
 
-            // calculate uptime
-            int nFlagsSuccess = m_pStorage->numberOfFlagSuccessPutted(pRow->teamId(), sServiceID);
-            pRow->setServiceFlagsPutted(sServiceID, nFlagsSuccess);
-
-            // TODO
-            // int nUpPointTimeInSec = m_pStorage->lastUpPointTime(pRow->teamId(), sServiceID);
-            // pRow->setUpPointTime(sServiceID, nUpPointTimeInSec);
-            // setUpPointTime
+            // calculate uptime / sla
+            int nPutsFlagsAllResults = m_pDatabase->numberOfFlagFlagsCheckerPutAllResults(pRow->teamId(), sServiceID);
+            int nPutsFlagsSuccessResults = m_pDatabase->numberOfFlagFlagsCheckerPutSuccessResult(pRow->teamId(), sServiceID);
+            pRow->setServiceFlagsForCalculateSLA(sServiceID, nPutsFlagsAllResults, nPutsFlagsSuccessResults);
         }
     }
 
@@ -357,10 +353,11 @@ void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) 
         std::map<std::string,Ctf01dFlag>::iterator it;
         it = m_mapFlagsLive.find(flag.getValue());
         if (it != m_mapFlagsLive.end()) {
-            WsjcppLog::warn(TAG, flag.getValue() + " - flag already exists");
+            WsjcppLog::err(TAG, flag.getValue() + " - flag already exists");
         } else {
             m_mapFlagsLive[flag.getValue()] = flag;
-            m_pStorage->insertFlagLive(flag);
+            m_pDatabase->insertToFlagLive(flag);
+            m_pDatabase->insertToFlagsCheckerPutResult(flag, "up");
         }
     }
 
@@ -383,7 +380,7 @@ void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) 
 }
 
 void Ctf01dScoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::string &sServiceStatus, const std::string &sDescrStatus) {
-    m_pDatabase->insertToFlagsPutFail(flag, sDescrStatus);
+    m_pDatabase->insertToFlagsCheckerPutResult(flag, sDescrStatus);
 
     std::lock_guard<std::mutex> lock(m_mutexJson);
 
@@ -493,18 +490,6 @@ void Ctf01dScoreboard::updateCosts() {
     }
 }
 
-/*void Ctf01dScoreboard::addFlagLive(const Flag &flag) {
-    std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-    std::map<std::string,Flag>::iterator it;
-    it = m_mapFlagsLive.find(flag.value());
-    if (it != m_mapFlagsLive.end()) {
-        Log::warn(TAG, flag.value() + " - flag already exists");
-    } else {
-        m_mapFlagsLive[flag.value()] = flag;
-        m_pStorage->insertFlagLive(flag);
-    }
-}*/
-
 std::vector<Ctf01dFlag> Ctf01dScoreboard::outdatedFlagsLive(const std::string &sTeamId, const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
     std::vector<Ctf01dFlag> vResult;
@@ -538,7 +523,7 @@ void Ctf01dScoreboard::removeFlagLive(const Ctf01dFlag &flag) {
     it = m_mapFlagsLive.find(flag.getValue());
     if (it != m_mapFlagsLive.end()) {
         m_mapFlagsLive.erase(it);
-        m_pStorage->deleteFlagLive(flag);
+        m_pDatabase->deleteFlagLive(flag);
     } else {
         WsjcppLog::warn(TAG, flag.getValue() + " - flag did not exists");
     }

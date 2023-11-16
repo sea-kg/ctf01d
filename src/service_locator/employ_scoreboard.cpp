@@ -252,26 +252,13 @@ void ServiceStatusCell::addAttackPoints(int nAttackPoints) {
     m_nAttackPoints += nAttackPoints;
 }
 
-// ----------------------------------------------------------------------
-
-void ServiceStatusCell::setFlagsPutted(int nFlagsPutted) {
-    std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
-    m_nFlagsPutted = nFlagsPutted;
+void ServiceStatusCell::setFlagsPutAllResultsCounter(int nFlagsPutAllResultsCounter) {
+    m_nFlagsPutAllResultsCounter = nFlagsPutAllResultsCounter;
 }
 
-// ----------------------------------------------------------------------
-
-int ServiceStatusCell::flagsPutted() {
-    return m_nFlagsPutted;
+void ServiceStatusCell::setFlagsPutSuccessResultsCounter(int nFlagsPutSuccessResultsCounter) {
+    m_nFlagsPutSuccessResultsCounter = nFlagsPutSuccessResultsCounter;
 }
-
-// ----------------------------------------------------------------------
-
-void ServiceStatusCell::setUpPointTime(int nUpPointTimeInSec) {
-    m_nUpPointTimeInSec = nUpPointTimeInSec;
-}
-
-// ----------------------------------------------------------------------
 
 void ServiceStatusCell::setStatus(const std::string &sStatus) {
     std::lock_guard<std::mutex> lock(m_mutexServiceStatus);
@@ -280,8 +267,6 @@ void ServiceStatusCell::setStatus(const std::string &sStatus) {
         m_nUpPointTimeInSec = WsjcppCore::getCurrentTimeInSeconds();
     }
 }
-
-// ----------------------------------------------------------------------
 
 std::string ServiceStatusCell::status() {
     return m_sStatus;
@@ -309,67 +294,47 @@ TeamStatusRow::TeamStatusRow(
     }
 }
 
-// ----------------------------------------------------------------------
-
 void TeamStatusRow::setPlace(int nPlace) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_nPlace = nPlace;
 }
-
-// ----------------------------------------------------------------------
 
 int TeamStatusRow::place() {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_nPlace;
 }
 
-// ----------------------------------------------------------------------
-
 const std::string &TeamStatusRow::teamId() {
     // std::lock_guard<std::mutex> lock(m_mutex);
     return m_sTeamId;
 }
-
-// ----------------------------------------------------------------------
 
 void TeamStatusRow::setPoints(int nPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_nPoints = nPoints;
 }
 
-// ----------------------------------------------------------------------
-
 int TeamStatusRow::getPoints() {
     return m_nPoints;
 }
-
-// ----------------------------------------------------------------------
 
 void TeamStatusRow::setServiceStatus(const std::string &sServiceId, std::string sStatus){
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->setStatus(sStatus);
 }
 
-// ----------------------------------------------------------------------
-
 void TeamStatusRow::setTries(int nTries) {
     m_nTries = nTries;
 }
-
-// ----------------------------------------------------------------------
 
 int TeamStatusRow::tries() {
     return m_nTries;
 }
 
-// ----------------------------------------------------------------------
-
 std::string TeamStatusRow::serviceStatus(const std::string &sServiceId){
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_mapServicesStatus[sServiceId]->status();
 }
-
-// ----------------------------------------------------------------------
 
 std::string TeamStatusRow::servicesToString() {
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -381,8 +346,6 @@ std::string TeamStatusRow::servicesToString() {
     return sResult;
 }
 
-// ----------------------------------------------------------------------
-
 void TeamStatusRow::incrementDefence(const std::string &sServiceId, int nFlagPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->incrementDefenceFlags();
@@ -390,19 +353,13 @@ void TeamStatusRow::incrementDefence(const std::string &sServiceId, int nFlagPoi
     m_nPoints += nFlagPoints;
 }
 
-// ----------------------------------------------------------------------
-
 int TeamStatusRow::getDefenceFlags(const std::string &sServiceId) {
     return m_mapServicesStatus[sServiceId]->getDefenceFlags();
 }
 
-// ----------------------------------------------------------------------
-
 int TeamStatusRow::getDefencePoints(const std::string &sServiceId) {
     return m_mapServicesStatus[sServiceId]->getDefencePoints();
 }
-
-// ----------------------------------------------------------------------
 
 void TeamStatusRow::setServiceDefenceFlagsAndPoints(const std::string &sServiceId, int nDefenceFlags, int nDefencePoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -411,16 +368,12 @@ void TeamStatusRow::setServiceDefenceFlagsAndPoints(const std::string &sServiceI
     m_nPoints += nDefencePoints;
 }
 
-// ----------------------------------------------------------------------
-
 void TeamStatusRow::incrementAttack(const std::string &sServiceId, int nFlagPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_mapServicesStatus[sServiceId]->incrementAttackFlags();
     m_mapServicesStatus[sServiceId]->addAttackPoints(nFlagPoints);
     m_nPoints += nFlagPoints;
 }
-
-// ----------------------------------------------------------------------
 
 void TeamStatusRow::setServiceAttackFlagsAndPoints(const std::string &sServiceId, int nAttackFlags, int nAttackPoints) {
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -429,31 +382,25 @@ void TeamStatusRow::setServiceAttackFlagsAndPoints(const std::string &sServiceId
     m_nPoints += nAttackPoints;
 }
 
-// ----------------------------------------------------------------------
-
 int TeamStatusRow::getAttackFlags(const std::string &sServiceId) {
     return m_mapServicesStatus[sServiceId]->getAttackFlags();
 }
-
-// ----------------------------------------------------------------------
 
 int TeamStatusRow::getAttackPoints(const std::string &sServiceId) {
     return m_mapServicesStatus[sServiceId]->getAttackPoints();
 }
 
-// ----------------------------------------------------------------------
-
 void TeamStatusRow::updateScore(const std::string &sServiceId) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
-    m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
+    // TODO
+    // int nFlagsPutted = m_mapServicesStatus[sServiceId]->flagsPutted();
+    // m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagsPutted);
 }
 
-// ----------------------------------------------------------------------
-
-void TeamStatusRow::setServiceFlagsPutted(const std::string &sServiceId, int nFlagSuccess) {
+void TeamStatusRow::setServiceFlagsForCalculateSLA(const std::string &sServiceId, int nPutsFlagsAllResults, int nPutsFlagsSuccessResults) {
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_mapServicesStatus[sServiceId]->setFlagsPutted(nFlagSuccess);
+    m_mapServicesStatus[sServiceId]->setFlagsPutAllResultsCounter(nPutsFlagsAllResults);
+    m_mapServicesStatus[sServiceId]->setFlagsPutSuccessResultsCounter(nPutsFlagsSuccessResults);
 }
 
 // ---------------------------------------------------------------------
@@ -461,7 +408,7 @@ void TeamStatusRow::setServiceFlagsPutted(const std::string &sServiceId, int nFl
 
 REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployScoreboard)
 
-EmployScoreboard::EmployScoreboard() 
+EmployScoreboard::EmployScoreboard()
 : WsjcppEmployBase(EmployScoreboard::name(), {}) {
     TAG = EmployScoreboard::name();
     m_nAllStolenFlags = 0;
@@ -474,13 +421,13 @@ bool EmployScoreboard::init() {
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
     const std::vector<Ctf01dTeamDef> &vTeamsConf = pEmployConfig->teamsConf();
     const std::vector<Ctf01dServiceDef> &vServicesConf = pEmployConfig->servicesConf();
-    
+
     // keep the list of the services ids
     for (unsigned int i = 0; i < vServicesConf.size(); i++) {
         std::string sServiceId = vServicesConf[i].id();
         m_mapServiceCostsAndStatistics[sServiceId] = new Ctf01dServiceCostsAndStatistics(
             sServiceId,
-            pEmployConfig->getBasicCostsStolenFlagInPoints(), 
+            pEmployConfig->getBasicCostsStolenFlagInPoints(),
             vServicesConf.size(),
             vTeamsConf.size()
         );

@@ -111,11 +111,8 @@ class ServiceStatusCell {
         int getAttackPoints();
         void addAttackPoints(int nAttackPoints);
 
-        void setFlagsPutted(int nFlagsPutted);
-        int flagsPutted();
-
-        int getUptimeInSec();
-        void setUpPointTime(int nUpPointTimeInSec);
+        void setFlagsPutAllResultsCounter(int nFlagsPutAllResultsCounter);
+        void setFlagsPutSuccessResultsCounter(int nFlagsPutSuccessResultsCounter);
 
         void setStatus(const std::string &sStatus);
         std::string status();
@@ -132,10 +129,9 @@ class ServiceStatusCell {
         int m_nUpPointTimeInSec;
 
         // for SLA / uptime
-        int m_nFlagsPutted; // TODO remove
+        int m_nFlagsPutAllResultsCounter;
+        int m_nFlagsPutSuccessResultsCounter;
 };
-
-// ---------------------------------------------------------------------
 
 class TeamStatusRow {
     public:
@@ -166,7 +162,7 @@ class TeamStatusRow {
         int getAttackFlags(const std::string &sServiceId);
         int getAttackPoints(const std::string &sServiceId);
 
-        void setServiceFlagsPutted(const std::string &sServiceId, int nFlagsPutted);
+        void setServiceFlagsForCalculateSLA(const std::string &sServiceId, int nPutsFlagsAllResults, int nPutsFlagsSuccessResults);
         void updateScore(const std::string &sServiceId);
 
     private:
@@ -177,8 +173,6 @@ class TeamStatusRow {
         int m_nTries;
         std::map<std::string, ServiceStatusCell *> m_mapServicesStatus;
 };
-
-// ---------------------------------------------------------------------
 
 class EmployScoreboard : public WsjcppEmployBase {
     public:

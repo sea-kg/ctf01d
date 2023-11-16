@@ -50,15 +50,6 @@ class MySqlStorage : public Storage {
             const std::string &sHost
         ) override;
         virtual void clean() override;
-        virtual void insertFlagLive(const Ctf01dFlag &flag) override;
-        virtual std::vector<Ctf01dFlag> listOfLiveFlags() override;
-        virtual void insertToArchive(Ctf01dFlag &flag) override;
-
-        virtual int numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) override; // TODO remove
-
-        virtual std::vector<Ctf01dFlag> outdatedFlags(const std::string &sTeamId, const std::string &sServiceId) override;
-        virtual bool findFlagByValue(const std::string &sFlag, Ctf01dFlag &resultFlag) override;
-        virtual void deleteFlagLive(const Ctf01dFlag &flag) override;
 
     private:
         std::string TAG;

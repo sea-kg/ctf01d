@@ -214,27 +214,27 @@ void ServiceCheckerThread::run() {
                 m_pConfig->scoreboard()->incrementFlagsPuttedAndServiceUp(flag);
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_CORRUPT) {
                 // >>>>>>>>>>> service is CORRUPT <<<<<<<<<<<<<<
-                WsjcppLog::warn(TAG, " => service is corrupt ");
+                WsjcppLog::warn(TAG, " => service is corrupt");
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_CORRUPT, "corrupt");
                 // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_CORRUPT);
                 // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
                 // m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
-                WsjcppLog::warn(TAG, " => service is mumble (1) ");
+                WsjcppLog::warn(TAG, " => service is mumble");
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble");
                 // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_MUMBLE);
                 // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_DOWN, "down");
-                WsjcppLog::warn(TAG, " => service is down ");
+                WsjcppLog::warn(TAG, " => service is down");
                 // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_DOWN);
                 // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_SHIT) {
                 // >>>>>>>>>>> checker is SHIT <<<<<<<<<<<<<<
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_SHIT, "shit");
-                WsjcppLog::err(TAG, " => checker is shit ");
+                WsjcppLog::err(TAG, " => checker is shit");
                 // m_pConfig->scoreboard()->setServiceStatus(m_teamConf.id(), m_serviceConf.id(), ServiceStatusCell::SERVICE_SHIT);
                 // m_pConfig->scoreboard()->updateScore(flag.teamId(), flag.serviceId());
             } else {

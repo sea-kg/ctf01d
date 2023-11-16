@@ -355,6 +355,10 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "DROP TABLE `services_flags_costs`;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(32, // don't change if after commit
+        "DROP TABLE `flags_check_fails`;"
+    ));
+
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -398,7 +402,6 @@ void MySqlStorage::clean() {
     std::vector<std::string> vTables;
     vTables.push_back("flags_live");
     vTables.push_back("flags");
-    vTables.push_back("flags_check_fails");
     vTables.push_back("flags_stolen");
 
     for (int i = 0; i < vTables.size(); i++) {
@@ -497,33 +500,6 @@ std::vector<Ctf01dFlag> MySqlStorage::listOfLiveFlags() {
     }
     return vResult;
 }
-
-// ----------------------------------------------------------------------
-
-void MySqlStorage::insertFlagCheckFail(const Ctf01dFlag &flag, const std::string &sReason) {
-    MYSQL *pConn = getDatabaseConnection();
-
-    std::string sQuery = "INSERT INTO flags_check_fails(serviceid, flag_id, flag, teamid, "
-        "   date_start, date_end, reason) VALUES("
-        "'" + flag.getServiceId() + "', "
-        + "'" + flag.getId() + "', "
-        + "'" + flag.getValue() + "', "
-        + "'" + flag.getTeamId() + "', "
-        + std::to_string(flag.getTimeStartInMs()) + ", "
-        + std::to_string(flag.getTimeEndInMs()) + ", "
-        + "'" + sReason + "'"
-        + ");";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, " insertFlagCheckFail, Error insert: " + std::string(mysql_error(pConn)));
-        return;
-    }
-
-    MYSQL_RES *pRes = mysql_use_result(pConn);
-    mysql_free_result(pRes);
-}
-
-// ----------------------------------------------------------------------
 
 std::vector<Ctf01dFlag> MySqlStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     MYSQL *pConn = getDatabaseConnection();

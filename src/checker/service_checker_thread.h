@@ -61,13 +61,13 @@ class ServiceCheckerThread {
 		std::string TAG;
 		pthread_t m_checkerThread;
 		EmployConfig *m_pConfig;
+		EmployDatabase *m_pDatabase; // TODO not must be here
 		EmployFlags *m_pEmployFlags;
 		Ctf01dTeamDef m_teamConf;
 		Ctf01dServiceDef m_serviceConf;
 
 		int runChecker(Ctf01dFlag &flag, const std::string &sCommand);
 		// int runChecker(Flag &flag, const std::string &sCommand);
-		
 		// void run();
 };
 

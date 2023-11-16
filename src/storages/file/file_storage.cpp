@@ -92,14 +92,6 @@ std::vector<Flag> FileStorage::listOfLiveFlags() {
     return vResult;
 }
 
-// ----------------------------------------------------------------------
-
-void FileStorage::insertFlagCheckFail(const Flag &flag, const std::string &sReason) {
-    Log::warn(TAG, "TODO insertFlagCheckFail");
-}
-
-// ----------------------------------------------------------------------
-
 void FileStorage::insertToArchive(Flag &flag) {
     std::lock_guard<std::mutex> lock(m_mutexFlags);
     Log::warn(TAG, "TODO insertToArchive");

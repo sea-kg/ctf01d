@@ -126,6 +126,7 @@ EmployDatabase::EmployDatabase()
     m_pFlagsPutFails = nullptr;
     m_pFlagsAttempts = nullptr;
     m_pFlagsDefense = nullptr;
+    m_pFlagsCheckFails = nullptr;
 }
 
 bool EmployDatabase::init() {
@@ -180,6 +181,22 @@ bool EmployDatabase::init() {
         return false;
     }
 
+    m_pFlagsCheckFails = new Ctf01dDatabaseFile("flags_check_fails.db",
+        "CREATE TABLE IF NOT EXISTS flags_check_fails ( "
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "  serviceid VARCHAR(50) NOT NULL, "
+        "  flag_id VARCHAR(50) NOT NULL, "
+        "  flag VARCHAR(36) NOT NULL, "
+        "  teamid VARCHAR(50) NOT NULL, "
+        "  date_start INTEGER NOT NULL, "
+        "  date_end INTEGER NOT NULL, "
+        "  reason VARCHAR(50) NOT NULL "
+        ");"
+    );
+    if (!m_pFlagsCheckFails->open()) {
+        return false;
+    }
+
     return true;
 }
 
@@ -188,6 +205,7 @@ bool EmployDatabase::deinit() {
     delete m_pFlagsPutFails;
     delete m_pFlagsAttempts;
     delete m_pFlagsDefense;
+    delete m_pFlagsCheckFails;
     sqlite3_shutdown();
     return true;
 }
@@ -236,7 +254,7 @@ void EmployDatabase::insertToFlagsDefence(Ctf01dFlag flag, int nPoints) {
         + ");";
 
     if (!m_pFlagsDefense->insert(sQuery)) {
-        WsjcppLog::err(TAG, "Error insert");
+        WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
     }
 }
 
@@ -262,4 +280,21 @@ int EmployDatabase::numberOfDefenceFlagForService(std::string sServiceId) {
     return m_pFlagsDefense->selectSumOrCount(
         "SELECT COUNT(*) as cnt FROM flags_defense WHERE serviceid = '" + sServiceId + "'"
     );
+}
+
+void EmployDatabase::insertFlagCheckFail(Ctf01dFlag flag, std::string sReason) {
+    std::string sQuery = "INSERT INTO flags_check_fails(serviceid, flag_id, flag, teamid, "
+        "   date_start, date_end, reason) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
+        + "'" + sReason + "'"
+        + ");";
+
+    if (!m_pFlagsCheckFails->insert(sQuery)) {
+        WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
+    }
 }

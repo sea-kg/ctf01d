@@ -73,12 +73,14 @@ class EmployDatabase : public WsjcppEmployBase {
         int numberOfFlagsDefense(std::string sTeamId, std::string sServiceId);
         int sumPointsOfFlagsDefense(std::string sTeamId, std::string sServiceId);
         int numberOfDefenceFlagForService(std::string sServiceId);
+        void insertFlagCheckFail(Ctf01dFlag flag, std::string sReason);
 
     private:
         std::string TAG;
         Ctf01dDatabaseFile *m_pFlagsPutFails;
         Ctf01dDatabaseFile *m_pFlagsAttempts;
         Ctf01dDatabaseFile *m_pFlagsDefense;
+        Ctf01dDatabaseFile *m_pFlagsCheckFails;
 };
 
 #endif // EMPLOY_DATABASE_H

@@ -64,6 +64,7 @@ ServiceCheckerThread::ServiceCheckerThread(
     const Ctf01dServiceDef &service
 ) {
     m_pConfig = findWsjcppEmploy<EmployConfig>();
+    m_pDatabase = findWsjcppEmploy<EmployDatabase>();
     m_teamConf = teamConf;
     m_serviceConf = service;
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
@@ -260,7 +261,8 @@ void ServiceCheckerThread::run() {
             int nCheckExitCode = this->runChecker(outdatedFlag, "check");
             if (nCheckExitCode != ServiceCheckerThread::CHECKER_CODE_UP) {
                 // service is not up
-                m_pConfig->storage()->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
+                WsjcppLog::info(TAG, "flag_check_fail " + outdatedFlag.getValue());
+                m_pDatabase->insertFlagCheckFail(outdatedFlag, "code_" + std::to_string(nCheckExitCode));
             } else {
                 // service is up
                 // TODO: only if last time (== flag time live) was up

@@ -95,38 +95,50 @@ function silentUpdateWithoutAnimation(elid, newValue) {
     }
 }
 
-var g_counterShowMassAction = 0;
-
 function showActionAutomatization() {
-    g_counterShowMassAction++;
-    var el_mass_action = document.getElementById('current_mass_action');
-    el_mass_action.style.display = 'block';
-    el_mass_action.classList.remove("mass-action-firstblood")
-    el_mass_action.classList.add("mass-action-automatization")
-    var i = setTimeout(function() {
-        g_counterShowMassAction--;
-        if (g_counterShowMassAction <= 0) {
-            g_counterShowMassAction = 0;
-            el_mass_action.style.display = '';
-        }
-        clearTimeout(i);
-    },5000);
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var size_min_persent = 0.25;
+    var size_max_persent = 0.55;
+    var size_percent = Math.random() * (size_max_persent - size_min_persent) + size_min_persent;
+    var size_px = size_percent * w;
+    var top_px = Math.random() * (h - size_px);
+    var left_px = Math.random() * (w - size_px);
+
+    var new_id = "mass_action_" + Math.random()*10000;
+    document.getElementById('game_scoreboard').innerHTML +=
+        '<div id="' + new_id + '" class="mass-action mass-action-automatization" '
+        + ' style="top: ' + top_px + 'px; left: ' + left_px + 'px; width: ' + size_px + 'px; height: ' + size_px + 'px;"'
+        + '></div>';
+
+    var t = setTimeout(function() {
+        var node = document.getElementById(new_id);
+        node.parentNode.removeChild(node);
+        clearTimeout(t);
+    }, 2400);
 }
 
 function showActionFirstblood() {
-    g_counterShowMassAction++;
-    var el_mass_action = document.getElementById('current_mass_action');
-    el_mass_action.classList.remove("mass-action-automatization")
-    el_mass_action.classList.add("mass-action-firstblood")
-    el_mass_action.style.display = 'block';
-    var i = setTimeout(function() {
-        g_counterShowMassAction--;
-        if (g_counterShowMassAction <= 0) {
-            g_counterShowMassAction = 0;
-            el_mass_action.style.display = '';
-        }
-        clearTimeout(i);
-    },5000);
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var size_min_persent = 0.25;
+    var size_max_persent = 0.55;
+    var size_percent = Math.random() * (size_max_persent - size_min_persent) + size_min_persent;
+    var size_px = size_percent * w;
+    var top_px = Math.random() * (h - size_px);
+    var left_px = Math.random() * (w - size_px);
+
+    var new_id = "mass_action_" + Math.random()*10000;
+    document.getElementById('game_scoreboard').innerHTML +=
+        '<div id="' + new_id + '" class="mass-action mass-action-automatization" '
+        + ' style="top: ' + top_px + 'px; left: ' + left_px + 'px; width: ' + size_px + 'px; height: ' + size_px + 'px;"'
+        + '></div>';
+
+    var t = setTimeout(function() {
+        var node = document.getElementById(new_id);
+        node.parentNode.removeChild(node);
+        clearTimeout(t);
+    }, 2400);
 }
 
 function updateUIValue(t, teamID, paramName){
@@ -225,8 +237,8 @@ function updateScoreboard() {
         for (var serviceId in resp.s_sta) {
             var s = resp.s_sta[serviceId]
             silentUpdate(serviceId + '-first-blood', s.first_blood);
-            silentUpdate(serviceId + '-all-flags-att', s.af_att)
-            silentUpdate(serviceId + '-all-flags-def', s.af_def)
+            silentUpdateWithoutAnimation(serviceId + '-all-flags-att', s.af_att)
+            silentUpdateWithoutAnimation(serviceId + '-all-flags-def', s.af_def)
         }
 
         // game time
@@ -413,8 +425,8 @@ getAjax('/api/v1/game', function(err, resp){
         + '<div class="service"><b>' + resp.services[i].name + '</b><br>'
         + '  <div class="service-att-def">'
         + '      <div class="service-att-def-row">'
-        + '          <div class="service-att-def-cell defence-flags" id="' + serviceId + '-all-flags-def">0.0</div>'
-        + '          <div class="service-att-def-cell stollen-flags" id="' + serviceId + '-all-flags-att">0.0</div>'
+        + '          <div class="service-att-def-cell defence-flags" id="' + serviceId + '-all-flags-def">0</div>'
+        + '          <div class="service-att-def-cell stollen-flags" id="' + serviceId + '-all-flags-att">0</div>'
         + '      </div>'
         + '      <div class="service-att-def-row">'
         + '          <div class="service-att-def-cell first-blood" id="' + serviceId +  '-first-blood">-</div>'

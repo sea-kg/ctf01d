@@ -62,7 +62,6 @@ function _animateElementOneTime(el) {
         console.error("_animateElementOneTime el is null");
         return;
     }
-
     el.style.animation = "fastblinking 0.8s reverse infinite";
     var i = setTimeout(function() {
         el.style.animation = '';
@@ -96,6 +95,40 @@ function silentUpdateWithoutAnimation(elid, newValue) {
     }
 }
 
+var g_counterShowMassAction = 0;
+
+function showActionAutomatization() {
+    g_counterShowMassAction++;
+    var el_mass_action = document.getElementById('current_mass_action');
+    el_mass_action.style.display = 'block';
+    el_mass_action.classList.remove("mass-action-firstblood")
+    el_mass_action.classList.add("mass-action-automatization")
+    var i = setTimeout(function() {
+        g_counterShowMassAction--;
+        if (g_counterShowMassAction <= 0) {
+            g_counterShowMassAction = 0;
+            el_mass_action.style.display = '';
+        }
+        clearTimeout(i);
+    },5000);
+}
+
+function showActionFirstblood() {
+    g_counterShowMassAction++;
+    var el_mass_action = document.getElementById('current_mass_action');
+    el_mass_action.classList.remove("mass-action-automatization")
+    el_mass_action.classList.add("mass-action-firstblood")
+    el_mass_action.style.display = 'block';
+    var i = setTimeout(function() {
+        g_counterShowMassAction--;
+        if (g_counterShowMassAction <= 0) {
+            g_counterShowMassAction = 0;
+            el_mass_action.style.display = '';
+        }
+        clearTimeout(i);
+    },5000);
+}
+
 function updateUIValue(t, teamID, paramName){
     var newValue = '';
     if (paramName == 'points') {
@@ -110,7 +143,14 @@ function updateUIValue(t, teamID, paramName){
         if (prevVal != newValue) {
             document.getElementById(elem_id).innerHTML = newValue;
             if (paramName == "tries") {
-                _animateElement(document.getElementById('tries-icon-' + teamID), true);
+                if (prevVal != "") {
+                    var diff = parseInt(newValue, 10) - parseInt(prevVal, 10);
+                    console.log("diff", diff)
+                    if (diff >= 5) {
+                        showActionAutomatization();
+                    }
+                    _animateElement(document.getElementById('tries-icon-' + teamID), true);
+                }
             }
         } else {
             if (paramName == "tries") {
@@ -390,7 +430,7 @@ getAjax('/api/v1/game', function(err, resp){
         }
         sContent += ""
             + '   <div class="activity">'
-            + '      <div class="activity-value" id="tries-' + sTeamId +  '">0</div>'
+            + '      <div class="activity-value" id="tries-' + sTeamId +  '"></div>'
             + '      <div class="activity-icon" id="tries-icon-' + sTeamId +  '"></div>'
             + '   </div>'
             + "</div>";

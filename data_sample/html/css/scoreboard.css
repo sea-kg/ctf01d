@@ -78,12 +78,8 @@ button {
   background-image: url("../images/attack.svg");
 }
 
-.d-icn.def {
-  background-image: url("../images/defence.svg");
-}
-
-.d-icn.upt {
-  background-image: url("../images/uptime.svg");
+.d-icn.sla {
+  background-image: url("../images/sla.svg");
 }
 
 .game-description{
@@ -231,14 +227,18 @@ img.team-logo {
   width: 180px;
   line-height: 25px;
   border-left: 1px solid #444;
-  padding-left: 2px;
-  padding-right: 18px;
+  padding-left: 10px;
+  padding-right: 5px;
   text-align: center;
 }
 
 .hdrs .service {
   height: 100px;
   line-height: 20px;
+}
+
+.hdrs .service .service-att-def {
+  padding-left: 30px;
 }
 
 .first-blood {
@@ -264,6 +264,29 @@ img.team-logo {
 .points-sum {
   display: inline-block;
   vertical-align: middle;
+}
+
+.points-trend {
+  display: inline-block;
+  font-size: 10px;
+  line-height: 10px;
+  width: 20px;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  padding-top: 20px;
+}
+
+.points-trend.trend-up {
+  background-image: url("../images/trend-up.svg");
+}
+
+.points-trend.trend-down {
+  background-image: url("../images/trend-down.svg");
+}
+
+.points-trend.trend-middle {
+  background-image: url("../images/trend-middle.svg");
 }
 
 .points {
@@ -410,11 +433,79 @@ img.team-logo {
 	background-image: url("../images/states/coffeebreak.svg");
 }
 
-.service-att-def, .service-sla {
+.service-sla {
   height: 25px;
   line-height: 25px;
 }
 
+.service-att-def {
+  display: inline-table;
+  height: 25px;
+  line-height: 25px;
+  margin: 0px;
+  padding: 0px;
+  max-width: 150px;
+  width: 150px;
+  table-layout: fixed
+}
+
+.service-att-def-row {
+  display: table-row;
+}
+
+.service-att-def-cell {
+  display: table-cell;
+  vertical-align: middle;
+  padding-left: 22px;
+  padding-top: 2px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  font-size: 12px;
+  font-weight: bold;
+  background-position: 0px 2px;
+}
+
+.service-att-def-cell.defence-points {
+  color: #ffe600;
+  background-image: url("../images/defence-points.svg");
+}
+
+.service-att-def-cell.defence-flags {
+  color: #00b100;
+  background-image: url("../images/defence-flags.svg");
+}
+
+.service-att-def-cell.attack-points {
+  color: #ff6700;
+  background-image: url("../images/attack-points.svg");
+}
+
+.service-att-def-cell.round-time {
+  color: #8f8e8d;
+  background-image: url("../images/round-time.svg");
+}
+
+.service-att-def-cell.first-blood {
+  color: #971716;
+  background-image: url("../images/first-blood.svg");
+}
+
+.service-att-def-cell.sla {
+  color: #9cb9ea;
+  background-image: url("../images/sla.svg");
+}
+
+.service-att-def-cell.stollen-flags {
+  color: #cc5914;
+  background-image: url("../images/attack.svg");
+}
+
+/*
 .service-att-def .att {
   color: #cc5914;
   width: auto;
@@ -429,6 +520,7 @@ img.team-logo {
   font-weight: bold;
   padding-left: 20px;
 }
+*/
 
 .service-sla {
   padding-left: 25px;

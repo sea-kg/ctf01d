@@ -67,8 +67,8 @@ std::string Ctf01dDatabaseSelectRows::getString(int nColumnNumber) {
     return std::string((const char *)sqlite3_column_text(m_pQuery, nColumnNumber));
 }
 
-int Ctf01dDatabaseSelectRows::getInt(int nColumnNumber) {
-    return sqlite3_column_int(m_pQuery, nColumnNumber);
+long Ctf01dDatabaseSelectRows::getLong(int nColumnNumber) {
+    return sqlite3_column_int64(m_pQuery, nColumnNumber);
 }
 
 // ---------------------------------------------------------------------
@@ -516,8 +516,8 @@ std::vector<Ctf01dFlag> EmployDatabase::listOfLiveFlags() {
         flag.setTeamId(selectRows.getString(2));
         std::string sFlagValue = selectRows.getString(3);
         flag.setValue(sFlagValue);
-        flag.setTimeStartInMs(selectRows.getInt(4));
-        flag.setTimeEndInMs(selectRows.getInt(5));
+        flag.setTimeStartInMs(selectRows.getLong(4));
+        flag.setTimeEndInMs(selectRows.getLong(5));
         WsjcppLog::info(TAG, "Loaded flag from previous session flags_live: id = " + sFlagId + ", value = " + sFlagValue);
         vResult.push_back(flag);
     }

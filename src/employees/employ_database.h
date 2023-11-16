@@ -47,7 +47,7 @@ class Ctf01dDatabaseSelectRows {
         void setQuery(sqlite3_stmt* pQuery);
         bool next();
         std::string getString(int nColumnNumber);
-        int getInt(int nColumnNumber);
+        long getLong(int nColumnNumber);
 
     private:
         sqlite3_stmt* m_pQuery;

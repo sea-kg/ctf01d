@@ -38,45 +38,29 @@
 #include <wsjcpp_employees.h>
 #include <json.hpp>
 
-class Ctf01dServiceCostsAndStatistics {
+class Ctf01dServiceStatistics {
     public:
-        Ctf01dServiceCostsAndStatistics(
-            const std::string &sServiceId,
-            int nBasicCostOfStolenFlag,
-            int nServicesSize,
-            int nTeamsSize
-        );
+        Ctf01dServiceStatistics(const std::string &sServiceId);
         int getAllStolenFlagsForService();
         void doIncrementStolenFlagsForService(int nAllStolenFlags);
-        double updateProportionalStolenFlagsForService(int nStolenFlags, int m_nAllStolenFlags);
-        double updateProportionalStolenFlagsForService(int nAllStolenFlags);
-        double updateCostStolenFlag(double nSumOfReverseProportionalStolenFlags);
-        double getCostStolenFlag();
+        void setStolenFlagsForService(int nStolenFlags);
 
         int getAllDefenceFlagsForService();
         void doIncrementDefenceFlagsForService();
 
-        void updateProportionalDefenceFlagsForService(int nAllDefenceFlagsForService);
+        void setDefenceFlagsForService(int nAllDefenceFlagsForService);
 
         std::string getFirstBloodTeamId();
         void setFirstBloodTeamId(const std::string &sFirstBlood);
-        void updateJsonCosts(nlohmann::json &jsonCosts);
+        void updateJsonServiceStatistics(nlohmann::json &jsonCosts);
 
     private:
         std::string TAG;
         std::string m_sServiceId;
         std::string m_sFirstBloodTeamId;
-        double m_nBasicCostOfStolenFlag;
-        double m_nBasicCostOfDefenceFlag;
-        int m_nServicesSize;
-        int m_nTeamsSize;
 
         int m_nAllStolenFlagsForService;
-        double m_nReverseProportionalStolenFlags;
-        double m_nCostStolenFlag;
-
         int m_nAllDefenceFlagsForService;
-        double m_nCostDefenceFlag;
 };
 
 // ---------------------------------------------------------------------
@@ -113,6 +97,9 @@ class ServiceStatusCell {
 
         void setFlagsPutAllResultsCounter(int nFlagsPutAllResultsCounter);
         void setFlagsPutSuccessResultsCounter(int nFlagsPutSuccessResultsCounter);
+        void incrementPutFlagSuccess();
+        void incrementPutFlagFail();
+        int calculateSLA();
 
         void setStatus(const std::string &sStatus);
         std::string status();
@@ -163,10 +150,15 @@ class TeamStatusRow {
         int getAttackPoints(const std::string &sServiceId);
 
         void setServiceFlagsForCalculateSLA(const std::string &sServiceId, int nPutsFlagsAllResults, int nPutsFlagsSuccessResults);
-        void updateScore(const std::string &sServiceId);
+        void incrementPutFlagSuccess(const std::string &sServiceId);
+        void incrementPutFlagFail(const std::string &sServiceId);
+        int calculateSLA(const std::string &sServiceId);
+
+        void updatePoints();
 
     private:
         std::mutex m_mutex;
+        std::string TAG;
         std::string m_sTeamId;
         int m_nPlace;
         int m_nPoints;
@@ -185,9 +177,7 @@ class EmployScoreboard : public WsjcppEmployBase {
     private:
         std::string TAG;
 
-        std::map<std::string, Ctf01dServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
-        int m_nAllStolenFlags;
-        int m_nAllDefenceFlags;
+        std::map<std::string, Ctf01dServiceStatistics *> m_mapServiceCostsAndStatistics;
 };
 
 #endif // EMPLOY_SCOREBOARD_H

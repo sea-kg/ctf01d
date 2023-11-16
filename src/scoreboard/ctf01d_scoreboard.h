@@ -84,10 +84,9 @@ class Ctf01dScoreboard {
         int m_nFlagTimeLiveInSec;
 
         void sortPlaces(); // TODO merge this function with update costs
-        void updateCosts();
+        void updateServicesStatistics();
 
-        std::map<std::string, Ctf01dServiceCostsAndStatistics *> m_mapServiceCostsAndStatistics;
-        int m_nAllStolenFlags;
+        std::map<std::string, Ctf01dServiceStatistics *> m_mapServiceCostsAndStatistics;
         int m_nAllDefenceFlags;
 
         std::string randomServiceStatus();

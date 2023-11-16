@@ -141,17 +141,20 @@ function updateUIValue(t, teamID, paramName){
     if (el) {
         var prevVal = el.innerHTML;
         if (prevVal != newValue) {
-            document.getElementById(elem_id).innerHTML = newValue;
             if (paramName == "tries") {
                 if (prevVal != "") {
                     var diff = parseInt(newValue, 10) - parseInt(prevVal, 10);
-                    console.log("diff", diff)
+                    // console.log("diff", diff)
                     if (diff >= 5) {
                         showActionAutomatization();
                     }
                     _animateElement(document.getElementById('tries-icon-' + teamID), true);
+                    if (diff != 0) {
+                        newValue += " +" + diff;
+                    }
                 }
             }
+            document.getElementById(elem_id).innerHTML = newValue;
         } else {
             if (paramName == "tries") {
                 _animateElement(document.getElementById('tries-icon-' + teamID), false);
@@ -274,16 +277,44 @@ function updateScoreboard() {
         for(var teamID in resp.scoreboard){
             var t = resp.scoreboard[teamID];
             teamIDs.push(teamID);
-            silentUpdate(teamID + '-points', t.points.toFixed(1));
+            var elPointsTrend = document.getElementById(teamID + '-points-trend');
+            var prevPoints = parseFloat(document.getElementById(teamID + '-points').innerHTML);
+            var newPoints = parseFloat(t.points.toFixed(1));
+            if (elPointsTrend.innerHTML == "??") {
+                elPointsTrend.classList.add("trend-middle")
+                elPointsTrend.classList.remove("trend-up")
+                elPointsTrend.classList.remove("trend-down")
+                elPointsTrend.innerHTML = "+0";
+            } else {
+                if (newPoints == prevPoints) {
+                    elPointsTrend.classList.add("trend-middle")
+                    elPointsTrend.classList.remove("trend-up")
+                    elPointsTrend.classList.remove("trend-down")
+                    elPointsTrend.innerHTML = "+0";
+                } else if (newPoints > prevPoints) {
+                    elPointsTrend.classList.remove("trend-middle")
+                    elPointsTrend.classList.add("trend-up")
+                    elPointsTrend.classList.remove("trend-down")
+                    elPointsTrend.innerHTML = "+" + (newPoints - prevPoints).toFixed(1);
+                } else {
+                    elPointsTrend.classList.remove("trend-middle")
+                    elPointsTrend.classList.remove("trend-up")
+                    elPointsTrend.classList.add("trend-down")
+                    elPointsTrend.innerHTML = "-" + (prevPoints - newPoints).toFixed(1);
+                }
+            }
+            silentUpdate(teamID + '-points', newPoints.toFixed(1));
+
             updateUIValue(t, teamID, 'place');
             // updateUIValue(t, teamID, 'points');
             updateUIValue(t, teamID, 'tries');
             for(var sService in t.ts_sta){
                 var newState = t.ts_sta[sService]['status'];
                 var newAttackFlags = t.ts_sta[sService]['att'];
-                var newDefenceFlags = t.ts_sta[sService]['def'];
+                // var newDefenceFlags = t.ts_sta[sService]['def'];
                 var newAttackPoints = t.ts_sta[sService]['pt_att'];
                 var newDefencePoints = t.ts_sta[sService]['pt_def'];
+                var newSLA = t.ts_sta[sService]['sla'];
                 var elId = 'status-' + teamID + '-' + sService;
                 var el = document.getElementById(elId);
                 if (el != null) {
@@ -305,9 +336,10 @@ function updateScoreboard() {
                 var sCell = teamID + '-' + sService;
                 // console.log(sCell);
                 silentUpdate('att-' + sCell, newAttackFlags)
-                silentUpdate('def-' + sCell, newDefenceFlags)
+                // silentUpdate('def-' + sCell, newDefenceFlags)
                 silentUpdate('pt_att-' + sCell, newAttackPoints)
                 silentUpdate('pt_def-' + sCell, newDefencePoints)
+                silentUpdate('sla-' + sCell, newSLA + "%")
             }
         }
 
@@ -326,7 +358,7 @@ function updateScoreboard() {
             return a.p - b.p;
         });
         for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = (60 + (i+1)*70) + 'px';
+            elms2[i].e.style.top = (60 + (i+1)*60) + 'px';
         }
         var bSorted = false;
 
@@ -377,15 +409,18 @@ getAjax('/api/v1/game', function(err, resp){
         + "        <div class='score'><div class='hdr-text'>points</div></div>";
     for (var i = 0; i < resp.services.length; i++) {
         var serviceId = resp.services[i].id;
-        sContent += "<div class='service'><b>" + resp.services[i].name + " </b>"
-        + "<small>[r:" + resp.services[i].round_time_in_sec + "s]</small>"
-        + "<div class='service-att-def'>"
-        + "     <div class='d-icn def' id='" + serviceId + "-all-flags-def'>0</div> "
-        + "     | <div class='d-icn att' id='" + serviceId + "-all-flags-att'>0</div>"
-        + "</div>"
-        + "<div>"
-        + "    <div class='first-blood' id='" + serviceId + "-first-blood'>-</div>"
-        + "</div>"
+        sContent += ''
+        + '<div class="service"><b>' + resp.services[i].name + '</b><br>'
+        + '  <div class="service-att-def">'
+        + '      <div class="service-att-def-row">'
+        + '          <div class="service-att-def-cell defence-flags" id="' + serviceId + '-all-flags-def">0.0</div>'
+        + '          <div class="service-att-def-cell stollen-flags" id="' + serviceId + '-all-flags-att">0.0</div>'
+        + '      </div>'
+        + '      <div class="service-att-def-row">'
+        + '          <div class="service-att-def-cell first-blood" id="' + serviceId +  '-first-blood">-</div>'
+        + '          <div class="service-att-def-cell round-time">' + resp.services[i].round_time_in_sec + 's</div>'
+        + '      </div>'
+        + '  </div>'
         + "</div>";
     }
     sContent += ''
@@ -403,13 +438,16 @@ getAjax('/api/v1/game', function(err, resp){
         sTeamListSelect += '<option value=' + sTeamId + '>' + sTeamId + '</option>';
         sContent += ""
             + "<div class='tm' id='" + sTeamId + "'>"
-            + '  <div class="place" id="place-' + sTeamId + '" >' + (iteam + 1) + '</div>'
+            + '  <div class="place" id="place-' + sTeamId + '" >?</div>'
             + "  <div class='team-logo'><img class='team-logo' src='" + resp.teams[iteam].logo + "'/></div>"
             + "  <div class='team'>"
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"
             + "  </div>"
-            + "  <div class='score'><div class='points-sum' id='" + sTeamId + "-points'>0</div></div>";
+            + '  <div class="score">'
+            + '     <div class="points-sum" id="' + sTeamId + '-points">0</div>'
+            + '     <div class="points-trend trend-down" id="' + sTeamId + '-points-trend">??</div>'
+            + '  </div>';
 
         for (var i = 0; i < resp.services.length; i++) {
             var sServiceID = resp.services[i].id;
@@ -417,13 +455,14 @@ getAjax('/api/v1/game', function(err, resp){
             + "<div class='service'>"
             + "  <div class='service-status down' id='status-" + sTeamId +  "-" + sServiceID + "'> "
             + '   <div class="service-att-def">'
-            + '       <div class="d-icn def" id="def-' + sTeamId +  '-' + sServiceID + '">0</div>'
-            + ' | '
-            + '       <div class="d-icn att" id="att-' + sTeamId +  '-' + sServiceID + '">0</div>'
-            + '   </div>'
-            + '   <div>'
-            + '     <div class="text green points" id="pt_def-' + sTeamId +  '-' + sServiceID + '">0.0</div> '
-            + '     | <div class="text red points" id="pt_att-' + sTeamId +  '-' + sServiceID + '">0.0</div> '
+            + '       <div class="service-att-def-row">'
+            + '           <div class="service-att-def-cell defence-points" id="pt_def-' + sTeamId +  '-' + sServiceID + '">0.0</div>'
+            + '           <div class="service-att-def-cell attack-points" id="pt_att-' + sTeamId +  '-' + sServiceID + '">0.0</div>'
+            + '       </div>'
+            + '       <div class="service-att-def-row">'
+            + '           <div class="service-att-def-cell sla" id="sla-' + sTeamId +  '-' + sServiceID + '">0%</div>'
+            + '           <div class="service-att-def-cell stollen-flags" id="att-' + sTeamId +  '-' + sServiceID + '">0</div>'
+            + '       </div>'
             + '   </div>'
             + '  </div>'
             + "</div>\n";

@@ -189,7 +189,7 @@ EmployConfig::EmployConfig()
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
     m_nBasicCostsStolenFlagInPoints = 10;
-    m_nCostDefenceFlagInPoints = 1.0;
+    m_nCostDefenceFlagInPoints10 = 10; // default 1.0
 }
 
 EmployConfig::~EmployConfig() {
@@ -351,8 +351,8 @@ int EmployConfig::getBasicCostsStolenFlagInPoints() const {
     return m_nBasicCostsStolenFlagInPoints;
 }
 
-float EmployConfig::getCostDefenceFlagInPoints() const {
-    return m_nCostDefenceFlagInPoints;
+int EmployConfig::getCostDefenceFlagInPoints10() const {
+    return m_nCostDefenceFlagInPoints10;
 }
 
 int EmployConfig::gameStartUTCInSec() const {
@@ -511,8 +511,8 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
     m_nBasicCostsStolenFlagInPoints = std::atoi(yamlConfig["game"]["basic_costs_stolen_flag_in_points"].getValue().c_str());
     WsjcppLog::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBasicCostsStolenFlagInPoints));
 
-    m_nCostDefenceFlagInPoints = std::atof(yamlConfig["game"]["cost_defence_flag_in_points"].getValue().c_str());
-    WsjcppLog::info(TAG, "game.cost_defence_flag_in_points: " + std::to_string(m_nCostDefenceFlagInPoints));
+    m_nCostDefenceFlagInPoints10 = std::atof(yamlConfig["game"]["cost_defence_flag_in_points"].getValue().c_str())*10;
+    WsjcppLog::info(TAG, "game.cost_defence_flag_in_points (*10): " + std::to_string(m_nCostDefenceFlagInPoints10));
 
     if (m_nGameStartUTCInSec == 0) {
         WsjcppLog::err(TAG, "game.start - not found");

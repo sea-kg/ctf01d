@@ -2,20 +2,20 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="100"
    height="100"
    viewBox="0 0 26.458333 26.458334"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="first-blood.svg">
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="first-blood.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -26,17 +26,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6"
-     inkscape:cx="89.039738"
-     inkscape:cy="18.814876"
+     inkscape:cx="89.107143"
+     inkscape:cy="18.839286"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1853"
-     inkscape:window-height="1025"
-     inkscape:window-x="67"
+     inkscape:window-width="2490"
+     inkscape:window-height="1376"
+     inkscape:window-x="70"
      inkscape:window-y="27"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -45,7 +46,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -54,22 +54,18 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-270.54165)">
-    <g
-       id="g848"
-       transform="matrix(1.1629599,0,0,1.1629599,12.757064,-45.401099)">
-      <path
-         sodipodi:nodetypes="cccc"
-         inkscape:connector-curvature="0"
-         id="path826"
-         d="m 3.2127978,272.10081 c 1.382088,6.93315 9.7790062,12.89941 0.94494,15.35528 -4.00316195,0.91735 -6.300092,-1.60379 -6.142113,-4.58296 0.507777,-5.8516 3.176314,-7.7141 5.197173,-10.77232 z"
-         style="fill:#971716;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-      <path
-         sodipodi:nodetypes="cccc"
-         inkscape:connector-curvature="0"
-         id="path843"
-         d="m 0.30067717,279.0261 c -1.204025,2.12613 -1.58084697,3.90538 -0.03341,4.87767 1.26865503,-0.12388 1.20148703,-1.22737 1.16930403,-2.3052 -0.56329003,-0.30351 -0.82878203,-1.50042 -1.13589403,-2.57247 z"
-         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    </g>
+    <path
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path826"
+       d="m 16.493419,271.04123 c 1.607313,8.06298 11.372592,15.0015 1.098927,17.85758 -4.655516,1.06684 -7.326754,-1.86515 -7.143031,-5.3298 0.590525,-6.80518 3.693926,-8.97119 6.044104,-12.52778 z"
+       style="fill:#971716;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.307699px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       sodipodi:nodetypes="cccc"
+       inkscape:connector-curvature="0"
+       id="path843"
+       d="m 13.106739,279.09507 c -1.400232,2.4726 -1.838461,4.5418 -0.03885,5.67253 1.475395,-0.14407 1.397281,-1.42738 1.359854,-2.68085 -0.655084,-0.35297 -0.963841,-1.74493 -1.321,-2.99168 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.307699px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <g
        id="g854"
        transform="matrix(1.1629599,0,0,1.1629599,-1.6938378,-46.500027)">

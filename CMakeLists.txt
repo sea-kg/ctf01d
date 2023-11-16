@@ -53,11 +53,10 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/checker")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/storages")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/file")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/3rdparty/sqlite3/src")
 
 # argument processors
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_check.cpp")
@@ -86,12 +85,6 @@ list (APPEND WSJCPP_SOURCES "src/ctf01d_http_server.cpp")
 # scoreboard
 list (APPEND WSJCPP_SOURCES "src/scoreboard/ctf01d_scoreboard.cpp")
 
-# storages
-list (APPEND WSJCPP_SOURCES "src/storages/storages.cpp")
-
-# file storage
-# list (APPEND WSJCPP_SOURCES "src/storages/file/file_storage.cpp")
-
 # store
 list (APPEND WSJCPP_SOURCES "src/store/ctf01d_store.cpp")
 list (APPEND WSJCPP_SOURCES "src/store/http_downloader.cpp")
@@ -99,49 +92,15 @@ list (APPEND WSJCPP_SOURCES "src/store/http_downloader.cpp")
 # main
 list (APPEND WSJCPP_SOURCES "src/main.cpp")
 
-
-############################
-##### mysql storage
-list (APPEND WSJCPP_INCLUDE_DIRS "src/storages/mysql")
-list (APPEND WSJCPP_SOURCES "src/storages/mysql/mysql_storage.cpp")
-
-# Find and make sure the system have the header file
-find_path(MYSQL_HEADER mysql/mysql.h)
-if(MYSQL_HEADER STREQUAL "MYSQL_HEADER-NOTFOUND")
-    message(FATAL_ERROR "Could not find the mysql/mysql.h header file: apt install libmysqlclient-dev")
-endif()
-
-include(FindPkgConfig)
-pkg_check_modules(LIBMYSQLCLIENT REQUIRED mysqlclient)
-
-foreach(FLAG ${LIBMYSQLCLIENT_CFLAGS_OTHER})
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG}")
-endforeach()
-
-list (APPEND WSJCPP_INCLUDE_DIRS ${LIBMYSQLCLIENT_LIBRARY_DIRS})
-list (APPEND WSJCPP_LIBRARIES ${LIBMYSQLCLIENT_LIBRARIES})
-
-#####
-############################
-
 # ZLIB
-find_package( ZLIB REQUIRED )
-if ( ZLIB_FOUND )
-    list (APPEND WSJCPP_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
-    include_directories( ${ZLIB_INCLUDE_DIRS} )
-    list (APPEND WSJCPP_LIBRARIES ${ZLIB_LIBRARIES})
-endif( ZLIB_FOUND )
+# find_package( ZLIB REQUIRED )
+# if ( ZLIB_FOUND )
+#     list (APPEND WSJCPP_INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+#     include_directories( ${ZLIB_INCLUDE_DIRS} )
+#     list (APPEND WSJCPP_LIBRARIES ${ZLIB_LIBRARIES})
+# endif( ZLIB_FOUND )
 
-# LIBPNG
-find_package(PNG REQUIRED)
-if (NOT PNG_FOUND)
-    message(FATAL_ERROR "You don't seem to have libpng development libraries installed (apt isntall libpng-dev)")
-else ()
-    list (APPEND WSJCPP_INCLUDE_DIRS ${PNG_INCLUDE_DIR})
-    list (APPEND WSJCPP_LIBRARIES ${PNG_LIBRARY})
-endif ()
-
-# CURL
+# # CURL
 FIND_PACKAGE(CURL)
 IF(CURL_FOUND)
   list (APPEND WSJCPP_INCLUDE_DIRS ${CURL_INCLUDE_DIR})

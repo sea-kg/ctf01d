@@ -33,4 +33,3 @@ services:
 networks:
   service2_go_net:
     driver: bridge
-        

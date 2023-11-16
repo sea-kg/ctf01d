@@ -1,12 +1,9 @@
 .git
-dckr_mysql
 tmp
 .wsjcpp
-docs
 misc
 data_test
 game-simulation
-dockers
 tests
 ctf01d-store
 .ctf01d

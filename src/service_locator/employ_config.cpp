@@ -37,7 +37,6 @@
 #include <wsjcpp_core.h>
 #include <wsjcpp_validators.h>
 #include <sstream>
-#include <storages.h>
 #include <ctime>
 #include <locale>
 #include <date.h>
@@ -180,10 +179,8 @@ EmployConfig::EmployConfig()
     m_nFlagTimeliveInMin = 10;
     m_nScoreboardPort = 8080;
     m_bScoreboardRandom = false;
-    m_pStorage = nullptr;
     m_pScoreboard = nullptr;
 
-    m_sUseStorage = ""; // default value
     m_nGameStartUTCInSec = 0;
     m_nGameEndUTCInSec = 0;
     m_bHasCoffeeBreak = false;
@@ -192,7 +189,7 @@ EmployConfig::EmployConfig()
     m_nGameCoffeeBreakStartUTCInSec = 0;
     m_nGameCoffeeBreakEndUTCInSec = 0;
     m_nBasicCostsStolenFlagInPoints = 10;
-    m_sDatabaseHost = "";
+    m_nCostDefenceFlagInPoints = 1.0;
 }
 
 EmployConfig::~EmployConfig() {
@@ -204,7 +201,6 @@ EmployConfig::~EmployConfig() {
 bool EmployConfig::init() {
 
     tryLoadFromEnv("CTF01D_WORKDIR", m_sWorkDir, "Work Directory from enviroment");
-    tryLoadFromEnv("CTF01D_DB_HOST", m_sDatabaseHost, "Database Host from enviroment");
 
     WsjcppLog::info(TAG, "Work Directory is " + m_sWorkDir);
 
@@ -265,14 +261,6 @@ std::string EmployConfig::getWorkDir() {
     return m_sWorkDir;
 }
 
-void EmployConfig::setDatabaseHost(std::string sDatabaseHost) {
-    m_sDatabaseHost = sDatabaseHost;
-}
-
-std::string EmployConfig::getDatabaseHost() {
-    return m_sDatabaseHost;
-}
-
 bool EmployConfig::applyConfig() {
     if (m_bApplyedConfig) {
         return true;
@@ -300,11 +288,6 @@ bool EmployConfig::applyConfig() {
         return false;
     }
 
-    // apply the server config
-    if (!this->applyServerConf(yamlConfig)) {
-        return false;
-    }
-
     if (!this->applyCheckersConf(yamlConfig)) {
         return false;
     }
@@ -318,16 +301,6 @@ bool EmployConfig::applyConfig() {
         return false;
     }
 
-    // storage
-    WsjcppLog::info(TAG, "Storage: " + m_sUseStorage);
-    m_pStorage = Storages::create(m_sUseStorage, m_nGameStartUTCInSec, m_nGameEndUTCInSec);
-    WsjcppLog::info(TAG, "Init storage: " + m_sUseStorage);
-
-    if (m_pStorage == nullptr) {
-        WsjcppLog::err(TAG, "server/use_storage: '" + m_sUseStorage + "' is unknown type of storage");
-        return false;
-    }
-
     // scoreboard
     m_pScoreboard = new Ctf01dScoreboard(
         m_bScoreboardRandom,
@@ -335,15 +308,9 @@ bool EmployConfig::applyConfig() {
         m_nGameEndUTCInSec,
         m_nGameCoffeeBreakStartUTCInSec,
         m_nGameCoffeeBreakEndUTCInSec,
-        m_nFlagTimeliveInMin*60,
-        m_pStorage
+        m_nFlagTimeliveInMin*60
     );
 
-    // configure storage
-    if (!m_pStorage->applyConfigFromYaml(yamlConfig, m_sDatabaseHost)) {
-        WsjcppLog::err(TAG, "Could not init configuration storage");
-        return false;
-    }
     m_bApplyedConfig = true;
     return m_bApplyedConfig;
 }
@@ -406,14 +373,6 @@ int EmployConfig::gameCoffeeBreakStartUTCInSec() {
 
 int EmployConfig::gameCoffeeBreakEndUTCInSec() {
     return m_nGameCoffeeBreakEndUTCInSec;
-}
-
-Storage *EmployConfig::storage(){
-    return m_pStorage;
-}
-
-void EmployConfig::setStorage(Storage *pStorage){
-    m_pStorage = pStorage;
 }
 
 Ctf01dScoreboard *EmployConfig::scoreboard(){
@@ -605,7 +564,7 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
         && m_nGameStartUTCInSec < m_nGameCoffeeBreakEndUTCInSec
         && m_nGameCoffeeBreakEndUTCInSec < m_nGameEndUTCInSec
     ) {
-        WsjcppLog::info(TAG, "Game has coffee break ");
+        WsjcppLog::info(TAG, "Oh! Game has coffee break! nice!");
         m_bHasCoffeeBreak = true;
     }
 
@@ -618,26 +577,6 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
         WsjcppLog::err(TAG, "game.basic_costs_stolen_flag_in_points could not be gather than 500");
         return false;
     }
-
-    return true;
-}
-
-bool EmployConfig::applyServerConf(WsjcppYaml &yamlConfig) {
-    m_sUseStorage = yamlConfig["server"]["use_storage"].getValue();
-
-    if (!Storages::support(m_sUseStorage)) {
-        std::vector<std::string> vStoragesListType = Storages::list();
-        std::string sSupportedStorgaes = "";
-        for (int i = 0; i < vStoragesListType.size(); i++) {
-            if (sSupportedStorgaes.length() > 0) {
-                sSupportedStorgaes += ",";
-            }
-            sSupportedStorgaes += " '" + vStoragesListType[i] + "'";
-        }
-        WsjcppLog::err(TAG, "server.use_storage defined like " + m_sUseStorage + " but supported: " + sSupportedStorgaes);
-        return false;
-    }
-    WsjcppLog::info(TAG, "server.use_storage: " + m_sUseStorage);
 
     return true;
 }

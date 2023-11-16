@@ -51,7 +51,6 @@ ArgumentProcessorCtf01dMain::ArgumentProcessorCtf01dMain()
     TAG = "ArgumentProcessorCtf01dMain";
     // registrySingleArgument("--single", "What exactly do this single param?");
     registryParameterArgument("-work-dir", "path", "Custom workspace folder with configs, logging, checker scripts and etc. (env: CTF01D_WORKDIR)");
-    registryParameterArgument("-db-host", "hostname", "Force apply host to database (env: CTF01D_DB_HOST)");
     registryExample("ctf01d -work-dir ./data_test -db-host localhost start");
     registryProcessor(new ArgumentProcessorVersion());
     registryProcessor(new ArgumentProcessorCheck());
@@ -78,9 +77,5 @@ bool ArgumentProcessorCtf01dMain::applyParameterArgument(
         return true;
     }
 
-    if (sArgumentName == "-db-host") {
-        pConfig->setDatabaseHost(sValue);
-        return true;
-    }
     return false;
 }

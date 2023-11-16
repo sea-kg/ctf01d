@@ -40,7 +40,6 @@
 #include <employ_database.h>
 #include <string>
 #include <json.hpp>
-#include <storage.h>
 
 
 class Ctf01dScoreboard {
@@ -52,8 +51,7 @@ class Ctf01dScoreboard {
             int nGameEndInSec,
             int nGameCoffeeBreakStartInSec,
             int nGameCoffeeBreakEndInSec,
-            int nFlagTimeLiveInSec,
-            Storage *pStorage
+            int nFlagTimeLiveInSec
         );
 
         void setServiceStatus(const std::string &sTeamId, const std::string &sServiceId, const std::string &sStatus);
@@ -76,7 +74,6 @@ class Ctf01dScoreboard {
 
     private:
         std::string TAG;
-        Storage *m_pStorage;
         EmployFlags *m_pEmployFlags;
         EmployDatabase *m_pDatabase;
         int m_nCostDefenceFlagInPoints10;

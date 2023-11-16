@@ -36,19 +36,6 @@ Create a `~/my-first-game/docker-compose.yml` file with the following content:
 version: '3'
 
 services:
-  ctf01d_db:
-    image: mysql:5.7
-    volumes:
-      - "./mysql_database:/var/lib/mysql"
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: KzhyntJxwt
-      MYSQL_DATABASE: ctf01d
-      MYSQL_USER: ctf01d
-      MYSQL_PASSWORD: ctf01d
-    networks:
-      - ctf01d_net
-
   ctf01d_jury:
     depends_on:
       - ctf01d_db
@@ -58,10 +45,6 @@ services:
       - "./data_game:/usr/share/ctf01d"
     environment:
       CTF01D_WORKDIR: "/usr/share/ctf01d"
-      CTF01D_MYSQL_HOST: "ctf01d_db"
-      CTF01D_MYSQL_DATABASE: "ctf01d"
-      CTF01D_MYSQL_USER: "ctf01d"
-      CTF01D_MYSQL_PASSWORD: "ctf01d"
     ports:
       - "8080:8080"
     restart: always
@@ -594,60 +577,6 @@ if command == "check":
 
 ## Ubuntu 20.04
 
-Prepare database: mysql:
-
-```
-$ sudo apt install mysql-server mysql-common mysql-client
-$ systemctl start mysql
-```
-
-Create database:
-```
-$ sudo mysql
-...
-mysql> CREATE DATABASE ctf01d CHARACTER SET utf8 COLLATE utf8_general_ci;
-Query OK, 1 row affected, 2 warnings (0.01 sec)
-
-mysql> CREATE USER 'ctf01d'@'localhost' IDENTIFIED BY 'ctf01d';
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> GRANT ALL PRIVILEGES ON ctf01d.* TO 'ctf01d'@'localhost' WITH GRANT OPTION;
-Query OK, 0 rows affected (0.00 sec)
-
-mysql> FLUSH PRIVILEGES;
-Query OK, 0 rows affected (0.01 sec)
-
-mysql> exit;
-Bye
-```
-
-or like a mariadb:
-```
-# mariadb
-Welcome to the MariaDB monitor.  Commands end with ; or \g.
-Your MariaDB connection id is 49
-Server version: 10.3.27-MariaDB-0+deb10u1 Debian 10
-
-Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
-
-Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
-
-MariaDB [(none)]> CREATE DATABASE ctf01d CHARACTER SET utf8 COLLATE utf8_general_ci;
-Query OK, 1 row affected (0.001 sec)
-
-MariaDB [(none)]> CREATE USER 'ctf01d'@'localhost' IDENTIFIED BY 'ctf01d';
-Query OK, 0 rows affected (0.001 sec)
-
-MariaDB [(none)]> GRANT ALL PRIVILEGES ON ctf01d.* TO 'ctf01d'@'localhost' WITH GRANT OPTION;
-Query OK, 0 rows affected (0.001 sec)
-
-MariaDB [(none)]> FLUSH PRIVILEGES;
-Query OK, 0 rows affected (0.001 sec)
-
-MariaDB [(none)]> exit;
-Bye
-```
-
 Install package-requirements
 
 ```
@@ -655,8 +584,7 @@ sudo apt install git git-core\
     make cmake g++ pkg-config \
     libcurl4-openssl-dev \
     zlibc zlib1g zlib1g-dev \
-    libpng-dev \
-    default-libmysqlclient-dev
+    libpng-dev
 ```
 
 Clone source code of the project:
@@ -669,9 +597,6 @@ Build:
 $ cd ~/ctf01d.git
 $ ./build_simple.sh
 ```
-
-*Maybe fix: `$ sudo ln -s /usr/lib/x86_64-linux-gnu/pkgconfig/mariadb.pc /usr/lib/x86_64-linux-gnu/pkgconfig/mysqlclient.pc`*
-*More info: (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340)[https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=878340]*
 
 Start:
 ```
@@ -688,34 +613,18 @@ $ ./ctf01d -work-dir ./data_test -db-host localhost start
 docker network create --driver=bridge ctf01d_net
 ```
 
-2. Prepare mysql database:
-
-In the next step we just start the container with mysql (like a daemon - in background)
-
-```
-docker run -d --rm \
-    --name ctf01d-mysql \
-    -e MYSQL_ROOT_PASSWORD=KzhyntJxwt \
-    -e MYSQL_DATABASE=ctf01d \
-    -e MYSQL_USER=ctf01d \
-    -e MYSQL_PASSWORD=ctf01d \
-    --network ctf01d_net \
-    mysql:8 \
-    mysqld --default-authentication-plugin=mysql_native_password
-```
-
 We can look for docker status: `docker ps -a`
 
-3. Prepare docker for builds:
+2. Prepare docker for builds:
 
 *Notice: multistage build docker*
 
-You need to download latest version of ctf01d-stage-build / ctf01d-stage-release or build it first
+You need to download latest version of ctf01d:stage-build-latest / ctf01d:stage-release-latest or build it first
 
 Download (docker pull):
 ```
-$ docker pull sea5kg/ctf01d-stage-build
-$ docker pull sea5kg/ctf01d-stage-release
+$ docker pull sea5kg/ctf01d:stage-build-latest
+$ docker pull sea5kg/ctf01d:stage-release-latest
 ```
 
 Or build fresh images for stages:
@@ -737,7 +646,7 @@ $ docker build --rm=true -t "sea5kg/ctf01d:latest" .
 $ docker tag "sea5kg/ctf01d:latest" "sea5kg/ctf01d:v0.4.x"
 ```
 
-4. Run dev docker-container, build and start
+3. Run dev docker-container, build and start
 
 Run:
 ```
@@ -748,7 +657,7 @@ $ docker run -it --rm \
   -w /root/ctf01d.dev \
   --name "ctf01d.dev" \
   --network ctf01d_net \
-  sea5kg/ctf01d-stage-build:latest \
+  sea5kg/ctf01d:stage-build-latest \
   bash
 root@604feda3c718:~/ctf01d.dev#
 ```
@@ -761,10 +670,17 @@ root@604feda3c718:~/ctf01d.dev# ./build_simple.sh
 
 Start:
 ```
-root@604feda3c718:~/ctf01d.dev# ./ctf01d -work-dir ./data_sample/ -db-host ctf01d-mysql start
+root@604feda3c718:~/ctf01d.dev# ./ctf01d -work-dir ./data_sample/ start
 ```
 
 Now you can see scoreboard on http://localhost:8081
+
+## Build release docker
+
+```
+docker build . -t sea5kg/ctf01d:v0.5.1
+docker tag sea5kg/ctf01d:v0.5.1 sea5kg/ctf01d:latest
+```
 
 # GAME SIMULATION
 

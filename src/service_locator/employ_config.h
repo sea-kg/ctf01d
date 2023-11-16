@@ -37,7 +37,6 @@
 
 #include <wsjcpp_employees.h>
 #include <wsjcpp_yaml.h>
-#include <storages.h>
 #include <ctf01d_scoreboard.h>
 
 // ----------------------------------------------------------------------
@@ -118,8 +117,6 @@ class EmployConfig : public WsjcppEmployBase {
         virtual bool deinit() override;
         void setWorkDir(const std::string &sWorkDir);
         std::string getWorkDir();
-        void setDatabaseHost(std::string sDatabaseHost);
-        std::string getDatabaseHost();
 
         bool applyConfig();
 
@@ -147,16 +144,12 @@ class EmployConfig : public WsjcppEmployBase {
         int gameCoffeeBreakStartUTCInSec();
         int gameCoffeeBreakEndUTCInSec();
 
-        // storage configuration
-        Storage *storage();
-        void setStorage(Storage *pStorage);
         Ctf01dScoreboard *scoreboard();
 
         void doExtractFilesIfNotExists();
 
     private:
         bool applyGameConf(WsjcppYaml &yamlConfig);
-        bool applyServerConf(WsjcppYaml &yamlConfig);
         bool applyScoreboardConf(WsjcppYaml &yamlConfig);
         bool applyCheckersConf(WsjcppYaml &yamlConfig);
         bool readTeamsConf(WsjcppYaml &yamlConfig);
@@ -165,14 +158,11 @@ class EmployConfig : public WsjcppEmployBase {
         std::string TAG;
         std::string m_sWorkDir;
         bool m_bApplyedConfig;
-        std::string m_sDatabaseHost;
 
-        Storage *m_pStorage;
         Ctf01dScoreboard *m_pScoreboard;
         int m_nScoreboardPort;
         std::string m_sScoreboardHtmlFolder;
         bool m_bScoreboardRandom;
-        std::string m_sUseStorage;
 
         // game conf
         int m_nFlagTimeliveInMin;

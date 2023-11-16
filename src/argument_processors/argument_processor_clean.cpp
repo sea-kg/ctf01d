@@ -75,8 +75,9 @@ int ArgumentProcessorClean::exec(const std::vector<std::string> &vRoutes, const 
         return 0;
     }
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
-    pEmployConfig->storage()->clean();
-    WsjcppLog::ok(TAG, "Clean completed.");
-    return 0; 
+    // pEmployConfig->storage()->clean();
+    // WsjcppLog::ok(TAG, "Clean completed.");
+    WsjcppLog::warn(TAG, "TODO");
+    return -1;
 }
 

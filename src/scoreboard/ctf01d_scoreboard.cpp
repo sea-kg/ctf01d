@@ -50,8 +50,7 @@ Ctf01dScoreboard::Ctf01dScoreboard(
     int nGameEndInSec,
     int nGameCoffeeBreakStartInSec,
     int nGameCoffeeBreakEndInSec,
-    int nFlagTimeLiveInSec,
-    Storage *pStorage
+    int nFlagTimeLiveInSec
 ) {
     EmployConfig *pEmployConfig = findWsjcppEmploy<EmployConfig>();
     m_pDatabase = findWsjcppEmploy<EmployDatabase>();
@@ -63,7 +62,6 @@ Ctf01dScoreboard::Ctf01dScoreboard(
     std::string sScroreboardRandom = "Scoreboard random: ";
     sScroreboardRandom = sScroreboardRandom + (m_bRandom ? "yes" : "no");
     WsjcppLog::warn(TAG, sScroreboardRandom);
-    m_pStorage = pStorage;
     std::srand(unsigned(std::time(0)));
     m_nGameStartInSec = nGameStartInSec;
     m_nGameEndInSec = nGameEndInSec;

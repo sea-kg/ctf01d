@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [v0.5.1] - (2023 Nov ??)
 
 * Added show time left in scoreboard in seconds #65
+* Redesign database from mysql/mariadb to sqlite3 (build-in)
+* Removed requirements by mysqlcient
 
 ## [v0.5.0] - (2023 Nov 12)
 

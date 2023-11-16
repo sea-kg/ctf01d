@@ -75,12 +75,21 @@ class EmployDatabase : public WsjcppEmployBase {
         int numberOfDefenceFlagForService(std::string sServiceId);
         void insertFlagCheckFail(Ctf01dFlag flag, std::string sReason);
 
+        // flags_stollen
+        int numberOfFlagsStollen(std::string sTeamId, std::string sServiceId);
+        int sumPointsOfFlagsStollen(std::string sTeamId, std::string sServiceId);
+        int numberOfStolenFlagsForService(std::string sServiceId);
+        void insertToFlagsStolen(Ctf01dFlag flag, std::string sTeamId, int nPoints);
+        bool isAlreadyStole(Ctf01dFlag flag, std::string sTeamId);
+        bool isSomebodyStole(Ctf01dFlag flag);
+
     private:
         std::string TAG;
         Ctf01dDatabaseFile *m_pFlagsPutFails;
         Ctf01dDatabaseFile *m_pFlagsAttempts;
         Ctf01dDatabaseFile *m_pFlagsDefense;
         Ctf01dDatabaseFile *m_pFlagsCheckFails;
+        Ctf01dDatabaseFile *m_pFlagsStolen;
 };
 
 #endif // EMPLOY_DATABASE_H

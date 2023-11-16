@@ -127,6 +127,7 @@ EmployDatabase::EmployDatabase()
     m_pFlagsAttempts = nullptr;
     m_pFlagsDefense = nullptr;
     m_pFlagsCheckFails = nullptr;
+    m_pFlagsStolen = nullptr;
 }
 
 bool EmployDatabase::init() {
@@ -197,6 +198,27 @@ bool EmployDatabase::init() {
         return false;
     }
 
+    m_pFlagsStolen = new Ctf01dDatabaseFile("flags_stolen.db",
+        "CREATE TABLE IF NOT EXISTS flags_stolen ( "
+        "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "  serviceid VARCHAR(50) NOT NULL, "
+        "  teamid VARCHAR(50) NOT NULL, "
+        "  thief_teamid VARCHAR(50) NOT NULL, "
+        "  flag_id VARCHAR(50) NOT NULL, "
+        "  flag VARCHAR(36) NOT NULL, "
+        "  date_start INTEGER NOT NULL, "
+        "  date_end INTEGER NOT NULL, "
+        "  date_action INTEGER NOT NULL, "
+        "  flag_cost INTEGER NOT NULL "
+        ");"
+    );
+        // TODO
+    // "  INDEX(`serviceid`), "
+    // "  INDEX(`serviceid`, `thief_teamid`), "
+    // "  UNIQUE KEY(`serviceid`, `thief_teamid`, `flag_id`, `flag`)"
+    if (!m_pFlagsStolen->open()) {
+        return false;
+    }
     return true;
 }
 
@@ -206,6 +228,7 @@ bool EmployDatabase::deinit() {
     delete m_pFlagsAttempts;
     delete m_pFlagsDefense;
     delete m_pFlagsCheckFails;
+    delete m_pFlagsStolen;
     sqlite3_shutdown();
     return true;
 }
@@ -297,4 +320,71 @@ void EmployDatabase::insertFlagCheckFail(Ctf01dFlag flag, std::string sReason) {
     if (!m_pFlagsCheckFails->insert(sQuery)) {
         WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
     }
+}
+
+
+int EmployDatabase::numberOfFlagsStollen(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsStolen->selectSumOrCount(
+        "SELECT COUNT(*) as cnt FROM flags_stolen "
+        "   WHERE serviceid = '" + sServiceId + "' "
+        "   AND thief_teamid = '" + sTeamId + "' "
+        ";"
+    );
+}
+
+int EmployDatabase::sumPointsOfFlagsStollen(std::string sTeamId, std::string sServiceId) {
+    return m_pFlagsStolen->selectSumOrCount(
+        "SELECT SUM(flag_cost) as points FROM flags_stolen "
+        "WHERE serviceid = '" + sServiceId + "' "
+        "   AND thief_teamid = '" + sTeamId + "' "
+        ";"
+    );
+}
+
+int EmployDatabase::numberOfStolenFlagsForService(std::string sServiceId) {
+    return m_pFlagsStolen->selectSumOrCount(
+        "SELECT COUNT(*) as cnt FROM flags_stolen WHERE serviceid = '" + sServiceId + "'"
+    );
+}
+
+void EmployDatabase::insertToFlagsStolen(Ctf01dFlag flag, std::string sTeamId, int nPoints) {
+    std::string sQuery = "INSERT INTO flags_stolen(serviceid, teamid, thief_teamid, flag_id, flag,"
+        "   date_start, date_end, date_action, flag_cost) VALUES("
+        "'" + flag.getServiceId() + "', "
+        + "'" + flag.getTeamId() + "', "
+        + "'" + sTeamId + "', "
+        + "'" + flag.getId() + "', "
+        + "'" + flag.getValue() + "', "
+        + std::to_string(flag.getTimeStartInMs()) + ", "
+        + std::to_string(flag.getTimeEndInMs()) + ", "
+        + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ", "
+        + std::to_string(nPoints) + " "
+        + ");";
+
+    if (!m_pFlagsStolen->insert(sQuery)) {
+        WsjcppLog::err(TAG, "Error insert insertToFlagsDefence");
+    }
+}
+
+
+bool EmployDatabase::isAlreadyStole(Ctf01dFlag flag, std::string sTeamId) {
+    int nRet = m_pFlagsStolen->selectSumOrCount(
+        "SELECT COUNT(*) as cnt FROM flags_stolen "
+            " WHERE serviceid = '" + flag.getServiceId() + "' "
+            "   AND thief_teamid = '" + sTeamId + "'"
+            "   AND flag_id = '" + flag.getId() + "'"
+            "   AND flag = '" + flag.getValue() + "'"
+    );
+    return nRet > 0;
+}
+
+bool EmployDatabase::isSomebodyStole(Ctf01dFlag flag) {
+    int nRet = m_pFlagsStolen->selectSumOrCount(
+        "SELECT COUNT(*) as cnt FROM flags_stolen "
+            " WHERE serviceid = '" + flag.getServiceId() + "' "
+            "   AND teamid = '" + flag.getTeamId() + "'"
+            "   AND flag_id = '" + flag.getId() + "'"
+            "   AND flag = '" + flag.getValue() + "'"
+    );
+    return nRet > 0;
 }

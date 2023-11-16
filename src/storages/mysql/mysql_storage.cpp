@@ -359,6 +359,10 @@ bool MySqlStorage::checkAndInstall(MYSQL *pConn) {
         "DROP TABLE `flags_check_fails`;"
     ));
 
+    vUpdates.push_back(MySQLDBUpdate(33, // don't change if after commit
+        "DROP TABLE `flags_stolen`;"
+    ));
+
     WsjcppLog::info(TAG, "Current database version: " + std::to_string(nCurrVersion));
 
     bool bFoundUpdate = true;
@@ -402,7 +406,6 @@ void MySqlStorage::clean() {
     std::vector<std::string> vTables;
     vTables.push_back("flags_live");
     vTables.push_back("flags");
-    vTables.push_back("flags_stolen");
 
     for (int i = 0; i < vTables.size(); i++) {
         std::string sQuery = "DELETE FROM " + vTables[i] + ";";
@@ -538,68 +541,6 @@ std::vector<Ctf01dFlag> MySqlStorage::outdatedFlags(const std::string &sTeamId, 
     return vResult;
 }
 
-// ----------------------------------------------------------------------
-
-void MySqlStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Ctf01dFlag &sFlag){
-    // TODO
-}
-
-
-// ----------------------------------------------------------------------
-
-int MySqlStorage::getStollenFlags(const std::string &sTeamId, const std::string &sServiceId) {
-    MYSQL *pConn = getDatabaseConnection();
-
-    int nAttack = 0;
-    std::string sQuery = 
-        "SELECT COUNT(*) as cnt FROM flags_stolen "
-        "   WHERE serviceid = '" + sServiceId + "' "
-        "   AND thief_teamid = '" + sTeamId + "' "
-        ";";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error select (updateScoreboard - calculate attack): " + std::string(mysql_error(pConn)));
-    } else {
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        MYSQL_ROW row;
-        // output table name
-        while ((row = mysql_fetch_row(pRes)) != NULL) {
-            nAttack += std::stoi(std::string(row[0]));
-        }
-        mysql_free_result(pRes);
-    }
-    return nAttack;
-}
-
-// ----------------------------------------------------------------------
-
-int MySqlStorage::getStollenPoints(const std::string &sTeamId, const std::string &sServiceId) {
-    int nDefence = 0;
-    MYSQL *pConn = getDatabaseConnection();
-    std::string sQuery = 
-        "SELECT SUM(flag_cost) as points FROM flags_stolen "
-        "WHERE serviceid = '" + sServiceId + "' "
-        "   AND thief_teamid = '" + sTeamId + "' "
-        ";";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "Error select (updateScoreboard - calculate defence): " + std::string(mysql_error(pConn)));
-    } else {
-        MYSQL_RES *pRes = mysql_use_result(pConn);
-        MYSQL_ROW row;
-        // output table name
-        while ((row = mysql_fetch_row(pRes)) != NULL) {
-            if (row[0] != NULL) {
-                nDefence += std::stoi(std::string(row[0]));
-            }
-        }
-        mysql_free_result(pRes);
-    }
-    return nDefence;
-}
-
-// ----------------------------------------------------------------------
-
 int MySqlStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std::string &sServiceId) {
     MYSQL *pConn = getDatabaseConnection();
 
@@ -636,30 +577,6 @@ int MySqlStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const st
     }
 
     return nFlagsSuccess;
-}
-
-int MySqlStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
-    MYSQL *pConn = getDatabaseConnection();
-
-    int nRet = 0;
-    {
-        std::string sQuery = 
-            "SELECT COUNT(*) as cnt FROM flags_stolen WHERE serviceid = '" + sServiceId + "'";
-
-        // std::cout << sQuery << "\n";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error select (updateScoreboard - numberOfStolenFlagsForService): " + std::string(mysql_error(pConn)));
-        } else {
-            MYSQL_RES *pRes = mysql_use_result(pConn);
-            MYSQL_ROW row;
-            // output table name
-            while ((row = mysql_fetch_row(pRes)) != NULL) {
-                nRet += std::stoi(std::string(row[0]));
-            }
-            mysql_free_result(pRes);
-        }
-    }
-    return nRet;
 }
 
 // ----------------------------------------------------------------------
@@ -739,90 +656,4 @@ void MySqlStorage::insertToArchive(Ctf01dFlag &flag) {
 
     MYSQL_RES *pRes = mysql_use_result(pConn);
     mysql_free_result(pRes);
-}
-
-void MySqlStorage::insertToFlagsStolen(const Ctf01dFlag &flag, const std::string &sTeamId, int nPoints) {
-    MYSQL *pConn = getDatabaseConnection();
-    std::string sQuery = "INSERT INTO flags_stolen(serviceid, teamid, thief_teamid, flag_id, flag,"
-        "   date_start, date_end, date_action, flag_cost) VALUES("
-        "'" + flag.getServiceId() + "', "
-        + "'" + flag.getTeamId() + "', "
-        + "'" + sTeamId + "', "
-        + "'" + flag.getId() + "', "
-        + "'" + flag.getValue() + "', "
-        + std::to_string(flag.getTimeStartInMs()) + ", "
-        + std::to_string(flag.getTimeEndInMs()) + ", "
-        + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ", "
-        + std::to_string(nPoints) + " "
-        + ");";
-
-    if (mysql_query(pConn, sQuery.c_str())) {
-        WsjcppLog::err(TAG, "insertToFlagsStolen, Error insert: " + std::string(mysql_error(pConn)));
-        return;
-    }
-
-    MYSQL_RES *pRes = mysql_use_result(pConn);
-    mysql_free_result(pRes);
-}
-
-// ----------------------------------------------------------------------
-
-bool MySqlStorage::isAlreadyStole(const Ctf01dFlag &flag, const std::string &sTeamId) {
-    MYSQL *pConn = getDatabaseConnection();
-    
-    int nRet = 0;
-    {
-        std::string sQuery = 
-            "SELECT COUNT(*) as cnt FROM flags_stolen "
-            " WHERE serviceid = '" + flag.getServiceId() + "' "
-            "   AND thief_teamid = '" + sTeamId + "'"
-            "   AND flag_id = '" + flag.getId() + "'"
-            "   AND flag = '" + flag.getValue() + "'"
-        ;
-
-        // std::cout << sQuery << "\n";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error select (isAlreadyStole): " + std::string(mysql_error(pConn)));
-        } else {
-            MYSQL_RES *pRes = mysql_use_result(pConn);
-            MYSQL_ROW row;
-            // output table name
-            while ((row = mysql_fetch_row(pRes)) != NULL) {
-                nRet += std::stoi(std::string(row[0]));
-            }
-            mysql_free_result(pRes);
-        }
-    }
-    return nRet > 0;
-}
-
-// ----------------------------------------------------------------------
-
-bool MySqlStorage::isSomebodyStole(const Ctf01dFlag &flag) {
-    MYSQL *pConn = getDatabaseConnection();
-    
-    int nRet = 0;
-    {
-        std::string sQuery = 
-            "SELECT COUNT(*) as cnt FROM flags_stolen "
-            " WHERE serviceid = '" + flag.getServiceId() + "' "
-            "   AND teamid = '" + flag.getTeamId() + "'"
-            "   AND flag_id = '" + flag.getId() + "'"
-            "   AND flag = '" + flag.getValue() + "'"
-        ;
-
-        // std::cout << sQuery << "\n";
-        if (mysql_query(pConn, sQuery.c_str())) {
-            WsjcppLog::err(TAG, "Error select (isSomebodyStole): " + std::string(mysql_error(pConn)));
-        } else {
-            MYSQL_RES *pRes = mysql_use_result(pConn);
-            MYSQL_ROW row;
-            // output table name
-            while ((row = mysql_fetch_row(pRes)) != NULL) {
-                nRet += std::stoi(std::string(row[0]));
-            }
-            mysql_free_result(pRes);
-        }
-    }
-    return nRet > 0;
 }

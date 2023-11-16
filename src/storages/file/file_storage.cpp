@@ -103,24 +103,10 @@ int FileStorage::numberOfFlagSuccessPutted(const std::string &sTeamId, const std
     return 0;
 }
 
-int FileStorage::numberOfStolenFlagsForService(const std::string &sServiceId) {
-    Log::warn(TAG, "TODO numberOfStolenFlagsForService");
-    return 0;
-}
-
-// ----------------------------------------------------------------------
-
 std::vector<Flag> FileStorage::outdatedFlags(const std::string &sTeamId, const std::string &sServiceId){
     // TODO
     Log::warn(TAG, "TODO outdatedFlags");
     return std::vector<Flag>();
-}
-
-// ----------------------------------------------------------------------
-
-void FileStorage::updateFlag(const std::string &sTeamId, const std::string &sServiceId, const Flag &sFlag){
-    // TODO
-    Log::warn(TAG, "TODO updateFlag");
 }
 
 // ----------------------------------------------------------------------

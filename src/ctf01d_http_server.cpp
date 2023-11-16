@@ -359,7 +359,7 @@ int Ctf01dHttpServer::httpApiV1Flag(HttpRequest* req, HttpResponse* resp) {
         return resp->String(sErrorMsg, 403);
     }
 
-    if (m_pConfig->storage()->isAlreadyStole(flag, sTeamId)) {
+    if (m_pEmployDatabase->isAlreadyStole(flag, sTeamId)) {
         static const std::string sErrorMsg = "Error(-170): flag already stoled by your";
         WsjcppLog::err(TAG, sErrorMsg + ". Recieved flag {" + sFlag + "} from {" + sTeamId + "}");
         return resp->String(sErrorMsg, 403);

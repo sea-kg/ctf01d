@@ -17,5 +17,7 @@ LABEL "repository"="https://github.com/sea-kg/ctf01d"
 RUN mkdir /root/data
 COPY --from=0 /root/ctf01d /usr/bin/ctf01d
 
+RUN python3 -m install requests faker
+
 EXPOSE 8080
 CMD ["ctf01d","start"]

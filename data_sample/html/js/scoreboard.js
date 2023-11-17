@@ -128,7 +128,13 @@ function silentUpdateWithoutAnimation(elid, newValue) {
     }
 }
 
+var g_is_showed_authomation = false;
+
 function showActionAutomatization() {
+    if (g_is_showed_authomation) {
+        return;
+    }
+    g_is_showed_authomation = true;
     var w = window.innerWidth;
     var h = window.innerHeight;
     var size_min_persent = 0.25;
@@ -148,6 +154,7 @@ function showActionAutomatization() {
         var node = document.getElementById(new_id);
         node.parentNode.removeChild(node);
         clearTimeout(timer_automatization_2);
+        g_is_showed_authomation = false;
     }, 2400, new_id);
 }
 

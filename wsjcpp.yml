@@ -274,10 +274,10 @@ resources:
     modified: 1700173455
     sha1: "9efd85174e26a12e62056ec6a3a18b4433365430"
   - filepath: "./data_sample/html/js/scoreboard.js"
-    filesize: 24733
+    filesize: 24905
     pack-as: "text"
-    modified: 1700240976
-    sha1: "4e7ffcb73b57a73d9468df664b383731859180f8"
+    modified: 1700247126
+    sha1: "6ef778feca026135f90b7f26491b242159be38d6"
   - filepath: "./data_sample/html/images/first-blood.svg"
     filesize: 3653
     pack-as: "text"

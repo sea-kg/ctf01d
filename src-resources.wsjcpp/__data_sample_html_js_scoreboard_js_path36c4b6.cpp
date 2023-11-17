@@ -17,13 +17,13 @@ const std::string &RES___data_sample_html_js_scoreboard_js_path36c4b6::getPackAs
 // ---------------------------------------------------------------------
 
 int RES___data_sample_html_js_scoreboard_js_path36c4b6::getBufferSize() const {
-    return 24733;
+    return 24905;
 }
 
 // ---------------------------------------------------------------------
 
 const char *RES___data_sample_html_js_scoreboard_js_path36c4b6::getBuffer() const {
-    static const std::string sRet = "" // size: 24733
+    static const std::string sRet = "" // size: 24905
         "\n"
         "// init tabs\n"
         "var tabs = document.getElementsByClassName('ctf01d-tab');\n"
@@ -154,7 +154,13 @@ const char *RES___data_sample_html_js_scoreboard_js_path36c4b6::getBuffer() cons
         "    }\n"
         "}\n"
         "\n"
+        "var g_is_showed_authomation = false;\n"
+        "\n"
         "function showActionAutomatization() {\n"
+        "    if (g_is_showed_authomation) {\n"
+        "        return;\n"
+        "    }\n"
+        "    g_is_showed_authomation = true;\n"
         "    var w = window.innerWidth;\n"
         "    var h = window.innerHeight;\n"
         "    var size_min_persent = 0.25;\n"
@@ -174,6 +180,7 @@ const char *RES___data_sample_html_js_scoreboard_js_path36c4b6::getBuffer() cons
         "        var node = document.getElementById(new_id);\n"
         "        node.parentNode.removeChild(node);\n"
         "        clearTimeout(timer_automatization_2);\n"
+        "        g_is_showed_authomation = false;\n"
         "    }, 2400, new_id);\n"
         "}\n"
         "\n"

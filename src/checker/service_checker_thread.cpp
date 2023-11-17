@@ -132,7 +132,12 @@ int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sComma
 
     int nExitCode = process.exitCode();
     if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
-        WsjcppLog::err(TAG, "Checker says that serivice is mumble... \nLOG:\n"
+        WsjcppLog::err(TAG, "Checker says that serivice is mumble...\nLOG:\n"
+            "\n" + process.outputString() + "\n\n");
+    }
+
+    if (nExitCode == ServiceCheckerThread::CHECKER_CODE_CORRUPT) {
+        WsjcppLog::err(TAG, "Checker says that serivice is corrupt... \nLOG:\n"
             "\n" + process.outputString() + "\n\n");
     }
 
@@ -140,7 +145,7 @@ int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sComma
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_MUMBLE
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_CORRUPT
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_DOWN) {
-        WsjcppLog::err(TAG, " Wrong checker exit code...\n"
+        WsjcppLog::err(TAG, "Wrong checker exit code...\n"
             "\n" + process.outputString());
         return ServiceCheckerThread::CHECKER_CODE_SHIT;
     }
@@ -224,10 +229,8 @@ void ServiceCheckerThread::run() {
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_CORRUPT, "corrupt");
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
-                // m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
                 WsjcppLog::warn(TAG, " => service is mumble");
                 WsjcppLog::warn(TAG, "exit_code = " + std::to_string(nExitCode));
-
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble");
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<

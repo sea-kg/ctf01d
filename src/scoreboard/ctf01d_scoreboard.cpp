@@ -413,13 +413,6 @@ void Ctf01dScoreboard::insertFlagPutFail(const Ctf01dFlag &flag, const std::stri
     std::string sServiceId = flag.getServiceId();
     std::string sTeamId = flag.getTeamId();
     std::string sNewStatus = m_bRandom ? randomServiceStatus() : sServiceStatus;
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail 1");
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sServiceId " + sServiceId);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sTeamId " + sTeamId);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sNewStatus " + sNewStatus);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail sDescrStatus " + sDescrStatus);
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail flag.getId() " + flag.getId());
-    // WsjcppLog::info(TAG, "Ctf01dScoreboard::insert FlagPutFail flag.getValue() " + flag.getValue());
 
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(flag.getTeamId());

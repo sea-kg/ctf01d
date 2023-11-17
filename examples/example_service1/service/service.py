@@ -69,7 +69,7 @@ class Connect(threading.Thread):
         subdir = '__'
         if len(flag_id) > 2:
             subdir = flag_id[:2]
-        ret = self.__dir_flags + subdir + "/"
+        ret = self.__dir_flags + "/" + subdir + "/"
         if not os.path.exists(ret):
             os.makedirs(ret)
         return ret
@@ -105,7 +105,10 @@ class Connect(threading.Thread):
             return
         # create subdir in /flags/
         parent_dir = self.prepare_fullpath_to_dir_with_flag(flag_id)
-        with open(parent_dir + flag_id, 'w') as _file:
+        fullpath_flag_file = parent_dir + flag_id
+        if os.path.isfile(fullpath_flag_file):
+            print("WARN: File already exists " + fullpath_flag_file)
+        with open(fullpath_flag_file, 'w') as _file:
             _file.write(f_text)
         self.__sock.send("OK".encode())
 
@@ -123,8 +126,10 @@ class Connect(threading.Thread):
             print("FAIL: Ivalid flag_id = " + flag_id)
             self.__sock.send(resp.encode())
             return
-        if os.path.exists(self.__dir_flags + flag_id):
-            with open(self.__dir_flags + flag_id, 'r') as _file:
+        parent_dir = self.prepare_fullpath_to_dir_with_flag(flag_id)
+        fullpath_flag_file = parent_dir + flag_id
+        if os.path.exists(fullpath_flag_file):
+            with open(fullpath_flag_file) as _file:
                 line = _file.readline()
             resp = "FOUND FLAG: " + line + ""
             self.__sock.send(resp.encode())

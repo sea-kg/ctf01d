@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Added python3 library faker to docker image ctf01d
 * Improved logging for mumble exit code checker
 * Fix #70 redesign calculation attack points like RuCTF 2023
+* PEP8 and pylint for example_service1
 
 ## [v0.5.1] - (2023 Nov 16)
 

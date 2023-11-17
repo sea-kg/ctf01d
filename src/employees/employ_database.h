@@ -64,11 +64,17 @@ class Ctf01dDatabaseFile {
         bool selectRows(std::string sSqlSelectRows, Ctf01dDatabaseSelectRows &selectRows);
 
     private:
+
+        void copyDatabaseToBackup();
+        std::mutex m_mutex;
+
         std::string TAG;
         sqlite3* m_pDatabaseFile;
         std::string m_sFilename;
         std::string m_sFileFullpath;
+        std::string m_sBaseFileBackupFullpath;
         std::string m_sSqlCreateTable;
+        int m_nLastBackupTime;
 };
 
 
@@ -108,7 +114,9 @@ class EmployDatabase : public WsjcppEmployBase {
         std::vector<Ctf01dFlag> listOfLiveFlags();
 
     private:
+
         std::string TAG;
+        std::mutex m_mutexCopyDatabaseToBackup;
         Ctf01dDatabaseFile *m_pFlagsAttempts;
         Ctf01dDatabaseFile *m_pFlagsDefense;
         Ctf01dDatabaseFile *m_pFlagsCheckFails;

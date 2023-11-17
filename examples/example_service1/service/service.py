@@ -77,10 +77,13 @@ class Connect(threading.Thread):
     def __process_command_list(self):
         """ process_command_list """
         files_len = 0
-        for _filename in os.listdir(self.__dir_flags):
-            resp = "file: " + _filename + "\n"
-            files_len += 1
-            self.__sock.send(resp.encode())
+        for _dir in os.listdir(self.__dir_flags):
+            for _filename in os.listdir(self.__dir_flags + "/" + _dir):
+                self.__dir_flags + _filename
+                resp = "file: " + _filename + "\n"
+                files_len += 1
+                self.__sock.send(resp.encode())
+        self.__sock.send("!listended\n".encode())
         if files_len == 0:
             self.__sock.send("no files".encode())
 

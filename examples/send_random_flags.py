@@ -14,7 +14,7 @@ teamid = "t01"
 i = 0
 while i < 1000000000:
     i = i + 1
-    teamid = random.randint(1, 20)
+    teamid = random.randint(1, 17)
     teamid = 't' + str(teamid).rjust(2, '0')
 
     print(teamid)

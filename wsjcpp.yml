@@ -244,10 +244,10 @@ resources:
     modified: 1699775797
     sha1: "945b98b11a5d7637c8761190b120c64f2d6e425c"
   - filepath: "./data_sample/html/images/teams/team03.png"
-    filesize: 257958
+    filesize: 6486
     pack-as: "binary"
-    modified: 1700240493
-    sha1: "0923b85ba26e0dd3483aaa9d94b0b617d93c22e7"
+    modified: 1700247630
+    sha1: "a14e66ba77161ea34fd483f39f01b52550cb08e0"
   - filepath: "./data_sample/html/images/teams/team04.png"
     filesize: 5423
     pack-as: "binary"

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fix #69 implemented SLA
 * Implemeted firstblood action
+* Up build tages to debian:12
+* Added python3 library faker to docker image ctf01d
+* Improved logging for mumble exit code checker
+* Fix #70 redesign calculation attack points like RuCTF 2023
 
 ## [v0.5.1] - (2023 Nov 16)
 

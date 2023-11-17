@@ -126,7 +126,7 @@ class TeamStatusRow {
         const std::string &teamId();
 
         void setPlace(int nPlace);
-        int place();
+        int getPlace();
 
         void setPoints(int nPoints);
         int getPoints();

@@ -270,7 +270,7 @@ void TeamStatusRow::setPlace(int nPlace) {
     m_nPlace = nPlace;
 }
 
-int TeamStatusRow::place() {
+int TeamStatusRow::getPlace() {
     // std::lock_guard<std::mutex> lock(m_mutex);
     return m_nPlace;
 }

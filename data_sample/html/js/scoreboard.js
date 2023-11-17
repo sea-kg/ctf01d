@@ -74,6 +74,36 @@ function _animateElementOneTime(elid) {
     },800, elid);
 }
 
+function _animateElementServiceCell(elid) {
+    var el = document.getElementById(elid)
+    if (el == null) {
+        console.error("_animateElementServiceCell el is null by id ", elid);
+        return;
+    }
+    var scale_val = 1.0;
+    var scale_max_val = 2.0;
+    var scale_diff = 0.4;
+    // el.style.animation = "fastblinking 0.8s reverse infinite";
+    var inter2 = setInterval(function(_el) {
+        if (scale_diff > 0) {
+            if (scale_val < scale_max_val) {
+                scale_val += scale_diff;
+                _el.style.transform = 'scale(1, ' + scale_val + ')';
+            } else {
+                scale_diff = -(scale_diff) / 2.0;
+            }
+        } else {
+            if (scale_val > 1.0) {
+                scale_val += scale_diff;
+                _el.style.transform = 'scale(1, ' + scale_val + ')';
+            } else {
+                _el.style.transform = '';
+                clearInterval(inter2);
+            }
+        }
+    }, 40, el);
+}
+
 function silentUpdate(elid, newValue) {
     var el = document.getElementById(elid)
     if (!el) {
@@ -95,8 +125,6 @@ function silentUpdateWithoutAnimation(elid, newValue) {
     }
     if (el.innerHTML != newValue) {
         el.innerHTML = newValue;
-        // _animateElementOneTime(el);
-        // TODO make simple anim
     }
 }
 
@@ -361,8 +389,8 @@ function updateScoreboard() {
                         el.classList.remove('wait');
                         el.classList.remove('coffeebreak');
                         el.classList.add(newState);
-                        _animateElementOneTime(elId);
-
+                        // _animateElementOneTime(elId);
+                        _animateElementServiceCell(elId);
                     }
                 } else {
                     console.error(elId + '- not found');
@@ -372,7 +400,7 @@ function updateScoreboard() {
                 silentUpdate('att-' + sCell, newAttackFlags)
                 // silentUpdate('def-' + sCell, newDefenceFlags)
                 silentUpdate('pt_att-' + sCell, newAttackPoints)
-                silentUpdate('pt_def-' + sCell, newDefencePoints)
+                silentUpdateWithoutAnimation('pt_def-' + sCell, newDefencePoints)
                 silentUpdate('sla-' + sCell, newSLA + "%")
             }
         }
@@ -391,13 +419,12 @@ function updateScoreboard() {
         elms2.sort(function(a, b) {
             return a.p - b.p;
         });
-        for(var i = 0; i < elms2.length; i++){
-            elms2[i].e.style.top = (60 + (i+1)*60) + 'px';
-        }
-        var bSorted = false;
-
-        while (!bSorted){
-            bSorted = true;
+        for (var i = 0; i < elms2.length; i++) {
+            var expected_top_value = (65 + (i+1)*60) + 'px'
+            elms2[i].e.setAttribute("expected-top", expected_top_value);
+            // if (elms2[i].e.style.top == '') {
+            //     elms2[i].e.style.top = expected_top_value;
+            // }
         }
 
         // open controls
@@ -409,6 +436,30 @@ function updateScoreboard() {
         }
     });
 }
+
+// animate switching
+setInterval(function() {
+    var elms = document.getElementsByClassName('tm');
+    for (var i = 0; i < elms.length; i++) {
+        var expected_top = parseInt(elms[i].getAttribute("expected-top"), 10);
+        var current_top = parseInt(elms[i].style.top, 10);
+        if (elms[i].style.top == '') {
+            current_top = 0;
+        }
+        if (expected_top == current_top) {
+            continue;
+        }
+
+        var diff = expected_top - current_top;
+        if (Math.abs(diff) < 10) {
+            current_top = expected_top;
+        } else {
+            current_top += Math.floor(diff / 10);
+        }
+        elms[i].style.top = current_top + 'px';
+        // console.log();
+    }
+}, 40);
 
 function formatGameTimings(periods) {
     // TODO beauty print periods

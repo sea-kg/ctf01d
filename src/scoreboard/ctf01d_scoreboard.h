@@ -82,6 +82,7 @@ class Ctf01dScoreboard {
         int m_nGameCoffeeBreakStartInSec;
         int m_nGameCoffeeBreakEndInSec;
         int m_nFlagTimeLiveInSec;
+        int m_nTeamCount;
 
         void sortPlaces(); // TODO merge this function with update costs
         void updateServicesStatistics();

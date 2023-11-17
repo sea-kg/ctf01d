@@ -57,16 +57,21 @@ function _animateElement(el, enable) {
     el.style.animation = enable ? "blinking 0.8s reverse infinite" : '';
 }
 
-function _animateElementOneTime(el) {
+function _animateElementOneTime(elid) {
+    var el = document.getElementById(elid)
     if (el == null) {
-        console.error("_animateElementOneTime el is null");
+        console.error("_animateElementOneTime el is null by id ", elid);
         return;
     }
     el.style.animation = "fastblinking 0.8s reverse infinite";
-    var i = setTimeout(function() {
-        el.style.animation = '';
-        clearTimeout(i);
-    },800);
+    var timer2 = setTimeout(function(elid) {
+        var el1 = document.getElementById(elid);
+        if (!el1) {
+            console.err("el1 = ", el1, "elid = ", elid);
+        }
+        document.getElementById(elid).style.animation = '';
+        clearTimeout(timer2);
+    },800, elid);
 }
 
 function silentUpdate(elid, newValue) {
@@ -77,7 +82,7 @@ function silentUpdate(elid, newValue) {
     }
     if (el.innerHTML != newValue) {
         el.innerHTML = newValue;
-        _animateElementOneTime(el);
+        _animateElementOneTime(elid);
         // TODO make simple anim
     }
 }
@@ -111,34 +116,35 @@ function showActionAutomatization() {
         + ' style="top: ' + top_px + 'px; left: ' + left_px + 'px; width: ' + size_px + 'px; height: ' + size_px + 'px;"'
         + '></div>';
 
-    var t = setTimeout(function() {
+    var timer_automatization_2 = setTimeout(function(new_id) {
         var node = document.getElementById(new_id);
         node.parentNode.removeChild(node);
-        clearTimeout(t);
-    }, 2400);
+        clearTimeout(timer_automatization_2);
+    }, 2400, new_id);
 }
 
-function showActionFirstblood() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var size_min_persent = 0.25;
-    var size_max_persent = 0.55;
-    var size_percent = Math.random() * (size_max_persent - size_min_persent) + size_min_persent;
-    var size_px = size_percent * w;
-    var top_px = Math.random() * (h - size_px);
-    var left_px = Math.random() * (w - size_px);
+function showActionFirstblood(teamId) {
+    var el = document.getElementById(teamId);
+    if (el) {
+        el.style.animation = "team-first-blood 0.8s cubic-bezier(0, 0.6, 0.7, 1.0) infinite";
+        var timer_first_blood_2 = setTimeout(function(teamId1) {
+            document.getElementById(teamId1).style.animation = "";
+            clearTimeout(timer_first_blood_2);
+        }, 2500, teamId);
+    }
 
-    var new_id = "mass_action_" + Math.random()*10000;
-    document.getElementById('game_scoreboard').innerHTML +=
-        '<div id="' + new_id + '" class="mass-action mass-action-automatization" '
-        + ' style="top: ' + top_px + 'px; left: ' + left_px + 'px; width: ' + size_px + 'px; height: ' + size_px + 'px;"'
+    var new_first_blood_id = "mass_action_" + Math.random()*10000;
+    var gm = document.getElementById('game_scoreboard')
+    gm.innerHTML +=
+        '<div id="' + new_first_blood_id + '" class="mass-action mass-action-firstblood" '
+        + ' style="top: 0px; left: 0px; width: 10%; height: 1%;"'
         + '></div>';
 
-    var t = setTimeout(function() {
-        var node = document.getElementById(new_id);
-        node.parentNode.removeChild(node);
-        clearTimeout(t);
-    }, 2400);
+    var timer_first_blood_1 = setTimeout(function(new_first_blood_id) {
+        var node = document.getElementById(new_first_blood_id);
+        gm.removeChild(node);
+        clearTimeout(timer_first_blood_1);
+    }, 5000, new_first_blood_id);
 }
 
 function updateUIValue(t, teamID, paramName){
@@ -218,25 +224,41 @@ function switchUITeamRows(teamID1, teamID2){
 
     el1.style.transform = 'translateY(100px)';
     // el2.style.transform = 'translateY(-100px)';
-    setTimeout(function(){
+    var timeout1 = setTimeout(function(){
         el2.parentNode.insertBefore(el2, el1);
         el1.style.transform = '';
         el2.style.transform = '';
         inSwitch = false;
+        clearTimeout(timeout1);
     },400);
 }
 
 function updateScoreboard() {
     getAjax('/api/v1/scoreboard', function(err, resp){
         if (err) {
-            scoreboard_content.style.display = 'none';
-            loader_content.style.display = 'block';
+            document.getElementById('scoreboard_content').style.display = 'none';
+            document.getElementById('loader_content').style.display = 'block';
+            console.error("err = ", err, "resp =", resp);
             return;
         }
         // console.log(resp);
         for (var serviceId in resp.s_sta) {
             var s = resp.s_sta[serviceId]
-            silentUpdate(serviceId + '-first-blood', s.first_blood);
+            var firstBloodId = serviceId + '-first-blood';
+            var prevValue = document.getElementById(firstBloodId).innerHTML;
+            var newValue = s.first_blood;
+            for (var teamN in document.ctf01d_teams) {
+                if (document.ctf01d_teams[teamN].id == s.first_blood) {
+                    newValue = document.ctf01d_teams[teamN].name;
+                    break;
+                }
+            }
+            if (prevValue == "-") {
+                silentUpdateWithoutAnimation(firstBloodId, newValue);
+            } else if (prevValue != newValue) {
+                silentUpdate(serviceId + '-first-blood', newValue);
+                showActionFirstblood(s.first_blood);
+            }
             silentUpdateWithoutAnimation(serviceId + '-all-flags-att', s.af_att)
             silentUpdateWithoutAnimation(serviceId + '-all-flags-def', s.af_def)
         }
@@ -339,7 +361,7 @@ function updateScoreboard() {
                         el.classList.remove('wait');
                         el.classList.remove('coffeebreak');
                         el.classList.add(newState);
-                        _animateElementOneTime(el);
+                        _animateElementOneTime(elId);
 
                     }
                 } else {
@@ -379,11 +401,11 @@ function updateScoreboard() {
         }
 
         // open controls
-        if (scoreboard_content.style.display != 'block') {
-            scoreboard_content.style.display = 'block'
+        if (document.getElementById('scoreboard_content').style.display != 'block') {
+            document.getElementById('scoreboard_content').style.display = 'block'
         }
-        if (loader_content.style.display != 'none') {
-            loader_content.style.display = 'none';
+        if (document.getElementById('loader_content').style.display != 'none') {
+            document.getElementById('loader_content').style.display = 'none';
         }
     });
 }
@@ -447,6 +469,7 @@ getAjax('/api/v1/game', function(err, resp){
 
     for (var iteam = 0; iteam < resp.teams.length; iteam++) {
         var sTeamId = resp.teams[iteam].id;
+        document.ctf01d_teams = resp.teams;
         sTeamListSelect += '<option value=' + sTeamId + '>' + sTeamId + '</option>';
         sContent += ""
             + "<div class='tm' id='" + sTeamId + "'>"

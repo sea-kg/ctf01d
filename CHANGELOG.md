@@ -5,7 +5,12 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.1] - (2023 Nov ??)
+## [v0.5.2] - (2023 Nov ??)
+
+* Fix #69 implemented SLA
+* Implemeted firstblood action
+
+## [v0.5.1] - (2023 Nov 16)
 
 * Added show time left in scoreboard in seconds #65
 * Redesign database from mysql/mariadb to sqlite3 (build-in)

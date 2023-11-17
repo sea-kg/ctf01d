@@ -216,6 +216,7 @@ void Ctf01dScoreboard::initStateFromStorage() {
     m_nAllDefenceFlags = 0;
     struct FlagsForService {
         std::string sServiceID;
+        std::string sFirstBlood;
         int nStolenFlags;
         int nDefenceFlags;
     };
@@ -226,7 +227,9 @@ void Ctf01dScoreboard::initStateFromStorage() {
         f.sServiceID = sServiceID;
         f.nStolenFlags = m_pDatabase->numberOfStolenFlagsForService(sServiceID);
         f.nDefenceFlags = m_pDatabase->numberOfDefenceFlagForService(sServiceID);
-
+        if (f.nStolenFlags > 0) {
+            f.sFirstBlood = m_pDatabase->getFirstbloodFromStolenFlagsForService(sServiceID);
+        }
         m_nAllDefenceFlags += f.nDefenceFlags;
         vFlags.push_back(f);
     }
@@ -235,6 +238,9 @@ void Ctf01dScoreboard::initStateFromStorage() {
         FlagsForService f = vFlags[i];
         m_mapServiceCostsAndStatistics[f.sServiceID]->setStolenFlagsForService(f.nStolenFlags);
         m_mapServiceCostsAndStatistics[f.sServiceID]->setDefenceFlagsForService(f.nDefenceFlags);
+        if (f.nStolenFlags > 0) {
+            m_mapServiceCostsAndStatistics[f.sServiceID]->setFirstBloodTeamId(f.sFirstBlood);
+        }
     }
 
     std::map<std::string, TeamStatusRow *>::iterator it;
@@ -304,6 +310,9 @@ int Ctf01dScoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::st
     std::map<std::string, Ctf01dServiceStatistics *>::iterator it2;
     it2 = m_mapServiceCostsAndStatistics.find(sServiceId);
     if (it2 != m_mapServiceCostsAndStatistics.end()) {
+        if (it2->second->getFirstBloodTeamId() == "?") {
+            it2->second->setFirstBloodTeamId(sTeamId);
+        }
         updateServicesStatistics();
     }
     return nFlagPoints;

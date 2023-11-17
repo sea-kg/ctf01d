@@ -424,6 +424,20 @@ int EmployDatabase::numberOfStolenFlagsForService(std::string sServiceId) {
     );
 }
 
+std::string EmployDatabase::getFirstbloodFromStolenFlagsForService(std::string sServiceId) {
+    std::string sQuery = "SELECT thief_teamid FROM flags_stolen WHERE serviceid = '" + sServiceId + "' LIMIT 1";
+    std::string sRet = "?";
+    Ctf01dDatabaseSelectRows selectRows;
+    if (!m_pFlagsStolen->selectRows(sQuery, selectRows)) {
+        WsjcppLog::err(TAG, "Error select getFirstbloodFromStolenFlagsForService " + sQuery);
+    }
+    if (selectRows.next()) {
+        sRet = selectRows.getString(0);
+    }
+    return sRet;
+}
+
+
 void EmployDatabase::insertToFlagsStolen(Ctf01dFlag flag, std::string sTeamId, int nPoints) {
     std::string sQuery = "INSERT INTO flags_stolen(serviceid, teamid, thief_teamid, flag_id, flag,"
         "   date_start, date_end, date_action, flag_cost) VALUES("
@@ -465,7 +479,6 @@ bool EmployDatabase::isSomebodyStole(Ctf01dFlag flag) {
     );
     return nRet > 0;
 }
-
 
 void EmployDatabase::insertToFlagLive(Ctf01dFlag flag) {
     std::string sQuery = "INSERT INTO flags_live(serviceid, flag_id, flag, teamid, "

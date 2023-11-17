@@ -17,13 +17,13 @@ const std::string &RES___data_sample_html_css_scoreboard_css_pathc54462::getPack
 // ---------------------------------------------------------------------
 
 int RES___data_sample_html_css_scoreboard_css_pathc54462::getBufferSize() const {
-    return 14491;
+    return 14527;
 }
 
 // ---------------------------------------------------------------------
 
 const char *RES___data_sample_html_css_scoreboard_css_pathc54462::getBuffer() const {
-    static const std::string sRet = "" // size: 14491
+    static const std::string sRet = "" // size: 14527
         "body{\n"
         "    background-color: #000;\n"
         "    font: 12pt/10pt Arial;\n"
@@ -270,7 +270,9 @@ const char *RES___data_sample_html_css_scoreboard_css_pathc54462::getBuffer() co
         "}\n"
         "\n"
         ".hdrs .service .service-att-def {\n"
-        "  padding-left: 30px;\n"
+        "  padding-left: 20px;\n"
+        "  width: 200px;\n"
+        "  max-width: 200px;\n"
         "}\n"
         "\n"
         ".first-blood {\n"

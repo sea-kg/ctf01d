@@ -244,7 +244,9 @@ img.team-logo {
 }
 
 .hdrs .service .service-att-def {
-  padding-left: 30px;
+  padding-left: 20px;
+  width: 200px;
+  max-width: 200px;
 }
 
 .first-blood {

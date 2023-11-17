@@ -399,8 +399,8 @@ resources:
     modified: 1700126010
     sha1: "0f591a740f6fe9a7868758935986945b810e3958"
   - filepath: "./data_sample/html/css/scoreboard.css"
-    filesize: 14491
+    filesize: 14527
     pack-as: "text"
-    modified: 1700240948
-    sha1: "10129f39be120077b4872c2791265c4abd041bf5"
+    modified: 1700247832
+    sha1: "3b8627e0c277e381c330039ab3c7ff272366c9b3"
 

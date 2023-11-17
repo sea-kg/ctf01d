@@ -308,16 +308,16 @@ int Ctf01dScoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::st
         int nThiefPlaceInScoreboard = pRow->getPlace();
 
         // motivation
-        WsjcppLog::info(TAG, "nVictimPlaceInScoreBoard " + std::to_string(nVictimPlaceInScoreBoard));
-        WsjcppLog::info(TAG, "nThiefPlaceInScoreboard " + std::to_string(nThiefPlaceInScoreboard));
-        WsjcppLog::info(TAG, "m_nTeamCount " + std::to_string(m_nTeamCount));
+        // WsjcppLog::info(TAG, "nVictimPlaceInScoreBoard " + std::to_string(nVictimPlaceInScoreBoard));
+        // WsjcppLog::info(TAG, "nThiefPlaceInScoreboard " + std::to_string(nThiefPlaceInScoreboard));
+        // WsjcppLog::info(TAG, "m_nTeamCount " + std::to_string(m_nTeamCount));
         float nMotivation = 1.0; // default
         if (nVictimPlaceInScoreBoard > nThiefPlaceInScoreboard) {
             nMotivation -= float(nVictimPlaceInScoreBoard - nThiefPlaceInScoreboard) / float(m_nTeamCount - 1);
         }
         nFlagPoints = nFlagPoints * nMotivation;
-        WsjcppLog::info(TAG, "nMotivation " + std::to_string(nMotivation));
-        WsjcppLog::info(TAG, "nFlagPoints " + std::to_string(nFlagPoints));
+        // WsjcppLog::info(TAG, "nMotivation " + std::to_string(nMotivation));
+        // WsjcppLog::info(TAG, "nFlagPoints " + std::to_string(nFlagPoints));
 
         m_pDatabase->insertToFlagsStolen(flag, sTeamId, nFlagPoints);
         pRow->incrementAttack(sServiceId, nFlagPoints);

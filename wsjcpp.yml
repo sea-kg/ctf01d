@@ -269,10 +269,10 @@ resources:
     modified: 1699775797
     sha1: "94bc90a0ba18eb99fa8f8e9830e7bf7bec347119"
   - filepath: "./data_sample/html/index.html"
-    filesize: 5762
+    filesize: 5254
     pack-as: "text"
-    modified: 1700173455
-    sha1: "9efd85174e26a12e62056ec6a3a18b4433365430"
+    modified: 1700251411
+    sha1: "90457b37aab5c6e901ed1d1ea98a61e5af189b1c"
   - filepath: "./data_sample/html/js/scoreboard.js"
     filesize: 24905
     pack-as: "text"

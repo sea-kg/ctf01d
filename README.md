@@ -196,81 +196,24 @@ RU:
 - флаг еще жив (не закончилось время жизни флага)
 - только во время объявленной игры (во время кофебрейка флаги не принимаются)
 
-### 4. How the flag cost is calculated
-
-EN:
-- The cost is different for the defended flag and the stolen flag (difference in the number of teams)
-- Redistribute the cost for flags between services depending on the number of passed and defended flags
-- The cost of flags should not depend on the "place" in the scoreboard table
-- The cost of the flags should be different as services may have different delays between flag forwarding
-- The cost of flags should be different since the complexity of the services is different
-
-RU:
-- Стоимость разная для защищенного флага и украденного флага (разница в количестве команд)
-- Перераспределять стоимость за флаги между сервисами - в зависимости от количества сданных и защищенных флагов
-- Стоимость флагов не должна зависить от "места" в рейтинговой таблице
-- Стоимость флагов должна быть разной так как сервисы могут иметь разное время между забросами флагов
-- Стоимость флагов должна быть разной так как сложность сервисов разная
-
-Example on python:
+Система расчета стоимости флага атаки
 
 ```python
-basic_costs_stolen_flag_in_points = 10
-cost_defence_flag_in_points = 1.0
-services = [
-    { "stolen_flags": 100, "defended_flags": 9 }, # service0
-    { "stolen_flags": 0, "defended_flags": 0 }, # service1
-    { "stolen_flags": 12, "defended_flags": 50 }, # service2
-    { "stolen_flags": 1, "defended_flags": 0 }, # service3
-    { "stolen_flags": 0, "defended_flags": 10 } # service4
-]
-teams = 10 # number of teams
-all_sf = 0 # number of all flags which was stolen
-all_df = 0 # number of all flags which was defended
-for s in services:
-    all_sf = all_sf + s["stolen_flags"]
-    all_df = all_df + s["defended_flags"]
-print("all_sf=" + str(all_sf) + ", all_df=" + str(all_df))
-
-sp4d = len(services) * basic_costs_stolen_flag_in_points
-dp4d = len(services) * (teams - 1) * basic_costs_stolen_flag_in_points
-print("sp4d=%d, dp4d=%d" % (sp4d, dp4d))
-
-sf_rsum = 0
-df_rsum = 0
-
-# calcululate reverse proportional df_rsum and sf_rsum
-for s in services:
-    if s["stolen_flags"] > 0:
-        s["rpsf"] = float(all_sf / s["stolen_flags"])
-    else:
-        s["rpsf"] = float(all_sf / 1.0)
-
-    if s["defended_flags"] > 0:
-        s["rpdf"] = float(all_df / s["defended_flags"])
-    else:
-        s["rpdf"] = float(all_df / 1.0)
-
-    sf_rsum = sf_rsum + s["rpsf"]
-    df_rsum = df_rsum + s["rpdf"]
-
-# calculate flag costs
-i = 0
-for s in services:
-    cost_attack_flag = 0
-    if sf_rsum == 0:
-        cost_attack_flag = sp4d
-    else:
-        cost_attack_flag = sp4d * (s["rpsf"] / sf_rsum)
-    cost_defence_flag = 0
-    if df_rsum == 0:
-        cost_defence_flag = dp4d
-    else:
-        cost_defence_flag = dp4d * (s["rpdf"] / df_rsum)
-    print("service%d: cost_attack_flag=%.2f, cost_defence_flag=%.2f" % (i, cost_attack_flag, cost_defence_flag))
-    i = i + 1
+basic_flag_points = 1.0
+motivation = 1.0
+if victim_place_in_scoreboard > thief_place_in_scoreboard:
+    motivation -= (victim_place_in_scoreboard - thief_place_in_scoreboard) / (m_nTeamCount - 1);
+attack_points_by_servece1 = basic_flag_points * motivation
 ```
 
+Очки команды считаются как / :
+
+```
+team_points = team_points + SLA_1 * (service1_defence_points + service1_attack_points)
+team_points = team_points + SLA_2 * (service2_defence_points + service2_attack_points)
+...
+team_points = team_points + SLA_N * (serviceN_defence_points + serviceN_attack_points)
+```
 
 ### Download and basic configuration
 
@@ -652,7 +595,7 @@ Run:
 ```
 $ cd ~/ctf01d.git
 $ docker run -it --rm \
-  -p 8081:8080 \
+  -p 8080:8080 \
   -v `pwd`/:/root/ctf01d.dev \
   -w /root/ctf01d.dev \
   --name "ctf01d.dev" \
@@ -678,8 +621,8 @@ Now you can see scoreboard on http://localhost:8081
 ## Build release docker
 
 ```
-docker build . -t sea5kg/ctf01d:v0.5.1
-docker tag sea5kg/ctf01d:v0.5.1 sea5kg/ctf01d:latest
+docker build . -t sea5kg/ctf01d:v0.5.2
+docker tag sea5kg/ctf01d:v0.5.2 sea5kg/ctf01d:latest
 ```
 
 # GAME SIMULATION

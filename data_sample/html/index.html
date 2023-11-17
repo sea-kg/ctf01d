@@ -57,47 +57,40 @@ Flag example: c01d1fd2-133a-4713-9587-1f6a00000001
 
         <h3>2. Acception of flag defence</h3>
         <p>Only that flag defence from the service is counted if:</p>
-        <ul>
-            <li> the flag was successfully putted to the service</li>
-            <li>- the flag has existed on the service all the time of it's life</li>
-            <li>- the flag was not stolen by another team (s)</li>
-            <li>- the cost of the defences flag is fixed and equal to 1.0 points</li> <!-- TODO get from server -->
-        </ul>
+        <div>
+            <p>- the flag was successfully putted to the service</<p>>
+            <p>- the flag has existed on the service all the time of it's life</<p>>
+            <p>- the flag was not stolen by another team (s)</<p>>
+            <p>- the cost of the defences flag is fixed and equal to 1.0 points</<p>> <!-- TODO get from server -->
+        </div>
 
         <h3>3. Acception of flag attack</h3>
 
         <p>The attack flag counts if:</p>
-        <ul>
-            <li>- the flag has the correct format</li>
-            <li>- the flag does not belong to your team (not from your service)</li>
-            <li>- a flag from the same type of service as yours, but your service must be in UP state</li>
-            <li>- the flag is dealt the first time by your team (the same flag may be dealt by different teams)</li>
-            <li>- the flag is still alive (the flag has not expired)</li>
-            <li>- only during the announced game (flags are not accepted during coffeebreaking)</li>
-        </ul>
+        <div>
+            <p>- the flag has the correct format</p>
+            <p>- the flag does not belong to your team (not from your service)</p>
+            <p>- a flag from the same type of service as yours, but your service must be in UP state</p>
+            <p>- the flag is dealt the first time by your team (the same flag may be dealt by different teams)</p>
+            <p>- the flag is still alive (the flag has not expired)</p>
+            <p>- only during the announced game (flags are not accepted during coffeebreaking)</p>
+        </div>
+        <div style="display: inline-block;">
+            <pre class="pre-flag-format">
+# formala1
+basic_flag_points = 1.0
+motivation = 1.0
+if victim_place_in_scoreboard > thief_place_in_scoreboard:
+    motivation -= (victim_place_in_scoreboard - thief_place_in_scoreboard) / (m_nTeamCount - 1);
+attack_points_by_servece1 = basic_flag_points * motivation
 
-        <h3>4. How to calculate costs of the flags</h3>
-        <ul>
-            <li>- The cost is different for the defended flag and the stolen flag (difference in the number of teams)</li>
-            <li>- Redistribute the cost for flags between services - depending on the number of passed and defended flags</li>
-            <li>- The cost of flags should not depend on the "place" in the scoreboard table</li>
-            <li>- The cost of the flags should be different as services may have different times between flag throws</li>
-            <li>- The cost of flags should be different since the complexity of the services is different</li>
-        </ul>
-
-        <h3>5. How to calculate of team score</h3>
-        <p>Sum by score services, for each:</p>
-        <p>(<div class="d-icn att"></div> + <div class="d-icn def"></div>), </p>
-        <p>where:</p>
-
-        <ul style="display: inline-block; text-align: left">
-            <li>
-                <div class="d-icn def"></div> - the number of defended flags
-            </li>
-            <li>
-                <div class="d-icn att"></div> - the number of stolen flags
-            </li>
-        </ul>
+# formala2
+team_points = team_points + SLA_1 * (service1_defence_points + service1_attack_points)
+team_points = team_points + SLA_2 * (service2_defence_points + service2_attack_points)
+...
+team_points = team_points + SLA_N * (serviceN_defence_points + serviceN_attack_points)
+            </pre>
+        </div>
         <div class="game-rule-header">4. Issues for a jury system</div>
         <div class="game-rule">
             <a target="_blank" href="https://github.com/sea-kg/ctf01d/issues">https://github.com/sea-kg/ctf01d/issues</a>

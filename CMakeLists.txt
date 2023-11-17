@@ -33,7 +33,7 @@
 ##################################################################################
 # ctf01d CMake script
 
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 project(ctf01d)
 
@@ -53,7 +53,6 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/checker")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
-list (APPEND WSJCPP_INCLUDE_DIRS "src/service_locator")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
 list (APPEND WSJCPP_INCLUDE_DIRS "src/3rdparty/sqlite3/src")
@@ -69,10 +68,10 @@ list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_versio
 list (APPEND WSJCPP_SOURCES "./src/argument_processors/argument_processor_web_test.cpp")
 
 # employees
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_team_logos.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_flags.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_scoreboard.cpp")
-list (APPEND WSJCPP_SOURCES "./src/service_locator/employ_config.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_flags.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_scoreboard.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_config.cpp")
 list (APPEND WSJCPP_SOURCES "./src/employees/employ_database.cpp")
 
 # checker

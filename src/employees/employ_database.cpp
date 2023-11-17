@@ -84,6 +84,10 @@ Ctf01dDatabaseFile::Ctf01dDatabaseFile(const std::string &sFilename, const std::
     if (!WsjcppCore::dirExists(sDatabaseDir)) {
         !WsjcppCore::makeDir(sDatabaseDir);
     }
+    std::string sDatabaseBackupDir = sDatabaseDir + "/backups";
+    if (!WsjcppCore::dirExists(sDatabaseBackupDir)) {
+        !WsjcppCore::makeDir(sDatabaseBackupDir);
+    }
     m_sFileFullpath = sDatabaseDir + "/" + m_sFilename;
 };
 

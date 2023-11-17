@@ -63,7 +63,7 @@ int ArgumentProcessorTeamsList::exec(const std::vector<std::string> &vRoutes, co
         WsjcppLog::err(TAG, "Unexpected parameters");
         return -1;
     }
-    
+
     WsjcppLog::info(TAG, "Starting...");
     if (!WsjcppEmployees::init({})) {
         WsjcppLog::err(TAG, "Failed.");

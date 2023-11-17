@@ -339,6 +339,20 @@ function updateScoreboard() {
         for(var teamID in resp.scoreboard){
             var t = resp.scoreboard[teamID];
             teamIDs.push(teamID);
+            var teamLogoElemId = "team-logo-" + teamID;
+            var lastWriteTimeLogo = document.getElementById(teamLogoElemId).getAttribute('logo_last_updated');
+            if (lastWriteTimeLogo == "0") {
+                document.getElementById(teamLogoElemId).setAttribute('logo_last_updated', t.logo_last_updated);
+            } else if (lastWriteTimeLogo != t.logo_last_updated) {
+                console.warn("Need update logo for team ", t);
+                document.getElementById(teamLogoElemId).setAttribute('logo_last_updated', t.logo_last_updated);
+                var logoUrl = document.getElementById(teamLogoElemId).src;
+                if (logoUrl.indexOf("?") !== -1) {
+                    logoUrl = logoUrl.split("?")[0];
+                }
+                document.getElementById(teamLogoElemId).src = logoUrl + "?t=" + t.logo_last_updated;
+            }
+
             var elPointsTrend = document.getElementById(teamID + '-points-trend');
             var prevPoints = parseFloat(document.getElementById(teamID + '-points').innerHTML);
             var newPoints = parseFloat(t.points.toFixed(1));
@@ -420,7 +434,7 @@ function updateScoreboard() {
             return a.p - b.p;
         });
         for (var i = 0; i < elms2.length; i++) {
-            var expected_top_value = (65 + (i+1)*60) + 'px'
+            var expected_top_value = (45 + (i+1)*60) + 'px'
             elms2[i].e.setAttribute("expected-top", expected_top_value);
             // if (elms2[i].e.style.top == '') {
             //     elms2[i].e.style.top = expected_top_value;
@@ -525,7 +539,7 @@ getAjax('/api/v1/game', function(err, resp){
         sContent += ""
             + "<div class='tm' id='" + sTeamId + "'>"
             + '  <div class="place" id="place-' + sTeamId + '" >?</div>'
-            + "  <div class='team-logo'><img class='team-logo' src='" + resp.teams[iteam].logo + "'/></div>"
+            + "  <div class='team-logo'><img class='team-logo' id='team-logo-" + sTeamId + "' logo_last_updated='0' src='" + resp.teams[iteam].logo + "'/></div>"
             + "  <div class='team'>"
             + "    <div class='team-name'>" + resp.teams[iteam].name + "</div>"
             + "    <div class='team-ip'> id: " + sTeamId + ", ip: " + resp.teams[iteam].ip_address + "</div>"

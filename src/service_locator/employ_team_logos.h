@@ -36,13 +36,15 @@
 #define EMPLOY_TEAM_LOGOS_H
 
 #include <wsjcpp_employees.h>
+#include <json.hpp>
 
-struct TeamLogo {
+struct Ctf01dTeamLogo {
     std::string sTeamId;
     char *pBuffer;
     int nBufferSize;
     std::string sFilename;
     std::string sFilepath;
+    long nLastWriteTime;
 };
 
 class EmployTeamLogos : public WsjcppEmployBase {
@@ -52,10 +54,14 @@ class EmployTeamLogos : public WsjcppEmployBase {
         virtual bool init() override;
         virtual bool deinit() override;
         bool loadTeamLogo(const std::string &sTeamId, const std::string &sFilepath);
-        TeamLogo *findTeamLogo(const std::string &sTeamId);
+        Ctf01dTeamLogo *findTeamLogo(const std::string &sTeamId);
+        bool updateLastWriteTime();
+        void updateScorebordJson(nlohmann::json &jsonScoreboard);
+
     private:
         std::string TAG;
-        std::map<std::string, TeamLogo *> m_mapTeamLogos;
+        std::map<std::string, Ctf01dTeamLogo *> m_mapTeamLogos;
+        int m_nLastUpdateWriteTimeLogosInSec;
 };
 
 #endif // EMPLOY_TEAM_LOGOS_H

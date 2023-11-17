@@ -98,12 +98,15 @@ class Ctf01dTeamDef {
         void setLogo(const std::string &sLogo);
         std::string logo() const;
 
+        int getLogoLastWriteTime();
+
     private:
         bool m_bActive;
         std::string m_sTeamID;
         std::string m_sName;
         std::string m_sIpAddress;
         std::string m_sLogo;
+        int m_nLogoLastWriteTime;
 };
 
 // ----------------------------------------------------------------------

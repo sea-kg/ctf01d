@@ -132,6 +132,7 @@ void Ctf01dScoreboard::initJsonScoreboard() {
         teamData["place"] = m_mapTeamsStatuses[sTeamId]->getPlace();
         teamData["points"] = double(m_mapTeamsStatuses[sTeamId]->getPoints()) / 10.0;
         teamData["tries"] = 0;
+        teamData["logo_last_updated"] = 0;
         nlohmann::json jsonServices;
         for (unsigned int iservice = 0; iservice < vServices.size(); iservice++) {
             Ctf01dServiceDef serviceConf = vServices[iservice];
@@ -375,7 +376,7 @@ void Ctf01dScoreboard::incrementFlagsPuttedAndServiceUp(const Ctf01dFlag &flag) 
     // insert flag lives
     {
         std::lock_guard<std::mutex> lock(m_mutexFlagsLive);
-        std::map<std::string,Ctf01dFlag>::iterator it;
+        std::map<std::string, Ctf01dFlag>::iterator it;
         it = m_mapFlagsLive.find(flag.getValue());
         if (it != m_mapFlagsLive.end()) {
             WsjcppLog::err(TAG, flag.getValue() + " - flag already exists");

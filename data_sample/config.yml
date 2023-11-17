@@ -136,13 +136,3 @@ teams:
     active: yes
     logo: "./html/images/teams/team18.png"
     ip_address: "127.0.18.1" # address to vulnserver
-  - id: "t19" # must be uniq
-    name: "Team #19"
-    active: yes
-    logo: "./html/images/teams/team19.png"
-    ip_address: "127.0.19.1" # address to vulnserver
-  - id: "t20" # must be uniq
-    name: "Team #20"
-    active: yes
-    logo: "./html/images/teams/team20.png"
-    ip_address: "127.0.20.1" # address to vulnserver

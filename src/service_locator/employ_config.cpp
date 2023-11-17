@@ -167,12 +167,16 @@ std::string Ctf01dTeamDef::logo() const {
     return m_sLogo;
 }
 
+int Ctf01dTeamDef::getLogoLastWriteTime() {
+    return m_nLogoLastWriteTime;
+}
+
 // ---------------------------------------------------------------------
 // EmployConfig
 
 REGISTRY_WJSCPP_SERVICE_LOCATOR(EmployConfig)
 
-EmployConfig::EmployConfig() 
+EmployConfig::EmployConfig()
 : WsjcppEmployBase(EmployConfig::name(), {}) {
     TAG = EmployConfig::name();
     m_bApplyedConfig = false;
@@ -267,13 +271,13 @@ bool EmployConfig::applyConfig() {
     }
 
     m_bApplyedConfig = false;
-    WsjcppLog::info(TAG, "Loading configuration... ");
+    WsjcppLog::info(TAG, "Loading configuration...");
 
     std::string sConfigFile = m_sWorkDir + "/config.yml";
     WsjcppLog::info(TAG, "Reading config: " + sConfigFile);
 
     if (!WsjcppCore::fileExists(sConfigFile)) {
-        WsjcppLog::err(TAG, "File " + sConfigFile + " does not exists ");
+        WsjcppLog::err(TAG, "File " + sConfigFile + " does not exists");
         return false;
     }
 

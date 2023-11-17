@@ -95,6 +95,8 @@ Ctf01dHttpServer::Ctf01dHttpServer() {
         teamInfo["name"] = teamConf.getName();
         teamInfo["ip_address"] = teamConf.ipAddress();
         teamInfo["logo"] = "./team-logo/" + teamConf.getId();
+        teamInfo["logo_last_write_time"] = teamConf.getLogoLastWriteTime();
+
         m_jsonGame["teams"].push_back(teamInfo);
         m_jsonTeams["teams"].push_back(teamInfo);
     }
@@ -157,7 +159,7 @@ int Ctf01dHttpServer::httpWebFolder(HttpRequest* req, HttpResponse* resp) {
 
     if (sRequestPath.rfind(m_sTeamLogoPrefix, 0) == 0) {
         std::string sTeamId = sRequestPath.substr(m_nTeamLogoPrefixLength, sRequestPath.length() - m_nTeamLogoPrefixLength);
-        TeamLogo *pLogo = m_pTeamLogos->findTeamLogo(sTeamId);
+        Ctf01dTeamLogo *pLogo = m_pTeamLogos->findTeamLogo(sTeamId);
         if (pLogo == nullptr) {
             return 404;
         }
@@ -375,7 +377,9 @@ int Ctf01dHttpServer::httpApiV1Flag(HttpRequest* req, HttpResponse* resp) {
 }
 
 int Ctf01dHttpServer::httpApiV1Scoreboard(HttpRequest* req, HttpResponse* resp) {
+    m_pTeamLogos->updateLastWriteTime();
     nlohmann::json jsonScoreboard = m_pConfig->scoreboard()->toJson();
+    m_pTeamLogos->updateScorebordJson(jsonScoreboard);
     std::string sScoreboardJson = jsonScoreboard.dump();
     resp->SetContentTypeByFilename("scoreboard.json");
     return resp->Data(

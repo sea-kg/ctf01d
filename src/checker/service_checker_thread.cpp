@@ -120,6 +120,7 @@ int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sComma
     process.start(m_serviceConf.scriptWaitInSec()*1000);
 
     if (process.isTimeout()) {
+        WsjcppLog::err(TAG, "ErrorTimeout on run script service: " + process.outputString());
         return ServiceCheckerThread::CHECKER_CODE_MUMBLE;
     }
 
@@ -130,6 +131,11 @@ int ServiceCheckerThread::runChecker(Ctf01dFlag &flag, const std::string &sComma
     }
 
     int nExitCode = process.exitCode();
+    if (nExitCode == ServiceCheckerThread::CHECKER_CODE_MUMBLE) {
+        WsjcppLog::err(TAG, "Checker says that serivice is mumble... \nLOG:\n"
+            "\n" + process.outputString() + "\n\n");
+    }
+
     if (nExitCode != ServiceCheckerThread::CHECKER_CODE_UP
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_MUMBLE
         && nExitCode != ServiceCheckerThread::CHECKER_CODE_CORRUPT
@@ -220,6 +226,8 @@ void ServiceCheckerThread::run() {
                 // >>>>>>>>>>> service is MUMBLE <<<<<<<<<<<<<<
                 // m_pConfig->storage()->insertFlagPutFail(flag, "mumble_1");
                 WsjcppLog::warn(TAG, " => service is mumble");
+                WsjcppLog::warn(TAG, "exit_code = " + std::to_string(nExitCode));
+
                 m_pConfig->scoreboard()->insertFlagPutFail(flag, ServiceStatusCell::SERVICE_MUMBLE, "mumble");
             } else if (nExitCode == ServiceCheckerThread::CHECKER_CODE_DOWN) {
                 // >>>>>>>>>>> service is DOWN <<<<<<<<<<<<<<

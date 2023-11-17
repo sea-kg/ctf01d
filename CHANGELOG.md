@@ -5,11 +5,11 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [v0.5.2] - (2023 Nov ??)
+## [v0.5.2] - (2023 Nov 18)
 
 * Fix #69 implemented SLA
 * Implemeted firstblood action
-* Up build tages to debian:12
+* Up build stages to debian:12
 * Added python3 library faker to docker image ctf01d
 * Improved logging for mumble exit code checker
 * Fix #70 redesign calculation attack points like RuCTF 2023

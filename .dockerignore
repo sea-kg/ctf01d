@@ -3,8 +3,10 @@ tmp
 .wsjcpp
 misc
 data_test
+examples
 game-simulation
 tests
+contrib
 ctf01d-store
 .ctf01d
 .ctf01d-store-cache

@@ -9,7 +9,7 @@ data_test/*
 /data_sample/db/*
 ctf01d
 tmp/*
-.wsjcpp/*
+.wsjcpp
 *.log
 /.ctf01d
 /.ctf01d-store-cache

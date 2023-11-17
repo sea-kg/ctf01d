@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.5.1")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.5.2")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-ctf01d")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -55,7 +55,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/wsjcpp_arguments/")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src.wsjcpp/wsjcpp_arguments/wsjcpp_arguments.h")
 
-# ctf01d:v0.5.1
+# ctf01d:v0.5.2
 list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/../src")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_flags.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/../src/service_locator/employ_flags.h")

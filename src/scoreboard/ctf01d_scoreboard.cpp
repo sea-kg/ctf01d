@@ -70,6 +70,7 @@ Ctf01dScoreboard::Ctf01dScoreboard(
     m_nFlagTimeLiveInSec = nFlagTimeLiveInSec;
     m_nAllDefenceFlags = 0;
     m_nCostDefenceFlagInPoints10 = 10;
+    m_nTeamCount = vTeamsConf.size();
     m_pEmployFlags = findWsjcppEmploy<EmployFlags>();
 
     m_mapTeamsStatuses.clear(); // possible memory leak
@@ -128,7 +129,7 @@ void Ctf01dScoreboard::initJsonScoreboard() {
         Ctf01dTeamDef teamConf = vTeamsConf[iteam];
         std::string sTeamId = teamConf.getId();
         nlohmann::json teamData;
-        teamData["place"] = m_mapTeamsStatuses[sTeamId]->place();
+        teamData["place"] = m_mapTeamsStatuses[sTeamId]->getPlace();
         teamData["points"] = double(m_mapTeamsStatuses[sTeamId]->getPoints()) / 10.0;
         teamData["tries"] = 0;
         nlohmann::json jsonServices;
@@ -288,16 +289,36 @@ int Ctf01dScoreboard::incrementAttackScore(const Ctf01dFlag &flag, const std::st
     std::string sServiceId = flag.getServiceId();
 
     // TODO calculate
-    // TODO check first-blood
     // int nFlagPoints = m_mapServiceCostsAndStatistics[sServiceId]->getCostStolenFlag()*10; // one number after dot
     int nFlagPoints = 10;
 
-    m_pDatabase->insertToFlagsStolen(flag, sTeamId, nFlagPoints);
+    // victim place in scroreboard
+    std::map<std::string,TeamStatusRow *>::iterator it_victim;
+    it_victim = m_mapTeamsStatuses.find(flag.getTeamId());
+    int nVictimPlaceInScoreBoard = 0;
+    if (it_victim != m_mapTeamsStatuses.end()) {
+        nVictimPlaceInScoreBoard = it_victim->second->getPlace();
+    }
 
     std::map<std::string,TeamStatusRow *>::iterator it;
     it = m_mapTeamsStatuses.find(sTeamId);
     if (it != m_mapTeamsStatuses.end()) {
         TeamStatusRow *pRow = it->second;
+        int nThiefPlaceInScoreboard = pRow->getPlace();
+
+        // motivation
+        WsjcppLog::info(TAG, "nVictimPlaceInScoreBoard " + std::to_string(nVictimPlaceInScoreBoard));
+        WsjcppLog::info(TAG, "nThiefPlaceInScoreboard " + std::to_string(nThiefPlaceInScoreboard));
+        WsjcppLog::info(TAG, "m_nTeamCount " + std::to_string(m_nTeamCount));
+        float nMotivation = 1.0; // default
+        if (nVictimPlaceInScoreBoard > nThiefPlaceInScoreboard) {
+            nMotivation -= float(nVictimPlaceInScoreBoard - nThiefPlaceInScoreboard) / float(m_nTeamCount - 1);
+        }
+        nFlagPoints = nFlagPoints * nMotivation;
+        WsjcppLog::info(TAG, "nMotivation " + std::to_string(nMotivation));
+        WsjcppLog::info(TAG, "nFlagPoints " + std::to_string(nFlagPoints));
+
+        m_pDatabase->insertToFlagsStolen(flag, sTeamId, nFlagPoints);
         pRow->incrementAttack(sServiceId, nFlagPoints);
         pRow->updatePoints();
         m_jsonScoreboard["scoreboard"][sTeamId]["ts_sta"][sServiceId]["att"] = pRow->getAttackFlags(sServiceId);
@@ -467,9 +488,9 @@ void Ctf01dScoreboard::sortPlaces() {
             TeamStatusRow *pTeamStatus = it1->second;
             std::string sTeamId_ = pTeamStatus->teamId();
 
-            // std::cout << sTeamNum << ": result: score: " << pTeamStatus->score() << ", place: " << pTeamStatus->place() << "\n";
+            // std::cout << sTeamNum << ": result: score: " << pTeamStatus->score() << ", place: " << pTeamStatus->getPlace() << "\n";
             m_jsonScoreboard["scoreboard"][sTeamId_]["points"] = double(pTeamStatus->getPoints()) / 10.0;
-            m_jsonScoreboard["scoreboard"][sTeamId_]["place"] = pTeamStatus->place();
+            m_jsonScoreboard["scoreboard"][sTeamId_]["place"] = pTeamStatus->getPlace();
             m_jsonScoreboard["scoreboard"][sTeamId_]["tries"] = pTeamStatus->tries();
         }
     }

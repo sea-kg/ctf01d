@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Improved logging for mumble exit code checker
 * Fix #70 redesign calculation attack points like RuCTF 2023
 * PEP8 and pylint for example_service1
+* Fixed automatization action - only one element can be animated in onetime
+* Fix #72 team logo update when file was changed
 
 ## [v0.5.1] - (2023 Nov 16)
 

@@ -5,6 +5,10 @@ All notable changes to ctf01d project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v0.5.3] - (2023 ?? ??)
+
+* Add utility ping to docker image
+
 ## [v0.5.2] - (2023 Nov 18)
 
 * Fix #69 implemented SLA

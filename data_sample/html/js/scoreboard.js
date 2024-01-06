@@ -268,6 +268,59 @@ function switchUITeamRows(teamID1, teamID2){
     },400);
 }
 
+function helpNumWorld(value, words) {
+    if (value == 1) return words[0];
+    return words[1];
+}
+
+function humanTimeFromSeconds(sec) {
+    var one_day_in_seconds = 24*60*60;
+    var all_days = Math.round(sec / one_day_in_seconds);
+    var years = Math.round(all_days / 356);
+    var months = Math.round(all_days / 30) % 12;
+    var days = all_days % 30;
+    var result = "";
+    if (years > 0) {
+        result += years + " " + helpNumWorld(years, ["year", "years"])
+    }
+    if (months > 0) {
+        result += " ";
+        result += months + " " + helpNumWorld(months, ["month", "months"])
+    }
+    if (days > 0) {
+        result += " ";
+        result += days + " " + helpNumWorld(days, ["day", "days"])
+    }
+    var val = sec % one_day_in_seconds;
+    // console.log(val)
+    var seconds = val % 60;
+    val = val - seconds;
+    val = Math.round(val / 60);
+    var minutes = val % 60;
+    val = val - minutes;
+    val = Math.round(val / 60);
+    var hours = val % 24;
+
+    if (hours > 0) {
+        result += " ";
+        result += hours + " " + helpNumWorld(days, ["hour", "hours"])
+    }
+    if (minutes > 0) {
+        result += " ";
+        result += minutes + " " + helpNumWorld(minutes, ["minute", "minutes"])
+    }
+
+    if (minutes > 0) {
+        result += " ";
+        result += seconds + " " + helpNumWorld(seconds, ["second", "seconds"])
+    }
+
+    if (result.trim() == "") {
+        result = "NOW!";
+    }
+    return result
+}
+
 function updateScoreboard() {
     getAjax('/api/v1/scoreboard', function(err, resp){
         if (err) {
@@ -305,13 +358,13 @@ function updateScoreboard() {
         if (resp.game.tc < resp.game.t0) {
             silentUpdateWithoutAnimation(
                 'game_current_time',
-                'game started after: ' + (resp.game.t0 - resp.game.tc) + ' seconds'
+                'game started after: ' + humanTimeFromSeconds(resp.game.t0 - resp.game.tc)
             );
             document.getElementById('game_progress_time').style.display = 'none';
         } else if (resp.game.tc >= resp.game.t1 && resp.game.tc <= resp.game.t2) { // coffee break
             silentUpdateWithoutAnimation(
                 'game_current_time',
-                'the game will continue after the coffee break in ' + (resp.game.t2 - resp.game.tc) + ' seconds'
+                'the game will continue after the coffee break in ' + humanTimeFromSeconds(resp.game.t2 - resp.game.tc)
             );
         } else if (resp.game.tc > resp.game.t3) {
             silentUpdateWithoutAnimation('game_current_time', 'game ended');
@@ -327,17 +380,17 @@ function updateScoreboard() {
             if (resp.game.tc > resp.game.t0 && resp.game.tc < resp.game.t1) { // before coffee break
                 silentUpdateWithoutAnimation(
                     'game_current_time',
-                    'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds and coffee break will start in ' + (resp.game.t1 - resp.game.tc) + ' seconds'
+                    'game time: ' + humanTimeFromSeconds(resp.game.tc - resp.game.t0) + ' and coffee break will start in ' + humanTimeFromSeconds(resp.game.t1 - resp.game.tc)
                 );
                 document.getElementById('game_progress_time').style.display = 'block';
             } else if (resp.game.tc > resp.game.t2 && resp.game.tc < resp.game.t3) { // after coffee break
                 silentUpdateWithoutAnimation(
                     'game_current_time',
-                    'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds and game will end in ' + (resp.game.t3 - resp.game.tc) + ' seconds'
+                    'game time: ' + humanTimeFromSeconds(resp.game.tc - resp.game.t0) + ' and game will end in ' + humanTimeFromSeconds(resp.game.t3 - resp.game.tc)
                 );
             }
         } else if (resp.game.tc > resp.game.t0 && resp.game.tc < resp.game.t3) { // before coffe break
-            silentUpdateWithoutAnimation('game_current_time', 'game time: ' + (resp.game.tc - resp.game.t0) + ' seconds, and game will end in ' + (resp.game.t3 - resp.game.tc) + ' seconds');
+            silentUpdateWithoutAnimation('game_current_time', 'game time: ' + humanTimeFromSeconds(resp.game.tc - resp.game.t0) + ', and game will end in ' + humanTimeFromSeconds(resp.game.t3 - resp.game.tc));
             document.getElementById('game_progress_time').style.display = 'block';
             document.getElementById('game_progress_time').style.width = Math.ceil((game_passed_time / game_len_time)*100) + '%';
         }

@@ -143,4 +143,6 @@ install(
         ${CMAKE_INSTALL_PREFIX}/bin
 )
 
-
+# enable testing functionality
+enable_testing()
+add_subdirectory(src/tests)

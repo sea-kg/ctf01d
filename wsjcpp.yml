@@ -100,13 +100,6 @@ distribution:
     target-file: "employ_database.h"
     type: "source-code"
 
-unit-tests:
-  cases:
-    - name: "StructFlag"
-      description: ""
-    - name: "ServiceCostsAndStatistics"
-      description: ""
-
 resources:
   - filepath: "./data_sample/logs/.placeholder"
     filesize: 0

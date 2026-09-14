@@ -176,7 +176,6 @@ long impl_rows_iterator::as_long(int column_idx) {
 
 database_file::database_file(
   const std::string &db_name,
-  const std::string &init_sql,
   const std::string &db_dir,
   const std::string &filename,
   long backup_freq
@@ -213,7 +212,6 @@ database_file::database_file(
     }
   }
 
-  m_init_sql = init_sql;
   if (!wsjcpp::dir_exists(db_dir)) {
     sea5kg::log::critical(TAG, "Not found db dir: " + db_dir);
   }
@@ -252,13 +250,6 @@ bool database_file::open(std::string &error) {
   }
   m_db = db;
 
-  // Run the SQL
-  if (m_init_sql != "") {
-    if (!execute_query(m_init_sql, error)) {
-      close();
-      return false;
-    }
-  }
   if (!create_table_db_version(error)) {
     close();
     return false;

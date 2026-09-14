@@ -35,19 +35,19 @@
  *
  ***********************************************************************************/
 
+#include "ctf01d/include/ctf01d_activities.h"
+#include "ctf01d/include/ctf01d_config.h"
+#include "ctf01d/include/ctf01d_database.h"
+#include "ctf01d/include/ctf01d_globals.h"
+#include "ctf01d/objects/ctf01d_flag.h"
+#include "ctf01d/utils/ctf01d_time_measurer.h"
+#include <cstring>
+#include <fstream>
+#include <sea5kg_logger.h>
+#include <sea5kg_sqlite3_wrapper.h>
+#include <string>
 #include <wsjcpp_core.h>
 #include <wsjcpp_employees.h>
-#include <sea5kg_logger.h>
-#include <string>
-#include <fstream>
-#include <cstring>
-#include "ctf01d/include/ctf01d_globals.h"
-#include <sea5kg_sqlite3_wrapper.h>
-#include "ctf01d/objects/ctf01d_flag.h"
-#include "ctf01d/include/ctf01d_activities.h"
-#include "ctf01d/include/ctf01d_database.h"
-#include "ctf01d/include/ctf01d_config.h"
-#include "ctf01d/utils/ctf01d_time_measurer.h"
 
 // ---------------------------------------------------------------------
 // EmployAliveFlags definition
@@ -94,7 +94,7 @@ private:
 REGISTRY_WSJCPP_EMPLOY(employ_activities)
 
 employ_activities::employ_activities()
-: WsjcppEmployBase({ ctf01d::activities::name() }, { ctf01d::config::name(), ctf01d::database::name() }) {
+    : WsjcppEmployBase({ctf01d::activities::name()}, {ctf01d::config::name(), ctf01d::database::name()}) {
   TAG = "employ_activities";
   m_all_activities_send_flag = 0;
   m_flags_attempts_db = nullptr;
@@ -117,8 +117,8 @@ bool employ_activities::init(const std::string &name, bool silent) {
   {
     ctf01d::time_measurer measurer("restore activities from database");
     auto config = findWsjcppEmploy<ctf01d::config>();
-    long game_start = long(config->game_start_utc_in_seconds())*1000;
-    long game_end = long(config->game_end_utc_in_seconds())*1000;
+    long game_start = long(config->game_start_utc_in_seconds()) * 1000;
+    long game_end = long(config->game_end_utc_in_seconds()) * 1000;
     std::string str_game_start = std::to_string(game_start);
     std::string str_game_end = std::to_string(game_end);
     std::lock_guard<std::mutex> lock(m_mutex_teams_activities_send_flag);
@@ -128,9 +128,14 @@ bool employ_activities::init(const std::string &name, bool silent) {
       int flag_attempts_sum = m_flags_attempts_db->select_sum_or_count(
         "SELECT COUNT(*) FROM flags_attempts"
         "  WHERE "
-        "    team_id = '" + team_config.id() + "'"
-        "    AND dt >= " + str_game_start + " "
-        "    AND dt <= " + str_game_end + " ",
+        "    team_id = '" +
+          team_config.id() +
+          "'"
+          "    AND dt >= " +
+          str_game_start +
+          " "
+          "    AND dt <= " +
+          str_game_end + " ",
         error
       );
       if (flag_attempts_sum == -1) {
@@ -180,7 +185,9 @@ void employ_activities::insert_flag_attempt(
   {
     std::lock_guard<std::mutex> lock(m_mutex_flags_attempts_db);
     std::string sQuery = "INSERT INTO flags_attempts(flag, team_id, request_ip, dt) "
-      " VALUES('" + flag_value + "', '" + thief_team_id + "', '" + request_ip + "', " + std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
+                         " VALUES('" +
+                         flag_value + "', '" + thief_team_id + "', '" + request_ip + "', " +
+                         std::to_string(WsjcppCore::getCurrentTimeInMilliseconds()) + ");";
 
     std::string error;
     if (!m_flags_attempts_db->execute_query(sQuery, error)) {
@@ -202,7 +209,7 @@ void employ_activities::insert_flag_attempt(
     }
     m_teams_activities_send_flag[thief_team_id] = new_team_activity;
 
-    // only if thief_team_id exists in json  
+    // only if thief_team_id exists in json
     if (scoreboard["scoreboard"].contains(thief_team_id)) {
       scoreboard["scoreboard"][thief_team_id][ctf01d::json_fields::TRIES] = new_team_activity;
     }
@@ -211,8 +218,9 @@ void employ_activities::insert_flag_attempt(
   }
 }
 
-bool employ_activities::init_flags_attempts_db() {
-  m_flags_attempts_db = std::make_shared<sea5kg::sqlite3_wrapper::database_file>("database_flags_attempts",
+CLASS_DATABASE_UPDATE_BEGIN(database_flags_attempts, initial, v001, "Init table flags_attempts") {
+  // IF NOT EXISTS
+  return db->execute_query(
     "CREATE TABLE IF NOT EXISTS flags_attempts ( "
     "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
     "  flag VARCHAR(1024) NOT NULL, "
@@ -220,6 +228,17 @@ bool employ_activities::init_flags_attempts_db() {
     "  request_ip VARCHAR(50) NOT NULL, "
     "  dt INTEGER NOT NULL "
     ");",
+    error
+  );
+}
+CLASS_DATABASE_UPDATE_NEXT(database_flags_attempts, v001, v002, "Added index") {
+  return db->execute_query("CREATE INDEX IF NOT EXISTS idx_dt ON flags_attempts(dt);", error);
+}
+CLASS_DATABASE_UPDATE_END()
+
+bool employ_activities::init_flags_attempts_db() {
+  m_flags_attempts_db = std::make_shared<sea5kg::sqlite3_wrapper::database_file>(
+    "database_flags_attempts",
     // TODO result of send_flag (error code or success + elapsed time)
     findWsjcppEmploy<ctf01d::config>()->db_dir(),
     "flags_attempts.db",
@@ -231,25 +250,29 @@ bool employ_activities::init_flags_attempts_db() {
     sea5kg::log::critical(TAG, "Problem with open database. Error: " + error);
     return false;
   }
-
-  if (!m_flags_attempts_db->execute_query("CREATE INDEX IF NOT EXISTS idx_dt ON flags_attempts(dt);", error)) {
-    sea5kg::log::critical(TAG, error);
-  }
   return true;
 }
 
-bool employ_activities::init_flags_attempts_snapshots_db()
-{
-  std::lock_guard<std::mutex> lock(m_mutex_flags_attempts_snapshots_db);
-  m_flags_attempts_snapshots_db = std::make_shared<sea5kg::sqlite3_wrapper::database_file>("database_flags_attempts_snapshots",
+CLASS_DATABASE_UPDATE_BEGIN(database_flags_attempts_snapshots, initial, v001, "Init table flags_attempts_snapshots") {
+  // IF NOT EXISTS
+  return db->execute_query(
     "CREATE TABLE IF NOT EXISTS flags_attempts_snapshots ( "
     "  id INTEGER PRIMARY KEY AUTOINCREMENT, "
     "  team_id VARCHAR(50) NOT NULL, "
     "  snapshot_dt INTEGER NOT NULL, "
     "  total_attempts INTEGER NOT NULL, " // TODO
-    "  total_success INTEGER NOT NULL, " // TODO
-    "  total_failed INTEGER NOT NULL " // TODO
+    "  total_success INTEGER NOT NULL, "  // TODO
+    "  total_failed INTEGER NOT NULL "    // TODO
     ");",
+    error
+  );
+}
+CLASS_DATABASE_UPDATE_END()
+
+bool employ_activities::init_flags_attempts_snapshots_db() {
+  std::lock_guard<std::mutex> lock(m_mutex_flags_attempts_snapshots_db);
+  m_flags_attempts_snapshots_db = std::make_shared<sea5kg::sqlite3_wrapper::database_file>(
+    "database_flags_attempts_snapshots",
     // TODO result of send_flag (error code or success + elapsed time)
     findWsjcppEmploy<ctf01d::config>()->db_dir(),
     "flags_attempts_snapshots.db",

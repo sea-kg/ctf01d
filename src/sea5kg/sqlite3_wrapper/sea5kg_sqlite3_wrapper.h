@@ -134,7 +134,6 @@ class database_file {
 public:
   database_file(
     const std::string &db_name,
-    const std::string &init_sql,
     const std::string &db_dir = "./",
     const std::string &filename = "",
     long backup_freq = 0
@@ -159,7 +158,6 @@ private:
   std::mutex m_mutex;
 
   std::string TAG;
-  std::string m_init_sql;
   void *m_db; // hidden type 'sqlite3 *'
   std::string m_db_name;
   std::string m_filename;

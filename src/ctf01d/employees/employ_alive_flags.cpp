@@ -108,7 +108,6 @@ bool EmployAliveFlags::init(const std::string &name, bool silent) {
 
   m_alive_flags_db = std::make_shared<sea5kg::sqlite3_wrapper::database_file>(
     "database_alive_flags",
-    "",
     findWsjcppEmploy<ctf01d::config>()->db_dir(),
     "alive_flags.db",
     ctf01d::DEFAULT_DATABASE_BACKUP_FREQUENCY_IN_SECONDS

@@ -26,10 +26,15 @@
  ***********************************************************************************/
 
 #include "sea5kg_sqlite3_wrapper.h"
+#include <algorithm>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include <sea5kg_logger.h>
 #include <sqlite3.h>
 #include <wsjcpp_core.h>
-#include <wsjcpp_employees.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 namespace sea5kg {
 
@@ -51,6 +56,69 @@ const std::string &database_update_info::version_to() const {
 
 const std::string &database_update_info::description() const {
   return m_description;
+}
+
+bool __file_exists(const std::string &filepath) {
+  struct stat st;
+  bool _exists = (stat(filepath.c_str(), &st) == 0);
+  if (_exists) {
+    return (st.st_mode & S_IFDIR) == 0;
+  }
+  return false;
+}
+
+bool __dir_exists(const std::string &sDirname) {
+  struct stat st;
+  bool bExists = (stat(sDirname.c_str(), &st) == 0);
+  if (bExists) {
+    return (st.st_mode & S_IFDIR) != 0;
+  }
+  return false;
+}
+
+bool __make_dir(const std::string &sDirname) {
+  struct stat st;
+
+  const std::filesystem::path dir{sDirname};
+  std::filesystem::create_directory(dir);
+
+  int nStatus = mkdir(sDirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  if (nStatus == 0) {
+    return true;
+  }
+  if (nStatus == EACCES) {
+    std::cout << "FAILED create folder " << sDirname << std::endl;
+    return false;
+  }
+  // std::cout << "nStatus: " << nStatus << std::endl;
+  return true;
+}
+
+bool __copy_file(const std::string &sSourceFilename, const std::string &sTargetFilename) {
+  if (!__file_exists(sSourceFilename)) {
+    // WsjcppLog::err("copyFile", "File '" + sSourceFilename + "' did not exists");
+    return false;
+  }
+
+  if (__file_exists(sTargetFilename)) {
+    // WsjcppLog::err("copyFile", "File '" + sTargetFilename + "' already exists");
+    return false;
+  }
+
+  std::ifstream src(sSourceFilename, std::ios::binary);
+  if (!src.is_open()) {
+    // WsjcppLog::err("copyFile", "Could not open file '" + sSourceFilename + "' for read");
+    return false;
+  }
+
+  std::ofstream dst(sTargetFilename, std::ios::binary);
+  if (!dst.is_open()) {
+    // WsjcppLog::err("copyFile", "Could not open file '" + sTargetFilename + "' for write");
+    return false;
+  }
+
+  dst << src.rdbuf();
+  return true;
 }
 
 std::map<std::string, std::vector<std::shared_ptr<database_update_fabric_base>>> *g_database_updates_fabric = nullptr;
@@ -190,8 +258,8 @@ database_file::database_file(
 
   if (m_backup_freq_in_seconds > 0) {
     std::string sDatabaseBackupDir = db_dir + "/backups";
-    if (!wsjcpp::dir_exists(sDatabaseBackupDir)) {
-      if (!WsjcppCore::makeDir(sDatabaseBackupDir)) {
+    if (!__dir_exists(sDatabaseBackupDir)) {
+      if (!__make_dir(sDatabaseBackupDir)) {
         sea5kg::log::critical(TAG, "Could not create dir " + sDatabaseBackupDir);
       }
       std::string error;
@@ -212,7 +280,7 @@ database_file::database_file(
     }
   }
 
-  if (!wsjcpp::dir_exists(db_dir)) {
+  if (!__dir_exists(db_dir)) {
     sea5kg::log::critical(TAG, "Not found db dir: " + db_dir);
   }
 };
@@ -305,25 +373,22 @@ int database_file::select_sum_or_count(const std::string &sql, std::string &erro
     return -1;
   }
   sqlite3 *db = (sqlite3 *)m_db;
-  sqlite3_stmt *pQuery = nullptr;
-  int ret = sqlite3_prepare_v2((sqlite3 *)m_db, sql.c_str(), -1, &pQuery, NULL);
+  sqlite3_stmt *stmt = nullptr;
+  int ret = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
   // prepare the statement
   if (ret != SQLITE_OK) {
-    error = "Failed to prepare select count: " + std::string(sqlite3_errmsg((sqlite3 *)m_db)) + "\n SQL-query: " + sql;
-    sea5kg::log::critical(TAG, error);
+    error = "Failed to prepare select count: '" + std::string(sqlite3_errmsg(db)) + "'. SQL: '" + sql + "'";
     return -1;
   }
   // step to 1st row of data
-  ret = sqlite3_step(pQuery);
+  ret = sqlite3_step(stmt);
   if (ret != SQLITE_ROW) { // see documentation, this can return more values as success
-    error = "Failed to step for select count or sum: " + std::string(sqlite3_errmsg((sqlite3 *)m_db)) +
-            "\n SQL-query: " + sql;
-    sea5kg::log::critical(TAG, error);
+    error = "Failed to step for select count or sum: '" + std::string(sqlite3_errmsg(db)) + "'. SQL: '" + sql + "'";
     return -1;
   }
-  int nRet = sqlite3_column_int(pQuery, 0);
-  if (pQuery != nullptr)
-    sqlite3_finalize(pQuery);
+  int nRet = sqlite3_column_int(stmt, 0);
+  if (stmt != nullptr)
+    sqlite3_finalize(stmt);
   return nRet;
 }
 
@@ -453,27 +518,32 @@ bool database_file::copy_database_to_backup(std::string &error) {
   }
   m_last_backup_time = nCurrentTime;
 
+  // TODO must be configurable
   int nMaxBackupsFiles = 9;
-  sea5kg::log::info(TAG, "Start backup for " + m_filepath);
+  // sea5kg::log::info(TAG, "Start backup for " + m_filepath);
   std::string sFilebackup = m_basename_backup_filepath + "." + std::to_string(nMaxBackupsFiles);
-  if (wsjcpp::file_exists(sFilebackup)) {
-    WsjcppCore::removeFile(sFilebackup);
+  if (__file_exists(sFilebackup)) {
+    if (!std::filesystem::remove(sFilebackup)) {
+      error = "Could not remove file " + sFilebackup;
+      return false;
+    }
   }
   for (int i = nMaxBackupsFiles - 1; i >= 0; i--) {
     std::string sFilebackupFrom = m_basename_backup_filepath + "." + std::to_string(i);
     std::string sFilebackupTo = m_basename_backup_filepath + "." + std::to_string(i + 1);
-    if (wsjcpp::file_exists(sFilebackupFrom)) {
+    if (__file_exists(sFilebackupFrom)) {
       if (std::rename(sFilebackupFrom.c_str(), sFilebackupTo.c_str())) {
-        sea5kg::log::critical(TAG, "Could not rename from " + sFilebackupFrom + " to " + sFilebackupTo);
+        error = "Could not rename from " + sFilebackupFrom + " to " + sFilebackupTo;
         return false;
       }
     }
   }
   sFilebackup = m_basename_backup_filepath + "." + std::to_string(0);
-  if (!WsjcppCore::copyFile(m_filepath, sFilebackup)) {
-    sea5kg::log::critical(TAG, "Failed copy file to backup for " + m_filepath);
+  if (!__copy_file(m_filepath, sFilebackup)) {
+    error = "Failed copy file to backup for " + m_filepath;
+    return false;
   }
-  sea5kg::log::info(TAG, "Backup done for " + m_filepath);
+  // sea5kg::log::info(TAG, "Backup done for " + m_filepath);
   return true;
 }
 
